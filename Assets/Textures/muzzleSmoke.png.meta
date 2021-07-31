@@ -1,0 +1,556 @@
+fileFormatVersion: 2
+guid: 2c74141997622f24987435f4512a1fad
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5141215084443461709
+    second: muzzleSmoke_0
+  - first:
+      213: -4975152033842427633
+    second: muzzleSmoke_1
+  - first:
+      213: -4490422759789054484
+    second: muzzleSmoke_2
+  - first:
+      213: -26480160656133061
+    second: muzzleSmoke_3
+  - first:
+      213: -8315603667064419326
+    second: muzzleSmoke_4
+  - first:
+      213: -8413717648516236777
+    second: muzzleSmoke_5
+  - first:
+      213: -8465088378764198195
+    second: muzzleSmoke_6
+  - first:
+      213: 1613422550396941148
+    second: muzzleSmoke_7
+  - first:
+      213: -5970839660849200044
+    second: muzzleSmoke_8
+  - first:
+      213: -2234253359042853526
+    second: muzzleSmoke_9
+  - first:
+      213: 9027222442012052615
+    second: muzzleSmoke_10
+  - first:
+      213: -3524008858288357991
+    second: muzzleSmoke_11
+  - first:
+      213: -2104153623825449002
+    second: muzzleSmoke_12
+  - first:
+      213: -8768926612531833752
+    second: muzzleSmoke_13
+  - first:
+      213: -4092349318687559592
+    second: muzzleSmoke_14
+  - first:
+      213: -7219237154033514545
+    second: muzzleSmoke_15
+  - first:
+      213: -4937197654184305540
+    second: muzzleSmoke_16
+  - first:
+      213: 4586891651021700673
+    second: muzzleSmoke_17
+  - first:
+      213: -5705999099242997512
+    second: muzzleSmoke_18
+  - first:
+      213: 5623365087893432470
+    second: muzzleSmoke_19
+  - first:
+      213: -1361540926272838148
+    second: muzzleSmoke_20
+  - first:
+      213: 3344113482640079923
+    second: muzzleSmoke_21
+  externalObjects: {}
+  serializedVersion: 10
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: -1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - serializedVersion: 2
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+  - serializedVersion: 2
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+  - serializedVersion: 2
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: muzzleSmoke_0
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 213
+        width: 6
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7a91fd120049f74d83a4031f2e95a10
+      internalID: -5141215084443461709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_1
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 217
+        width: 43
+        height: 39
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ac7fdb1c616ba44db76f81b1129fd5d
+      internalID: -4975152033842427633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_2
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 213
+        width: 6
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8a324e85dec2cfc46975c99cd302ac40
+      internalID: -4490422759789054484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_3
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 217
+        width: 43
+        height: 39
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e51b0ad8ed25884ba909a03478cc469
+      internalID: -26480160656133061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_4
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 213
+        width: 6
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9312a23c70f21d744a22007f07651f65
+      internalID: -8315603667064419326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_5
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 216
+        width: 45
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 238544c19c238e54d96187b1153bd195
+      internalID: -8413717648516236777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_6
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 213
+        width: 6
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7cd2c7d5a723d1438fd208924283a38
+      internalID: -8465088378764198195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_7
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 215
+        width: 47
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eeeabff77c563d4429877b370082827f
+      internalID: 1613422550396941148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_8
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 170
+        width: 6
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96be973b6a55d2b49b1160761f2e22fd
+      internalID: -5970839660849200044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_9
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 171
+        width: 48
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a11c0d1c02fa58a4487818d18daf5ba0
+      internalID: -2234253359042853526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_10
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 170
+        width: 55
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6247ce00ae8bb5e45b57077e74aee343
+      internalID: 9027222442012052615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_11
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 170
+        width: 55
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 323826f596241924aa281cca839c17f7
+      internalID: -3524008858288357991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_12
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 170
+        width: 55
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ab9152fa77918f4d9824efef1c1de42
+      internalID: -2104153623825449002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_13
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 128
+        width: 55
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec93f5744367e6e40ba92cf000921026
+      internalID: -8768926612531833752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_14
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 123
+        width: 59
+        height: 47
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 885d0ac3194aa8f4e8bc1b7c6c334a22
+      internalID: -4092349318687559592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_15
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 128
+        width: 55
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65cc6d0f58b165e4aabb82889b7111d0
+      internalID: -7219237154033514545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_20
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 46
+        width: 47
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 664164f8fe9cf02429c0b96ce76b5a0e
+      internalID: -1361540926272838148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: muzzleSmoke_21
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 50
+        width: 26
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 42b808f16799d9e45a198a488e2b64de
+      internalID: 3344113482640079923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 6ec4ccae8dfc16d4b91ed1135ef6c284
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
