@@ -630,7 +630,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    1: CROSS_PLATFORM_INPUT;UNITY_POST_PROCESSING_STACK_V2;SHAPES_HDRP
+    1: CROSS_PLATFORM_INPUT;UNITY_POST_PROCESSING_STACK_V2;SHAPES_HDRP;Use_CGAudioManager_Static
     2: CROSS_PLATFORM_INPUT
     4: CROSS_PLATFORM_INPUT;MOBILE_INPUT;UNITY_POST_PROCESSING_STACK_V2
     7: CROSS_PLATFORM_INPUT;MOBILE_INPUT;UNITY_POST_PROCESSING_STACK_V2
@@ -758,7 +758,7 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 6
   activeInputHandler: 0
-  cloudProjectId: e206f0e6-d3f6-4e62-931d-a5f01d9568a0
+  cloudProjectId: 
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: Wee Tanks

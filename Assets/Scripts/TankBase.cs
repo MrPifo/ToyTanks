@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using UnityEngine.VFX;
+using CarterGames.Assets.AudioManager;
+using SimpleMan.Extensions;
 
 [RequireComponent(typeof(Rigidbody))]
 public class TankBase : MonoBehaviour {
@@ -13,10 +14,11 @@ public class TankBase : MonoBehaviour {
 	public float angleDiffLock;
 	public float shootStun;
 	public float shootCooldown;
+	public float trackSpawnDistance;
 	public Bullet bullet;
 	public Vector3 maxMoveAngle;
 	[Header("REFERENCES")]
-	public GameObject TankHead;
+	public Transform tankHead;
 	public Transform bulletOutput;
 	public GameObject tankTrack;
 	public GameObject muzzleFlash;
@@ -25,16 +27,23 @@ public class TankBase : MonoBehaviour {
 	public AudioSource driveSound;
 	public Vector3 moveDir;
 	Rigidbody rig;
+	Transform trackContainer;
+	AudioManager audio;
 	int muzzleFlashDelta;
 	float angleDiff;
-	public float engineVolume;
+	Vector3 lastTrackPos;
+	float engineVolume;
 
 	void Awake() {
 		rig = GetComponent<Rigidbody>();
+		audio = FindObjectOfType<AudioManager>();
+		trackContainer = GameObject.Find("TrackContainer").transform;
+		lastTrackPos = rig.position;
 	}
 
 	public void Move(Vector2 inputDir) {
 		moveDir = new Vector3(inputDir.x, 0, inputDir.y);
+		rig.velocity = Vector3.zero;
 		if(Mathf.Abs(moveDir.x) >= 0.75f && Mathf.Abs(moveDir.z) >= 0.75f) {
 			moveDir.x = Mathf.Clamp(moveDir.x, -0.75f, 0.75f);
 			moveDir.z = Mathf.Clamp(moveDir.z, -0.75f, 0.75f);
@@ -45,6 +54,7 @@ public class TankBase : MonoBehaviour {
 			var movePos = moveDir * moveSpeed * Time.fixedDeltaTime;
 			rig.MovePosition(rig.position + movePos);
 		}
+		TrackTracer();
 	}
 
 	public void AdjustRotation(Vector3 moveDir) {
@@ -58,12 +68,35 @@ public class TankBase : MonoBehaviour {
 		Debug.DrawRay(rig.position, rig.transform.forward, Color.blue);
 	}
 
-	void ShootBullet() {
-		
+	public void MoveHead(Vector3 target) {
+		target.y = tankHead.position.y;
+		tankHead.LookAt(target);
+	}
+
+	void TrackTracer() {
+		float distToLastTrack = Vector2.Distance(new Vector2(lastTrackPos.x, lastTrackPos.z), new Vector2(rig.position.x, rig.position.z));
+		if(distToLastTrack > trackSpawnDistance) {
+			lastTrackPos = SpawnTrack();
+		}
+	}
+
+	Vector3 SpawnTrack() {
+		Transform track = Instantiate(tankTrack, trackContainer).transform;
+		track.position = new Vector3(rig.position.x, 0.025f, rig.position.z);
+		track.rotation = rig.rotation * Quaternion.Euler(90, 0, 0);
+
+		audio.Play("TankDrive", 0.5f, Random.Range(1f, 1.1f));
+		return track.position;
+	}
+
+	public void ShootBullet() {
+		Instantiate(bullet).SetupBullet(bulletOutput.forward, bulletOutput.position);
 	}
 
 	public void GotHitByBullet() {
-		
+		explodeVFX.SendEvent("Play");
+		new GameObject().AddComponent<DestructionTimer>().Destruct(5f, new GameObject[] { explodeVFX.gameObject });
+		gameObject.SetActive(false);
 	}
 
 	public void AimAssistant(Vector3 dir1) {

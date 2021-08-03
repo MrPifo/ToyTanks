@@ -150,9 +150,7 @@ public class greytank : MonoBehaviour
                 GameObject bullet = Instantiate(TypeBullet);
                 bullet.transform.position = bulletOutput.transform.position;
                 bullet.transform.LookAt(direction);
-                bullet.GetComponent<Bullet>().ShotByBot = true;
                 Vector3 dir = bullet.transform.forward;
-                bullet.GetComponent<Bullet>().direction = direction;
                 StartCoroutine(ShootCooldown());
                 StartCoroutine(ShootStun());
             }

@@ -9,8 +9,8 @@ TagManager:
   - bullet
   - player
   - PatrolPoint
-  - bot
   - destroyable
+  - Bot
   layers:
   - Default
   - TransparentFX
@@ -18,12 +18,12 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Bullet
   - Tank
-  - Lighting
-  - Ground
-  - Postprocessing
-  - Cursor
+  - Level
+  - 
+  - 
+  - 
   - 
   - 
   - 

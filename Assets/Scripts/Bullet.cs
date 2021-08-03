@@ -1,80 +1,88 @@
-﻿using System.Collections;
+﻿using CarterGames.Assets.AudioManager;
+using SimpleMan.Extensions;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour {
-	public GameObject bulletMesh;
-	public GameObject bulletExplosion;
-	public GameObject destructor;
-	public MeshRenderer MeshRend;
-	public AudioSource BulletReflect;
-	public AudioSource BulletShot;
-	public AudioSource BulletReload;
-	public AudioSource BulletExplode;
+
+	public float velocity;
+	public int maxBounces;
+	public LayerMask affectLayers;
 	public ParticleSystem Explosion;
 	public ParticleSystem ExplosionFire;
 	public ParticleSystem ExplosionPieces;
 	public ParticleSystem SmokeTrail;
 	public ParticleSystem FireTrail;
-	public Vector3 direction;
-	public bool directionIsSet;
-	public Collider BulletCollider;
-	public TankBase TankScript;
-	public bool ShotByBot;
-	public float velocity;
-	public int maxBounces;
-	public int bouncedTimes;
-	public bool CanImpactOnPlayer;
-	public bool BounceCooldown;
-	public bool destroyed;
+	Rigidbody rig;
+	SphereCollider coll;
+	Vector3 direction;
+
+	int bounces = 0;
+	bool denyCollision;
 
 	void Awake() {
-
+		rig = GetComponent<Rigidbody>();
+		coll = GetComponent<SphereCollider>();
 	}
 
 	void FixedUpdate() {
 		Vector3 dir = (transform.position - (transform.position - direction)).normalized;
 		Quaternion look = Quaternion.LookRotation(dir, transform.up);
-		transform.rotation = look;
 
-		gameObject.transform.position += direction * velocity;
+		Vector3 pos = direction * velocity * Time.fixedDeltaTime;
+		rig.MovePosition(rig.position + pos);
+		rig.MoveRotation(look);
 	}
 
-	public void Destroyed() {
-		destroyed = true;
+	public void Destroy() {
 		velocity = 0;
 		Explosion.Play();
 		ExplosionFire.Play();
-		BulletExplode.Play();
 		ExplosionPieces.Play();
-		BulletCollider.enabled = false;
-		MeshRend.enabled = false;
-		DestructionTimer o = Instantiate(destructor.gameObject).GetComponent<DestructionTimer>();
-		o.Destruct(5);
-		o.SetChild(Explosion.gameObject);
-		o.SetChild(ExplosionFire.gameObject);
-		o.SetChild(BulletExplode.gameObject);
-		o.SetChild(ExplosionPieces.gameObject);
+
+		new GameObject().AddComponent<DestructionTimer>().Destruct(5, new GameObject[] { Explosion.gameObject, ExplosionFire.gameObject, ExplosionPieces.gameObject });
+		AudioManager.instance.Play("BulletExplode");
+		gameObject.SetActive(false);
 		Destroy(gameObject);
-		Debug.Log("BULLET DESTROYED");
 	}
 
 	public void ReceiveDestroy() {
-		Destroyed();
+		Destroy();
 	}
 
-	public void SetupBullet(Vector3 dir, Vector3 startPos, int objectId = -1) {
+	public void SetupBullet(Vector3 dir, Vector3 startPos) {
 		transform.position = startPos;
 		direction = dir;
-		directionIsSet = true;
+		AudioManager.instance.Play("BulletShot");
+		this.Delay(15, () => Destroy(gameObject));
 	}
 
-	public void SetDirection(Vector3 dir) {
-		direction = dir;
-		directionIsSet = true;
+	void OnCollisionEnter(Collision coll) {
+		coll.collider.enabled = false;
+		if(!denyCollision) {
+			bounces++;
+			Debug.Log(bounces);
+			if(coll.transform.TryGetComponent(out TankBase tank)) {
+				tank.GotHitByBullet();
+				Destroy();
+			} else if(bounces > maxBounces) {
+				Destroy();
+			} else if(coll.transform.TryGetComponent(out Bullet bullet) && coll.gameObject != gameObject) {
+				bullet.Destroy();
+				Destroy();
+			} else {
+				Reflect(coll.contacts[0].normal);
+			}
+		}
+		coll.collider.enabled = true;
 	}
 
-	void OnCollisionEnter(Collision collision) {
-
+	void Reflect(Vector3 inNormal) {
+		direction = Vector3.Reflect(direction, inNormal);
+		rig.position += direction * velocity * Time.fixedDeltaTime * 1.5f;
+		denyCollision = true;
+		AudioManager.instance.Play("BulletReflect", 0.5f, Random.Range(0.8f, 1.2f));
+		this.Delay(0.25f, () => denyCollision = false);
 	}
 }

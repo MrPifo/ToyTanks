@@ -95,8 +95,8 @@ MonoBehaviour:
       m_Values: 000100000004000000080000
       m_SchemaId:
         m_Id: With3Levels
-    supportDecals: 0
-    supportDecalLayers: 0
+    supportDecals: 1
+    supportDecalLayers: 1
     decalLayerName0: Decal Layer default
     decalLayerName1: Decal Layer 1
     decalLayerName2: Decal Layer 2
