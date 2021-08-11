@@ -62,7 +62,6 @@ public class Bullet : MonoBehaviour {
 		coll.collider.enabled = false;
 		if(!denyCollision) {
 			bounces++;
-			Debug.Log(bounces);
 			if(coll.transform.TryGetComponent(out TankBase tank)) {
 				tank.GotHitByBullet();
 				Destroy();

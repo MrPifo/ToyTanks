@@ -16,7 +16,8 @@ public class TankBase : MonoBehaviour {
 	public float shootCooldown;
 	public float trackSpawnDistance;
 	public Bullet bullet;
-	public Vector3 maxMoveAngle;
+	public LayerMask hitLayers;
+	public bool makeInvincible;
 	[Header("REFERENCES")]
 	public Transform tankHead;
 	public Transform bulletOutput;
@@ -24,21 +25,24 @@ public class TankBase : MonoBehaviour {
 	public GameObject muzzleFlash;
 	public VisualEffect explodeVFX;
 	public ParticleSystem smokeVFX;
-	public AudioSource driveSound;
-	public Vector3 moveDir;
+	Vector3 moveDir;
+	public Vector3 Pos => rig.position;
+	public bool CanShoot => !onShootCooldown;
+	public bool HasBeenDestroyed { get; set; }
 	Rigidbody rig;
 	Transform trackContainer;
-	AudioManager audio;
+	AudioManager Audio => LevelManager.audioManager;
 	int muzzleFlashDelta;
 	float angleDiff;
 	Vector3 lastTrackPos;
 	float engineVolume;
+	bool onShootCooldown;
+	bool onShootMoveCooldown;
 
-	void Awake() {
+	protected virtual void Awake() {
 		rig = GetComponent<Rigidbody>();
-		audio = FindObjectOfType<AudioManager>();
 		trackContainer = GameObject.Find("TrackContainer").transform;
-		lastTrackPos = rig.position;
+		lastTrackPos = Pos;
 	}
 
 	public void Move(Vector2 inputDir) {
@@ -50,8 +54,8 @@ public class TankBase : MonoBehaviour {
 		}
 		AdjustRotation(moveDir);
 
-		if(angleDiff < angleDiffLock) {
-			var movePos = moveDir * moveSpeed * Time.fixedDeltaTime;
+		if(angleDiff < angleDiffLock && !onShootMoveCooldown) {
+			var movePos = rig.transform.forward * moveSpeed * Time.deltaTime;
 			rig.MovePosition(rig.position + movePos);
 		}
 		TrackTracer();
@@ -61,7 +65,7 @@ public class TankBase : MonoBehaviour {
 		var rot = Quaternion.LookRotation(moveDir, Vector3.up);
 		angleDiff = Quaternion.Angle(rig.rotation, rot);
 		if(angleDiff > 0) {
-			rot = Quaternion.RotateTowards(rig.rotation, rot, bodyRotSpeed * Time.fixedDeltaTime);
+			rot = Quaternion.RotateTowards(rig.rotation, rot, bodyRotSpeed * Time.deltaTime);
 			rig.MoveRotation(rot);
 		}
 		Debug.DrawRay(rig.position, moveDir, Color.green);
@@ -70,7 +74,9 @@ public class TankBase : MonoBehaviour {
 
 	public void MoveHead(Vector3 target) {
 		target.y = tankHead.position.y;
-		tankHead.LookAt(target);
+		var rot = Quaternion.LookRotation((target - Pos).normalized, Vector3.up);
+		rot = Quaternion.RotateTowards(tankHead.rotation, rot, Time.deltaTime * aimRotSpeed);
+		tankHead.rotation = rot;
 	}
 
 	void TrackTracer() {
@@ -85,18 +91,26 @@ public class TankBase : MonoBehaviour {
 		track.position = new Vector3(rig.position.x, 0.025f, rig.position.z);
 		track.rotation = rig.rotation * Quaternion.Euler(90, 0, 0);
 
-		audio.Play("TankDrive", 0.5f, Random.Range(1f, 1.1f));
+		Audio.Play("TankDrive", 0.5f, Random.Range(1f, 1.1f));
 		return track.position;
 	}
 
 	public void ShootBullet() {
-		Instantiate(bullet).SetupBullet(bulletOutput.forward, bulletOutput.position);
+		if(!onShootCooldown) {
+			Instantiate(bullet).SetupBullet(bulletOutput.forward, bulletOutput.position);
+			onShootCooldown = true;
+			onShootMoveCooldown = true;
+			this.Delay(shootCooldown, () => { onShootCooldown = false; onShootMoveCooldown = false; });
+		}
 	}
 
-	public void GotHitByBullet() {
-		explodeVFX.SendEvent("Play");
-		new GameObject().AddComponent<DestructionTimer>().Destruct(5f, new GameObject[] { explodeVFX.gameObject });
-		gameObject.SetActive(false);
+	public virtual void GotHitByBullet() {
+		if(!makeInvincible) {
+			HasBeenDestroyed = true;
+			explodeVFX.SendEvent("Play");
+			new GameObject().AddComponent<DestructionTimer>().Destruct(5f, new GameObject[] { explodeVFX.gameObject });
+			gameObject.SetActive(false);
+		}
 	}
 
 	public void AimAssistant(Vector3 dir1) {

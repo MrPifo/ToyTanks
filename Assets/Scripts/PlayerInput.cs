@@ -3,48 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 using Shapes;
 
-[RequireComponent(typeof(TankBase))]
-public class PlayerInput : MonoBehaviour {
+public class PlayerInput : TankBase {
 
-	TankBase tank;
-	public Transform crosshair;
+	[HideInInspector] public Transform crosshair;
 	public Color crossHairColor;
 	public float crossHairSize;
 	public float crossHairThickness;
 	public bool hideCursor;
+	public bool disableControl;
+	public bool disableCrosshair;
 	Line[] crossHairLines;
 
-	void Awake() {
-		tank = GetComponent<TankBase>();
-		crossHairLines = crosshair.GetComponentsInChildren<Line>();
-		crosshair.LookAt(Camera.main.transform);
+	protected override void Awake() {
+		base.Awake();
+		
+	}
+
+	public void FindCrosshair() {
+		if(GameObject.Find("Crosshair") != null) {
+			crosshair = GameObject.Find("Crosshair").transform;
+			crossHairLines = crosshair.GetComponentsInChildren<Line>();
+			crosshair.LookAt(Camera.main.transform);
+		}
 	}
 
 	void Update() {
 		Cursor.visible = !hideCursor;
-		Crosshair();
-		if(Input.GetKeyDown(KeyCode.Mouse0)) {
-			tank.ShootBullet();
+		if(!disableCrosshair) {
+			Crosshair();
 		}
-	}
-
-	void FixedUpdate() {
-		MoveTank();
+		if(!disableControl) {
+			MoveTank();
+			if(Input.GetKeyDown(KeyCode.Mouse0)) {
+				ShootBullet();
+			}
+		}
 	}
 
 	void MoveTank() {
 		var moveVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
 		if(moveVector.x != 0f || moveVector.y != 0f) {
-			tank.Move(moveVector);
+			Move(moveVector);
 		}
-		tank.MoveHead(new Vector3(crosshair.position.x, 0, crosshair.position.z));
+		MoveHead(new Vector3(crosshair.position.x, 0, crosshair.position.z));
 	}
 
 	void Crosshair() {
 		Vector2 mouseInput = Input.mousePosition;
 		Ray camRay = Camera.main.ScreenPointToRay(mouseInput);
-		float distToPlayground = Vector3.Distance(tank.transform.position, camRay.origin);
+		float distToPlayground = Vector3.Distance(transform.position, camRay.origin);
 		float my = camRay.origin.y / camRay.direction.y;
 
 		Plane plane = new Plane(Vector3.up, 0f);

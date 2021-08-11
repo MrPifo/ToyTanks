@@ -4851,7 +4851,7 @@ Transform:
   - {fileID: 5297529631993534930}
   - {fileID: 4755563655767057363}
   m_Father: {fileID: 4435059737398416186}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4435059737398416180
 GameObject:
@@ -4864,7 +4864,9 @@ GameObject:
   - component: {fileID: 4435059737398416186}
   - component: {fileID: 4435059737398416184}
   - component: {fileID: 6544939384501452804}
-  - component: {fileID: 2955245528746903084}
+  - component: {fileID: 2897353841229488052}
+  - component: {fileID: 6675312344672702679}
+  - component: {fileID: 5725848023237054293}
   m_Layer: 6
   m_Name: Bullet
   m_TagString: bullet
@@ -4881,9 +4883,8 @@ Transform:
   m_GameObject: {fileID: 4435059737398416180}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.35, y: 0.35, z: 0.35}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children:
-  - {fileID: 4435059737561986290}
   - {fileID: 8757751457542566850}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -4926,66 +4927,21 @@ MonoBehaviour:
   ExplosionPieces: {fileID: 1847852265992880024}
   SmokeTrail: {fileID: 6616851656275617257}
   FireTrail: {fileID: 1242741625510394827}
---- !u!135 &2955245528746903084
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4435059737398416180}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &4435059737561986291
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4435059737561986290}
-  - component: {fileID: 4435059737561986295}
-  - component: {fileID: 4435059737561986288}
-  m_Layer: 6
-  m_Name: bullet_mesh
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4435059737561986290
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4435059737561986291}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
-  m_Children: []
-  m_Father: {fileID: 4435059737398416186}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &4435059737561986295
+--- !u!33 &2897353841229488052
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4435059737561986291}
+  m_GameObject: {fileID: 4435059737398416180}
   m_Mesh: {fileID: -9145857610901650970, guid: 650157d78092fd64dbbd4ee95c54997b, type: 3}
---- !u!23 &4435059737561986288
+--- !u!23 &6675312344672702679
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4435059737561986291}
+  m_GameObject: {fileID: 4435059737398416180}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -4996,7 +4952,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 22d9166a9ce21ac44a18d4b7db857fa1, type: 2}
@@ -5021,6 +4977,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5725848023237054293
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4435059737398416180}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -9145857610901650970, guid: 650157d78092fd64dbbd4ee95c54997b, type: 3}
 --- !u!1 &5911786910803493446
 GameObject:
   m_ObjectHideFlags: 0

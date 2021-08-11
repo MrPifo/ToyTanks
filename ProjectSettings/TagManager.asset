@@ -9,8 +9,9 @@ TagManager:
   - bullet
   - player
   - PatrolPoint
-  - destroyable
   - Bot
+  - Destroyable
+  - destroyable
   layers:
   - Default
   - TransparentFX
@@ -21,8 +22,8 @@ TagManager:
   - Bullet
   - Tank
   - Level
-  - 
-  - 
+  - Bot
+  - Destroyable
   - 
   - 
   - 
