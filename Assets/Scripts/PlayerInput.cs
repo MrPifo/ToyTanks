@@ -16,7 +16,7 @@ public class PlayerInput : TankBase {
 
 	protected override void Awake() {
 		base.Awake();
-		
+		healthPoints = 0;
 	}
 
 	public void FindCrosshair() {

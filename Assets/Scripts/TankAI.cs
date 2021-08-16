@@ -1,10 +1,14 @@
 using Sperlich.Pathfinding;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Sperlich.Debug.Draw;
+using Sperlich.FSM;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
-public class TankAI : TankBase {
+public abstract class TankAI : TankBase {
 
 	public enum TankState { Idle, Defense, Attack, Patrol }
 
@@ -12,17 +16,32 @@ public class TankAI : TankBase {
 	public TankBase player;
 	[HideInInspector]
 	public LevelManager level;
-	public TankState state;
 	public LayerMask levelPredictionMask;
-	public float maxAlwaysShootDistance;
-	float distToPlayer;
-	PathfindingMesh pathMesh;
+	public float minAlwaysShootDistance;
+	public float shootRadius;
+	public float playerDetectRadius;
+	public float playerLoseRadius;
+	public float pathNodeReachTreshold;
+	public bool showDebug;
+	public Node activePatrolPoint;
+	public FSM<TankState> stateMachine;
+	protected float distToPlayer;
+	protected PathfindingMesh pathMesh;
+	protected List<Node> currentPath;
 	public bool IsAIEnabled { get; set; }
-	public bool IsPlayerInRange => distToPlayer < maxAlwaysShootDistance;
+	public bool IsPlayerMinShootRange => distToPlayer < minAlwaysShootDistance;
+	public bool IsPlayerInDetectRadius => distToPlayer < playerDetectRadius;
+	public bool IsPlayerOutsideLoseRadius => distToPlayer > playerLoseRadius;
+	public bool IsPlayerInShootRadius => distToPlayer < shootRadius;
+	public bool HasActivePatrolPoint => activePatrolPoint != null;
+	public bool HasSightContactToPlayer => HasSightContact(player);
+	public int PathNodeCount => currentPath == null ? 0 : currentPath.Count;
 
 	protected override void Awake() {
+		stateMachine.Push(TankState.Attack);
+
 		base.Awake();
-		state = TankState.Idle;
+		stateMachine.Push(TankState.Idle);
 		pathMesh = FindObjectOfType<PathfindingMesh>();
 		player = FindObjectOfType<PlayerInput>().GetComponent<TankBase>();
 		level = FindObjectOfType<LevelManager>();
@@ -31,48 +50,55 @@ public class TankAI : TankBase {
 	void Update() {
 		if(IsAIEnabled) {
 			distToPlayer = Vector3.Distance(Pos, player.Pos);
+			healthBar.transform.parent.rotation = Quaternion.LookRotation((Pos - Camera.main.transform.position).normalized, Vector3.up);
 			ProcessState();
+			if(showDebug) {
+				DrawDebug();
+			}
+		}
+		
+	}
+
+	public virtual void DrawDebug() {
+		if(IsPlayerInDetectRadius) {
+			Draw.Ring(Pos, Vector3.up, playerDetectRadius, 1f, Color.black, Color.black, true);
+			if(IsPlayerInShootRadius) {
+				if(HasSightContact(player)) {
+					Draw.Ring(Pos, Vector3.up, distToPlayer, 1f, Color.white, Color.red, true);
+				} else {
+					Draw.Ring(Pos, Vector3.up, distToPlayer, 1f, new Color32(150, 20, 20, 255), true);
+				}
+				if(distToPlayer < minAlwaysShootDistance) {
+					Draw.Ring(Pos, Vector3.up, minAlwaysShootDistance, 0.2f, Color.blue, false);
+				}
+			}
+			if(!(IsPlayerInShootRadius && HasSightContact(player))) {
+				pathMesh.DrawPathLines(currentPath);
+			}
 		}
 	}
 
 	void ProcessState() {
-		switch(state) {
+		switch(stateMachine.State) {
 			case TankState.Idle:
 				Idle();
 				break;
 			case TankState.Defense:
+				Defense();
 				break;
 			case TankState.Attack:
 				Attack();
 				break;
 			case TankState.Patrol:
+				Patrol();
 				break;
 		}
 	}
 
-	public virtual void Idle() {
-		
-	}
-
-	public virtual void Attack() {
-		
-	}
-
-	public virtual void Defense() {
-
-	}
-
-	public virtual void Patrol() {
-
-	}
-
-	public virtual void Steer() {
-
-	}
-
-	public virtual void Move() {
-
-	}
+	public abstract void Idle();
+	public abstract void Attack();
+	public abstract void Defense();
+	public abstract void Patrol();
 
 	public virtual void Aim() {
 		MoveHead(player.Pos);
@@ -81,10 +107,29 @@ public class TankAI : TankBase {
 	public override void GotHitByBullet() {
 		base.GotHitByBullet();
 		level.TankDestroyedCheck();
+		if(!makeInvincible && healthPoints <= 0) {
+			healthBar.transform.parent.gameObject.SetActive(false);
+			enabled = false;
+		} else {
+			healthBar.transform.parent.gameObject.SetActive(true);
+		}
+	}
+
+	public void MoveAlongPath() {
+		if(PathNodeCount > 0) {
+			var dir = GetLookDirection(currentPath[0].pos);
+			var moveDir = new Vector2(dir.x, dir.z);
+			Move(moveDir);
+		}
+	}
+
+	public void FaceDirection(Vector3 target) {
+		target = new Vector3(target.x, Pos.y, target.z);
+		AdjustRotation((target - Pos).normalized);
 	}
 
 	public void AimOnSight() {
-		if(HasSightContact(player.gameObject)) {
+		if(HasSightContact(player)) {
 			MoveHead(player.Pos);
 		}
 	}
@@ -120,25 +165,65 @@ public class TankAI : TankBase {
 			}
 			//Physics.Raycast(ray, out lastHit, Mathf.Infinity, levelPredictionMask);
 			Physics.BoxCast(ray.origin, new Vector3(0.5f, 0.5f, 0.5f), ray.direction, out lastHit, Quaternion.identity, Mathf.Infinity, levelPredictionMask);
-			Debug.DrawLine(ray.origin, lastHit.point, Color.yellow, 5f);
+			if(showDebug) Draw.Line(ray.origin, lastHit.point, Color.yellow);
 			hitList.Add(lastHit.transform);
 		}
 		return hitList;
 	}
 
-	public bool HasSightContact(GameObject target) {
+	public bool HasSightContact(TankBase tank) => HasSightContact(tank.transform);
+	public bool HasSightContact(Transform target) {
 		Ray ray = new Ray(Pos, (target.transform.position - Pos).normalized);
 		
-		if(Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, hitLayers)) {
-			if(hit.transform.gameObject == target) {
-				Debug.DrawLine(ray.origin, hit.point, Color.red);
+		if(Physics.BoxCast(ray.origin, Bullet.bulletSize, ray.direction, out RaycastHit hit, Quaternion.identity, Mathf.Infinity, hitLayers)) {
+			if(hit.transform.transform == target) {
+				if(showDebug) Draw.Line(ray.origin, hit.point, Color.red);
 				return true;
 			} else {
-				Debug.DrawLine(ray.origin, hit.point, Color.green);
+				if(showDebug) Draw.Line(ray.origin, hit.point, Color.green);
 				return false;
 			}
 		}
-		Debug.DrawRay(ray.origin, ray.direction, Color.white);
+		if(showDebug) Draw.Ray(ray.origin, ray.direction, Color.red);
 		return false;
+	}
+
+	public Node GetRandomPointOnMap(Vector3 origin, float radius) {
+		var nearestPoints = pathMesh.GetNodesWithinRadius(origin, radius);
+		Node point = nearestPoints[Random.Range(0, nearestPoints.Count - 1)];
+		return point;
+	}
+
+	public void RefreshRandomPath(Vector3 origin, float radius, int nodeTreshold = 2) {
+		if(HasActivePatrolPoint == false || PathNodeCount <= nodeTreshold) {
+			activePatrolPoint = GetRandomPointOnMap(origin, radius);
+		}
+		FetchPathToPoint(activePatrolPoint);
+	}
+
+	public Node GetFurthestPointFrom(Vector3 origin, Vector3 from, float radius) {
+		var points = pathMesh.GetNodesWithinRadius(origin, radius);
+		float max = 0;
+		Node maxNode = null;
+		foreach(Node n in points) {
+			float dist = Vector3.Distance(from, n.pos);
+			if(dist > max) {
+				max = dist;
+				maxNode = n;
+			}
+		}
+		return maxNode;
+	}
+
+	protected void FetchPathToPlayer() => currentPath = GetPathToPlayer();
+	protected void FetchPathToPoint(Node point) => currentPath = pathMesh.FindPath(Pos, point.pos);
+	protected List<Node> GetPathToPlayer() {
+		var path = pathMesh.FindPath(Pos, player.Pos);
+		if(path.Count > 1) {
+			if(Vector3.Distance(path[0].pos, Pos) < pathNodeReachTreshold) {
+				path.RemoveAt(0);
+			}
+		}
+		return path;
 	}
 }

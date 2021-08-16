@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
-using Sperlich.Types;
 using System.Collections.Generic;
+using Sperlich.Types;
 
 namespace Sperlich.Pathfinding {
 

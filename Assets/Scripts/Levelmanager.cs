@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using CarterGames.Assets.AudioManager;
 using UnityEngine.Events;
 using SimpleMan.Extensions;
@@ -8,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour {
 
+	public int prepareTime = 5;
 	public int maxTracksOnStage = 100;
 	public LevelUI UI { get; set; }
 	Transform trackContainer;
@@ -54,18 +54,33 @@ public class LevelManager : MonoBehaviour {
 		} else {
 			UI = FindObjectOfType<LevelUI>();
 			audioManager = FindObjectOfType<AudioManager>();
+
+			// Ensure debug is set off
+			foreach(var t in FindObjectsOfType<TankBase>()) {
+				t.makeInvincible = false;
+				if(t as TankAI) {
+					var ai = t as TankAI;
+					ai.showDebug = false;
+				}
+			}
 		}
 	}
 
 	void Update() {
 		CheckTankTracks();
+
+		Debug.DrawRay(Vector3.one, Vector3.one, Color.red);
+		//Draw.Ray(Vector3.one, Vector3.one, Color.red);
 	}
 
 	public void StartGame() {
 		if(isDebug) {
 			SceneManager.sceneLoaded -= debugLoad;
 		}
-		int prepareTime = 5;
+		int prepareTime = this.prepareTime;
+		UI = FindObjectOfType<LevelUI>();
+		player.FindCrosshair();
+		UI.tankStartCounter.SetText(tankAIs.Length.ToString());
 		this.RepeatForever(() => {
 			switch(prepareTime) {
 				case -1:

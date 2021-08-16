@@ -6,6 +6,7 @@ using Sperlich.Types;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEditor.Callbacks;
+using Sperlich.Debug.Draw;
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
 #endif
@@ -232,7 +233,7 @@ namespace Sperlich.Pathfinding {
 		}
 
 		public void DrawPathLines(List<Node> path) {
-			if(path.Count >= 2) {
+			if(path != null && path.Count >= 2) {
 				DrawPathLines(path[0].pos, path[path.Count - 1].pos, path);
 			}
 		}
@@ -241,10 +242,10 @@ namespace Sperlich.Pathfinding {
 				Vector3 lastPos = origin;
 				for(int i = 0; i < nodeList.Count; i++) {
 					Vector3 pos = nodeList[i].pos;
-					Debug.DrawLine(pos, lastPos, Color.yellow, 0, true);
+					Draw.Line(pos, lastPos, Color.blue);
 					lastPos = pos;
 				}
-				Debug.DrawLine(lastPos, destination, new Color(0, 0, 1), 0, true);
+				Draw.Line(lastPos, destination, Color.blue);
 			}
 		}
 		
@@ -280,12 +281,7 @@ namespace Sperlich.Pathfinding {
 			path = Application.streamingAssetsPath + "/" + gridName + ".json";
 			pathMesh.name = gridName;
 
-			/*BinaryFormatter bf = new BinaryFormatter();
-			FileStream stream = new FileStream(path, FileMode.Create);
-			bf.Serialize(stream, pathMesh);
-			stream.Close();*/
-
-			string json = JsonUtility.ToJson(pathMesh, true);
+			string json = JsonUtility.ToJson(pathMesh, false);
 			File.WriteAllText(path, json);
 			AssetDatabase.Refresh();
 		}

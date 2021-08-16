@@ -1,33 +1,36 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.VFX;
 using CarterGames.Assets.AudioManager;
 using SimpleMan.Extensions;
+using Shapes;
 
 [RequireComponent(typeof(Rigidbody))]
 public class TankBase : MonoBehaviour {
 	[Header("VALUES")]
-	public float moveSpeed;
+	public int moveSpeed;
+	public int healthPoints;
 	public float bodyRotSpeed;
 	public float aimRotSpeed;
 	public float angleDiffLock;
-	public float shootStun;
-	public float shootCooldown;
+	public float shootStunDuration;
+	public float reloadDuration = 1f;
 	public float trackSpawnDistance;
+	public float destructionVelocity;
 	public Bullet bullet;
 	public LayerMask hitLayers;
 	public bool makeInvincible;
 	[Header("REFERENCES")]
+	public Transform tankBody;
 	public Transform tankHead;
 	public Transform bulletOutput;
 	public GameObject tankTrack;
 	public GameObject muzzleFlash;
 	public VisualEffect explodeVFX;
 	public ParticleSystem smokeVFX;
+	public Rectangle healthBar;
 	Vector3 moveDir;
 	public Vector3 Pos => rig.position;
-	public bool CanShoot => !onShootCooldown;
+	public bool CanShoot => !isReloading;
 	public bool HasBeenDestroyed { get; set; }
 	Rigidbody rig;
 	Transform trackContainer;
@@ -36,15 +39,20 @@ public class TankBase : MonoBehaviour {
 	float angleDiff;
 	Vector3 lastTrackPos;
 	float engineVolume;
-	bool onShootCooldown;
-	bool onShootMoveCooldown;
+	int maxHealthPoints;
+	bool isReloading;
+	bool isShootStunned;
 
 	protected virtual void Awake() {
 		rig = GetComponent<Rigidbody>();
 		trackContainer = GameObject.Find("TrackContainer").transform;
+		maxHealthPoints = healthPoints;
 		lastTrackPos = Pos;
+		healthBar.Width = 2f;
+		healthBar.transform.parent.gameObject.SetActive(false);
 	}
 
+	public void Move() => Move(new Vector3(transform.forward.x, 0, transform.forward.z));
 	public void Move(Vector2 inputDir) {
 		moveDir = new Vector3(inputDir.x, 0, inputDir.y);
 		rig.velocity = Vector3.zero;
@@ -54,7 +62,7 @@ public class TankBase : MonoBehaviour {
 		}
 		AdjustRotation(moveDir);
 
-		if(angleDiff < angleDiffLock && !onShootMoveCooldown) {
+		if(angleDiff < angleDiffLock && !isShootStunned) {
 			var movePos = rig.transform.forward * moveSpeed * Time.deltaTime;
 			rig.MovePosition(rig.position + movePos);
 		}
@@ -68,8 +76,6 @@ public class TankBase : MonoBehaviour {
 			rot = Quaternion.RotateTowards(rig.rotation, rot, bodyRotSpeed * Time.deltaTime);
 			rig.MoveRotation(rot);
 		}
-		Debug.DrawRay(rig.position, moveDir, Color.green);
-		Debug.DrawRay(rig.position, rig.transform.forward, Color.blue);
 	}
 
 	public void MoveHead(Vector3 target) {
@@ -78,6 +84,8 @@ public class TankBase : MonoBehaviour {
 		rot = Quaternion.RotateTowards(tankHead.rotation, rot, Time.deltaTime * aimRotSpeed);
 		tankHead.rotation = rot;
 	}
+
+	public Vector3 GetLookDirection(Vector3 lookTarget) => (new Vector3(lookTarget.x, 0, lookTarget.z) - new Vector3(Pos.x, 0, Pos.z)).normalized;
 
 	void TrackTracer() {
 		float distToLastTrack = Vector2.Distance(new Vector2(lastTrackPos.x, lastTrackPos.z), new Vector2(rig.position.x, rig.position.z));
@@ -96,21 +104,49 @@ public class TankBase : MonoBehaviour {
 	}
 
 	public void ShootBullet() {
-		if(!onShootCooldown) {
+		if(!isReloading) {
 			Instantiate(bullet).SetupBullet(bulletOutput.forward, bulletOutput.position);
-			onShootCooldown = true;
-			onShootMoveCooldown = true;
-			this.Delay(shootCooldown, () => { onShootCooldown = false; onShootMoveCooldown = false; });
+			
+			if(reloadDuration > 0) {
+				isReloading = true;
+				this.Delay(reloadDuration, () => isReloading = false);
+			}
+			if(shootStunDuration > 0) {
+				isShootStunned = true;
+				this.Delay(shootStunDuration, () => isShootStunned = false);
+			}
 		}
 	}
 
 	public virtual void GotHitByBullet() {
-		if(!makeInvincible) {
-			HasBeenDestroyed = true;
-			explodeVFX.SendEvent("Play");
-			new GameObject().AddComponent<DestructionTimer>().Destruct(5f, new GameObject[] { explodeVFX.gameObject });
-			gameObject.SetActive(false);
+		if(!HasBeenDestroyed && !makeInvincible) {
+			if(healthPoints - 1 <= 0) {
+				GotDestroyed();
+			}
+			healthPoints--;
+			int width = maxHealthPoints == 0 ? 1 : healthPoints;
+			healthBar.Width = 2f / maxHealthPoints * width;
 		}
+	}
+
+	public void GotDestroyed() {
+		healthPoints--;
+		HasBeenDestroyed = true;
+		explodeVFX.SendEvent("Play");
+		new GameObject().AddComponent<DestructionTimer>().Destruct(5f, new GameObject[] { explodeVFX.gameObject });
+		Destroy(healthBar.transform.parent.gameObject);
+		tankHead.parent = null;
+		tankBody.parent = null;
+		var headRig = tankHead.gameObject.AddComponent<Rigidbody>();
+		var bodyRig = tankBody.gameObject.AddComponent<Rigidbody>();
+		headRig.gameObject.layer = LayerMask.NameToLayer("DestructionPieces");
+		bodyRig.gameObject.layer = LayerMask.NameToLayer("DestructionPieces");
+		var headVec = new Vector3(Random.Range(-destructionVelocity, destructionVelocity), destructionVelocity, Random.Range(-destructionVelocity, destructionVelocity));
+		var bodyVec = new Vector3(Random.Range(-destructionVelocity, destructionVelocity), destructionVelocity, Random.Range(-destructionVelocity, destructionVelocity));
+		headRig.AddForce(headVec);
+		bodyRig.AddForce(bodyVec);
+		headRig.AddTorque(headVec);
+		bodyRig.AddTorque(bodyVec);
 	}
 
 	public void AimAssistant(Vector3 dir1) {
