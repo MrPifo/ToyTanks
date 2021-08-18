@@ -46,3 +46,6 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+
+# Exclude Unity Asset Store files for legal rights
+Assets/Extensions
