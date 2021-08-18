@@ -1,7 +1,9 @@
 ﻿using Shapes;
 using System.Collections.Generic;
-using UnityEditor.Callbacks;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor.Callbacks;
+#endif
 
 namespace Sperlich.Debug.Draw {
 	[ExecuteAlways]
@@ -14,14 +16,26 @@ namespace Sperlich.Debug.Draw {
 		static Queue<DrawRing> Rings { get; set; } = new Queue<DrawRing>();
 		static Queue<DrawText> Texts { get; set; } = new Queue<DrawText>();
 
+		void Awake() {
+			ScriptReload();
+		}
+
+#if UNITY_EDITOR
 		[DidReloadScripts]
 		public static void ScriptReload() {
+			var list = FindObjectsOfType<Draw>();
+			if(list.Length > 1) {
+				for(int i = 1; i < list.Length; i++) {
+					Destroy(list[i].gameObject);
+				}
+			}
 			if(Instance == null && !FindObjectOfType<Draw>()) {
 				instance = new GameObject("ShapesDrawer").AddComponent<Draw>();
 			} else {
 				instance = FindObjectOfType<Draw>();
 			}
 		}
+#endif
 
 		public override void DrawShapes(Camera cam) {
 			using(Shapes.Draw.Command(cam)) {

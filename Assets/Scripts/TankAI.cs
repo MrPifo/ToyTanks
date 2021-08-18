@@ -22,6 +22,7 @@ public abstract class TankAI : TankBase {
 	public float playerDetectRadius;
 	public float playerLoseRadius;
 	public float pathNodeReachTreshold;
+	public int pathUpdateInvervall = 1;
 	public bool showDebug;
 	public Node activePatrolPoint;
 	public FSM<TankState> stateMachine;
@@ -50,13 +51,15 @@ public abstract class TankAI : TankBase {
 	void Update() {
 		if(IsAIEnabled) {
 			distToPlayer = Vector3.Distance(Pos, player.Pos);
-			healthBar.transform.parent.rotation = Quaternion.LookRotation((Pos - Camera.main.transform.position).normalized, Vector3.up);
 			ProcessState();
-			if(showDebug) {
-				DrawDebug();
-			}
 		}
-		
+	}
+
+	void LateUpdate() {
+		healthBar.transform.parent.rotation = Quaternion.LookRotation((Pos - Camera.main.transform.position).normalized, Vector3.up);
+		if(showDebug) {
+			DrawDebug();
+		}
 	}
 
 	public virtual void DrawDebug() {

@@ -5,16 +5,18 @@ using System.Linq;
 using Sperlich.Types;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
-using UnityEditor.Callbacks;
 using Sperlich.Debug.Draw;
 #if UNITY_EDITOR
+using UnityEditor.Callbacks;
 using UnityEditor.SceneManagement;
 #endif
 
 namespace Sperlich.Pathfinding {
 
+#if UNITY_EDITOR
 	[RequireComponent(typeof(NodePainter))]
 	[ExecuteInEditMode]
+#endif
 	public class PathfindingMesh : MonoBehaviour {
 		[Header("Configuration")]
 		public string gridName;
@@ -42,13 +44,16 @@ namespace Sperlich.Pathfinding {
 		public int simulationFpsSpeed;
 		string path;
 		PathMesh pathMesh;
+#if UNITY_EDITOR
 		NodePainter painter;
 		EditorSceneManager.SceneClosingCallback closingScene;
 		EditorSceneManager.SceneSavingCallback saveScene;
+#endif
 
 		void Awake() {
 			pathMesh = new PathMesh();
 			totalNodes = Nodes.Count;
+#if UNITY_EDITOR
 			closingScene += (Scene scene, bool removingScene) => {
 				SaveGrid();
 				EditorSceneManager.sceneClosing -= closingScene;
@@ -59,6 +64,8 @@ namespace Sperlich.Pathfinding {
 			};
 			EditorSceneManager.sceneSaving += saveScene;
 			EditorSceneManager.sceneClosing += closingScene;
+			painter = GetComponent<NodePainter>();
+#endif
 			if(transform.childCount < 2) {
 				examplePathStart = new GameObject("ExamplePathStart").transform;
 				examplePathEnd = new GameObject("ExamplePathEnd").transform;
@@ -68,7 +75,6 @@ namespace Sperlich.Pathfinding {
 				examplePathStart = transform.GetChild(0);
 				examplePathEnd = transform.GetChild(1);
 			}
-			painter = GetComponent<NodePainter>();
 			LoadGrid();
 		}
 		void Reset() {
@@ -76,9 +82,6 @@ namespace Sperlich.Pathfinding {
 			showNodes = true;
 			debugDrawDistance = 100f;
 			pathMesh = new PathMesh();
-		}
-		void OnValidate() {
-			Reload();
 		}
 		void Update() {
 			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
@@ -92,15 +95,16 @@ namespace Sperlich.Pathfinding {
 			}
 			simulationFpsSpeed = (int)(1000d / watch.Elapsed.TotalMilliseconds);
 		}
+
+#if UNITY_EDITOR
 		[DidReloadScripts]
 		public static void ScriptReload() {
 			new List<PathfindingMesh>(FindObjectsOfType<PathfindingMesh>()).ForEach(pm => {
 				pm.Awake();
 			});
 		}
-
-		public void ClearGrid() {
-			pathMesh = new PathMesh(gridName);
+		void OnValidate() {
+			Reload();
 		}
 
 		public void GenerateGrid() {
@@ -141,6 +145,7 @@ namespace Sperlich.Pathfinding {
 				RemoveNode(node);
 			}
 		}
+
 		public void RemoveNode(Node n) {
 			Nodes.Remove(n);
 			if(n != null && n.Neighbours != null) {
@@ -164,6 +169,24 @@ namespace Sperlich.Pathfinding {
 				}
 				EditorSceneManager.MarkSceneDirty(gameObject.scene);
 			}
+		}
+
+		public void SaveGrid() {
+			if(!Directory.Exists(Application.streamingAssetsPath)) {
+				Directory.CreateDirectory(Application.streamingAssetsPath);
+				AssetDatabase.Refresh();
+			}
+			path = Application.streamingAssetsPath + "/" + gridName + ".json";
+			pathMesh.name = gridName;
+
+			string json = JsonUtility.ToJson(pathMesh, false);
+			File.WriteAllText(path, json);
+			AssetDatabase.Refresh();
+		}
+#endif
+
+		public void ClearGrid() {
+			pathMesh = new PathMesh(gridName);
 		}
 
 		public List<Node> FindPath(Vector3 start, Vector3 end) => FindPath(GetNodeFromPos(start, Mathf.Infinity), GetNodeFromPos(end, Mathf.Infinity));
@@ -273,27 +296,16 @@ namespace Sperlich.Pathfinding {
 			}
 		}
 
-		public void SaveGrid() {
-			if(!Directory.Exists(Application.streamingAssetsPath)) {
-				Directory.CreateDirectory(Application.streamingAssetsPath);
-				AssetDatabase.Refresh();
-			}
-			path = Application.streamingAssetsPath + "/" + gridName + ".json";
-			pathMesh.name = gridName;
-
-			string json = JsonUtility.ToJson(pathMesh, false);
-			File.WriteAllText(path, json);
-			AssetDatabase.Refresh();
-		}
-
 		public void LoadGrid() {
 			ClearGrid();
 			path = Application.streamingAssetsPath + "/" + gridName + ".json";
 			if(File.Exists(path)) {
 				pathMesh = JsonUtility.FromJson<PathMesh>(File.ReadAllText(path));
 			} else if(pathMesh == null) {
+#if UNITY_EDITOR
 				Reset();
 				SaveGrid();
+#endif
 			}
 
 			Reload();

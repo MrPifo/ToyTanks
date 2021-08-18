@@ -60,6 +60,7 @@ public class Bullet : MonoBehaviour {
 		Explosion.Play();
 		ExplosionFire.Play();
 		ExplosionPieces.Play();
+		//LevelManager.Feedback.PlayBulletExplode();
 
 		new GameObject().AddComponent<DestructionTimer>().Destruct(5, new GameObject[] { Explosion.gameObject, ExplosionFire.gameObject, ExplosionPieces.gameObject });
 		AudioManager.instance.Play("BulletExplode");

@@ -1,9 +1,7 @@
-using System.Collections;
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 
 [RequireComponent(typeof(LightProbeGroup))]
 public class LightProbePlacer : MonoBehaviour {
@@ -33,7 +31,6 @@ public class LightProbePlacer : MonoBehaviour {
 	}
 }
 
-#if UNITY_EDITOR
 [CustomEditor(typeof(LightProbePlacer))]
 public class LightProbePlacerEditor : Editor {
 	public override void OnInspectorGUI() {

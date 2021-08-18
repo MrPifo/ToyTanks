@@ -23,11 +23,13 @@ public class GreyTank : TankAI {
 	public override void Attack() {
 		if(IsPlayerInShootRadius == false || HasSightContactToPlayer == false) {
 			if(behaviour == GreyTankStates.None) {
-				FetchPathToPlayer();
-				MoveAlongPath();
+				if(Time.frameCount % pathUpdateInvervall == 0) {
+					FetchPathToPlayer();
+				}
 			} else {
-				MoveAlongPath();
-				FetchPathToPoint(activePatrolPoint);
+				if(Time.frameCount % pathUpdateInvervall == 0) {
+					FetchPathToPoint(activePatrolPoint);
+				}
 				behaviourAttackTime += Time.deltaTime;
 				if(behaviourAttackTime > attackPathRefreshIntervall) {
 					behaviour = GreyTankStates.None;
@@ -40,15 +42,17 @@ public class GreyTank : TankAI {
 				behaviourAttackTime = 0;
 			}
 			if(behaviour == GreyTankStates.AttackRetreat) {
-				MoveAlongPath();
-				FetchPathToPoint(activePatrolPoint);
+				if(Time.frameCount % pathUpdateInvervall == 0) {
+					FetchPathToPoint(activePatrolPoint);
+				}
 				if(PathNodeCount <= 2) {
 					RefreshRandomPath(GetFurthestPointFrom(player.Pos, player.Pos, shootRadius).pos, shootRadius);
 					behaviourAttackTime = 0;
 				}
 			} else {
-				FetchPathToPlayer();
-				MoveAlongPath();
+				if(Time.frameCount % pathUpdateInvervall == 0) {
+					FetchPathToPlayer();
+				}
 				ShootBullet();
 			}
 
@@ -65,6 +69,7 @@ public class GreyTank : TankAI {
 				behaviourAttackTime = 0;
 			}
 		}
+		MoveAlongPath();
 
 		if(IsPlayerOutsideLoseRadius) {
 			stateMachine.Push(TankState.Patrol);
@@ -79,7 +84,9 @@ public class GreyTank : TankAI {
 		if(HasActivePatrolPoint == false || PathNodeCount <= 2) {
 			activePatrolPoint = GetRandomPointOnMap(Pos, playerLoseRadius);
 		}
-		FetchPathToPoint(activePatrolPoint);
+		if(Time.frameCount % pathUpdateInvervall == 0) {
+			FetchPathToPoint(activePatrolPoint);
+		}
 		MoveAlongPath();
 		if(IsPlayerInDetectRadius) {
 			stateMachine.Push(TankState.Attack);

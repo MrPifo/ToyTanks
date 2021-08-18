@@ -4,12 +4,14 @@ using CarterGames.Assets.AudioManager;
 using UnityEngine.Events;
 using SimpleMan.Extensions;
 using UnityEngine.SceneManagement;
+using MoreMountains.Feedbacks;
 
 public class LevelManager : MonoBehaviour {
 
 	public int prepareTime = 5;
 	public int maxTracksOnStage = 100;
 	public LevelUI UI { get; set; }
+	public static LevelFeedbacks Feedback { get; set; }
 	Transform trackContainer;
 	int levelNumber = 0;
 	string levelName;
@@ -79,7 +81,9 @@ public class LevelManager : MonoBehaviour {
 		}
 		int prepareTime = this.prepareTime;
 		UI = FindObjectOfType<LevelUI>();
+		Feedback = FindObjectOfType<LevelFeedbacks>();
 		player.FindCrosshair();
+		UI.AssignCamera();
 		UI.tankStartCounter.SetText(tankAIs.Length.ToString());
 		this.RepeatForever(() => {
 			switch(prepareTime) {

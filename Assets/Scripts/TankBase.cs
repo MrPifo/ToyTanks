@@ -3,8 +3,10 @@ using UnityEngine.VFX;
 using CarterGames.Assets.AudioManager;
 using SimpleMan.Extensions;
 using Shapes;
+using MoreMountains.Feedbacks;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(MMFeedbacks))]
 public class TankBase : MonoBehaviour {
 	[Header("VALUES")]
 	public int moveSpeed;
@@ -33,6 +35,8 @@ public class TankBase : MonoBehaviour {
 	public bool CanShoot => !isReloading;
 	public bool HasBeenDestroyed { get; set; }
 	Rigidbody rig;
+	MMFeedbacks feedback;
+	MMWiggle headWiggle;
 	Transform trackContainer;
 	AudioManager Audio => LevelManager.audioManager;
 	int muzzleFlashDelta;
@@ -45,6 +49,8 @@ public class TankBase : MonoBehaviour {
 
 	protected virtual void Awake() {
 		rig = GetComponent<Rigidbody>();
+		feedback = GetComponent<MMFeedbacks>();
+		headWiggle = tankHead.GetComponent<MMWiggle>();
 		trackContainer = GameObject.Find("TrackContainer").transform;
 		maxHealthPoints = healthPoints;
 		lastTrackPos = Pos;
@@ -105,6 +111,11 @@ public class TankBase : MonoBehaviour {
 
 	public void ShootBullet() {
 		if(!isReloading) {
+			var bounceDir = -tankHead.right * 2f;
+			bounceDir.y = 0;
+			headWiggle.PositionWiggleProperties.AmplitudeMin = bounceDir;
+			headWiggle.PositionWiggleProperties.AmplitudeMax = bounceDir;
+			feedback.PlayFeedbacks();
 			Instantiate(bullet).SetupBullet(bulletOutput.forward, bulletOutput.position);
 			
 			if(reloadDuration > 0) {
@@ -133,6 +144,7 @@ public class TankBase : MonoBehaviour {
 		healthPoints--;
 		HasBeenDestroyed = true;
 		explodeVFX.SendEvent("Play");
+		LevelManager.Feedback.PlayTankExplode();
 		new GameObject().AddComponent<DestructionTimer>().Destruct(5f, new GameObject[] { explodeVFX.gameObject });
 		Destroy(healthBar.transform.parent.gameObject);
 		tankHead.parent = null;
