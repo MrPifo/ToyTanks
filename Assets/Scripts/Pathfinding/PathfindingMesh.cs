@@ -172,11 +172,11 @@ namespace Sperlich.Pathfinding {
 		}
 
 		public void SaveGrid() {
-			if(!Directory.Exists(Application.streamingAssetsPath)) {
+			/*if(!Directory.Exists(Application.streamingAssetsPath)) {
 				Directory.CreateDirectory(Application.streamingAssetsPath);
 				AssetDatabase.Refresh();
-			}
-			path = Application.streamingAssetsPath + "/" + gridName + ".json";
+			}*/
+			path = Application.dataPath + "/Resources/Levels/" + gridName + ".json";
 			pathMesh.name = gridName;
 
 			string json = JsonUtility.ToJson(pathMesh, false);
@@ -298,9 +298,10 @@ namespace Sperlich.Pathfinding {
 
 		public void LoadGrid() {
 			ClearGrid();
-			path = Application.streamingAssetsPath + "/" + gridName + ".json";
-			if(File.Exists(path)) {
-				pathMesh = JsonUtility.FromJson<PathMesh>(File.ReadAllText(path));
+			path = "Levels/" + gridName;
+			var asset = Resources.Load<TextAsset>(path);
+			if(asset != null) {
+				pathMesh = JsonUtility.FromJson<PathMesh>(asset.text);
 			} else if(pathMesh == null) {
 #if UNITY_EDITOR
 				Reset();

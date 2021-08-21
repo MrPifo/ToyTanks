@@ -31,7 +31,10 @@ namespace Sperlich.Pathfinding {
         bool lastMouseDownState;
         bool lastAltDownState;
 
-        void OnValidate() {
+		void Awake() {
+            OnValidate();
+		}
+		void OnValidate() {
             grid = GetComponent<PathfindingMesh>();
         }
 		void Reset() {
@@ -53,6 +56,7 @@ namespace Sperlich.Pathfinding {
                     mode = PaintMode.single;
 				}
 			}
+
             if(Physics.Raycast(NodePainterHelper.mouseRay, out RaycastHit hit, Mathf.Infinity)) {
                 rayNormal = hit.normal;
                 rayPoint = new Vector3(Mathf.Round(hit.point.x * snapTreshold) / snapTreshold, Mathf.Round(hit.point.y * snapTreshold) / snapTreshold, Mathf.Round(hit.point.z * snapTreshold) / snapTreshold);
@@ -113,6 +117,7 @@ namespace Sperlich.Pathfinding {
         }
 
 		void OnDrawGizmosSelected() {
+            Update();
             Handles.color = Color.black;
             Handles.zTest = UnityEngine.Rendering.CompareFunction.Always;
             Handles.DrawWireDisc(rayPoint, rayNormal, paintRadius);

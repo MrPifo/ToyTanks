@@ -24,12 +24,17 @@ public abstract class TankAI : TankBase {
 	public float pathNodeReachTreshold;
 	public int pathUpdateInvervall = 1;
 	public bool showDebug;
+	public bool disableAI;
 	public Node activePatrolPoint;
 	public FSM<TankState> stateMachine;
 	protected float distToPlayer;
 	protected PathfindingMesh pathMesh;
 	protected List<Node> currentPath;
-	public bool IsAIEnabled { get; set; }
+	private bool isAIEnabled;
+	public bool IsAIEnabled {
+		set => isAIEnabled = value;
+		get => isAIEnabled && !disableAI;
+	}
 	public bool IsPlayerMinShootRange => distToPlayer < minAlwaysShootDistance;
 	public bool IsPlayerInDetectRadius => distToPlayer < playerDetectRadius;
 	public bool IsPlayerOutsideLoseRadius => distToPlayer > playerLoseRadius;
@@ -55,8 +60,8 @@ public abstract class TankAI : TankBase {
 		}
 	}
 
-	void LateUpdate() {
-		healthBar.transform.parent.rotation = Quaternion.LookRotation((Pos - Camera.main.transform.position).normalized, Vector3.up);
+	protected override void LateUpdate() {
+		base.LateUpdate();
 		if(showDebug) {
 			DrawDebug();
 		}
@@ -109,9 +114,8 @@ public abstract class TankAI : TankBase {
 
 	public override void GotHitByBullet() {
 		base.GotHitByBullet();
-		level.TankDestroyedCheck();
 		if(!makeInvincible && healthPoints <= 0) {
-			healthBar.transform.parent.gameObject.SetActive(false);
+			healthBar.gameObject.SetActive(false);
 			enabled = false;
 		} else {
 			healthBar.transform.parent.gameObject.SetActive(true);

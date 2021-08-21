@@ -4,6 +4,11 @@ using CarterGames.Assets.AudioManager;
 using SimpleMan.Extensions;
 using Shapes;
 using MoreMountains.Feedbacks;
+using MoreMountains.Tools;
+using System.Collections;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(MMFeedbacks))]
@@ -27,9 +32,16 @@ public class TankBase : MonoBehaviour {
 	public Transform bulletOutput;
 	public GameObject tankTrack;
 	public GameObject muzzleFlash;
-	public VisualEffect explodeVFX;
-	public ParticleSystem smokeVFX;
+	public Transform billboardHolder;
 	public Rectangle healthBar;
+	[Header("Explosion Effects")]
+	public GameObject destroyFlash;
+	public ParticleSystem sparkDestroyEffect;
+	public ParticleSystem smokeDestroyEffect;
+	public ParticleSystem smokeFireDestroyEffect;
+	public ParticleSystem damageSmokeBody;
+	public ParticleSystem damageSmokeHead;
+	public Disc shockwaveDisc;
 	Vector3 moveDir;
 	public Vector3 Pos => rig.position;
 	public bool CanShoot => !isReloading;
@@ -56,6 +68,11 @@ public class TankBase : MonoBehaviour {
 		lastTrackPos = Pos;
 		healthBar.Width = 2f;
 		healthBar.transform.parent.gameObject.SetActive(false);
+		shockwaveDisc.gameObject.SetActive(false);
+	}
+
+	protected virtual void LateUpdate() {
+		billboardHolder.rotation = Quaternion.LookRotation((Pos - Camera.main.transform.position).normalized, Vector3.up);
 	}
 
 	public void Move() => Move(new Vector3(transform.forward.x, 0, transform.forward.z));
@@ -143,12 +160,9 @@ public class TankBase : MonoBehaviour {
 	public void GotDestroyed() {
 		healthPoints--;
 		HasBeenDestroyed = true;
-		explodeVFX.SendEvent("Play");
-		LevelManager.Feedback.PlayTankExplode();
-		new GameObject().AddComponent<DestructionTimer>().Destruct(5f, new GameObject[] { explodeVFX.gameObject });
-		Destroy(healthBar.transform.parent.gameObject);
 		tankHead.parent = null;
 		tankBody.parent = null;
+		healthBar.gameObject.SetActive(false);
 		var headRig = tankHead.gameObject.AddComponent<Rigidbody>();
 		var bodyRig = tankBody.gameObject.AddComponent<Rigidbody>();
 		headRig.gameObject.layer = LayerMask.NameToLayer("DestructionPieces");
@@ -159,6 +173,47 @@ public class TankBase : MonoBehaviour {
 		bodyRig.AddForce(bodyVec);
 		headRig.AddTorque(headVec);
 		bodyRig.AddTorque(bodyVec);
+		FindObjectOfType<LevelManager>().TankDestroyedCheck();
+		PlayDestroyExplosion();
+	}
+
+	public void PlayDestroyExplosion() {
+		sparkDestroyEffect.Play();
+		smokeDestroyEffect.Play();
+		damageSmokeBody.Play();
+		damageSmokeHead.Play();
+		smokeFireDestroyEffect.Play();
+		LevelManager.Feedback.PlayTankExplode();
+		shockwaveDisc.gameObject.SetActive(true);
+		
+		StartCoroutine(IDestroyAnimate());
+	}
+
+	IEnumerator IDestroyAnimate() {
+		float time = 0f;
+		float thickness = shockwaveDisc.Thickness;
+		destroyFlash.SetActive(true);
+		var rend = destroyFlash.GetComponent<MeshRenderer>();
+		var flashMat = new Material(rend.sharedMaterial);
+		rend.sharedMaterial = flashMat;
+		flashMat.SetColor("_BaseColor", Color.white);
+		while(time < 1f) {
+			shockwaveDisc.Radius = MMTween.Tween(time, 0, 1f, 0, 10, MMTween.MMTweenCurve.EaseOutCubic);
+			shockwaveDisc.Thickness = MMTween.Tween(time, 0, 1f, thickness, 0, MMTween.MMTweenCurve.EaseOutCubic);
+			float flashScale = MMTween.Tween(time, 0f, 0.3f, 0f, 1f, MMTween.MMTweenCurve.EaseOutCubic);
+			float flashAlpha = MMTween.Tween(time, 0f, 0.3f, 1f, 0f, MMTween.MMTweenCurve.EaseOutCubic);
+			flashMat.SetColor("_BaseColor", new Color(1f, 1f, 1f, flashAlpha));
+			if(time >= 0.3f) {
+				destroyFlash.SetActive(false);
+			} else {
+				destroyFlash.transform.localScale = new Vector3(flashScale, flashScale, flashScale);
+			}
+			time += Time.deltaTime;
+			yield return null;
+		}
+		shockwaveDisc.Thickness = thickness;
+		shockwaveDisc.Radius = 0f;
+		shockwaveDisc.gameObject.SetActive(false);
 	}
 
 	public void AimAssistant(Vector3 dir1) {
@@ -189,3 +244,16 @@ public class TankBase : MonoBehaviour {
 		}*/
 	}
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(PlayerInput))]
+public class TankBaseDebugEditor : Editor {
+	public override void OnInspectorGUI() {
+		DrawDefaultInspector();
+		PlayerInput builder = (PlayerInput)target;
+		if(GUILayout.Button("Play Destroy")) {
+			builder.PlayDestroyExplosion();
+		}
+	}
+}
+#endif

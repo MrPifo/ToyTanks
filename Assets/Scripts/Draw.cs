@@ -16,11 +16,10 @@ namespace Sperlich.Debug.Draw {
 		static Queue<DrawRing> Rings { get; set; } = new Queue<DrawRing>();
 		static Queue<DrawText> Texts { get; set; } = new Queue<DrawText>();
 
+#if UNITY_EDITOR
 		void Awake() {
 			ScriptReload();
 		}
-
-#if UNITY_EDITOR
 		[DidReloadScripts]
 		public static void ScriptReload() {
 			var list = FindObjectsOfType<Draw>();

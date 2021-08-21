@@ -1,72 +1,87 @@
 using MoreMountains.Feedbacks;
+using MoreMountains.Tools;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(MMFeedbacks))]
 public class GameManager : MonoBehaviour {
 
-	public LevelManager currentLevel;
-	public Scene? currentScene;
-	public Scene gameManagerScene;
-	public int levelNumber;
-	public bool IsPlayerInvincible { get; set; }
-	UnityAction<Scene> menuUnloadAction;
-	UnityAction<Scene> levelUnloadAction;
-	UnityAction<Scene, LoadSceneMode> levelLoadAction;
+	public int levelId;
+	MMFeedbackLoadScene loader;
+	MMFeedbacks feedbacks;
+	UnityAction<Scene, LoadSceneMode> loadingScreenStartedCallback;
+	UnityAction<Scene, Scene> loadingScreenExitCallback;
+	UnityAction<Scene, LoadSceneMode> levelBaseLoadedCallback;
+
+	void Awake() {
+		feedbacks = GetComponent<MMFeedbacks>();
+		loader = feedbacks.GetComponent<MMFeedbackLoadScene>();
+	}
+
+	public void LoadLevel(bool returnToMenu = false) {
+		if(!returnToMenu && Application.CanStreamedLevelBeLoaded("Level_" + levelId)) {
+			OnLoadingScreenEntered(() => LoadLevelBase(() => {
+				OnLoadingScreenExit(() => {
+					FindObjectOfType<LevelManager>().StartGame();
+				});
+			}));
+			StartTransitionToScene("Level_" + levelId);
+		} else {
+			OnLoadingScreenExit(() => {
+				Debug.Log("DESTROY");
+				Destroy(gameObject);
+			});
+			StartTransitionToScene("Menu");
+		}
+	}
 
 	public void StartCampaign() {
-		gameManagerScene = SceneManager.GetActiveScene();
-		levelNumber = 0;
-		currentScene = null;
+		DontDestroyOnLoad(this);
+		levelId = 0;
+		Camera.main.enabled = false;
+		LoadLevel();
+	}
 
-		menuUnloadAction = (Scene s) => {
-			gameManagerScene = SceneManager.GetActiveScene();
-			SceneManager.sceneUnloaded -= menuUnloadAction;
-			LoadAndUnloadLevel();
+	public void OnLoadingScreenEntered(UnityAction callback) {
+		loadingScreenStartedCallback = (Scene scene, LoadSceneMode mode) => {
+			if(scene.name == "LoadingScreen") {
+				SceneManager.sceneLoaded -= loadingScreenStartedCallback;
+				FindObjectOfType<MMAdditiveSceneLoadingManager>().OnEntryFade.AddListener(() => {
+					callback.Invoke();
+				});
+			}
 		};
-		SceneManager.sceneUnloaded += menuUnloadAction;
-		SceneManager.UnloadSceneAsync("Menu");
+		SceneManager.sceneLoaded += loadingScreenStartedCallback;
 	}
 
-	void StartLevel() {
-		currentLevel = FindObjectOfType<LevelManager>();
-		currentLevel.OnLevelEnd.AddListener(LoadAndUnloadLevel);
-		currentLevel.StartGame();
+	public void OnLoadingScreenExit(UnityAction callback) {
+		loadingScreenExitCallback = (Scene from, Scene to) => {
+			if(to.name == "LoadingScreen") {
+				SceneManager.activeSceneChanged -= loadingScreenExitCallback;
+				FindObjectOfType<MMAdditiveSceneLoadingManager>().OnExitFade.AddListener(() => {
+					callback.Invoke();
+				});
+			}
+		};
+		SceneManager.activeSceneChanged += loadingScreenExitCallback;
 	}
 
-	void LoadAndUnloadLevel() {
-		if(currentScene != null) {
-			SceneManager.UnloadSceneAsync((Scene)currentScene);
-			Debug.Log("Unloading Current Level");
-			levelUnloadAction = (Scene scene) => {
-				SceneManager.sceneUnloaded -= levelUnloadAction;
-				currentScene = null;
-				levelNumber++;
-				LoadLevel();
-			};
-			SceneManager.sceneUnloaded += levelUnloadAction;
-		} else {
-			LoadLevel();
-		}
+	public void LoadLevelBase(UnityAction onFinished) {
+		levelBaseLoadedCallback = (Scene scene, LoadSceneMode mode) => {
+			if(scene.name == "LevelBase") {
+				SceneManager.sceneLoaded -= levelBaseLoadedCallback;
+				onFinished.Invoke();
+			}
+		};
+		SceneManager.sceneLoaded += levelBaseLoadedCallback;
+		SceneManager.LoadSceneAsync("LevelBase", LoadSceneMode.Additive);
 	}
 
-	void LoadLevel() {
-		if(Application.CanStreamedLevelBeLoaded($"Level_{levelNumber}")) {
-			levelLoadAction = (Scene scene, LoadSceneMode mode) => {
-				Debug.Log("<color=red>Next Level has been loaded!</color>");
-				SceneManager.sceneLoaded -= levelLoadAction;
-				SceneManager.SetActiveScene(scene);
-				currentScene = scene;
-				StartLevel();
-			};
-			SceneManager.sceneLoaded += levelLoadAction;
-			SceneManager.LoadScene($"Level_{levelNumber}", LoadSceneMode.Additive);
-		} else {
-			EndLevelCompleted();
-		}
+	public void StartTransitionToScene(string scene) {
+		SetSceneLoadName(scene);
+		feedbacks.PlayFeedbacks();
 	}
 
-	void EndLevelCompleted() {
-		SceneManager.LoadScene("Menu");
-	}
+	void SetSceneLoadName(string scene) => loader.DestinationSceneName = scene;
 }
