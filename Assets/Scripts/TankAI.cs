@@ -103,6 +103,11 @@ public abstract class TankAI : TankBase {
 		}
 	}
 
+	public override void Revive() {
+		base.Revive();
+		stateMachine.Push(TankState.Idle);
+	}
+
 	public abstract void Idle();
 	public abstract void Attack();
 	public abstract void Defense();

@@ -8,11 +8,19 @@ public class LevelUI : MonoBehaviour {
 	public GameObject counterBanner;
 	public GameObject blurLayer;
 	public GameObject loadingScreen;
+	public GameObject gameplay;
 	public TextMeshProUGUI startCounter;
 	public TextMeshProUGUI tankStartCounter;
 	public TextMeshProUGUI loadLevelName;
+	public TextMeshProUGUI playerScore;
+	public TextMeshProUGUI playerLives;
+	public TextMeshProUGUI levelStage;
 	public CanvasGroup loadingScreenCanvasGroup;
 	public Canvas canvas;
+
+	void Awake() {
+		gameplay.SetActive(false);
+	}
 
 	public void ShowCounter() {
 		counterBanner.SetActive(true);

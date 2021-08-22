@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour {
 
 	public int levelId;
+	public int playerLives;
+	public int score;
 	MMFeedbackLoadScene loader;
 	MMFeedbacks feedbacks;
 	UnityAction<Scene, LoadSceneMode> loadingScreenStartedCallback;
@@ -39,7 +41,7 @@ public class GameManager : MonoBehaviour {
 	public void StartCampaign() {
 		DontDestroyOnLoad(this);
 		levelId = 0;
-		Camera.main.enabled = false;
+		playerLives = 3;
 		LoadLevel();
 	}
 

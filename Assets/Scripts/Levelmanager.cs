@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using CarterGames.Assets.AudioManager;
 using UnityEngine.Events;
-using SimpleMan.Extensions;
 using UnityEngine.SceneManagement;
-using MoreMountains.Feedbacks;
 using System.Collections;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class LevelManager : MonoBehaviour {
 
@@ -43,20 +43,21 @@ public class LevelManager : MonoBehaviour {
 
 	void Start() {
 		if(!FindObjectOfType<GameManager>()) {
-			UnityAction<Scene, LoadSceneMode> debugLoad = (Scene scene, LoadSceneMode mode) => {
-				player.FindCrosshair();
-				UI = FindObjectOfType<LevelUI>();
-				audioManager = FindObjectOfType<AudioManager>();
-				isDebug = true;
+			isDebug = true;
+			if(!FindObjectOfType<LevelUI>()) {
+				UnityAction<Scene, LoadSceneMode> debugLoad = (Scene scene, LoadSceneMode mode) => {
+					StartGame();
+				};
+				SceneManager.sceneLoaded += debugLoad;
+				SceneManager.LoadScene("LevelBase", LoadSceneMode.Additive);
+			} else {
 				StartGame();
-			};
-			SceneManager.sceneLoaded += debugLoad;
-			SceneManager.LoadScene("LevelBase", LoadSceneMode.Additive);
-
+			}
 		} else {
 			isDebug = false;
 			UI = FindObjectOfType<LevelUI>();
 			audioManager = FindObjectOfType<AudioManager>();
+			UI.gameplay.SetActive(true);
 
 			// Ensure debug is set off
 			foreach(var t in FindObjectsOfType<TankBase>()) {
@@ -93,19 +94,25 @@ public class LevelManager : MonoBehaviour {
 		}
 		
 		UI = FindObjectOfType<LevelUI>();
+		audioManager = FindObjectOfType<AudioManager>();
 		Feedback = FindObjectOfType<LevelFeedbacks>();
 		gameManager = FindObjectOfType<GameManager>();
 		player.FindCrosshair();
 
 		UI.EnableBlur();
+		UI.gameplay.SetActive(true);
 		UI.tankStartCounter.SetText(tankAIs.Length.ToString());
-		if(!isDebug) {
-			Cursor.visible = false;
-			Cursor.lockState = CursorLockMode.Confined;
-		}
 
 		UI.counterBanner.SetActive(true);
 		UI.startCounter.SetText($"Level {levelNumber}");
+		if(!isDebug) {
+			Cursor.visible = false;
+			Cursor.lockState = CursorLockMode.Confined;
+
+			UI.playerScore.SetText(gameManager.score.ToString());
+			UI.playerLives.SetText(gameManager.playerLives.ToString());
+			UI.levelStage.SetText($"Level {levelNumber}");
+		}
 		MoveLevelBase();
 		yield return new WaitForSeconds(0.75f);
 		UI.startCounter.SetText("2");
@@ -137,8 +144,9 @@ public class LevelManager : MonoBehaviour {
 
 	public void TankDestroyedCheck() {
 		if(player.HasBeenDestroyed) {
-			GameOverWin();
+			PlayerDead();
 		} else {
+			AddScore();
 			foreach(TankAI t in tankAIs) {
 				if(t.HasBeenDestroyed == false) {
 					// All TankAIs must be destroyed or else returns
@@ -149,11 +157,53 @@ public class LevelManager : MonoBehaviour {
 		}
 	}
 
+	public void AddScore() {
+		if(!isDebug) {
+			gameManager.score++;
+			UI.playerScore.SetText(gameManager.score.ToString());
+			Feedback.PlayScore();
+		} else {
+			UI.playerScore.SetText(Random.Range(0, 9).ToString());
+			Feedback.PlayScore();
+		}
+	}
+
+	void PlayerDead() {
+		playerDeadGameOver = true;
+		player.disableCrosshair = true;
+		player.disableControl = true;
+
+		if(!isDebug) {
+			gameManager.playerLives--;
+			UI.playerLives.SetText(gameManager.playerLives.ToString());
+			if(gameManager.playerLives <= 0) {
+				GameOverWin();
+			} else {
+				Respawn();
+			}
+		}
+	}
+
+	public void Respawn() => StartCoroutine(IRespawnAnimate());
+	IEnumerator IRespawnAnimate() {
+		Feedback.PlayLives();
+		yield return new WaitForSeconds(4f);
+		player.Revive();
+		
+		foreach(TankAI t in FindObjectsOfType<TankAI>()) {
+			t.enabled = true;
+			t.IsAIEnabled = false;
+			t.Revive();
+		}
+		yield return new WaitForSeconds(1f);
+		playerDeadGameOver = false;
+		StartGame();
+	}
+
 	void GameOverWin() {
 		foreach(TankBase t in FindObjectsOfType<TankBase>()) {
 			t.enabled = false;
 		}
-		playerDeadGameOver = player.HasBeenDestroyed;
 		EndGame();
 	}
 
@@ -163,3 +213,19 @@ public class LevelManager : MonoBehaviour {
 		}
 	}
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(LevelManager))]
+public class LevelManagerEditor : Editor {
+	public override void OnInspectorGUI() {
+		DrawDefaultInspector();
+		LevelManager builder = (LevelManager)target;
+		if(GUILayout.Button("Add Score")) {
+			builder.AddScore();
+		}
+		if(GUILayout.Button("Reset")) {
+			builder.Respawn();
+		}
+	}
+}
+#endif

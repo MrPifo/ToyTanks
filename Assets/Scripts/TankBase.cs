@@ -54,6 +54,12 @@ public class TankBase : MonoBehaviour {
 	int muzzleFlashDelta;
 	float angleDiff;
 	Vector3 lastTrackPos;
+	Vector3 headRestPos;
+	Vector3 bodyRestPos;
+	Quaternion headRestRot;
+	Quaternion bodyRestRot;
+	Vector3 spawnPos;
+	int initLayer;
 	float engineVolume;
 	int maxHealthPoints;
 	bool isReloading;
@@ -63,6 +69,10 @@ public class TankBase : MonoBehaviour {
 		rig = GetComponent<Rigidbody>();
 		feedback = GetComponent<MMFeedbacks>();
 		headWiggle = tankHead.GetComponent<MMWiggle>();
+		headRestPos = tankHead.localPosition;
+		bodyRestPos = tankBody.localPosition;
+		spawnPos = rig.position;
+		initLayer = gameObject.layer;
 		trackContainer = GameObject.Find("TrackContainer").transform;
 		maxHealthPoints = healthPoints;
 		lastTrackPos = Pos;
@@ -183,10 +193,33 @@ public class TankBase : MonoBehaviour {
 		damageSmokeBody.Play();
 		damageSmokeHead.Play();
 		smokeFireDestroyEffect.Play();
-		LevelManager.Feedback.PlayTankExplode();
+		LevelManager.Feedback.TankExplode();
+		if(this is PlayerInput) {
+			LevelManager.Feedback.PlayerDead();
+		}
 		shockwaveDisc.gameObject.SetActive(true);
 		
 		StartCoroutine(IDestroyAnimate());
+	}
+
+	public virtual void Revive() {
+		healthPoints = maxHealthPoints;
+		HasBeenDestroyed = false;
+		tankBody.parent = transform;
+		tankHead.parent = transform;
+		healthBar.gameObject.SetActive(true);
+		healthBar.transform.parent.gameObject.SetActive(false);
+		tankHead.gameObject.layer = initLayer;
+		tankBody.gameObject.layer = initLayer;
+		Destroy(tankHead.GetComponent<Rigidbody>());
+		Destroy(tankBody.GetComponent<Rigidbody>());
+		tankHead.localPosition = headRestPos;
+		tankBody.localPosition = bodyRestPos;
+		tankHead.rotation = headRestRot;
+		tankBody.rotation = bodyRestRot;
+		transform.position = spawnPos;
+		damageSmokeBody.Stop();
+		damageSmokeHead.Stop();
 	}
 
 	IEnumerator IDestroyAnimate() {
@@ -243,6 +276,17 @@ public class TankBase : MonoBehaviour {
 			}
 		}*/
 	}
+
+#if UNITY_EDITOR
+	public void DebugDestroy() {
+		if(HasBeenDestroyed) {
+			Revive();
+		}
+		FindObjectOfType<LevelManager>().UI.playerLives.SetText(Random.Range(0, 5).ToString());
+		LevelManager.Feedback.PlayLives();
+		this.Delay(0.1f, () => GotDestroyed());
+	}
+#endif
 }
 
 #if UNITY_EDITOR
@@ -251,8 +295,13 @@ public class TankBaseDebugEditor : Editor {
 	public override void OnInspectorGUI() {
 		DrawDefaultInspector();
 		PlayerInput builder = (PlayerInput)target;
-		if(GUILayout.Button("Play Destroy")) {
-			builder.PlayDestroyExplosion();
+		if(GUILayout.Button("Destroy")) {
+			builder.DebugDestroy();
+		}
+		if(GUILayout.Button("Revive")) {
+			builder.disableControl = false;
+			builder.disableCrosshair = false;
+			builder.Revive();
 		}
 	}
 }

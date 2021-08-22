@@ -25,7 +25,7 @@ namespace Sperlich.Debug.Draw {
 			var list = FindObjectsOfType<Draw>();
 			if(list.Length > 1) {
 				for(int i = 1; i < list.Length; i++) {
-					Destroy(list[i].gameObject);
+					DestroyImmediate(list[i].gameObject);
 				}
 			}
 			if(Instance == null && !FindObjectOfType<Draw>()) {
