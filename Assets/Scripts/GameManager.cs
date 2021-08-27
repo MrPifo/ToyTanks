@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour {
 	public int levelId;
 	public int playerLives;
 	public int score;
+	public bool isLoading;
 	MMFeedbackLoadScene loader;
 	MMFeedbacks feedbacks;
 	UnityAction<Scene, LoadSceneMode> loadingScreenStartedCallback;
@@ -21,28 +22,50 @@ public class GameManager : MonoBehaviour {
 		loader = feedbacks.GetComponent<MMFeedbackLoadScene>();
 	}
 
+	public void CopyCamera() {
+		var mainCam = Camera.main;
+		var thisCam = GameObject.FindGameObjectWithTag("LoadingScreenCamera").GetComponent<Camera>();
+
+		thisCam.transform.position = mainCam.transform.position;
+		thisCam.transform.rotation = mainCam.transform.rotation;
+		thisCam.orthographicSize = mainCam.orthographicSize;
+		thisCam.nearClipPlane = mainCam.nearClipPlane;
+		thisCam.farClipPlane = mainCam.farClipPlane;
+	}
+
 	public void LoadLevel(bool returnToMenu = false) {
-		if(!returnToMenu && Application.CanStreamedLevelBeLoaded("Level_" + levelId)) {
-			OnLoadingScreenEntered(() => LoadLevelBase(() => {
+		if(!isLoading) {
+			isLoading = true;
+			if(!returnToMenu && Application.CanStreamedLevelBeLoaded("Level_" + levelId)) {
+				OnLoadingScreenEntered(() => LoadLevelBase(() => {
+					CopyCamera();
+					OnLoadingScreenExit(() => {
+						CopyCamera();
+						FindObjectOfType<LevelManager>().StartGame();
+					});
+				}));
+				StartTransitionToScene("Level_" + levelId);
+			} else {
 				OnLoadingScreenExit(() => {
-					FindObjectOfType<LevelManager>().StartGame();
+					ResetGameStatus();
 				});
-			}));
-			StartTransitionToScene("Level_" + levelId);
-		} else {
-			OnLoadingScreenExit(() => {
-				Debug.Log("DESTROY");
-				Destroy(gameObject);
-			});
-			StartTransitionToScene("Menu");
+				StartTransitionToScene("Menu");
+			}
 		}
+	}
+	
+	public void ResetGameStatus() {
+		LevelManager.playerDeadGameOver = false;
+		Destroy(gameObject);
 	}
 
 	public void StartCampaign() {
-		DontDestroyOnLoad(this);
-		levelId = 0;
-		playerLives = 3;
-		LoadLevel();
+		if(!isLoading) {
+			DontDestroyOnLoad(this);
+			levelId = 0;
+			playerLives = 3;
+			LoadLevel();
+		}
 	}
 
 	public void OnLoadingScreenEntered(UnityAction callback) {
@@ -62,6 +85,7 @@ public class GameManager : MonoBehaviour {
 			if(to.name == "LoadingScreen") {
 				SceneManager.activeSceneChanged -= loadingScreenExitCallback;
 				FindObjectOfType<MMAdditiveSceneLoadingManager>().OnExitFade.AddListener(() => {
+					isLoading = false;
 					callback.Invoke();
 				});
 			}

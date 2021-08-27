@@ -44,9 +44,8 @@ public abstract class TankAI : TankBase {
 	public int PathNodeCount => currentPath == null ? 0 : currentPath.Count;
 
 	protected override void Awake() {
-		stateMachine.Push(TankState.Attack);
-
 		base.Awake();
+		stateMachine = new FSM<TankState>();
 		stateMachine.Push(TankState.Idle);
 		pathMesh = FindObjectOfType<PathfindingMesh>();
 		player = FindObjectOfType<PlayerInput>().GetComponent<TankBase>();
@@ -84,6 +83,7 @@ public abstract class TankAI : TankBase {
 				pathMesh.DrawPathLines(currentPath);
 			}
 		}
+		Draw.Text(Pos + Vector3.up, stateMachine.Text);
 	}
 
 	void ProcessState() {
@@ -146,9 +146,10 @@ public abstract class TankAI : TankBase {
 		}
 	}
 
-	public bool IsAimingOnTarget(Transform target, float precision = 0f) {
+	public bool IsAimingOnTarget(Transform target) => IsAimingOnTarget(target.position);
+	public bool IsAimingOnTarget(Vector3 target, float precision = 0f) {
 		precision = precision == 0 ? 0.999f : precision;
-		Vector3 dirFromAtoB = (tankHead.position - target.position).normalized;
+		Vector3 dirFromAtoB = (tankHead.position - target).normalized;
 		float dotProd = Mathf.Abs(Vector3.Dot(dirFromAtoB, tankHead.forward));
 		if(dotProd > precision) {
 			return true;
@@ -183,17 +184,16 @@ public abstract class TankAI : TankBase {
 		return hitList;
 	}
 
-	public bool HasSightContact(TankBase tank) => HasSightContact(tank.transform);
-	public bool HasSightContact(Transform target) {
-		Ray ray = new Ray(Pos, (target.transform.position - Pos).normalized);
+	public bool HasSightContact(TankBase tank) => HasSightContact(tank.Pos);
+	public bool HasSightContact(Vector3 target) {
+		Ray ray = new Ray(Pos, (target - Pos).normalized);
 		
 		if(Physics.BoxCast(ray.origin, Bullet.bulletSize, ray.direction, out RaycastHit hit, Quaternion.identity, Mathf.Infinity, hitLayers)) {
-			if(hit.transform.transform == target) {
-				if(showDebug) Draw.Line(ray.origin, hit.point, Color.red);
+			if(hit.transform.CompareTag("Player")) {
+				if(showDebug) {
+					Draw.Line(ray.origin, hit.point, Color.green);
+				}
 				return true;
-			} else {
-				if(showDebug) Draw.Line(ray.origin, hit.point, Color.green);
-				return false;
 			}
 		}
 		if(showDebug) Draw.Ray(ray.origin, ray.direction, Color.red);

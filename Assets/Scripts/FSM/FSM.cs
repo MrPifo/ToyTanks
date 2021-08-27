@@ -5,8 +5,6 @@ using UnityEngine;
 
 namespace Sperlich.FSM {
 
-    [ExecuteAlways]
-    [System.Serializable]
     public class FSM<T> where T : struct, System.Enum {
 
         static FSM_Helper instance;

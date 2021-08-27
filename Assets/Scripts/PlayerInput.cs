@@ -7,6 +7,7 @@ public class PlayerInput : TankBase {
 
 	[HideInInspector] public Transform crosshair;
 	public Color crossHairColor;
+	public Color crossHairColor2;
 	public float crossHairSize;
 	public float crossHairThickness;
 	public bool hideCursor;
@@ -28,7 +29,6 @@ public class PlayerInput : TankBase {
 	}
 
 	void Update() {
-		Cursor.visible = !hideCursor;
 		if(!disableCrosshair) {
 			Crosshair();
 		}
@@ -69,20 +69,28 @@ public class PlayerInput : TankBase {
 		crossHairLines[0].End = new Vector3(crossHairSize * 2f, crossHairSize * 2f, 0);
 		crossHairLines[0].Thickness = crossHairThickness;
 		crossHairLines[0].Color = crossHairColor;
+		crossHairLines[0].ColorStart = crossHairColor;
+		crossHairLines[0].ColorEnd = crossHairColor2;
 
 		crossHairLines[1].Start = new Vector3(-crossHairSize, crossHairSize, 0);
 		crossHairLines[1].End = new Vector3(-crossHairSize * 2f, crossHairSize * 2f, 0);
 		crossHairLines[1].Thickness = crossHairThickness;
 		crossHairLines[1].Color = crossHairColor;
+		crossHairLines[1].ColorStart = crossHairColor;
+		crossHairLines[1].ColorEnd = crossHairColor2;
 
 		crossHairLines[2].Start = new Vector3(crossHairSize, -crossHairSize, 0);
 		crossHairLines[2].End = new Vector3(crossHairSize * 2f, -crossHairSize * 2f, 0);
 		crossHairLines[2].Thickness = crossHairThickness;
 		crossHairLines[2].Color = crossHairColor;
+		crossHairLines[2].ColorStart = crossHairColor;
+		crossHairLines[2].ColorEnd = crossHairColor2;
 
 		crossHairLines[3].Start = new Vector3(-crossHairSize, -crossHairSize, 0);
 		crossHairLines[3].End = new Vector3(-crossHairSize * 2f, -crossHairSize * 2f, 0);
 		crossHairLines[3].Thickness = crossHairThickness;
 		crossHairLines[3].Color = crossHairColor;
+		crossHairLines[3].ColorStart = crossHairColor;
+		crossHairLines[3].ColorEnd = crossHairColor2;
 	}
 }

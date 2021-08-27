@@ -5,7 +5,7 @@ using UnityEngine;
 public class Destructable : MonoBehaviour {
 	public int HitCount;
 	public int SchuttForce;
-	public Collider collider;
+	public new Collider collider;
 	public AudioSource DestroySound;
 	public GameObject MainMesh;
 	public GameObject LeftOvers;

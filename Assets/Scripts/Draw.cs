@@ -16,22 +16,30 @@ namespace Sperlich.Debug.Draw {
 		static Queue<DrawRing> Rings { get; set; } = new Queue<DrawRing>();
 		static Queue<DrawText> Texts { get; set; } = new Queue<DrawText>();
 
+		void Start() {
+			instance = FindObjectOfType<Draw>();
+		}
+
 #if UNITY_EDITOR
 		void Awake() {
-			ScriptReload();
+			if(!Application.isPlaying) {
+				ScriptReload();
+			}
 		}
 		[DidReloadScripts]
 		public static void ScriptReload() {
-			var list = FindObjectsOfType<Draw>();
-			if(list.Length > 1) {
-				for(int i = 1; i < list.Length; i++) {
-					DestroyImmediate(list[i].gameObject);
+			if(!Application.isPlaying) {
+				var list = FindObjectsOfType<Draw>();
+				if(list.Length > 1) {
+					for(int i = 1; i < list.Length; i++) {
+						DestroyImmediate(list[i].gameObject);
+					}
 				}
-			}
-			if(Instance == null && !FindObjectOfType<Draw>()) {
-				instance = new GameObject("ShapesDrawer").AddComponent<Draw>();
-			} else {
-				instance = FindObjectOfType<Draw>();
+				if(Instance == null && !FindObjectOfType<Draw>()) {
+					instance = new GameObject("ShapesDrawer").AddComponent<Draw>();
+				} else {
+					instance = FindObjectOfType<Draw>();
+				}
 			}
 		}
 #endif

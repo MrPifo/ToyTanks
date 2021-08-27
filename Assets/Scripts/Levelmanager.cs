@@ -3,22 +3,37 @@ using CarterGames.Assets.AudioManager;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using Sperlich.Pathfinding;
+using Sperlich.Types;
+using Sperlich.Debug.Draw;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 public class LevelManager : MonoBehaviour {
 
+	public PathfindingMesh grid;
 	public int maxTracksOnStage = 100;
+	public float gridDensity = 1;
+	public Vector2 playgroundSize;
+	public Vector3 customBlurSize = new Vector3(1.2f, 1.2f, 1f);
+	public LayerMask generationLayer;
+	public bool gameEnded;
 	public bool isDebug;
+	public bool showGrid;
 	public static bool playerDeadGameOver;
 	public LevelUI UI { get; set; }
 	public static LevelFeedbacks Feedback { get; set; }
 	Transform trackContainer;
 	GameManager gameManager;
-	int levelNumber = 0;
+	int levelId;
+	int LevelNumber {
+		get => levelId + 1;
+		set => levelId = value;
+	}
 	string levelName;
-	bool gameEnded;
+	
 	[HideInInspector] public PlayerInput player;
 	[HideInInspector] public static AudioManager audioManager;
 	[HideInInspector] public TankAI[] tankAIs;
@@ -33,7 +48,8 @@ public class LevelManager : MonoBehaviour {
 		player.disableControl = true;
 		player.disableCrosshair = true;
 		levelName = gameObject.scene.name;
-		levelNumber = int.Parse(levelName.Replace("Level_", ""));
+		LevelNumber = int.Parse(levelName.Replace("Level_", ""));
+		LevelManager.playerDeadGameOver = false;
 		SceneManager.MoveGameObjectToScene(trackContainer.gameObject, Scene);
 
 		foreach(TankAI tank in tankAIs) {
@@ -73,8 +89,6 @@ public class LevelManager : MonoBehaviour {
 	void Update() {
 		if(!playerDeadGameOver) {
 			CheckTankTracks();
-
-			Debug.DrawRay(Vector3.one, Vector3.one, Color.red);
 		}
 	}
 
@@ -82,6 +96,7 @@ public class LevelManager : MonoBehaviour {
 		var blur = GameObject.Find("Blur");
 		SceneManager.MoveGameObjectToScene(blur, gameObject.scene);
 		blur.GetComponent<Canvas>().worldCamera = Camera.current;
+		blur.GetComponentInChildren<UnityEngine.UI.Image>().transform.localScale = customBlurSize;
 
 		SceneManager.MoveGameObjectToScene(UI.gameObject, gameObject.scene);
 		UI.canvas.worldCamera = Camera.main;
@@ -104,14 +119,13 @@ public class LevelManager : MonoBehaviour {
 		UI.tankStartCounter.SetText(tankAIs.Length.ToString());
 
 		UI.counterBanner.SetActive(true);
-		UI.startCounter.SetText($"Level {levelNumber}");
+		UI.startCounter.SetText($"Level {LevelNumber}");
 		if(!isDebug) {
-			Cursor.visible = false;
-			Cursor.lockState = CursorLockMode.Confined;
-
 			UI.playerScore.SetText(gameManager.score.ToString());
 			UI.playerLives.SetText(gameManager.playerLives.ToString());
-			UI.levelStage.SetText($"Level {levelNumber}");
+			UI.levelStage.SetText($"Level {LevelNumber}");
+			Cursor.visible = false;
+			Cursor.lockState = CursorLockMode.Confined;
 		}
 		MoveLevelBase();
 		yield return new WaitForSeconds(0.75f);
@@ -139,6 +153,8 @@ public class LevelManager : MonoBehaviour {
 	}
 	IEnumerator IEndGame() {
 		yield return new WaitForSeconds(2f);
+		Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Confined;
 		gameManager.LoadLevel(playerDeadGameOver);
 	}
 
@@ -212,6 +228,52 @@ public class LevelManager : MonoBehaviour {
 			Destroy(trackContainer.GetChild(0).gameObject);
 		}
 	}
+
+#if UNITY_EDITOR
+	public void GenerateGrid() {
+		grid.ClearGrid();
+		StopAllCoroutines();
+
+		for(float x = -playgroundSize.x; x <= playgroundSize.x; x++) {
+			for(float z = -playgroundSize.y; z <= playgroundSize.y; z++) {
+				var ray = new Ray(new Vector3(x * gridDensity, transform.position.y + 20, z * gridDensity) + transform.position, Vector3.down);
+				float dist = grid.painter.paintRadius;
+				if(grid.enableCrossConnections) {
+					dist *= grid.crossDistance;
+				}
+				if(Physics.SphereCast(ray.origin, 0.25f, ray.direction, out RaycastHit hit, Mathf.Infinity, generationLayer)) {
+					if(hit.transform.CompareTag("Ground")) {
+						grid.AddNode(new Float3(hit.point), dist, Node.NodeType.ground);
+					}
+				}
+			}
+		}
+		grid.gridName = gameObject.scene.name;
+		grid.Reload();
+		grid.SaveGrid();
+	}
+
+	void OnDrawGizmosSelected() {
+		if(showGrid) {
+			DrawGridLines();
+			//DrawGridPoints();
+		}
+	}
+
+	public void DrawGridLines() {
+		foreach(Node n in grid.Nodes) {
+			foreach(KeyValuePair<Node, float> neigh in n.Neighbours) {
+				Draw.Line(n.pos, neigh.Key.pos, Color.white);
+			}
+		}
+	}
+
+	public void DrawGridPoints() {
+		foreach(Node n in grid.Nodes) {
+			Draw.Disc(n.pos, Vector3.up);
+		}
+	}
+#endif
 }
 
 #if UNITY_EDITOR
@@ -225,6 +287,9 @@ public class LevelManagerEditor : Editor {
 		}
 		if(GUILayout.Button("Reset")) {
 			builder.Respawn();
+		}
+		if(GUILayout.Button("Generate Grid")) {
+			builder.GenerateGrid();
 		}
 	}
 }

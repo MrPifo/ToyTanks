@@ -24,6 +24,7 @@ namespace Sperlich.Pathfinding {
 
 		[Header("Generation")]
 		public bool enableCrossConnections;
+		public float crossDistance = 1.5f;
 		public Vector3 dimensions;
 		public LayerMask generationLayer;
 
@@ -45,7 +46,7 @@ namespace Sperlich.Pathfinding {
 		string path;
 		PathMesh pathMesh;
 #if UNITY_EDITOR
-		NodePainter painter;
+		public NodePainter painter { get; set; }
 		EditorSceneManager.SceneClosingCallback closingScene;
 		EditorSceneManager.SceneSavingCallback saveScene;
 #endif
@@ -319,7 +320,7 @@ namespace Sperlich.Pathfinding {
 					if(Vector3.Distance(n.pos, NodePainterHelper.camPos) < debugDrawDistance) {
 						switch(n.type) {
 							case Node.NodeType.ground:
-								Gizmos.color = new Color32(50, 25, 200, 200);
+								Gizmos.color = new Color32(255, 255, 255, 200);
 								break;
 							case Node.NodeType.wall:
 								Gizmos.color = new Color32(200, 25, 50, 200);

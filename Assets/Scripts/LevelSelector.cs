@@ -23,8 +23,6 @@ public class LevelSelector : MonoBehaviour
     }
     public void MoveLevelSelectObject()
     {
-        int right = 0;
-        int left = 0;
         for (int i = 0; i < levels.Count; i++)
         {
             Vector2 pos = new Vector2(levelId * -offset, 0);

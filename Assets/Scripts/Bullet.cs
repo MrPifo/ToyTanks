@@ -10,13 +10,13 @@ public class Bullet : MonoBehaviour {
 
 	public float velocity;
 	public int maxBounces;
-	public LayerMask affectLayers;
 	public LayerMask reflectLayers;
-	public ParticleSystem Explosion;
-	public ParticleSystem ExplosionFire;
-	public ParticleSystem ExplosionPieces;
-	public ParticleSystem SmokeTrail;
-	public ParticleSystem FireTrail;
+	public ParticleSystem explodeSmoke;
+	public ParticleSystem explodeSmokeFire;
+	public ParticleSystem explodePieces;
+	public ParticleSystem smokeTrail;
+	public ParticleSystem smokeFireTrail;
+	public ParticleSystem impactSparks;
 	public bool showDebug;
 	public static Vector3 bulletSize = new Vector3(0.1f, 0.1f, 0.1f);
 	List<(Vector3 pos, Vector3 normal)> predictedPath;
@@ -27,6 +27,7 @@ public class Bullet : MonoBehaviour {
 
 	int bounces = 0;
 	bool hitTarget;
+	bool targetIsTank;
 
 	void Awake() {
 		rig = GetComponent<Rigidbody>();
@@ -57,21 +58,19 @@ public class Bullet : MonoBehaviour {
 	public void Destroy() {
 		velocity = 0;
 		hitTarget = true;
-		Explosion.Play();
-		ExplosionFire.Play();
-		ExplosionPieces.Play();
-		//LevelManager.Feedback.PlayBulletExplode();
+		explodeSmoke.Play();
+		explodeSmokeFire.Play();
+		explodePieces.Play();
+		impactSparks.Play();
 
-		new GameObject().AddComponent<DestructionTimer>().Destruct(5, new GameObject[] { Explosion.gameObject, ExplosionFire.gameObject, ExplosionPieces.gameObject });
-		AudioManager.instance.Play("BulletExplode");
-		gameObject.SetActive(false);
+		new GameObject().AddComponent<DestructionTimer>().Destruct(5, new GameObject[] { explodeSmoke.gameObject, explodeSmokeFire.gameObject, explodePieces.gameObject });
 		Destroy(gameObject);
 	}
 
 	public void SetupBullet(Vector3 dir, Vector3 startPos) {
 		transform.position = startPos;
 		direction = dir;
-		AudioManager.instance.Play("BulletShot");
+		AudioManager.instance.Play("BulletShot", 0.25f, Random.Range(0.9f, 1.1f));
 		this.Delay(15, () => Destroy(gameObject));
 	}
 
@@ -98,6 +97,7 @@ public class Bullet : MonoBehaviour {
 
 	void Reflect(Vector3 inNormal) {
 		direction = Vector3.Reflect(direction, inNormal);
+		impactSparks.Play();
 		AudioManager.instance.Play("BulletReflect", 0.5f, Random.Range(0.8f, 1.2f));
 	}
 }

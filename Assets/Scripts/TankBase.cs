@@ -20,7 +20,10 @@ public class TankBase : MonoBehaviour {
 	public float aimRotSpeed;
 	public float angleDiffLock;
 	public float shootStunDuration;
+	[Range(0f, 4f)]
 	public float reloadDuration = 1f;
+	[Range(0f, 4f)]
+	public float randomReloadDuration = 1f;
 	public float trackSpawnDistance;
 	public float destructionVelocity;
 	public Bullet bullet;
@@ -31,7 +34,7 @@ public class TankBase : MonoBehaviour {
 	public Transform tankHead;
 	public Transform bulletOutput;
 	public GameObject tankTrack;
-	public GameObject muzzleFlash;
+	public ParticleSystem muzzleFlash;
 	public Transform billboardHolder;
 	public Rectangle healthBar;
 	[Header("Explosion Effects")]
@@ -142,12 +145,13 @@ public class TankBase : MonoBehaviour {
 			bounceDir.y = 0;
 			headWiggle.PositionWiggleProperties.AmplitudeMin = bounceDir;
 			headWiggle.PositionWiggleProperties.AmplitudeMax = bounceDir;
+			muzzleFlash.Play();
 			feedback.PlayFeedbacks();
 			Instantiate(bullet).SetupBullet(bulletOutput.forward, bulletOutput.position);
 			
 			if(reloadDuration > 0) {
 				isReloading = true;
-				this.Delay(reloadDuration, () => isReloading = false);
+				this.Delay(reloadDuration + Random.Range(0f, randomReloadDuration), () => isReloading = false);
 			}
 			if(shootStunDuration > 0) {
 				isShootStunned = true;
@@ -157,7 +161,7 @@ public class TankBase : MonoBehaviour {
 	}
 
 	public virtual void GotHitByBullet() {
-		if(!HasBeenDestroyed && !makeInvincible) {
+		if(!LevelManager.playerDeadGameOver && !makeInvincible) {
 			if(healthPoints - 1 <= 0) {
 				GotDestroyed();
 			}
@@ -193,6 +197,10 @@ public class TankBase : MonoBehaviour {
 		damageSmokeBody.Play();
 		damageSmokeHead.Play();
 		smokeFireDestroyEffect.Play();
+		Audio.Play("TankExplode", 0.5f, Random.Range(0.9f, 1.1f));
+		if(CompareTag("Player")) {
+			Audio.Play("PlayerTankExplode", 0.5f, Random.Range(0.9f, 1.1f));
+		}
 		LevelManager.Feedback.TankExplode();
 		if(this is PlayerInput) {
 			LevelManager.Feedback.PlayerDead();
