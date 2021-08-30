@@ -24,13 +24,13 @@ public class GreenTank : TankAI {
 			return;
 		}
 		if(HasSightContact(player)) {
-			if(IsAimingOnTarget(player.transform) && CanShoot) {
+			if(IsAimingOnTarget(player.transform) && CanShoot && !WouldFriendlyFire) {
 				ShootBullet();
 			}
 			Aim();
 		} else if(IsBouncePathValid()) {
 			MoveHead(validPath[1].Item1.origin);
-			if(IsAimingOnTarget(validPath[0].Item2.point, 0.97f) && CanShoot) {
+			if(IsAimingOnTarget(validPath[0].Item2.point, 0.97f) && CanShoot && !WouldFriendlyFire) {
 				ShootBullet();
 			}
 		} else if(!IsBouncePathValid()) {

@@ -5,14 +5,13 @@ using Shapes;
 
 public class PlayerInput : TankBase {
 
-	[HideInInspector] public Transform crosshair;
+	public GameObject crosshair;
 	public Color crossHairColor;
 	public Color crossHairColor2;
 	public float crossHairSize;
 	public float crossHairThickness;
-	public bool hideCursor;
+	public bool disableCrossHair = true;
 	public bool disableControl;
-	public bool disableCrosshair;
 	Line[] crossHairLines;
 
 	protected override void Awake() {
@@ -20,19 +19,20 @@ public class PlayerInput : TankBase {
 		healthPoints = 0;
 	}
 
-	public void FindCrosshair() {
-		if(GameObject.Find("Crosshair") != null) {
-			crosshair = GameObject.Find("Crosshair").transform;
-			crossHairLines = crosshair.GetComponentsInChildren<Line>();
-			crosshair.LookAt(Camera.main.transform);
-		}
+	public void SetupCross() {
+		crosshair = FindObjectOfType<LevelManager>().UI.crossHair;
+		crossHairLines = crosshair.transform.GetComponentsInChildren<Line>();
+		crosshair.transform.position = Vector3.zero;
+		crosshair.transform.LookAt(Camera.main.transform);
+		disableCrossHair = false;
+		AdjustCrosshair();
 	}
 
 	void Update() {
-		if(!disableCrosshair) {
+		if(!disableCrossHair && crosshair != null) {
 			Crosshair();
 		}
-		if(!disableControl) {
+		if(!disableControl && crosshair != null) {
 			MoveTank();
 			if(Input.GetKeyDown(KeyCode.Mouse0)) {
 				ShootBullet();
@@ -46,7 +46,7 @@ public class PlayerInput : TankBase {
 		if(moveVector.x != 0f || moveVector.y != 0f) {
 			Move(moveVector);
 		}
-		MoveHead(new Vector3(crosshair.position.x, 0, crosshair.position.z));
+		MoveHead(new Vector3(crosshair.transform.position.x, 0, crosshair.transform.position.z));
 	}
 
 	void Crosshair() {
@@ -59,9 +59,8 @@ public class PlayerInput : TankBase {
 		plane.Raycast(camRay, out float enter);
 		Vector3 hitPoint = camRay.GetPoint(enter);
 
-		crosshair.position = hitPoint;
+		crosshair.transform.position = hitPoint;
 		Debug.DrawLine(camRay.origin, camRay.origin + camRay.direction * distToPlayground * 1.5f, Color.red);
-		AdjustCrosshair();
 	}
 
 	void AdjustCrosshair() {

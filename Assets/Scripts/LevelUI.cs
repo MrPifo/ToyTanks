@@ -9,8 +9,7 @@ public class LevelUI : MonoBehaviour {
 	public GameObject blurLayer;
 	public GameObject loadingScreen;
 	public GameObject gameplay;
-	public TextMeshProUGUI startCounter;
-	public TextMeshProUGUI tankStartCounter;
+	public GameObject crossHair;
 	public TextMeshProUGUI loadLevelName;
 	public TextMeshProUGUI playerScore;
 	public TextMeshProUGUI playerLives;
@@ -20,6 +19,7 @@ public class LevelUI : MonoBehaviour {
 
 	void Awake() {
 		gameplay.SetActive(false);
+		crossHair.transform.position = new Vector3(999, crossHair.transform.position.y, 999);
 	}
 
 	public void ShowCounter() {

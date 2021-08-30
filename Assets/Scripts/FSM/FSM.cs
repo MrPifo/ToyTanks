@@ -1,5 +1,5 @@
 using SimpleMan.Extensions;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +10,7 @@ namespace Sperlich.FSM {
         static FSM_Helper instance;
         public static FSM_Helper Instance {
             get {
-                var inst = Object.FindObjectOfType<FSM_Helper>();
+                var inst = UnityEngine.Object.FindObjectOfType<FSM_Helper>();
                 if(inst == null) {
                     instance = new GameObject().AddComponent<FSM_Helper>();
 				}
@@ -44,5 +44,11 @@ namespace Sperlich.FSM {
                 }));
             }
 		}
+        public bool IsState(T state) => State.ToString() == state.ToString();
+        public T GetRandom() => RandomEnumValue<T>();
+        public static T RandomEnumValue<T>() {
+            var v = Enum.GetValues(typeof(T));
+            return (T)v.GetValue(UnityEngine.Random.Range(0, v.Length));
+        }
     }
 }

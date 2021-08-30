@@ -2,10 +2,12 @@
 using UnityEngine.VFX;
 using CarterGames.Assets.AudioManager;
 using SimpleMan.Extensions;
-using Shapes;
 using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
 using System.Collections;
+using static Sperlich.Debug.Draw.Draw;
+using Shapes;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -28,6 +30,8 @@ public class TankBase : MonoBehaviour {
 	public float destructionVelocity;
 	public Bullet bullet;
 	public LayerMask hitLayers;
+	public LayerMask obstacleLayers;
+	public bool disable2DirectionMovement;
 	public bool makeInvincible;
 	[Header("REFERENCES")]
 	public Transform tankBody;
@@ -37,6 +41,7 @@ public class TankBase : MonoBehaviour {
 	public ParticleSystem muzzleFlash;
 	public Transform billboardHolder;
 	public Rectangle healthBar;
+	public List<Transform> destroyTransformPieces;
 	[Header("Explosion Effects")]
 	public GameObject destroyFlash;
 	public ParticleSystem sparkDestroyEffect;
@@ -46,7 +51,8 @@ public class TankBase : MonoBehaviour {
 	public ParticleSystem damageSmokeHead;
 	public Disc shockwaveDisc;
 	Vector3 moveDir;
-	public Vector3 Pos => rig.position;
+	public Vector3 Pos => tankBody.position;
+	public Vector3 MovingDir => moveDir;
 	public bool CanShoot => !isReloading;
 	public bool HasBeenDestroyed { get; set; }
 	Rigidbody rig;
@@ -57,23 +63,19 @@ public class TankBase : MonoBehaviour {
 	int muzzleFlashDelta;
 	float angleDiff;
 	Vector3 lastTrackPos;
-	Vector3 headRestPos;
-	Vector3 bodyRestPos;
-	Quaternion headRestRot;
-	Quaternion bodyRestRot;
 	Vector3 spawnPos;
 	int initLayer;
 	float engineVolume;
 	int maxHealthPoints;
 	bool isReloading;
 	bool isShootStunned;
+	List<Vector3> destroyRestPoses;
+	List<Quaternion> destroyRestRots;
 
 	protected virtual void Awake() {
 		rig = GetComponent<Rigidbody>();
 		feedback = GetComponent<MMFeedbacks>();
 		headWiggle = tankHead.GetComponent<MMWiggle>();
-		headRestPos = tankHead.localPosition;
-		bodyRestPos = tankBody.localPosition;
 		spawnPos = rig.position;
 		initLayer = gameObject.layer;
 		trackContainer = GameObject.Find("TrackContainer").transform;
@@ -82,6 +84,13 @@ public class TankBase : MonoBehaviour {
 		healthBar.Width = 2f;
 		healthBar.transform.parent.gameObject.SetActive(false);
 		shockwaveDisc.gameObject.SetActive(false);
+		destroyRestPoses = new List<Vector3>();
+		destroyRestRots = new List<Quaternion>();
+
+		foreach(Transform t in destroyTransformPieces) {
+			destroyRestPoses.Add(t.localPosition);
+			destroyRestRots.Add(t.localRotation);
+		}
 	}
 
 	protected virtual void LateUpdate() {
@@ -89,17 +98,19 @@ public class TankBase : MonoBehaviour {
 	}
 
 	public void Move() => Move(new Vector3(transform.forward.x, 0, transform.forward.z));
+	public void Move(Vector3 moveDir) => Move(new Vector2(moveDir.x, moveDir.z));
 	public void Move(Vector2 inputDir) {
 		moveDir = new Vector3(inputDir.x, 0, inputDir.y);
 		rig.velocity = Vector3.zero;
-		if(Mathf.Abs(moveDir.x) >= 0.75f && Mathf.Abs(moveDir.z) >= 0.75f) {
-			moveDir.x = Mathf.Clamp(moveDir.x, -0.75f, 0.75f);
-			moveDir.z = Mathf.Clamp(moveDir.z, -0.75f, 0.75f);
+		float temp = Mathf.Sign(Vector3.Dot(moveDir.normalized, rig.transform.forward));
+		if(disable2DirectionMovement) {
+			temp = 1;
 		}
-		AdjustRotation(moveDir);
+		AdjustRotation(moveDir * temp);
 
-		if(angleDiff < angleDiffLock && !isShootStunned) {
-			var movePos = rig.transform.forward * moveSpeed * Time.deltaTime;
+		var movePos = temp * moveSpeed * Time.deltaTime * rig.transform.forward;
+		bool moveBlocked = Physics.Raycast(rig.position, moveDir, out RaycastHit blockHit, 2, obstacleLayers);
+		if(!moveBlocked && !isShootStunned) {
 			rig.MovePosition(rig.position + movePos);
 		}
 		TrackTracer();
@@ -174,19 +185,15 @@ public class TankBase : MonoBehaviour {
 	public void GotDestroyed() {
 		healthPoints--;
 		HasBeenDestroyed = true;
-		tankHead.parent = null;
-		tankBody.parent = null;
+		foreach(Transform t in destroyTransformPieces) {
+			t.parent = null;
+			var rig = t.gameObject.AddComponent<Rigidbody>();
+			t.gameObject.layer = LayerMask.NameToLayer("DestructionPieces");
+			var vec = new Vector3(Random.Range(-destructionVelocity, destructionVelocity), destructionVelocity, Random.Range(-destructionVelocity, destructionVelocity));
+			rig.AddForce(vec);
+			rig.AddTorque(vec);
+		}
 		healthBar.gameObject.SetActive(false);
-		var headRig = tankHead.gameObject.AddComponent<Rigidbody>();
-		var bodyRig = tankBody.gameObject.AddComponent<Rigidbody>();
-		headRig.gameObject.layer = LayerMask.NameToLayer("DestructionPieces");
-		bodyRig.gameObject.layer = LayerMask.NameToLayer("DestructionPieces");
-		var headVec = new Vector3(Random.Range(-destructionVelocity, destructionVelocity), destructionVelocity, Random.Range(-destructionVelocity, destructionVelocity));
-		var bodyVec = new Vector3(Random.Range(-destructionVelocity, destructionVelocity), destructionVelocity, Random.Range(-destructionVelocity, destructionVelocity));
-		headRig.AddForce(headVec);
-		bodyRig.AddForce(bodyVec);
-		headRig.AddTorque(headVec);
-		bodyRig.AddTorque(bodyVec);
 		FindObjectOfType<LevelManager>().TankDestroyedCheck();
 		PlayDestroyExplosion();
 	}
@@ -211,21 +218,24 @@ public class TankBase : MonoBehaviour {
 	}
 
 	public virtual void Revive() {
+		LevelManager.playerDeadGameOver = false;
 		healthPoints = maxHealthPoints;
 		HasBeenDestroyed = false;
-		tankBody.parent = transform;
-		tankHead.parent = transform;
 		healthBar.gameObject.SetActive(true);
 		healthBar.transform.parent.gameObject.SetActive(false);
-		tankHead.gameObject.layer = initLayer;
-		tankBody.gameObject.layer = initLayer;
-		Destroy(tankHead.GetComponent<Rigidbody>());
-		Destroy(tankBody.GetComponent<Rigidbody>());
-		tankHead.localPosition = headRestPos;
-		tankBody.localPosition = bodyRestPos;
-		tankHead.rotation = headRestRot;
-		tankBody.rotation = bodyRestRot;
 		transform.position = spawnPos;
+
+		int c = 0;
+		foreach(Transform t in destroyTransformPieces) {
+			t.position = Vector3.zero;
+			t.rotation = Quaternion.identity;
+			t.parent = transform;
+			t.localPosition = destroyRestPoses[c];
+			t.localRotation = destroyRestRots[c];
+			t.gameObject.layer = initLayer;
+			Destroy(t.gameObject.GetComponent<Rigidbody>());
+			c++;
+		}
 		damageSmokeBody.Stop();
 		damageSmokeHead.Stop();
 	}
@@ -257,34 +267,6 @@ public class TankBase : MonoBehaviour {
 		shockwaveDisc.gameObject.SetActive(false);
 	}
 
-	public void AimAssistant(Vector3 dir1) {
-		/*RaycastHit FirstHit;
-		RaycastHit SecondHit;
-		Vector3 bulletOut = bulletOutput.transform.position;
-		bulletOut.y -= 0.1f;
-		int mask = LayerMask.GetMask("Default", "Destructable");
-
-		if(Physics.Raycast(bulletOut, dir1, out FirstHit, assistantLinesRange, mask)) {
-			Debug.DrawLine(bulletOut, FirstHit.point, Color.red);
-			Vector3 dir2 = Vector3.Reflect(dir1, FirstHit.normal);
-			AssistLine1.SetPosition(0, bulletOut);
-			AssistLine1.SetPosition(1, FirstHit.point);
-			AssistLine1.startWidth = assistantLinesWidth;
-			AssistLine1.endWidth = assistantLinesWidth;
-			mask = LayerMask.GetMask("Default");
-			if(FirstHit.collider.tag == "destroyable") {
-				return;
-			}
-			if(Physics.Raycast(FirstHit.point, dir2, out SecondHit, 9999, mask)) {
-				Debug.DrawLine(FirstHit.point, SecondHit.point, Color.green);
-				AssistLine2.SetPosition(0, FirstHit.point);
-				AssistLine2.SetPosition(1, SecondHit.point);
-				AssistLine2.startWidth = assistantLinesWidth;
-				AssistLine2.endWidth = assistantLinesWidth;
-			}
-		}*/
-	}
-
 #if UNITY_EDITOR
 	public void DebugDestroy() {
 		if(HasBeenDestroyed) {
@@ -308,7 +290,6 @@ public class TankBaseDebugEditor : Editor {
 		}
 		if(GUILayout.Button("Revive")) {
 			builder.disableControl = false;
-			builder.disableCrosshair = false;
 			builder.Revive();
 		}
 	}

@@ -9,16 +9,20 @@ public class BrownTank : TankAI {
 	}
 
 	public override void Idle() {
-		stateMachine.Push(TankState.Attack);
+		if(IsPlayerInDetectRadius && HasSightContactToPlayer) {
+			stateMachine.Push(TankState.Attack);
+		}
 	}
 
 	public override void Attack() {
-		if(HasSightContact(player)) {
-			Aim();
-			if(CanShoot) {
-				if(IsAimingOnTarget(player.transform) && IsPlayerMinShootRange || IsAimingOnTarget(player.transform) && !PotentialFriendlyFire()) {
-					ShootBullet();
-				}
+		if(!IsPlayerInDetectRadius || !HasSightContactToPlayer) {
+			stateMachine.Push(TankState.Idle);
+			return;
+		}
+		Aim();
+		if(CanShoot) {
+			if(IsAimingOnTarget(player.transform) && IsPlayerMinShootRange || IsAimingOnTarget(player.transform) && !WouldFriendlyFire) {
+				ShootBullet();
 			}
 		}
 	}

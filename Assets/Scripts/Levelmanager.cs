@@ -45,8 +45,6 @@ public class LevelManager : MonoBehaviour {
 		tankAIs = FindObjectsOfType<TankAI>();
 		player = FindObjectOfType<PlayerInput>();
 		trackContainer = new GameObject("TrackContainer").transform;
-		player.disableControl = true;
-		player.disableCrosshair = true;
 		levelName = gameObject.scene.name;
 		LevelNumber = int.Parse(levelName.Replace("Level_", ""));
 		LevelManager.playerDeadGameOver = false;
@@ -112,14 +110,14 @@ public class LevelManager : MonoBehaviour {
 		audioManager = FindObjectOfType<AudioManager>();
 		Feedback = FindObjectOfType<LevelFeedbacks>();
 		gameManager = FindObjectOfType<GameManager>();
-		player.FindCrosshair();
+		player.SetupCross();
+		player.disableControl = true;
 
 		UI.EnableBlur();
 		UI.gameplay.SetActive(true);
-		UI.tankStartCounter.SetText(tankAIs.Length.ToString());
+		Feedback.FadeInGameplayUI();
 
 		UI.counterBanner.SetActive(true);
-		UI.startCounter.SetText($"Level {LevelNumber}");
 		if(!isDebug) {
 			UI.playerScore.SetText(gameManager.score.ToString());
 			UI.playerLives.SetText(gameManager.playerLives.ToString());
@@ -128,16 +126,11 @@ public class LevelManager : MonoBehaviour {
 			Cursor.lockState = CursorLockMode.Confined;
 		}
 		MoveLevelBase();
-		yield return new WaitForSeconds(0.75f);
-		UI.startCounter.SetText("2");
-		yield return new WaitForSeconds(0.75f);
-		UI.startCounter.SetText("1");
-		yield return new WaitForSeconds(0.75f);
-		UI.startCounter.SetText("Start");
+		yield return new WaitForSeconds(2.5f);
+		Feedback.PlayStartFadeText();
 		yield return new WaitForSeconds(1);
-		UI.counterBanner.SetActive(false);
-		player.disableCrosshair = false;
 		player.disableControl = false;
+		UI.counterBanner.SetActive(false);
 		foreach(TankAI tank in tankAIs) {
 			tank.IsAIEnabled = true;
 		}
@@ -155,6 +148,9 @@ public class LevelManager : MonoBehaviour {
 		yield return new WaitForSeconds(2f);
 		Cursor.visible = false;
 		Cursor.lockState = CursorLockMode.Confined;
+		Destroy(player.crosshair.gameObject);
+		player.enabled = false;
+		Feedback.FadeOutGameplayUI();
 		gameManager.LoadLevel(playerDeadGameOver);
 	}
 
@@ -186,7 +182,6 @@ public class LevelManager : MonoBehaviour {
 
 	void PlayerDead() {
 		playerDeadGameOver = true;
-		player.disableCrosshair = true;
 		player.disableControl = true;
 
 		if(!isDebug) {
@@ -218,7 +213,13 @@ public class LevelManager : MonoBehaviour {
 
 	void GameOverWin() {
 		foreach(TankBase t in FindObjectsOfType<TankBase>()) {
-			t.enabled = false;
+			if(t is TankAI) {
+				var tai = t as TankAI;
+				tai.disableAI = true;
+			} else if(t is PlayerInput) {
+				var pl = t as PlayerInput;
+				pl.disableControl = true;
+			}
 		}
 		EndGame();
 	}

@@ -12,6 +12,9 @@ public class LevelFeedbacks : MonoBehaviour {
 	[SerializeField] MMFeedbacks bulletExplode;
 	[SerializeField] MMFeedbacks playerScore;
 	[SerializeField] MMFeedbacks playerLives;
+	[SerializeField] MMFeedbacks startFade;
+	[SerializeField] MMFeedbacks uiFadeIn;
+	[SerializeField] MMFeedbacks uiFadeOut;
 
 	public void PlayBulletShoot() => bulletShoot.PlayFeedbacks();
 	public void PlayBulletReflect() => bulletReflect.PlayFeedbacks();
@@ -20,4 +23,7 @@ public class LevelFeedbacks : MonoBehaviour {
 	public void PlayerDead() => playerExplode.PlayFeedbacks();
 	public void PlayScore() => playerScore.PlayFeedbacks();
 	public void PlayLives() => playerLives.PlayFeedbacks();
+	public void FadeInGameplayUI() => uiFadeIn.PlayFeedbacks();
+	public void FadeOutGameplayUI() => uiFadeOut.PlayFeedbacks();
+	public void PlayStartFadeText() => startFade.PlayFeedbacks();
 }

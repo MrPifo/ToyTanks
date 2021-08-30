@@ -10,7 +10,7 @@ using UnityEditor;
 
 public abstract class TankAI : TankBase {
 
-	public enum TankState { Idle, Defense, Attack, Patrol }
+	public enum TankState { Idle, BossStates, Defense, Attack, Patrol }
 
 	[HideInInspector]
 	public TankBase player;
@@ -42,6 +42,15 @@ public abstract class TankAI : TankBase {
 	public bool HasActivePatrolPoint => activePatrolPoint != null;
 	public bool HasSightContactToPlayer => HasSightContact(player);
 	public int PathNodeCount => currentPath == null ? 0 : currentPath.Count;
+	public bool WouldFriendlyFire {
+		get {
+			var hitList = PredictBulletPath();
+			if(hitList.Any(t => t.gameObject.CompareTag("Bot"))) {
+				return true;
+			}
+			return false;
+		}
+	}
 
 	protected override void Awake() {
 		base.Awake();
@@ -79,7 +88,7 @@ public abstract class TankAI : TankBase {
 					Draw.Ring(Pos, Vector3.up, minAlwaysShootDistance, 0.2f, Color.blue, false);
 				}
 			}
-			if(!(IsPlayerInShootRadius && HasSightContact(player))) {
+			if(!(IsPlayerInShootRadius && HasSightContact(player)) && pathMesh != null) {
 				pathMesh.DrawPathLines(currentPath);
 			}
 		}
@@ -100,6 +109,9 @@ public abstract class TankAI : TankBase {
 			case TankState.Patrol:
 				Patrol();
 				break;
+			case TankState.BossStates:
+				BossStates();
+				break;
 		}
 	}
 
@@ -112,6 +124,7 @@ public abstract class TankAI : TankBase {
 	public abstract void Attack();
 	public abstract void Defense();
 	public abstract void Patrol();
+	public virtual void BossStates() { }
 
 	public virtual void Aim() {
 		MoveHead(player.Pos);
@@ -157,11 +170,11 @@ public abstract class TankAI : TankBase {
 		return false;
 	}
 
-	public bool PotentialFriendlyFire(float precision = 0f) {
+	public bool IsFacing(Vector3 target, float precision = 0f) {
 		precision = precision == 0 ? 0.999f : precision;
-
-		var hitList = PredictBulletPath();
-		if(hitList.Any(t => t.CompareTag("Bot"))) {
+		Vector3 dirFromAtoB = (Pos - target).normalized;
+		float dotProd = Mathf.Abs(Vector3.Dot(dirFromAtoB, transform.forward));
+		if(dotProd > precision) {
 			return true;
 		}
 		return false;
@@ -169,17 +182,17 @@ public abstract class TankAI : TankBase {
 
 	public List<Transform> PredictBulletPath() {
 		RaycastHit lastHit = new RaycastHit();
-		Vector3 lastPos = bulletOutput.position;
 		Ray ray = new Ray(bulletOutput.position, tankHead.forward);
 		var hitList = new List<Transform>();
 		for(int i = 0; i < bullet.maxBounces + 1; i++) {
 			if(i > 0) {
 				ray = new Ray(lastHit.point, Vector3.Reflect(ray.direction, lastHit.normal));
 			}
-			//Physics.Raycast(ray, out lastHit, Mathf.Infinity, levelPredictionMask);
-			Physics.BoxCast(ray.origin, new Vector3(0.5f, 0.5f, 0.5f), ray.direction, out lastHit, Quaternion.identity, Mathf.Infinity, levelPredictionMask);
-			if(showDebug) Draw.Line(ray.origin, lastHit.point, Color.yellow);
-			hitList.Add(lastHit.transform);
+
+			if(Physics.BoxCast(ray.origin, Bullet.bulletSize, ray.direction, out lastHit, Quaternion.identity, Mathf.Infinity, levelPredictionMask)) {
+				if(showDebug) Draw.Line(ray.origin, lastHit.point, Color.yellow);
+				hitList.Add(lastHit.transform);
+			}
 		}
 		return hitList;
 	}

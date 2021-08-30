@@ -1,9 +1,9 @@
-using Sperlich.Debug.Draw;
-using Sperlich.Pathfinding;
 using System.Collections.Generic;
 using System.IO;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Callbacks;
+#endif
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -23,6 +23,7 @@ public class LevelEditor : MonoBehaviour {
 	int lastSelect;
 	HashSet<string> exludeList = new HashSet<string>() {"Ground"};
 
+#if UNITY_EDITOR
 	[DidReloadScripts]
 	public static void Initialize() {
 		var editor = FindObjectOfType<LevelEditor>();
@@ -121,9 +122,10 @@ public class LevelEditor : MonoBehaviour {
 		}
 		return prefabComponents;
 	}
-
+#endif
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(LevelEditor))]
 public class CustomLevelEditor : Editor {
 
@@ -142,3 +144,4 @@ public class CustomLevelEditor : Editor {
 		}
 	}
 }
+#endif

@@ -1,6 +1,7 @@
 using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
 using UnityEngine;
+using TMPro;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
@@ -13,7 +14,10 @@ public class GameManager : MonoBehaviour {
 	public bool isLoading;
 	MMFeedbackLoadScene loader;
 	MMFeedbacks feedbacks;
+	LoadingScreen screen;
+	UnityAction<Scene, LoadSceneMode> loadingScreenStarted2Callback;
 	UnityAction<Scene, LoadSceneMode> loadingScreenStartedCallback;
+	UnityAction<Scene, LoadSceneMode> onLoadStartedCallback;
 	UnityAction<Scene, Scene> loadingScreenExitCallback;
 	UnityAction<Scene, LoadSceneMode> levelBaseLoadedCallback;
 
@@ -37,8 +41,16 @@ public class GameManager : MonoBehaviour {
 		if(!isLoading) {
 			isLoading = true;
 			if(!returnToMenu && Application.CanStreamedLevelBeLoaded("Level_" + levelId)) {
+				OnLoadingScreenEntered(() => {
+					FindObjectOfType<MMAdditiveSceneLoadingManager>().OnAfterEntryFade.AddListener(() => {
+						screen = FindObjectOfType<LoadingScreen>();
+						screen.SetInfo($"Level {levelId+1}", $"{playerLives} x");
+					});
+				});
 				OnLoadingScreenEntered(() => LoadLevelBase(() => {
 					CopyCamera();
+					var level = FindObjectOfType<LevelManager>();
+					
 					OnLoadingScreenExit(() => {
 						CopyCamera();
 						FindObjectOfType<LevelManager>().StartGame();
@@ -46,6 +58,12 @@ public class GameManager : MonoBehaviour {
 				}));
 				StartTransitionToScene("Level_" + levelId);
 			} else {
+				OnLoadingScreenEntered(() => {
+					FindObjectOfType<MMAdditiveSceneLoadingManager>().OnAfterEntryFade.AddListener(() => {
+						screen = FindObjectOfType<LoadingScreen>();
+						screen.SetInfo($"Returning to Menu", $"");
+					});
+				});
 				OnLoadingScreenExit(() => {
 					ResetGameStatus();
 				});
@@ -55,6 +73,8 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	public void ResetGameStatus() {
+		Cursor.visible = true;
+		Cursor.lockState = CursorLockMode.Confined;
 		LevelManager.playerDeadGameOver = false;
 		Destroy(gameObject);
 	}
