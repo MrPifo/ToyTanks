@@ -16,6 +16,7 @@ public class LevelManager : MonoBehaviour {
 	public PathfindingMesh grid;
 	public int maxTracksOnStage = 100;
 	public float gridDensity = 1;
+	public bool isBossLevel;
 	public Vector2 playgroundSize;
 	public Vector3 customBlurSize = new Vector3(1.2f, 1.2f, 1f);
 	public LayerMask generationLayer;
@@ -23,7 +24,7 @@ public class LevelManager : MonoBehaviour {
 	public bool isDebug;
 	public bool showGrid;
 	public static bool playerDeadGameOver;
-	public LevelUI UI { get; set; }
+	public static LevelUI UI { get; set; }
 	public static LevelFeedbacks Feedback { get; set; }
 	Transform trackContainer;
 	GameManager gameManager;
@@ -47,7 +48,7 @@ public class LevelManager : MonoBehaviour {
 		trackContainer = new GameObject("TrackContainer").transform;
 		levelName = gameObject.scene.name;
 		LevelNumber = int.Parse(levelName.Replace("Level_", ""));
-		LevelManager.playerDeadGameOver = false;
+		playerDeadGameOver = false;
 		SceneManager.MoveGameObjectToScene(trackContainer.gameObject, Scene);
 
 		foreach(TankAI tank in tankAIs) {
@@ -116,6 +117,9 @@ public class LevelManager : MonoBehaviour {
 		UI.EnableBlur();
 		UI.gameplay.SetActive(true);
 		Feedback.FadeInGameplayUI();
+		if(isBossLevel) {
+			FindObjectOfType<BossAI>().Initialize();
+		}
 
 		UI.counterBanner.SetActive(true);
 		if(!isDebug) {

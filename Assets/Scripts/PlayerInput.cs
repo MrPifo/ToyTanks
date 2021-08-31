@@ -20,7 +20,7 @@ public class PlayerInput : TankBase {
 	}
 
 	public void SetupCross() {
-		crosshair = FindObjectOfType<LevelManager>().UI.crossHair;
+		crosshair = LevelManager.UI.crossHair;
 		crossHairLines = crosshair.transform.GetComponentsInChildren<Line>();
 		crosshair.transform.position = Vector3.zero;
 		crosshair.transform.LookAt(Camera.main.transform);

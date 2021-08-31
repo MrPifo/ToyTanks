@@ -5,8 +5,12 @@ using static Sperlich.Debug.Draw.Draw;
 using Sperlich.FSM;
 using System.Collections;
 using UnityEngine;
+using MoreMountains.Feedbacks;
 
-public class BossTank01 : TankAI {
+public class BossTank01 : BossAI {
+
+	public enum BossBehaviour { Waiting, Charge, Burst }
+	public enum AttackBehaviour { None, Bursting }
 
 	[Header("Charge")]
 	public int chargeSpeed = 8;
@@ -14,13 +18,14 @@ public class BossTank01 : TankAI {
 	public Line chargeLineL;
 	public Line chargeLineR;
 	public Line chargeLineM;
+	public MMFeedbacks chargeVibration;
+	public MMFeedbacks hitChargeFeedback;
+	public ParticleSystem chargeSmoke;
 	[Header("Burst")]
 	public int burstAmount = 4;
 	[Header("Info")]
 	public bool isWaiting;
 	public HitTrigger rollerTrigger;
-	public enum BossBehaviour { Waiting, Charge, Burst}
-	public enum AttackBehaviour { None, Bursting }
 	public FSM<BossBehaviour> bossStates = new FSM<BossBehaviour>();
 	public FSM<AttackBehaviour> attackBehaviours = new FSM<AttackBehaviour>();
 	public Vector3 chargeDirection;
@@ -42,6 +47,10 @@ public class BossTank01 : TankAI {
 		disableChargeMovement = false;
 		chargeDirection = Vector3.zero;
 		HideChargeLine();
+	}
+
+	public override void Initialize() {
+		LevelManager.UI.InitBossBar(maxHealthPoints, 3);
 	}
 
 	public override void Attack() {
@@ -98,6 +107,8 @@ public class BossTank01 : TankAI {
 			if(!disableChargeMovement) {
 				if(renewChargeAfterTurn) {
 					DisplayChargeLine();
+					chargeVibration.PlayFeedbacks();
+					chargeSmoke.Play();
 				}
 				Move(chargeDirection);
 			}
@@ -134,6 +145,12 @@ public class BossTank01 : TankAI {
 		chargeDirection = (chargeHit.point - Pos).normalized;
 	}
 
+	public override void GotHitByBullet() {
+		base.GotHitByBullet();
+		healthBar.gameObject.SetActive(false);
+		LevelManager.UI.SetBossBar(healthPoints, 0.25f);
+	}
+
 	public void ChargeHit() {
 		if(bossStates.State == BossBehaviour.Charge) {
 			HideChargeLine();
@@ -150,6 +167,7 @@ public class BossTank01 : TankAI {
 				renewChargeAfterTurn = false;
 				disableChargeMovement = false;
 			};
+			hitChargeFeedback.PlayFeedbacks();
 			rollerTrigger.TriggerHit.RemoveListener(ChargeHit);
 		}
 	}

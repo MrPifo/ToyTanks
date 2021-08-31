@@ -66,7 +66,7 @@ public class TankBase : MonoBehaviour {
 	Vector3 spawnPos;
 	int initLayer;
 	float engineVolume;
-	int maxHealthPoints;
+	protected int maxHealthPoints;
 	bool isReloading;
 	bool isShootStunned;
 	List<Vector3> destroyRestPoses;
@@ -272,7 +272,7 @@ public class TankBase : MonoBehaviour {
 		if(HasBeenDestroyed) {
 			Revive();
 		}
-		FindObjectOfType<LevelManager>().UI.playerLives.SetText(Random.Range(0, 5).ToString());
+		LevelManager.UI.playerLives.SetText(Random.Range(0, 5).ToString());
 		LevelManager.Feedback.PlayLives();
 		this.Delay(0.1f, () => GotDestroyed());
 	}
