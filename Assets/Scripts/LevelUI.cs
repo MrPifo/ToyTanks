@@ -18,6 +18,7 @@ public class LevelUI : MonoBehaviour {
 	public TextMeshProUGUI playerScore;
 	public TextMeshProUGUI playerLives;
 	public TextMeshProUGUI levelStage;
+	public TextMeshProUGUI playTime;
 	public MMFeedbacks bossUIInitFeedback;
 	public MMFeedbacks bossUIHitFeedback;
 	public Slider bossBar;

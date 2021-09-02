@@ -8,61 +8,12 @@ ShaderVariantCollection:
   m_PrefabAsset: {fileID: 0}
   m_Name: ShaderVariants
   m_Shaders:
-  - first: {fileID: 66, guid: 0000000000000000f000000000000000, type: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: SHADOWS_DEPTH
-        passType: 8
-  - first: {fileID: 9000, guid: 0000000000000000f000000000000000, type: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 9001, guid: 0000000000000000f000000000000000, type: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 9002, guid: 0000000000000000f000000000000000, type: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 9003, guid: 0000000000000000f000000000000000, type: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 9004, guid: 0000000000000000f000000000000000, type: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 9007, guid: 0000000000000000f000000000000000, type: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 9101, guid: 0000000000000000f000000000000000, type: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 9103, guid: 0000000000000000f000000000000000, type: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
   - first: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 0
       - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
           MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
           SSR_APPROX USE_CLUSTERED_LIGHTLIST
@@ -70,7 +21,20 @@ ShaderVariantCollection:
   - first: {fileID: 10770, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
         passType: 0
       - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
           MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
@@ -81,14 +45,32 @@ ShaderVariantCollection:
       variants:
       - keywords: 
         passType: 8
+      - keywords: _DISABLE_SSR_TRANSPARENT
+        passType: 8
       - keywords: _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
         passType: 8
       - keywords: _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
         passType: 8
+      - keywords: _DISABLE_SSR_TRANSPARENT _DOUBLESIDED_ON _NORMALMAP_TANGENT_SPACE
+        passType: 8
+      - keywords: _DISABLE_SSR_TRANSPARENT _NORMALMAP _NORMALMAP_TANGENT_SPACE
+        passType: 8
+      - keywords: INSTANCING_ON _DISABLE_SSR_TRANSPARENT _NORMALMAP _NORMALMAP_TANGENT_SPACE
+        passType: 8
+      - keywords: _DISABLE_SSR_TRANSPARENT _MASKMAP _NORMALMAP_TANGENT_SPACE
+        passType: 8
       - keywords: _DISABLE_SSR_TRANSPARENT _MASKMAP _NORMALMAP _NORMALMAP_TANGENT_SPACE
+        passType: 8
+      - keywords: _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
         passType: 8
       - keywords: _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
           _SURFACE_TYPE_TRANSPARENT
+        passType: 8
+      - keywords: _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
         passType: 8
       - keywords: _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
           _SURFACE_TYPE_TRANSPARENT
@@ -96,270 +78,199 @@ ShaderVariantCollection:
       - keywords: _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _NORMALMAP
           _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
         passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 12
-      - keywords: 
+      - keywords: _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 8
+      - keywords: _BLENDMODE_ALPHA _BLENDMODE_PRESERVE_SPECULAR_LIGHTING _DISABLE_SSR_TRANSPARENT
+          _ENABLE_FOG_ON_TRANSPARENT _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
+        passType: 8
+      - keywords: _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT _ENABLE_GEOMETRIC_SPECULAR_AA
+          _NORMALMAP _NORMALMAP_TANGENT_SPACE _REFRACTION_SPHERE _SURFACE_TYPE_TRANSPARENT
+        passType: 8
+      - keywords: DECALS_3RT LIGHT_LAYERS _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
         passType: 13
-      - keywords: DECALS_OFF
+      - keywords: DECALS_3RT SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_FPTL_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
         passType: 13
-      - keywords: DECALS_OFF SCREEN_SPACE_SHADOWS_OFF SHADOW_LOW
+      - keywords: DECALS_3RT SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
         passType: 13
-      - keywords: DECALS_OFF SCREEN_SPACE_SHADOWS_OFF SHADOW_LOW USE_FPTL_LIGHTLIST
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
         passType: 13
-      - keywords: _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
-        passType: 13
-      - keywords: DECALS_3RT _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
-        passType: 13
-      - keywords: DECALS_3RT LIGHT_LAYERS SHADOWS_SHADOWMASK _DISABLE_SSR_TRANSPARENT
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH _DISABLE_SSR_TRANSPARENT
           _NORMALMAP_TANGENT_SPACE
         passType: 13
-      - keywords: DECALS_3RT SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST _DISABLE_SSR_TRANSPARENT
+          _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST _DISABLE_SSR_TRANSPARENT
+          _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
+          SSR_APPROX USE_CLUSTERED_LIGHTLIST _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON
           USE_CLUSTERED_LIGHTLIST _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
+          SSR_APPROX USE_CLUSTERED_LIGHTLIST _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
           _SURFACE_TYPE_TRANSPARENT
         passType: 13
-      - keywords: _DISABLE_SSR_TRANSPARENT _MASKMAP _NORMALMAP _NORMALMAP_TANGENT_SPACE
+      - keywords: _DISABLE_SSR_TRANSPARENT _DOUBLESIDED_ON _NORMALMAP_TANGENT_SPACE
         passType: 13
-      - keywords: DECALS_3RT LIGHT_LAYERS SHADOWS_SHADOWMASK _DISABLE_SSR_TRANSPARENT
-          _MASKMAP _NORMALMAP _NORMALMAP_TANGENT_SPACE
+      - keywords: _DISABLE_SSR_TRANSPARENT _NORMALMAP _NORMALMAP_TANGENT_SPACE
         passType: 13
-      - keywords: DECALS_3RT SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
-          USE_CLUSTERED_LIGHTLIST _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
-          _SURFACE_TYPE_TRANSPARENT
+      - keywords: INSTANCING_ON _DISABLE_SSR_TRANSPARENT _NORMALMAP _NORMALMAP_TANGENT_SPACE
         passType: 13
-      - keywords: DECALS_3RT SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
-          USE_CLUSTERED_LIGHTLIST _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+      - keywords: DECALS_3RT _DISABLE_SSR_TRANSPARENT _NORMALMAP _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: DECALS_3RT LIGHT_LAYERS _DISABLE_SSR_TRANSPARENT _NORMALMAP _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: DECALS_3RT INSTANCING_ON LIGHT_LAYERS _DISABLE_SSR_TRANSPARENT
+          _NORMALMAP _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: _DISABLE_SSR_TRANSPARENT _MASKMAP _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: DECALS_3RT _DISABLE_SSR_TRANSPARENT _MASKMAP _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: DECALS_3RT LIGHT_LAYERS _DISABLE_SSR_TRANSPARENT _MASKMAP _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT _MASKMAP _NORMALMAP _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT _MASKMAP _NORMALMAP _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: DECALS_3RT _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: DECALS_3RT LIGHT_LAYERS _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: DECALS_3RT _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
+          SSR_APPROX USE_CLUSTERED_LIGHTLIST _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
           _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
         passType: 13
-      - keywords: DECALS_3RT SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
-          USE_CLUSTERED_LIGHTLIST _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+      - keywords: _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: DECALS_3RT _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: DECALS_3RT LIGHT_LAYERS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
+          SSR_APPROX USE_CLUSTERED_LIGHTLIST _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+          _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _NORMALMAP _NORMALMAP_TANGENT_SPACE
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _NORMALMAP _NORMALMAP_TANGENT_SPACE
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
+          SSR_APPROX USE_CLUSTERED_LIGHTLIST _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
           _NORMALMAP _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
         passType: 13
-  - first: {fileID: 4800000, guid: c1d1d149a043a5349ba367da6c2051ba, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 439949ea1bfa91b4ba0d04269fcde33d, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: c7c2bd17b06ceb4468e14081aaf1b96f, type: 3}
-    second:
-      variants:
-      - keywords: SHOW_LIGHT_CATEGORIES USE_FPTL_LIGHTLIST
-        passType: 0
-  - first: {fileID: 4800000, guid: e874aca2df8300a488258738c31f85cf, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 8137b807709e178498f22ed710864bb0, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 0ef322534f047a34c96d29419d56d17a, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 8e706c0e71fcec34a8f5c9713e5e2943, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: cf5ca5b6ef18b3f429ed707ee9ceac9f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 55d195396b03b804eb78c92d468e3c8e, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 79a966a5200a456188dec0d48d805614, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 00dd221e34a6ab349a1196b0f2fab693, type: 3}
-    second:
-      variants:
-      - keywords: SCREEN_SPACE_SHADOWS_OFF SHADOW_LOW
-        passType: 0
-  - first: {fileID: 4800000, guid: 2fcfb8d92f45e4549b3f0bad5d0654bf, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
-          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH USE_FPTL_LIGHTLIST
-        passType: 0
-  - first: {fileID: 4800000, guid: 02ae56f4306413c4a96dcf005cde1971, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
-          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
-        passType: 0
-  - first: {fileID: 4800000, guid: dedaf4ea0d134ca4aad1d95a558c46e5, type: 3}
-    second:
-      variants:
-      - keywords: SCREEN_SPACE_SHADOWS_OFF SHADOW_LOW
-        passType: 0
-      - keywords: SHADOW_LOW VARIANT0
-        passType: 0
-  - first: {fileID: 4800000, guid: bfa43a48695613b4ea19c58858ae1a61, type: 3}
-    second:
-      variants:
-      - keywords: SHADOW_LOW
-        passType: 0
-  - first: {fileID: 4800000, guid: e7c19cfee7a88394fbb53652b9644cc0, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 2e37131331fbdca449b1a2bc47a639ca, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
-          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH USE_FPTL_LIGHTLIST
-        passType: 0
-  - first: {fileID: 4800000, guid: 035941b63024d1943af48811c1db20d9, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 8ea49ef16606acd489439e676ab84040, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
-          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH USE_FPTL_LIGHTLIST
-        passType: 0
-  - first: {fileID: 4800000, guid: 3d1574f1cdfa0ce4995f9bc79ed7f8ec, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 42dfcc8fe803ece4096c58630689982f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
-          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
-        passType: 0
-  - first: {fileID: 4800000, guid: 370f7a9cc4e362d488af024d371091e8, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
-          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH USE_FPTL_LIGHTLIST
-        passType: 0
-  - first: {fileID: 4800000, guid: c6e57f5bdbd2a284a86a3097c03884c8, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 67d6171b0acc6554aad48c845ec7e67f, type: 3}
-    second:
-      variants:
-      - keywords: MIN_DOWNSAMPLE
-        passType: 0
-  - first: {fileID: 4800000, guid: 2ad7ce40f0dbaf64dadef1f58d8524d3, type: 3}
-    second:
-      variants:
-      - keywords: BILINEAR
-        passType: 0
-  - first: {fileID: 4800000, guid: d05913e251bed7a4992c921c62e1b647, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 123ed592ad5c2494b8aed301fd609e7b, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 5685fd17e71045e4ca9fefca38a7c177, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 32f724728cf19904291226f239ec16f0, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 9bd32a6ece529fd4f9408b8d7e00c10d, type: 3}
-    second:
-      variants:
-      - keywords: SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
-        passType: 0
-      - keywords: SHADOW_LOW USE_FPTL_LIGHTLIST
-        passType: 0
-  - first: {fileID: 4800000, guid: 48db2705cf2856d4e893eb30a6892d1b, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
+      - keywords: _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: DECALS_3RT SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST _BLENDMODE_ALPHA
+          _BLENDMODE_PRESERVE_SPECULAR_LIGHTING _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT
+          _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT _ENABLE_GEOMETRIC_SPECULAR_AA
+          _NORMALMAP _NORMALMAP_TANGENT_SPACE _REFRACTION_SPHERE _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: DECALS_3RT SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT _ENABLE_GEOMETRIC_SPECULAR_AA
+          _NORMALMAP _NORMALMAP_TANGENT_SPACE _REFRACTION_SPHERE _SURFACE_TYPE_TRANSPARENT
+        passType: 13
   - first: {fileID: 4800000, guid: 2b5d4f1b26f03dc4a873b093e0c4adb1, type: 3}
     second:
       variants:
       - keywords: 
         passType: 0
       - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
-          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH USE_FPTL_LIGHTLIST
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH
         passType: 0
-  - first: {fileID: 4800000, guid: a06934a4863e778498be65d8f865b7a4, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_FPTL_LIGHTLIST
         passType: 0
-  - first: {fileID: 4800000, guid: 123f13d52852ef547b2962de4bd9eaad, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_FPTL_LIGHTLIST
         passType: 0
-  - first: {fileID: 4800000, guid: 3b3bf235775cf8b4baae7f3306787ab0, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_FPTL_LIGHTLIST
         passType: 0
-  - first: {fileID: 4800000, guid: d279c46a545b0af4f9f0c4fa82cd489e, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
         passType: 0
-  - first: {fileID: 4800000, guid: a6402c19b020b4a4fb7073aaa2e26aba, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 595434cc3b6405246b6cd3086d0b6f7d, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: d850d0a2481878d4bbf17e5126b04163, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: c243aac96dda5fa40bed693ed5ba02c4, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
         passType: 0
   - first: {fileID: 4800000, guid: 7e3722d0388000848acb25fd3cc8c088, type: 3}
     second:
@@ -371,162 +282,101 @@ ShaderVariantCollection:
       variants:
       - keywords: 
         passType: 13
-  - first: {fileID: 4800000, guid: e6255f98cf405eb45ab6f9006cf11e1f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 46a45b32bb110604fb36216b63bcdb81, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: e3cab24f27741f44d8af1e94d006267c, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 93d40cc9a6e13994f86f576a624efa18, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: ca059f1af4587a24b9a9eed3b66cff0f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: fd532bf1795188c4daaa66ea798b8b0a, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 6e6a4a3dbb788234594aa74f2d6aeb6f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: dd7047092f3c82b40b3a07868f9c4de2, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: ea18ca9826385e943979c46cf98968cc, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
   - first: {fileID: 4800000, guid: 5ac9ef0c50282754b93c7692488e7ee7, type: 3}
     second:
       variants:
       - keywords: 
         passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX UNITY_HDR_ON
+          USE_CLUSTERED_LIGHTLIST
+        passType: 0
       - keywords: APPLY_AFTER_POST
         passType: 0
-      - keywords: APPLY_AFTER_POST FXAA
+      - keywords: APPLY_AFTER_POST BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: APPLY_AFTER_POST BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: APPLY_AFTER_POST BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: APPLY_AFTER_POST BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON
+          USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: APPLY_AFTER_POST BILLBOARD_FACE_CAMERA_POS DECALS_3RT FXAA LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: APPLY_AFTER_POST BILLBOARD_FACE_CAMERA_POS DECALS_3RT FXAA LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
         passType: 0
       - keywords: APPLY_AFTER_POST BILLBOARD_FACE_CAMERA_POS DECALS_3RT FXAA LIGHT_LAYERS
           MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
+          SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: APPLY_AFTER_POST BILLBOARD_FACE_CAMERA_POS DECALS_3RT FXAA LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON
           USE_CLUSTERED_LIGHTLIST
-        passType: 0
-  - first: {fileID: 4800000, guid: 3330c1503ea8c6d4d9408df3f64227eb, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 9655f4aa89a469c49aceaceabf9bc77b, type: 3}
-    second:
-      variants:
-      - keywords: SMAA_PRESET_LOW
         passType: 0
   - first: {fileID: 4800000, guid: 3dd9fd928fdb83743b1f27d15df22179, type: 3}
     second:
       variants:
-      - keywords: LOW_QUALITY
-        passType: 0
       - keywords: FORCE_BILINEAR_HISTORY MEDIUM_QUALITY
         passType: 0
-  - first: {fileID: 4800000, guid: 4edd96259a5e8b44c90479928f0cd11e, type: 3}
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT FORCE_BILINEAR_HISTORY LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH MEDIUM_QUALITY SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH
+          SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT FORCE_BILINEAR_HISTORY LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH MEDIUM_QUALITY SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK
+          SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 0
+  - first: {fileID: 4800000, guid: 616a25aec4b286744b9fa8a7c081c531, type: 3}
     second:
       variants:
       - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 49feb6b111e82ec4eb6d3d08e4b6903e, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 9cef3686fa32c8840947ed99b561195c, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 50b406436c6214c49aaaa6011b71dde8, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: a02a7d8c237544f1962732b55a9aebf1, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 81d02e8644315b742b154842a3a2f98c, type: 3}
+        passType: 13
+      - keywords: INSTANCING_ON
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT INSTANCING_ON LIGHTPROBE_SH
+          LIGHT_LAYERS MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH
+          USE_CLUSTERED_LIGHTLIST
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT INSTANCING_ON LIGHTPROBE_SH
+          LIGHT_LAYERS MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH
+          SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT INSTANCING_ON LIGHTPROBE_SH
+          LIGHT_LAYERS MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK
+          SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT INSTANCING_ON LIGHTPROBE_SH
+          LIGHT_LAYERS MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH
+          SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+        passType: 13
+  - first: {fileID: 4800000, guid: c15834894887d4c4b935cfe9df6f1c89, type: 3}
     second:
       variants:
       - keywords: 
         passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 12
-      - keywords: 
-        passType: 13
-      - keywords: DECALS_OFF
-        passType: 13
-      - keywords: DECALS_OFF SCREEN_SPACE_SHADOWS_OFF SHADOW_LOW USE_FPTL_LIGHTLIST
-        passType: 13
-  - first: {fileID: 4800000, guid: 91d9e1751d0a17749819762ebf2b6846, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: a16365e8c873daa4c94919438490b905, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 128e987d567d4e2c824d754223b3f3b0, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 42be21d51861d204a889cbdf0eb57221, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 4386e57b23a56004c93e1d57d2bbcb4f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 73be0053604e1d54388db4f32739a92f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 14eb328de4b8eb245bb7cea29e4ac00b, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 8486e1ca5cc45c34c94df540d5676ec3, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: c4d81c6e573560444bb1ea11ae4acfcb, type: 3}
+  - first: {fileID: 4800000, guid: f17cf3ea321c43342bd6f86625dafb52, type: 3}
     second:
       variants:
       - keywords: 
@@ -536,368 +386,58 @@ ShaderVariantCollection:
       variants:
       - keywords: 
         passType: 8
-      - keywords: _SURFACE_TYPE_TRANSPARENT
+      - keywords: _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
         passType: 8
-      - keywords: _ALPHATEST_ON _SURFACE_TYPE_TRANSPARENT
+      - keywords: _ALPHATEST_ON _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+          _SURFACE_TYPE_TRANSPARENT
         passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 12
-      - keywords: 
-        passType: 13
-      - keywords: _SURFACE_TYPE_TRANSPARENT
-        passType: 13
-      - keywords: _ALPHATEST_ON _SURFACE_TYPE_TRANSPARENT
-        passType: 13
-  - first: {fileID: 4800000, guid: 4517edda0467bb14489d5eccc9973ba2, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 6510c57cccce5674092bdc0dd1ae98c1, type: 3}
-    second:
-      variants:
-      - keywords: _AXF_BRDF_TYPE_SVBRDF
-        passType: 8
-      - keywords: _AXF_BRDF_TYPE_SVBRDF
-        passType: 11
-      - keywords: _AXF_BRDF_TYPE_SVBRDF
-        passType: 12
-      - keywords: _AXF_BRDF_TYPE_SVBRDF
-        passType: 13
-      - keywords: DECALS_OFF SCREEN_SPACE_SHADOWS_OFF SHADOW_LOW USE_FPTL_LIGHTLIST
-          _AXF_BRDF_TYPE_SVBRDF
-        passType: 13
-  - first: {fileID: 4800000, guid: 756bac9090102564582875f4c7e30202, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 12
-      - keywords: 
-        passType: 13
-      - keywords: DECALS_OFF
-        passType: 13
-      - keywords: DECALS_OFF SCREEN_SPACE_SHADOWS_OFF SHADOW_LOW
-        passType: 13
-      - keywords: DECALS_OFF SCREEN_SPACE_SHADOWS_OFF SHADOW_LOW USE_FPTL_LIGHTLIST
-        passType: 13
-  - first: {fileID: 4800000, guid: 85187c2149c549c5b33f0cdb02836b17, type: 3}
-    second:
-      variants:
-      - keywords: DIRECTIONAL
-        passType: 4
-      - keywords: SHADOWS_DEPTH
-        passType: 8
-  - first: {fileID: 4800000, guid: 263f12c7593cf8841b5ccdbb717e3389, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 9629056a28f48b54a8537a7cd16e5d03, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: f7ada0af4f174f0694ca6a487b8f543d, type: 3}
-    second:
-      variants:
-      - keywords: DIRECTIONAL
-        passType: 4
-      - keywords: POINT
-        passType: 5
-      - keywords: SHADOWS_DEPTH
-        passType: 8
-  - first: {fileID: 4800000, guid: 08967e1a353252242a0c4cfc66ced645, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 38f62d38eebe79c418d9572823b61386, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 3818b9ab8df317a4283de6940b594723, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 48bb5f55d8670e349b6e614913f9d910, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-      - keywords: UNDERLAY_ON
-        passType: 0
-      - keywords: BEVEL_ON
-        passType: 0
-      - keywords: GLOW_ON
-        passType: 0
-  - first: {fileID: 4800000, guid: 78ac6c44194fb734195d6049bcfaee71, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: c8d12adcee749c344b8117cf7c7eb912, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 794f260d88f9fe74fa681fe5ab74a107, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: ba6961570ccc3ce4580b763cfc07d124, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: da07703fcc09f8d4799221050659bd55, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: eab0538d9d5746246806a9611c04ac4d, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 12
-      - keywords: 
-        passType: 13
-      - keywords: DECALS_OFF
-        passType: 13
-      - keywords: DECALS_OFF SCREEN_SPACE_SHADOWS_OFF SHADOW_LOW USE_FPTL_LIGHTLIST
-        passType: 13
-  - first: {fileID: 4800000, guid: eb607f5e8fc16e140b732f33d26c8c31, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 13
-      - keywords: DECALS_OFF
-        passType: 13
-      - keywords: DECALS_OFF SCREEN_SPACE_SHADOWS_OFF SHADOW_LOW USE_FPTL_LIGHTLIST
-        passType: 13
-  - first: {fileID: 4800000, guid: 5caf62d8bd7c44596ace77ef9eb8ea31, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 9c442dc870b456e48b615cd8add0e9ef, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: bc93937138cb1054e98cf187d5a71cbb, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: bc1ede39bf3643ee8e493720e4259791, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 1d64af84bdc970c4fae0c1e06dd95b73, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-      - keywords: DECALS_3RT
-        passType: 13
-  - first: {fileID: 4800000, guid: 2df96b66b5510f94b98df2ac6f926ef4, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 5df6daab6a21e1b4a8730bacdb8bdeec, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: cd270bc83dc0ce644bf351c3f5b7f30f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: dd89cf5b9246416f84610a006f916af7, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 1e3b057af24249748ff873be7fafee47, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: de3b14d3ca49cd94f9a557d6469ae8fe, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 0fcef9ef067b4cd44a62bd6ac0166384, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: cf81c85f95fe47e1a27f6ae460cf182c, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: -6465566751694194690, guid: 436ef1696d4a0d749ba051f7d6d73a00,
-      type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
-        passType: 8
-      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+      - keywords: _ENABLE_FOG_ON_TRANSPARENT _SURFACE_TYPE_TRANSPARENT
         passType: 8
       - keywords: 
         passType: 13
-      - keywords: _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST _DISABLE_SSR_TRANSPARENT
+          _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
         passType: 13
-      - keywords: DECALS_3RT DIRLIGHTMAP_COMBINED LIGHTMAP_ON LIGHT_LAYERS SHADOWS_SHADOWMASK
-          _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
         passType: 13
-      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
         passType: 13
-      - keywords: DECALS_3RT DIRLIGHTMAP_COMBINED LIGHTMAP_ON LIGHT_LAYERS SHADOWS_SHADOWMASK
-          _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _ALPHATEST_ON _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
         passType: 13
-  - first: {fileID: -6465566751694194690, guid: ba7feec152fb6a24ab1907ef00ba5e48,
-      type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-      - keywords: 
-        passType: 8
-      - keywords: _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
-        passType: 8
-      - keywords: INSTANCING_ON _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
-        passType: 8
-      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
-        passType: 8
-      - keywords: INSTANCING_ON _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
-          _REFRACTION_OFF
-        passType: 8
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
+          SSR_APPROX USE_CLUSTERED_LIGHTLIST _ALPHATEST_ON _DISABLE_SSR_TRANSPARENT
+          _NORMALMAP_TANGENT_SPACE _SURFACE_TYPE_TRANSPARENT
         passType: 13
-      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+          _ENABLE_FOG_ON_TRANSPARENT _SURFACE_TYPE_TRANSPARENT
         passType: 13
-      - keywords: INSTANCING_ON _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
-          _REFRACTION_OFF
-        passType: 13
-      - keywords: DECALS_3RT _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
-          _REFRACTION_OFF
-        passType: 13
-      - keywords: DECALS_3RT LIGHT_LAYERS SHADOWS_SHADOWMASK _BLENDMODE_OFF _DISABLE_DECALS
-          _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
-        passType: 13
-      - keywords: DECALS_3RT INSTANCING_ON LIGHT_LAYERS SHADOWS_SHADOWMASK _BLENDMODE_OFF
-          _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
-        passType: 13
-  - first: {fileID: -6465566751694194690, guid: ee2671d87834c6b469a04156a802d4bd,
-      type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
-        passType: 8
-      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
-          _REFRACTION_OFF
-        passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 13
-      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
-          _REFRACTION_OFF
-        passType: 13
-      - keywords: DECALS_3RT _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
-          _REFRACTION_OFF
-        passType: 13
-      - keywords: DECALS_3RT DIRLIGHTMAP_COMBINED LIGHTMAP_ON LIGHT_LAYERS SHADOWS_SHADOWMASK
-          _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
-        passType: 13
-  - first: {fileID: 4800000, guid: 10f1e481ec7570246b4e28c11446cd2a, type: 3}
+  - first: {fileID: 4800000, guid: 0736a017ee88a8741b09e7382339ab99, type: 3}
     second:
       variants:
       - keywords: 
         passType: 13
-  - first: {fileID: 4800000, guid: 100881c0c9b76d44db14f218f468c028, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: INNER_RADIUS
         passType: 13
-  - first: {fileID: 4800000, guid: 70fd05dfd6dbe624f89617428fa0175d, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: INNER_RADIUS INSTANCING_ON
         passType: 13
-  - first: {fileID: 4800000, guid: 90835a0fd9985a24ca833b85d57999e4, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT INNER_RADIUS INSTANCING_ON
+          LIGHTPROBE_SH LIGHT_LAYERS MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
         passType: 13
-  - first: {fileID: 4800000, guid: a008a2b36086d4e4393a9b3c8a6d998f, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT INNER_RADIUS INSTANCING_ON
+          LIGHTPROBE_SH LIGHT_LAYERS MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
         passType: 13
-  - first: {fileID: 4800000, guid: b06e5c773d9989b4fb177d307bba650f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: c02ba34bf88b09e42a753b5dcfc7d7bb, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: f0dbbf70a3e129f4284b02ed59dfd7e0, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 01febb80028733145a4571def3b616a7, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 11bdfa48936e79649bff811e3fb37419, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 314a3863a401d644ea855008bd02029d, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 616a25aec4b286744b9fa8a7c081c531, type: 3}
+  - first: {fileID: 4800000, guid: f70b158aaf2f00a47be44d933b54c341, type: 3}
     second:
       variants:
       - keywords: 
@@ -905,944 +445,469 @@ ShaderVariantCollection:
       - keywords: INSTANCING_ON
         passType: 13
       - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT INSTANCING_ON LIGHTPROBE_SH
+          LIGHT_LAYERS MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH
+          SSR_APPROX USE_FPTL_LIGHTLIST
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT INSTANCING_ON LIGHTPROBE_SH
+          LIGHT_LAYERS MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH
+          SSR_APPROX UNITY_HDR_ON USE_FPTL_LIGHTLIST
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS CAP_ROUND DECALS_3RT INSTANCING_ON LIGHTPROBE_SH
+          LIGHT_LAYERS MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH
+          SSR_APPROX USE_FPTL_LIGHTLIST
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS CAP_ROUND DECALS_3RT INSTANCING_ON LIGHTPROBE_SH
           LIGHT_LAYERS MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK
-          SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
+          SHADOW_HIGH SSR_APPROX USE_FPTL_LIGHTLIST
         passType: 13
-  - first: {fileID: 4800000, guid: 7112f241d2b65084f8ab8bf9b77c46c1, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
         passType: 13
-  - first: {fileID: 4800000, guid: a116a913e893c494f8c05d05a7c499e6, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
         passType: 13
-  - first: {fileID: 4800000, guid: b10907ba309ee914fa5f74ab946210cf, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT INSTANCING_ON LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
         passType: 13
-  - first: {fileID: 4800000, guid: b1fc4f934f29fa44a9b1bc3459f9756f, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT INSTANCING_ON LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON
+          USE_CLUSTERED_LIGHTLIST
         passType: 13
-  - first: {fileID: 4800000, guid: c117fcd0982de2c4b9ea91ea5c0c5b47, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS CAP_ROUND DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
         passType: 13
-  - first: {fileID: 4800000, guid: d1b4e65346964a94999ab2d02c43bb40, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS CAP_ROUND DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
         passType: 13
-  - first: {fileID: 4800000, guid: e160f38daff3f834585c382fb0ee5e77, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS CAP_ROUND DECALS_3RT INSTANCING_ON LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
         passType: 13
-  - first: {fileID: 4800000, guid: e172dc322b7ed144a9506606fb1a275d, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: f1ef4298bb91b5e48983a0a6eb59eca0, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 028134b0a7a83b34a8b04f27db2a5b47, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 32f2a3e9fa32c8848bc7632c97ce2e5d, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 52908bebb4ec95240bedf3b094f65889, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 52da73106d2455d4bb4fcf64927797b0, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: a233fc2f0e228774ab69e9e6bc7862d3, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: b2f95594ea5c2b449865e021a2a2dda8, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: e25ac24f63e2f074788bf45a85bd9e95, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: f2a1c4a43b7d7d6438b67a915f4f4340, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 03db4f08615e289409269c42fc517eb8, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 036dce6766baea34abf14c88d9deab90, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 43d0aa8c708eb264599ed60a4ca68d6f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 43b8e30500da7724b98fca590f04ee9c, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 53ff47070cc2f6246abd2e6690124b02, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: a330e4574944c634dace66ec7db4f9f0, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: a32ea38cf1a22714ebf13305578fa4f2, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: b3e01035c553fc24c963bacd564b9e22, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: c3573257a4ef475499dcf1bf802a1049, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: d3eeb76d6cb69404797794daff4ca2d5, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: f3276818b94bf0945896026ae59979e7, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 340c601e965ddb1479e4373b944dcc0f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 64428ed47d3d7254db9cebf7727e64ee, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 74a701edbce58664d80fc9c2ad6f7684, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: a4791f415644acc47816d33a13fbdc46, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: b495be42b3cd1b0469b4d154db0098c5, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: d4e872af9af9c6b498e3fceb7ad1d426, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 055193b8143fc724cb734a480601a728, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 755647fa45052d74cbb196f9efa59aad, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: e5ffb1f9e8f5ef6429f92831f9faf252, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 0675a12405fa94b4ba0d111f2961fa41, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 0667d849dbc155e49af6d8509c06bc0d, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 16f283f45978cac41a7c04930ed11eae, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 16e748ebeda646c478ae4690ff5b0a38, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 26b61017d9696684bb4050b288203e28, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 4675a0ce07c107741a156f4da8d02447, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 664104eb6db622c44ab2d35d6ca104c6, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 66c7fb0c6ddf17b438fcbefe1bd4d642, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 76417c9fb1feca24fb0f3261189e8e55, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: b6c03ddda6c279d4d98f6575ee0c880f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: e6cfe8b866dec67468274d9a950411dc, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 0736a017ee88a8741b09e7382339ab99, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-      - keywords: INNER_RADIUS INSTANCING_ON
-        passType: 13
-  - first: {fileID: 4800000, guid: a78c37579e3a4174c878faa6911fa258, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: d7426a96783a1d043bc6e7e1cb8d09d1, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: d7d36618a6a0cad4fa7aa1b25b387d81, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: f738be81326243c409deb57538f55652, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: f70b158aaf2f00a47be44d933b54c341, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-      - keywords: CAP_ROUND INSTANCING_ON
+      - keywords: BILLBOARD_FACE_CAMERA_POS CAP_ROUND DECALS_3RT INSTANCING_ON LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
+          SSR_APPROX USE_CLUSTERED_LIGHTLIST
         passType: 13
   - first: {fileID: 4800000, guid: 08972cbecdebc6944b65c598dec5cb43, type: 3}
     second:
       variants:
       - keywords: 
         passType: 13
-  - first: {fileID: 4800000, guid: 18069e4e96d36fd4197185e6832dfc5d, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 58dc4bea6bf8e604689e5c02a8b1a9f0, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 787de13cec016294e85ac59dd44d32d4, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 987e921ca439a9d469c9d37a8e5fbae3, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: a8f3caee3a19ffc4ea0033ea9f0f2914, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: c84ddfe9ae8c2ae4d97011e52f4c8c9c, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 09f3f4d3814479a4d8b38cc0ae911b87, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 19725c22ed49f8346b4df0fa697018f1, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 3963a85208222924fa1806b51c8aa1f3, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 49f475e719c57e846b41b32d4ddbf29a, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 599672801a21fc8489a5a6cc8cb87c16, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 592c53802805cde42ae787b9de4fa2c3, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 79601a6344eda2d4b91e6b821c7b0b88, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 79a3a9ec2647b644bba3b12455e6da6c, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 79eed1a1a276fea419db9805c4bcb8ac, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 99a1df08fb8c6bc4b985a2eb44648277, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: a9596574a28067e41b07f4647c2932f8, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: a91eee80fe5c9dc41884492a65d23d20, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: e927d8a39e9575d43bfe3a7ec6984cf3, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: f9e001de8982489429271d4b376df2cd, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 2ac8d323a50a5a44e8422f7d238d1b3e, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 2afb410f67bf5f741b72b0b57285249f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 4a268ef0dab45d147b3d0d013925c07e, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 4adbb5f3d016f8043be1a11c2e5d3db1, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 5a7988d439dbdcf46b3e681884ccbfbe, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: ea79d94536e806545b3c4e880b4101f6, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 1b194be29f3ca4f4a81365d4049baeff, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 2b083480016d549498fe211c8a5bdea8, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 3b2602ae80735bb4ca881c30fa038c8c, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 6b9714d1b34b8354ca61255f290f1643, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 7ba1211725fcdd648b3d3d021a1098c9, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 8b20971acd9ecb3459c7615b7334d4d8, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 8b123c4a073af3f448fdac41cfcfd962, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: db224947bb884fb47829ae497d47b12a, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: fb1016d478ceb274bb09c46d6e95170f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: fb4a7266a86ba6f49861a71fe4c21805, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 0cb75e9d394f99b4fbefd7161296dd9d, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 2cbaaeb3c2a5f4d47bc08f61f50c25f7, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 3c44e10b12baae44290fb13fd0489153, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 3c6edd7c2118bfc4a9fbc905702dadc1, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 5cc1594ffc6579944853d50de731510a, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 6c85fef4cdd798349acf3c5bbc338c4c, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 7cdd28a38308f4244b49164c8cd0e2ab, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 8cccfaf002159ee48a501317d38f64d3, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 9c7ff712cd28bd446bb36a982ee022e6, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: ac2387db4d0065147b527c44f31cb7c9, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: cc92df816a2513049824e647a2de0c43, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: ccaaf8572542637488622e137eca8e53, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: ec85c80e56492b74986385399b54da15, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: fc9ba1eaafedfbf45b9ed4f2b899d703, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 1da1f869516645b4aaae58602395f89c, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 2d85a0b94b73ba74893be2faf60f7c1d, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 3df459dde24f0f14897f28c9c9f61bea, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 3d2ab8f2286c36a4896c144efb4bc05f, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 5d9217fb1c5b03246860e65ca80600f1, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 5ddedc27b6a11064aa4ae6b6be4739e2, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 6d6c5ad17528acd4bb510c7f651293b9, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 9d41f0689841d3548ab54d203ee4d702, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: bd2222a9abe9bd6448228306ce43119d, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: cd82b6dbf3af6554e96188a487f5aeac, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: cd2760e21ddcfeb4f9bbc487d4e37f58, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: cd2b88f87378afc4481e0780a1657022, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: fd772bb2167b3b84aa3b6680ef9bdeef, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: fd0809e0e0eeb75408cfb5ff76b6e085, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 0ef1742cddfd5c043b7b269da4cb5f4c, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 0e1f46fe23e65874aa44ae5824d18ae6, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 1e31a46789a6fa34fac0fcfd7b7bb004, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 1e6c13ead1588a5499a5d4a73d710893, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 5eb89eed9f924cc4f8e57ea53f77ecd6, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 6ed634ab1ce977640a2de0b4682f75c6, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 6e4c5ce31a2a1db4ba1f09bff95f9d60, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 7eb17feea64cd274499e70e2d0c950c7, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 7e3fd71e84361484da2236f3edcf8532, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 8e9000e5b4fab994dafde4d454416f4e, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 9e9148b5b21f316459787c7e5fb17626, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: aed3cc34aa69ee640b8ba17a6036ec13, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: be0fae9b6799f3e4a96d162cab737ffa, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: ce38766e89428954faec7a208e2e8eb3, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: ce9d543fec555b240b9ded3a084c95e0, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: ee85343ca64de14468d399128956ac17, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 0fd73b16195114741812413811964a97, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 2f827367cf5aaaa4e8fdf48f221029aa, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 3f477ba555096a44c9ea1a525a87b910, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 5f0032d7d9f3f4546a25cd955154c4a6, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: 8f06c6ff4ecce6f4cb5ef031a19bdde5, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: af3432f19a045f847aa1b55d9a44ccd5, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 13
-  - first: {fileID: 4800000, guid: df9acfcfa1edab2489bc36ca98162ef0, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: INSTANCING_ON
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT INSTANCING_ON LIGHTPROBE_SH
+          LIGHT_LAYERS MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH
+          SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT INSTANCING_ON LIGHTPROBE_SH
+          LIGHT_LAYERS MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH
+          SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+        passType: 13
+  - first: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+      - keywords: UNDERLAY_ON
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
+          SSR_APPROX USE_CLUSTERED_LIGHTLIST
+        passType: 0
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNDERLAY_ON USE_CLUSTERED_LIGHTLIST
+        passType: 0
+  - first: {fileID: -6465566751694194690, guid: ee2671d87834c6b469a04156a802d4bd,
+      type: 3}
+    second:
+      variants:
+      - keywords: _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST _DISABLE_DECALS
+          _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+          _REFRACTION_OFF
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 11
+      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+          _REFRACTION_OFF
+        passType: 11
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH _DISABLE_DECALS
+          _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST _DISABLE_DECALS
+          _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST _DISABLE_DECALS
+          _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT DIRLIGHTMAP_COMBINED LIGHTMAP_ON
+          LIGHT_LAYERS MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK
+          SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST _DISABLE_DECALS _DISABLE_SSR
+          _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: DECALS_3RT DIRLIGHTMAP_COMBINED LIGHTMAP_ON LIGHT_LAYERS SHADOWS_SHADOWMASK
+          _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
+          _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+  - first: {fileID: -6465566751694194690, guid: ba7feec152fb6a24ab1907ef00ba5e48,
+      type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+        passType: 8
+      - keywords: _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: INSTANCING_ON _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST _DISABLE_DECALS
+          _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 8
+      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH _DISABLE_DECALS
+          _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST _DISABLE_DECALS
+          _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST _DISABLE_DECALS
+          _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+          _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT LIGHT_LAYERS _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT
+          _REFRACTION_OFF
+        passType: 13
+      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+          _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
+          _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+  - first: {fileID: -6465566751694194690, guid: 7591ee611af01534c8c674cbd4ea4972,
+      type: 3}
+    second:
+      variants:
+      - keywords: _BLENDMODE_OFF _REFRACTION_OFF
+        passType: 8
+      - keywords: INSTANCING_ON _BLENDMODE_OFF _REFRACTION_OFF
+        passType: 8
+      - keywords: INSTANCING_ON _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 8
+      - keywords: INSTANCING_ON _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT
+          _REFRACTION_OFF _SURFACE_TYPE_TRANSPARENT
+        passType: 8
+      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT
+          _REFRACTION_OFF _SURFACE_TYPE_TRANSPARENT
+        passType: 8
+      - keywords: INSTANCING_ON _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+          _ENABLE_FOG_ON_TRANSPARENT _REFRACTION_OFF _SURFACE_TYPE_TRANSPARENT
+        passType: 8
+      - keywords: _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: INSTANCING_ON _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT INSTANCING_ON LIGHT_LAYERS _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT
+          _REFRACTION_OFF
+        passType: 13
+      - keywords: _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT
+          _REFRACTION_OFF _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: DECALS_3RT SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
+          _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT _REFRACTION_OFF
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: DECALS_3RT INSTANCING_ON SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
+          _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT _REFRACTION_OFF
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT
+          _REFRACTION_OFF _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: DECALS_3RT SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
+          _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT
+          _REFRACTION_OFF _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: DECALS_3RT INSTANCING_ON SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
+          _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT
+          _REFRACTION_OFF _SURFACE_TYPE_TRANSPARENT
         passType: 13
   - first: {fileID: -6465566751694194690, guid: 560ae0b8473576c4cb1606379451fbf3,
       type: 3}
     second:
       variants:
-      - keywords: 
+      - keywords: _SURFACE_TYPE_TRANSPARENT
         passType: 8
       - keywords: _BLENDMODE_OFF _SURFACE_TYPE_TRANSPARENT
         passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 12
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST _SURFACE_TYPE_TRANSPARENT
         passType: 13
-      - keywords: _BLENDMODE_OFF _SURFACE_TYPE_TRANSPARENT
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
+          _SURFACE_TYPE_TRANSPARENT
         passType: 13
-  - first: {fileID: 4800000, guid: 21b28f3ee4b3c13408ed85c229008f40, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 4
-  - first: {fileID: 4800000, guid: 31b8f52d70379eb439f5a4ca78a1413b, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: c15834894887d4c4b935cfe9df6f1c89, type: 3}
-    second:
-      variants:
-      - keywords: DIRECTIONAL
-        passType: 4
-      - keywords: POINT
-        passType: 5
-      - keywords: 
-        passType: 8
-      - keywords: SHADOWS_DEPTH UNITY_PASS_SHADOWCASTER
-        passType: 8
-      - keywords: 
-        passType: 11
-  - first: {fileID: 4800000, guid: 82c42a0b06f4f684db1ee2c535fb985c, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 4
-      - keywords: DIRECTIONAL _SHADOWMIXMODE_MULTIPLY
-        passType: 4
-      - keywords: 
-        passType: 5
-      - keywords: POINT _SHADOWMIXMODE_MULTIPLY
-        passType: 5
-      - keywords: SHADOWS_DEPTH UNITY_PASS_SHADOWCASTER _SHADOWMIXMODE_MULTIPLY
-        passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: _SHADOWMIXMODE_MULTIPLY
-        passType: 11
-  - first: {fileID: 4800000, guid: 43ed279757cf2ba4c9c277fff3220421, type: 3}
-    second:
-      variants:
-      - keywords: DIRECTIONAL
-        passType: 4
-      - keywords: POINT
-        passType: 5
-      - keywords: SHADOWS_DEPTH
-        passType: 8
-      - keywords: 
-        passType: 10
-      - keywords: 
-        passType: 11
-  - first: {fileID: 4800000, guid: 83e4eb1c16a47f44e898b0393a5322e8, type: 3}
-    second:
-      variants:
-      - keywords: DIRECTIONAL
-        passType: 4
-      - keywords: POINT
-        passType: 5
-      - keywords: SHADOWS_DEPTH UNITY_PASS_SHADOWCASTER
-        passType: 8
-      - keywords: 
-        passType: 11
-  - first: {fileID: 4800000, guid: 93b39336c7407ba4cb17a6d77dfa9605, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 1
-      - keywords: 
-        passType: 2
-      - keywords: DIRECTIONAL
-        passType: 4
-      - keywords: POINT
-        passType: 5
-      - keywords: 
-        passType: 6
-      - keywords: 
-        passType: 7
-      - keywords: SHADOWS_DEPTH
-        passType: 8
-      - keywords: 
-        passType: 10
-      - keywords: 
-        passType: 11
-  - first: {fileID: 4800000, guid: 44f8736e1f857f24681cbc354a147c3e, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 645cb8076a0c9a54bad68f9896f992ea, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 94ce8b5eaff70434a81eaa413e7b6bbb, type: 3}
-    second:
-      variants:
-      - keywords: DIRECTIONAL
-        passType: 4
-      - keywords: POINT
-        passType: 5
-      - keywords: 
-        passType: 6
-      - keywords: 
-        passType: 7
-      - keywords: 
-        passType: 10
-      - keywords: 
-        passType: 11
-  - first: {fileID: 4800000, guid: e5691787f973b2c4c9e7333c45119dd2, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: f54b8ae4d72e16445b407e4ad5ad4264, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: 07e5069cdf9ee934f8d7b768c461452c, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 4800000, guid: ad7325dd3fb876645bde2dd9d0691993, type: 3}
-    second:
-      variants:
-      - keywords: DIRECTIONAL
-        passType: 4
-      - keywords: POINT
-        passType: 5
-      - keywords: SHADOWS_DEPTH UNITY_PASS_SHADOWCASTER
-        passType: 8
-      - keywords: 
-        passType: 11
-  - first: {fileID: 4800000, guid: 2e883a990b855be4eb85a58f732c8ea7, type: 3}
-    second:
-      variants:
-      - keywords: DIRECTIONAL
-        passType: 4
-      - keywords: POINT
-        passType: 5
-      - keywords: SHADOWS_DEPTH UNITY_PASS_SHADOWCASTER
-        passType: 8
-      - keywords: 
-        passType: 10
-      - keywords: 
-        passType: 11
-  - first: {fileID: -6465566751694194690, guid: 5d93290d1c313994b86c827802d95826,
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH
+          SSR_APPROX USE_CLUSTERED_LIGHTLIST _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+          _SURFACE_TYPE_TRANSPARENT
+        passType: 13
+  - first: {fileID: -6465566751694194690, guid: 436ef1696d4a0d749ba051f7d6d73a00,
       type: 3}
     second:
       variants:
       - keywords: 
         passType: 8
-      - keywords: _BLENDMODE_OFF _SURFACE_TYPE_TRANSPARENT
+      - keywords: _DISABLE_SSR_TRANSPARENT
         passType: 8
-      - keywords: 
-        passType: 12
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: _BLENDMODE_OFF _REFRACTION_OFF
+        passType: 8
+      - keywords: _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 8
+      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 8
+      - keywords: _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 11
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH _DISABLE_SSR_TRANSPARENT
         passType: 13
-      - keywords: _BLENDMODE_OFF _SURFACE_TYPE_TRANSPARENT
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH _DISABLE_SSR_TRANSPARENT
         passType: 13
-  - first: {fileID: 4800000, guid: 2f9f3f4f146daca4aa6c50c9507f4b3e, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: -6465566751694194690, guid: 775f914d691abc544853bdef201389eb,
-      type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-  - first: {fileID: -6465566751694194690, guid: 450c9208a586102428ea194bccbf765d,
-      type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
-        passType: 8
-      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
-          _REFRACTION_OFF
-        passType: 8
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST _DISABLE_SSR_TRANSPARENT
         passType: 13
-      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHTPROBE_SH LIGHT_LAYERS
+          MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT LIGHT_LAYERS _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT
           _REFRACTION_OFF
         passType: 13
       - keywords: DECALS_3RT DIRLIGHTMAP_COMBINED LIGHTMAP_ON LIGHT_LAYERS SHADOWS_SHADOWMASK
-          _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+          _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
         passType: 13
-  - first: {fileID: 4800000, guid: b17ddce668de9464e97224015a672cdd, type: 3}
+      - keywords: DECALS_3RT SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH USE_CLUSTERED_LIGHTLIST
+          _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT DIRLIGHTMAP_COMBINED LIGHTMAP_ON LIGHT_LAYERS SHADOWS_SHADOWMASK
+          _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+  - first: {fileID: -6465566751694194690, guid: 111e6fb5b49f2bd4ebb4ba940524fc1e,
+      type: 3}
     second:
       variants:
       - keywords: 
+        passType: 8
+      - keywords: _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 8
+      - keywords: _BLENDMODE_OFF _REFRACTION_OFF
+        passType: 8
+      - keywords: _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 8
+      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 8
+      - keywords: _BLENDMODE_OFF _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 8
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT MATERIAL_QUALITY_HIGH SCREEN_SPACE_SHADOWS_ON
+          SHADOW_HIGH SSR_APPROX UNITY_HDR_ON USE_CLUSTERED_LIGHTLIST _DISABLE_SSR_TRANSPARENT
         passType: 13
-  - first: {fileID: 4800002, guid: b17ddce668de9464e97224015a672cdd, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR_TRANSPARENT
         passType: 13
-  - first: {fileID: 4800004, guid: b17ddce668de9464e97224015a672cdd, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: BILLBOARD_FACE_CAMERA_POS DECALS_3RT LIGHT_LAYERS MATERIAL_QUALITY_HIGH
+          SCREEN_SPACE_SHADOWS_ON SHADOW_HIGH SSR_APPROX USE_CLUSTERED_LIGHTLIST
+          _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+        passType: 13
+      - keywords: _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT LIGHT_LAYERS _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT
+          _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT LIGHT_LAYERS SHADOWS_SHADOWMASK _BLENDMODE_OFF _DISABLE_SSR_TRANSPARENT
+          _REFRACTION_OFF
+        passType: 13
+      - keywords: _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+          _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT LIGHT_LAYERS _BLENDMODE_OFF _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
+          _REFRACTION_OFF
+        passType: 13
+      - keywords: _BLENDMODE_OFF _DISABLE_SSR _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT _BLENDMODE_OFF _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+          _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT LIGHT_LAYERS _BLENDMODE_OFF _DISABLE_SSR _DISABLE_SSR_TRANSPARENT
+          _REFRACTION_OFF
+        passType: 13
+      - keywords: DECALS_3RT LIGHT_LAYERS SHADOWS_SHADOWMASK _BLENDMODE_OFF _DISABLE_SSR
+          _DISABLE_SSR_TRANSPARENT _REFRACTION_OFF
         passType: 13

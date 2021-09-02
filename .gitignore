@@ -50,3 +50,6 @@ crashlytics-build.properties
 # Exclude Unity Asset Store files for legal rights
 Assets/Extensions
 Assets/easy-state
+Assets/Scenes/Level_*
+Assets/Scenes/Debug
+Assets/Scenes/Menu

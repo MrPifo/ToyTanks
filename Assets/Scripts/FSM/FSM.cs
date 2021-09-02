@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Sperlich.FSM {
 
-    public class FSM<T> where T : struct, System.Enum {
+    public class FSM<T> : IEquatable<FSM<T>> where T : struct, System.Enum {
 
         static FSM_Helper instance;
         public static FSM_Helper Instance {
@@ -45,10 +45,27 @@ namespace Sperlich.FSM {
             }
 		}
         public bool IsState(T state) => State.ToString() == state.ToString();
-        public T GetRandom() => RandomEnumValue<T>();
-        public static T RandomEnumValue<T>() {
+        public T GetRandom() => RandomEnumValue();
+        public static T RandomEnumValue() {
             var v = Enum.GetValues(typeof(T));
             return (T)v.GetValue(UnityEngine.Random.Range(0, v.Length));
         }
-    }
+        public static implicit operator T(FSM<T> value) => value.State;
+        public override string ToString() => state.ToString();
+        public static bool operator ==(FSM<T> left, FSM<T> right) {
+			return EqualityComparer<FSM<T>>.Default.Equals(left, right);
+		}
+		public static bool operator !=(FSM<T> left, FSM<T> right) {
+			return !(left == right);
+		}
+		public override bool Equals(object obj) {
+			return Equals(obj as FSM<T>);
+		}
+		public bool Equals(FSM<T> other) {
+			return other != null && EqualityComparer<T>.Default.Equals(state, other.state);
+		}
+		public override int GetHashCode() {
+			return 259708774 + state.GetHashCode();
+		}
+	}
 }

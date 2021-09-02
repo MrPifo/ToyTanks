@@ -41,6 +41,7 @@ public class TankBase : MonoBehaviour {
 	public ParticleSystem muzzleFlash;
 	public Transform billboardHolder;
 	public Rectangle healthBar;
+	public MMFeedbacks hitFlash;
 	public List<Transform> destroyTransformPieces;
 	[Header("Explosion Effects")]
 	public GameObject destroyFlash;
@@ -55,6 +56,7 @@ public class TankBase : MonoBehaviour {
 	public Vector3 MovingDir => moveDir;
 	public bool CanShoot => !isReloading;
 	public bool HasBeenDestroyed { get; set; }
+	public bool CanMove { get; set; }
 	Rigidbody rig;
 	MMFeedbacks feedback;
 	MMWiggle headWiggle;
@@ -63,9 +65,11 @@ public class TankBase : MonoBehaviour {
 	int muzzleFlashDelta;
 	float angleDiff;
 	Vector3 lastTrackPos;
+	Vector3 lastPos;
 	Vector3 spawnPos;
 	int initLayer;
 	float engineVolume;
+	protected float distanceSinceLastFrame;
 	protected int maxHealthPoints;
 	bool isReloading;
 	bool isShootStunned;
@@ -81,6 +85,7 @@ public class TankBase : MonoBehaviour {
 		trackContainer = GameObject.Find("TrackContainer").transform;
 		maxHealthPoints = healthPoints;
 		lastTrackPos = Pos;
+		CanMove = true;
 		healthBar.Width = 2f;
 		healthBar.transform.parent.gameObject.SetActive(false);
 		shockwaveDisc.gameObject.SetActive(false);
@@ -94,7 +99,9 @@ public class TankBase : MonoBehaviour {
 	}
 
 	protected virtual void LateUpdate() {
+		distanceSinceLastFrame = Vector3.Distance(transform.position, lastPos);
 		billboardHolder.rotation = Quaternion.LookRotation((Pos - Camera.main.transform.position).normalized, Vector3.up);
+		lastPos = transform.position;
 	}
 
 	public void Move() => Move(new Vector3(transform.forward.x, 0, transform.forward.z));
@@ -109,14 +116,15 @@ public class TankBase : MonoBehaviour {
 		AdjustRotation(moveDir * temp);
 
 		var movePos = temp * moveSpeed * Time.deltaTime * rig.transform.forward;
-		bool moveBlocked = Physics.Raycast(rig.position, moveDir, out RaycastHit blockHit, 2, obstacleLayers);
-		if(!moveBlocked && !isShootStunned) {
+		//bool moveBlocked = Physics.Raycast(rig.position, moveDir, out RaycastHit blockHit, 2, obstacleLayers);
+		if(!isShootStunned && CanMove) {
 			rig.MovePosition(rig.position + movePos);
 		}
 		TrackTracer();
 	}
 
 	public void AdjustRotation(Vector3 moveDir) {
+		if(moveDir == Vector3.zero) return;
 		var rot = Quaternion.LookRotation(moveDir, Vector3.up);
 		angleDiff = Quaternion.Angle(rig.rotation, rot);
 		if(angleDiff > 0) {
@@ -177,6 +185,7 @@ public class TankBase : MonoBehaviour {
 				GotDestroyed();
 			}
 			healthPoints--;
+			hitFlash.PlayFeedbacks();
 			int width = maxHealthPoints == 0 ? 1 : healthPoints;
 			healthBar.Width = 2f / maxHealthPoints * width;
 		}

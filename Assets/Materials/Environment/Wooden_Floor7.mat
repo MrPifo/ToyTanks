@@ -51,6 +51,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 47b61bbae7977fc4987857e54f3b2e74, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - SmoothnessMap:
+        m_Texture: {fileID: 2800000, guid: 45f7acc7aad40d349842eafb57629e00, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _AnisotropyMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -156,7 +160,7 @@ Material:
     - Normal_Strength: 0.25
     - RandomRot: 0
     - Saturation: 0.7
-    - Smoothness: 0.3
+    - Smoothness: 0.25
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1

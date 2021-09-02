@@ -109,9 +109,6 @@ public abstract class TankAI : TankBase {
 			case TankState.Patrol:
 				Patrol();
 				break;
-			case TankState.BossStates:
-				BossStates();
-				break;
 		}
 	}
 
@@ -120,11 +117,10 @@ public abstract class TankAI : TankBase {
 		stateMachine.Push(TankState.Idle);
 	}
 
-	public abstract void Idle();
-	public abstract void Attack();
-	public abstract void Defense();
-	public abstract void Patrol();
-	public virtual void BossStates() { }
+	public virtual void Idle() { }
+	public virtual void Attack() { }
+	public virtual void Defense() { }
+	public virtual void Patrol() { }
 
 	public virtual void Aim() {
 		MoveHead(player.Pos);

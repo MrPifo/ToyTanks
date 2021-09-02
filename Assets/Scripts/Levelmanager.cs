@@ -24,6 +24,7 @@ public class LevelManager : MonoBehaviour {
 	public bool isDebug;
 	public bool showGrid;
 	public static bool playerDeadGameOver;
+	public static bool ReviveDeadAI { get; set; } = false;
 	public static LevelUI UI { get; set; }
 	public static LevelFeedbacks Feedback { get; set; }
 	Transform trackContainer;
@@ -88,6 +89,14 @@ public class LevelManager : MonoBehaviour {
 	void Update() {
 		if(!playerDeadGameOver) {
 			CheckTankTracks();
+		}
+		UpdateRunTime();
+	}
+
+	public void UpdateRunTime() {
+		if(!playerDeadGameOver && !player.disableControl && !isDebug) {
+			GameManager.playTime += Time.deltaTime;
+			UI.playTime.SetText(Mathf.Round(GameManager.playTime * 100f)/100f + "s");
 		}
 	}
 
@@ -204,11 +213,15 @@ public class LevelManager : MonoBehaviour {
 		Feedback.PlayLives();
 		yield return new WaitForSeconds(4f);
 		player.Revive();
-		
+
 		foreach(TankAI t in FindObjectsOfType<TankAI>()) {
-			t.enabled = true;
 			t.IsAIEnabled = false;
-			t.Revive();
+			t.enabled = true;
+			if(t.HasBeenDestroyed == false) {
+				t.Revive();
+			} else if(ReviveDeadAI) {
+				t.Revive();
+			}
 		}
 		yield return new WaitForSeconds(1f);
 		playerDeadGameOver = false;

@@ -39,6 +39,7 @@ MonoBehaviour:
   muzzleFlash: {fileID: 4408050205832294461}
   billboardHolder: {fileID: 937778397077187138}
   healthBar: {fileID: 3991336753886763310}
+  hitFlash: {fileID: 7916777965301512599}
   destroyTransformPieces:
   - {fileID: 554699642232211054}
   - {fileID: 7476880729935566611}
@@ -149,6 +150,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5705408810080229299, guid: deb07d1d6146747469e15b61bffdc376,
+        type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2800000, guid: a6c34a9aa768f1c40b708824a699aa8f, type: 3}
     - target: {fileID: 5705408810080229299, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: m_Name
@@ -272,3 +278,15 @@ ParticleSystem:
     type: 3}
   m_PrefabInstance: {fileID: 7921904694191907681}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7916777965301512599 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 13028962517211894, guid: deb07d1d6146747469e15b61bffdc376,
+    type: 3}
+  m_PrefabInstance: {fileID: 7921904694191907681}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 841b72de2996c5c40bfb394f3d0e0a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

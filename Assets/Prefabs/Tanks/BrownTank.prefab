@@ -39,6 +39,7 @@ MonoBehaviour:
   muzzleFlash: {fileID: 7735259480988374883}
   billboardHolder: {fileID: 6590467983911570716}
   healthBar: {fileID: 6994565674539548272}
+  hitFlash: {fileID: 4299715331680624329}
   destroyTransformPieces:
   - {fileID: 5892700283455791408}
   - {fileID: 3582213993109237837}
@@ -225,6 +226,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5705408810080229299, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2800000, guid: bf93035de7c0ab343994427192116397, type: 3}
+    - target: {fileID: 5705408810080229299, guid: deb07d1d6146747469e15b61bffdc376,
+        type: 3}
       propertyPath: m_Name
       value: BrownTank
       objectReference: {fileID: 0}
@@ -351,3 +357,15 @@ ParticleSystem:
     type: 3}
   m_PrefabInstance: {fileID: 4289082252601492543}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4299715331680624329 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 13028962517211894, guid: deb07d1d6146747469e15b61bffdc376,
+    type: 3}
+  m_PrefabInstance: {fileID: 4289082252601492543}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 841b72de2996c5c40bfb394f3d0e0a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

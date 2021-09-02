@@ -39,6 +39,7 @@ MonoBehaviour:
   muzzleFlash: {fileID: 2765546617933963260}
   billboardHolder: {fileID: 1607243877450122627}
   healthBar: {fileID: 3182259401732241135}
+  hitFlash: {fileID: 8544366624942822998}
   destroyTransformPieces:
   - {fileID: 2089401753145289135}
   - {fileID: 8975265972822866130}
@@ -172,6 +173,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5705408810080229299, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2800000, guid: e3559d7cb5b31084b8936e97c1ea32ce, type: 3}
+    - target: {fileID: 5705408810080229299, guid: deb07d1d6146747469e15b61bffdc376,
+        type: 3}
       propertyPath: m_Name
       value: GreyTank
       objectReference: {fileID: 0}
@@ -288,3 +294,15 @@ ParticleSystem:
     type: 3}
   m_PrefabInstance: {fileID: 8556269647753301152}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8544366624942822998 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 13028962517211894, guid: deb07d1d6146747469e15b61bffdc376,
+    type: 3}
+  m_PrefabInstance: {fileID: 8556269647753301152}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 841b72de2996c5c40bfb394f3d0e0a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

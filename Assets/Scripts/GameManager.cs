@@ -11,7 +11,9 @@ public class GameManager : MonoBehaviour {
 	public int levelId;
 	public int playerLives;
 	public int score;
+	public int startLevel;
 	public bool isLoading;
+	public static float playTime;
 	MMFeedbackLoadScene loader;
 	MMFeedbacks feedbacks;
 	LoadingScreen screen;
@@ -82,8 +84,9 @@ public class GameManager : MonoBehaviour {
 	public void StartCampaign() {
 		if(!isLoading) {
 			DontDestroyOnLoad(this);
-			levelId = 0;
+			levelId = startLevel <= -1 ? 0 : startLevel;
 			playerLives = 3;
+			playTime = 0;
 			LoadLevel();
 		}
 	}
