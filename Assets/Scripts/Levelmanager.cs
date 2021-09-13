@@ -14,21 +14,21 @@ using UnityEditor;
 public class LevelManager : MonoBehaviour {
 
 	public PathfindingMesh grid;
-	public int maxTracksOnStage = 100;
+	public int maxTracksOnStage = 1000;
 	public float gridDensity = 1;
-	public bool isBossLevel;
 	public Vector2 playgroundSize;
 	public Vector3 customBlurSize = new Vector3(1.2f, 1.2f, 1f);
 	public LayerMask generationLayer;
-	public bool gameEnded;
+	public bool IsGameOver { get; set; }
 	public bool isDebug;
 	public bool showGrid;
-	public static bool playerDeadGameOver;
+	public bool IsBossLevel { get; set; }
 	public static bool ReviveDeadAI { get; set; } = false;
 	public static LevelUI UI { get; set; }
 	public static LevelFeedbacks Feedback { get; set; }
 	Transform trackContainer;
 	GameManager gameManager;
+	BossAI bossTank;
 	int levelId;
 	int LevelNumber {
 		get => levelId + 1;
@@ -48,13 +48,22 @@ public class LevelManager : MonoBehaviour {
 		player = FindObjectOfType<PlayerInput>();
 		trackContainer = new GameObject("TrackContainer").transform;
 		levelName = gameObject.scene.name;
+		IsGameOver = true;
 		LevelNumber = int.Parse(levelName.Replace("Level_", ""));
-		playerDeadGameOver = false;
 		SceneManager.MoveGameObjectToScene(trackContainer.gameObject, Scene);
 
-		foreach(TankAI tank in tankAIs) {
-			tank.IsAIEnabled = false;
+		// Ensure debug is set off
+		foreach(var t in FindObjectsOfType<TankBase>()) {
+			if(t as TankAI) {
+				var ai = t as TankAI;
+				if(t is BossAI) {
+					bossTank = t as BossAI;
+					IsBossLevel = true;
+				}
+			}
 		}
+		player.DisablePlayer();
+		DisableAllAIs();
 	}
 
 	void Start() {
@@ -72,31 +81,28 @@ public class LevelManager : MonoBehaviour {
 		} else {
 			isDebug = false;
 			UI = FindObjectOfType<LevelUI>();
-			audioManager = FindObjectOfType<AudioManager>();
 			UI.gameplay.SetActive(true);
+			audioManager = FindObjectOfType<AudioManager>();
+		}
+		IsGameOver = true;
+	}
 
-			// Ensure debug is set off
-			foreach(var t in FindObjectsOfType<TankBase>()) {
-				t.makeInvincible = false;
-				if(t as TankAI) {
-					var ai = t as TankAI;
-					ai.showDebug = false;
-				}
+	void Update() {
+		if(IsGameOver == false) {
+			CheckTankTracks();
+			UpdateRunTime();
+
+			if(showGrid) {
+				DrawGridLines();
+				DrawGridPoints();
 			}
 		}
 	}
 
-	void Update() {
-		if(!playerDeadGameOver) {
-			CheckTankTracks();
-		}
-		UpdateRunTime();
-	}
-
 	public void UpdateRunTime() {
-		if(!playerDeadGameOver && !player.disableControl && !isDebug) {
-			GameManager.playTime += Time.deltaTime;
-			UI.playTime.SetText(Mathf.Round(GameManager.playTime * 100f)/100f + "s");
+		if(!isDebug) {
+			GameManager.PlayTime += Time.deltaTime;
+			UI.playTime.SetText(Mathf.Round(GameManager.PlayTime * 100f)/100f + "s");
 		}
 	}
 
@@ -114,6 +120,8 @@ public class LevelManager : MonoBehaviour {
 	IEnumerator IStartGame() {
 		if(isDebug) {
 			SceneManager.sceneLoaded -= debugLoad;
+		} else {
+			player.makeInvincible = false;
 		}
 		
 		UI = FindObjectOfType<LevelUI>();
@@ -121,20 +129,20 @@ public class LevelManager : MonoBehaviour {
 		Feedback = FindObjectOfType<LevelFeedbacks>();
 		gameManager = FindObjectOfType<GameManager>();
 		player.SetupCross();
-		player.disableControl = true;
 
 		UI.EnableBlur();
 		UI.gameplay.SetActive(true);
 		Feedback.FadeInGameplayUI();
-		if(isBossLevel) {
-			FindObjectOfType<BossAI>().Initialize();
+		if(IsBossLevel) {
+			bossTank.InitializeAI();
 		}
 
 		UI.counterBanner.SetActive(true);
 		if(!isDebug) {
-			UI.playerScore.SetText(gameManager.score.ToString());
-			UI.playerLives.SetText(gameManager.playerLives.ToString());
+			UI.playerScore.SetText(GameManager.Score.ToString());
+			UI.playerLives.SetText(GameManager.PlayerLives.ToString());
 			UI.levelStage.SetText($"Level {LevelNumber}");
+			UI.playTime.SetText(Mathf.Round(GameManager.PlayTime * 100f) / 100f + "s");
 			Cursor.visible = false;
 			Cursor.lockState = CursorLockMode.Confined;
 		}
@@ -142,50 +150,31 @@ public class LevelManager : MonoBehaviour {
 		yield return new WaitForSeconds(2.5f);
 		Feedback.PlayStartFadeText();
 		yield return new WaitForSeconds(1);
-		player.disableControl = false;
+		IsGameOver = false;
 		UI.counterBanner.SetActive(false);
-		foreach(TankAI tank in tankAIs) {
-			tank.IsAIEnabled = true;
-		}
-	}
+		player.EnablePlayer();
+		EnableAllAIs();
 
-	public void EndGame() {
-		if(!isDebug && !gameEnded) {
-			gameManager.levelId++;
-			gameEnded = true;
-			player.makeInvincible = true;
-			StartCoroutine(IEndGame());
+		foreach(var ai in tankAIs) {
+			ai.InitializeAI();
 		}
-	}
-	IEnumerator IEndGame() {
-		yield return new WaitForSeconds(2f);
-		Cursor.visible = false;
-		Cursor.lockState = CursorLockMode.Confined;
-		Destroy(player.crosshair.gameObject);
-		player.enabled = false;
-		Feedback.FadeOutGameplayUI();
-		gameManager.LoadLevel(playerDeadGameOver);
 	}
 
 	public void TankDestroyedCheck() {
-		if(player.HasBeenDestroyed) {
-			PlayerDead();
-		} else {
-			AddScore();
-			foreach(TankAI t in tankAIs) {
-				if(t.HasBeenDestroyed == false) {
-					// All TankAIs must be destroyed or else returns
-					return;
-				}
+		AddScore();
+		foreach(TankAI t in tankAIs) {
+			if(t.HasBeenDestroyed == false) {
+				// All TankAIs must be destroyed or else returns
+				return;
 			}
-			GameOverWin();
 		}
+		GameOver();
 	}
 
-	public void AddScore() {
+	void AddScore() {
 		if(!isDebug) {
-			gameManager.score++;
-			UI.playerScore.SetText(gameManager.score.ToString());
+			GameManager.Score++;
+			UI.playerScore.SetText(GameManager.Score.ToString());
 			Feedback.PlayScore();
 		} else {
 			UI.playerScore.SetText(Random.Range(0, 9).ToString());
@@ -193,16 +182,18 @@ public class LevelManager : MonoBehaviour {
 		}
 	}
 
-	void PlayerDead() {
-		playerDeadGameOver = true;
-		player.disableControl = true;
+	public void PlayerDead() {
+		player.DisablePlayer();
+		DisableAllAIs();
 
 		if(!isDebug) {
-			gameManager.playerLives--;
-			UI.playerLives.SetText(gameManager.playerLives.ToString());
-			if(gameManager.playerLives <= 0) {
-				GameOverWin();
+			GameManager.PlayerLives--;
+			UI.playerLives.SetText(GameManager.PlayerLives.ToString());
+			if(GameManager.PlayerLives <= 0) {
+				GameOver();
 			} else {
+				IsGameOver = true;
+				GameManager.UpdateCampaign();
 				Respawn();
 			}
 		}
@@ -215,8 +206,6 @@ public class LevelManager : MonoBehaviour {
 		player.Revive();
 
 		foreach(TankAI t in FindObjectsOfType<TankAI>()) {
-			t.IsAIEnabled = false;
-			t.enabled = true;
 			if(t.HasBeenDestroyed == false) {
 				t.Revive();
 			} else if(ReviveDeadAI) {
@@ -224,26 +213,51 @@ public class LevelManager : MonoBehaviour {
 			}
 		}
 		yield return new WaitForSeconds(1f);
-		playerDeadGameOver = false;
 		StartGame();
 	}
 
-	void GameOverWin() {
-		foreach(TankBase t in FindObjectsOfType<TankBase>()) {
-			if(t is TankAI) {
-				var tai = t as TankAI;
-				tai.disableAI = true;
-			} else if(t is PlayerInput) {
-				var pl = t as PlayerInput;
-				pl.disableControl = true;
+	void GameOver() {
+		if(!isDebug && IsGameOver == false) {
+			if(GameManager.CurrentMode == GameManager.GameMode.Campaign) {
+				GameManager.LevelId++;
 			}
+
+			IsGameOver = true;
+			GameManager.UpdateCampaign();
+			player.DisablePlayer();
+			DisableAllAIs();
+			StartCoroutine(IGameOver());
 		}
-		EndGame();
+	}
+	IEnumerator IGameOver() {
+		yield return new WaitForSeconds(2f);
+		Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Confined;
+		Feedback.FadeOutGameplayUI();
+		if(GameManager.CurrentMode == GameManager.GameMode.Campaign && GameManager.PlayerLives > 0) {
+			gameManager.LoadLevel();
+		} else {
+			gameManager.LoadLevel(true);
+		}
 	}
 
 	void CheckTankTracks() {
 		if(trackContainer.childCount > maxTracksOnStage) {
 			Destroy(trackContainer.GetChild(0).gameObject);
+		}
+	}
+
+	public void DisableAllAIs() {
+		foreach(TankAI t in tankAIs) {
+			t.DisableAI();
+			t.makeInvincible = true;
+		}
+	}
+
+	public void EnableAllAIs() {
+		foreach(TankAI t in tankAIs) {
+			t.EnableAI();
+			t.makeInvincible = false;
 		}
 	}
 
@@ -271,24 +285,32 @@ public class LevelManager : MonoBehaviour {
 		grid.SaveGrid();
 	}
 
-	void OnDrawGizmosSelected() {
+	void OnDrawGizmos() {
 		if(showGrid) {
 			DrawGridLines();
-			//DrawGridPoints();
+			DrawGridPoints();
 		}
 	}
 
 	public void DrawGridLines() {
-		foreach(Node n in grid.Nodes) {
-			foreach(KeyValuePair<Node, float> neigh in n.Neighbours) {
-				Draw.Line(n.pos, neigh.Key.pos, Color.white);
+		if(grid != null) {
+			foreach(Node n in grid.Nodes) {
+				foreach(KeyValuePair<Node, float> neigh in n.Neighbours) {
+					Draw.Line(n.pos, neigh.Key.pos, Color.white, true);
+				}
 			}
 		}
 	}
 
 	public void DrawGridPoints() {
-		foreach(Node n in grid.Nodes) {
-			Draw.Disc(n.pos, Vector3.up);
+		if(grid != null) {
+			foreach(Node n in grid.Nodes) {
+				if(n.type == Node.NodeType.ground) {
+					Draw.Sphere(n.pos, 0.2f, Color.white, true);
+				} else {
+					Draw.Sphere(n.pos, 0.2f, Color.red, true);
+				}
+			}
 		}
 	}
 #endif
@@ -300,9 +322,6 @@ public class LevelManagerEditor : Editor {
 	public override void OnInspectorGUI() {
 		DrawDefaultInspector();
 		LevelManager builder = (LevelManager)target;
-		if(GUILayout.Button("Add Score")) {
-			builder.AddScore();
-		}
 		if(GUILayout.Button("Reset")) {
 			builder.Respawn();
 		}

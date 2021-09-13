@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
-using UnityEngine.VFX;
 using CarterGames.Assets.AudioManager;
 using SimpleMan.Extensions;
 using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
 using System.Collections;
-using static Sperlich.Debug.Draw.Draw;
 using Shapes;
 using System.Collections.Generic;
 #if UNITY_EDITOR
@@ -13,80 +11,92 @@ using UnityEditor;
 #endif
 
 [RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(MMFeedbacks))]
+[RequireComponent(typeof(TankReferences))]
 public class TankBase : MonoBehaviour {
 	[Header("VALUES")]
-	public int moveSpeed;
-	public int healthPoints;
-	public float bodyRotSpeed;
-	public float aimRotSpeed;
-	public float angleDiffLock;
-	public float shootStunDuration;
+	public byte moveSpeed = 5;
+	public byte healthPoints = 2;
+	public float shootStunDuration = 0.2f;
 	[Range(0f, 4f)]
-	public float reloadDuration = 1f;
+	public float reloadDuration = 0.5f;
 	[Range(0f, 4f)]
 	public float randomReloadDuration = 1f;
-	public float trackSpawnDistance;
-	public float destructionVelocity;
-	public Bullet bullet;
-	public LayerMask hitLayers;
-	public LayerMask obstacleLayers;
+	[Range(0, 360f)]
+	public short bodyRotSpeed = 360;
+	public short destructionVelocity = 400;
 	public bool disable2DirectionMovement;
-	public bool makeInvincible;
-	[Header("REFERENCES")]
-	public Transform tankBody;
-	public Transform tankHead;
-	public Transform bulletOutput;
-	public GameObject tankTrack;
-	public ParticleSystem muzzleFlash;
-	public Transform billboardHolder;
-	public Rectangle healthBar;
-	public MMFeedbacks hitFlash;
-	public List<Transform> destroyTransformPieces;
-	[Header("Explosion Effects")]
-	public GameObject destroyFlash;
-	public ParticleSystem sparkDestroyEffect;
-	public ParticleSystem smokeDestroyEffect;
-	public ParticleSystem smokeFireDestroyEffect;
-	public ParticleSystem damageSmokeBody;
-	public ParticleSystem damageSmokeHead;
-	public Disc shockwaveDisc;
-	Vector3 moveDir;
-	public Vector3 Pos => tankBody.position;
-	public Vector3 MovingDir => moveDir;
-	public bool CanShoot => !isReloading;
-	public bool HasBeenDestroyed { get; set; }
-	public bool CanMove { get; set; }
-	Rigidbody rig;
-	MMFeedbacks feedback;
-	MMWiggle headWiggle;
-	Transform trackContainer;
-	AudioManager Audio => LevelManager.audioManager;
-	int muzzleFlashDelta;
+	public bool makeInvincible;     // Ivincibility for Debugging
+
+	bool isInvincible;
+	bool isReloading;
+	bool isShootStunned;
+	protected bool canMove;
+	protected byte maxHealthPoints;
 	float angleDiff;
+	float aimRotSpeed = 600;
+	float angleDiffLock = 600;
+	protected float trackSpawnDistance = 0.75f;
+	protected float distanceSinceLastFrame;
+	int initLayer;
 	Vector3 lastTrackPos;
 	Vector3 lastPos;
 	Vector3 spawnPos;
-	int initLayer;
-	float engineVolume;
-	protected float distanceSinceLastFrame;
-	protected int maxHealthPoints;
-	bool isReloading;
-	bool isShootStunned;
+	Vector3 moveDir;
+	protected Quaternion lastHeadRot;
+	Rigidbody rig;
+	Transform trackContainer;
+	MMFeedbacks headShotFeedback;
+	MMWiggle headWiggle;
 	List<Vector3> destroyRestPoses;
 	List<Quaternion> destroyRestRots;
 
+	// Propterties
+	protected bool CanShoot => !isReloading;
+	public bool HasBeenDestroyed { get; set; }
+	public bool IsInvincible {
+		get => isInvincible || makeInvincible;
+		set => isInvincible = value;
+	}// Game ivincibility
+	public Vector3 Pos => tankBody.position;
+	public Vector3 MovingDir => moveDir;
+	public Bullet Bullet { get; set; }
+	private TankReferences References { get; set; }
+	protected AudioManager Audio => LevelManager.audioManager;
+	protected LevelManager LevelManager { get; set; }
+
+	// Tank References Shortcuts
+	public Disc shockwaveDisc => References.shockwaveDisc;
+	public Rectangle healthBar => References.healthBar;
+	public Transform tankBody => References.tankBody;
+	public Transform tankHead => References.tankHead;
+	public Transform bulletOutput => References.bulletOutput;
+	public Transform billboardHolder => References.billboardHolder;
+	public GameObject blobShadow => References.blobShadow;
+	public GameObject tankTrack => References.tankTrack;
+	public GameObject destroyFlash => References.destroyFlash;
+	public List<Transform> destroyTransformPieces => References.destroyTransformPieces;
+	public ParticleSystem muzzleFlash => References.muzzleFlash;
+	public ParticleSystem sparkDestroyEffect => References.sparkDestroyEffect;
+	public ParticleSystem smokeDestroyEffect => References.smokeDestroyEffect;
+	public ParticleSystem smokeFireDestroyEffect => References.smokeFireDestroyEffect;
+	public ParticleSystem damageSmokeBody => References.damageSmokeBody;
+	public ParticleSystem damageSmokeHead => References.damageSmokeHead;
+	public MMFeedbacks hitFlash => References.hitFlash;
+
 	protected virtual void Awake() {
+		References = GetComponent<TankReferences>();
 		rig = GetComponent<Rigidbody>();
-		feedback = GetComponent<MMFeedbacks>();
+		Bullet = References.bullet.GetComponent<Bullet>();
+		//headShotFeedback = GetComponent<MMFeedbacks>();
 		headWiggle = tankHead.GetComponent<MMWiggle>();
+		LevelManager = FindObjectOfType<LevelManager>();
 		spawnPos = rig.position;
 		initLayer = gameObject.layer;
 		trackContainer = GameObject.Find("TrackContainer").transform;
 		maxHealthPoints = healthPoints;
 		lastTrackPos = Pos;
-		CanMove = true;
 		healthBar.Width = 2f;
+		canMove = true;
 		healthBar.transform.parent.gameObject.SetActive(false);
 		shockwaveDisc.gameObject.SetActive(false);
 		destroyRestPoses = new List<Vector3>();
@@ -102,6 +112,7 @@ public class TankBase : MonoBehaviour {
 		distanceSinceLastFrame = Vector3.Distance(transform.position, lastPos);
 		billboardHolder.rotation = Quaternion.LookRotation((Pos - Camera.main.transform.position).normalized, Vector3.up);
 		lastPos = transform.position;
+		lastHeadRot = tankHead.rotation;
 	}
 
 	public void Move() => Move(new Vector3(transform.forward.x, 0, transform.forward.z));
@@ -117,7 +128,7 @@ public class TankBase : MonoBehaviour {
 
 		var movePos = temp * moveSpeed * Time.deltaTime * rig.transform.forward;
 		//bool moveBlocked = Physics.Raycast(rig.position, moveDir, out RaycastHit blockHit, 2, obstacleLayers);
-		if(!isShootStunned && CanMove) {
+		if(!isShootStunned && canMove) {
 			rig.MovePosition(rig.position + movePos);
 		}
 		TrackTracer();
@@ -165,8 +176,8 @@ public class TankBase : MonoBehaviour {
 			headWiggle.PositionWiggleProperties.AmplitudeMin = bounceDir;
 			headWiggle.PositionWiggleProperties.AmplitudeMax = bounceDir;
 			muzzleFlash.Play();
-			feedback.PlayFeedbacks();
-			Instantiate(bullet).SetupBullet(bulletOutput.forward, bulletOutput.position);
+			//headShotFeedback.PlayFeedbacks();
+			Instantiate(Bullet).SetupBullet(bulletOutput.forward, bulletOutput.position);
 			
 			if(reloadDuration > 0) {
 				isReloading = true;
@@ -180,7 +191,7 @@ public class TankBase : MonoBehaviour {
 	}
 
 	public virtual void GotHitByBullet() {
-		if(!LevelManager.playerDeadGameOver && !makeInvincible) {
+		if(!IsInvincible) {
 			if(healthPoints - 1 <= 0) {
 				GotDestroyed();
 			}
@@ -202,9 +213,14 @@ public class TankBase : MonoBehaviour {
 			rig.AddForce(vec);
 			rig.AddTorque(vec);
 		}
+		blobShadow.SetActive(false);
 		healthBar.gameObject.SetActive(false);
-		FindObjectOfType<LevelManager>().TankDestroyedCheck();
 		PlayDestroyExplosion();
+		if(this is PlayerInput) {
+			LevelManager.PlayerDead();
+		} else {
+			LevelManager.TankDestroyedCheck();
+		}
 	}
 
 	public void PlayDestroyExplosion() {
@@ -227,9 +243,12 @@ public class TankBase : MonoBehaviour {
 	}
 
 	public virtual void Revive() {
-		LevelManager.playerDeadGameOver = false;
-		healthPoints = maxHealthPoints;
+		isShootStunned = false;
+		isReloading = false;
 		HasBeenDestroyed = false;
+		canMove = true;
+		healthPoints = maxHealthPoints;
+		blobShadow.SetActive(true);
 		healthBar.gameObject.SetActive(true);
 		healthBar.transform.parent.gameObject.SetActive(false);
 		transform.position = spawnPos;

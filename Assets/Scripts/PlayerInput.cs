@@ -92,4 +92,20 @@ public class PlayerInput : TankBase {
 		crossHairLines[3].ColorStart = crossHairColor;
 		crossHairLines[3].ColorEnd = crossHairColor2;
 	}
+
+	public override void GotHitByBullet() {
+		base.GotHitByBullet();
+	}
+
+	public void DisablePlayer() {
+		disableControl = true;
+		disableCrossHair = true;
+		IsInvincible = true;
+	}
+
+	public void EnablePlayer() {
+		disableControl = false;
+		disableCrossHair = false;
+		IsInvincible = false;
+	}
 }

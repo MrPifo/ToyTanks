@@ -18,7 +18,7 @@ public class Bullet : MonoBehaviour {
 	public ParticleSystem smokeFireTrail;
 	public ParticleSystem impactSparks;
 	public bool showDebug;
-	public static Vector3 bulletSize = new Vector3(0.1f, 0.1f, 0.1f);
+	public static Vector3 bulletSize = new Vector3(0.25f, 0.25f, 0.25f);
 	List<(Vector3 pos, Vector3 normal)> predictedPath;
 	Rigidbody rig;
 	float lastHitTime;

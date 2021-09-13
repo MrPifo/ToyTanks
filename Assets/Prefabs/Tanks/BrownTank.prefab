@@ -40,6 +40,7 @@ MonoBehaviour:
   billboardHolder: {fileID: 6590467983911570716}
   healthBar: {fileID: 6994565674539548272}
   hitFlash: {fileID: 4299715331680624329}
+  blobShadow: {fileID: 1727698961142744867}
   destroyTransformPieces:
   - {fileID: 5892700283455791408}
   - {fileID: 3582213993109237837}
@@ -62,7 +63,6 @@ MonoBehaviour:
   pathNodeReachTreshold: 0
   pathUpdateInvervall: 1
   showDebug: 0
-  disableAI: 0
   activePatrolPoint:
     pos:
       x: 0
@@ -369,3 +369,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 841b72de2996c5c40bfb394f3d0e0a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1727698961142744867 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3206532803999499036, guid: deb07d1d6146747469e15b61bffdc376,
+    type: 3}
+  m_PrefabInstance: {fileID: 4289082252601492543}
+  m_PrefabAsset: {fileID: 0}

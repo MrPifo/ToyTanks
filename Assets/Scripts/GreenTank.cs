@@ -1,9 +1,14 @@
+using SimpleMan.Extensions;
 using Sperlich.Debug.Draw;
+using Sperlich.FSM;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GreenTank : TankAI {
+
+	public enum GreenState { Waiting, Attack }
+	protected FSM<GreenState> stateMachine = new FSM<GreenState>();
 
 	public int predictionIterations = 10;
 	bool pathFound;
@@ -15,45 +20,32 @@ public class GreenTank : TankAI {
 	}
 
 	void Start() {
-		lastFoundRay = new Ray(Pos + Vector3.up / 2f, (player.Pos - Pos));
+		lastFoundRay = new Ray(Pos + Vector3.up / 2f, (Player.Pos - Pos));
 	}
 
-	public override void Attack() {
-		if(!IsPlayerInDetectRadius) {
-			stateMachine.Push(TankState.Idle);
-			return;
-		}
-		if(HasSightContact(player)) {
-			if(IsAimingOnTarget(player.transform) && CanShoot && !WouldFriendlyFire) {
-				ShootBullet();
+	public override void InitializeAI() {
+		GoToNextState();
+	}
+
+	IEnumerator Attack() {
+		while(!HasBeenDestroyed) {
+			if(IsPlayerInDetectRadius) {
+				if(HasSightContact(Player)) {
+					if(IsAimingOnTarget(Player.transform) && CanShoot && !WouldFriendlyFire) {
+						ShootBullet();
+					}
+					Aim();
+				} else if(IsBouncePathValid()) {
+					MoveHead(validPath[1].Item1.origin);
+					if(IsAimingOnTarget(validPath[0].Item2.point, 0.97f) && CanShoot && !WouldFriendlyFire) {
+						ShootBullet();
+					}
+				} else {
+					FindBouncePath();
+				}
 			}
-			Aim();
-		} else if(IsBouncePathValid()) {
-			MoveHead(validPath[1].Item1.origin);
-			if(IsAimingOnTarget(validPath[0].Item2.point, 0.97f) && CanShoot && !WouldFriendlyFire) {
-				ShootBullet();
-			}
-		} else if(!IsBouncePathValid()) {
-			stateMachine.Push(TankState.Idle);
+			yield return null;
 		}
-	}
-
-	public override void Defense() {
-		
-	}
-
-	public override void Idle() {
-		if(IsPlayerInDetectRadius) {
-			if(HasSightContactToPlayer) {
-				stateMachine.Push(TankState.Attack);
-			} else if(FindBouncePath()) {
-				stateMachine.Push(TankState.Attack);
-			}
-		}
-	}
-
-	public override void Patrol() {
-		
 	}
 
 	public bool IsBouncePathValid() {
@@ -66,7 +58,6 @@ public class GreenTank : TankAI {
 					return true;
 				}
 			}
-			Draw.Ray(validPath[1].Item1.origin, validPath[1].Item1.direction, Color.magenta);
 		}
 		return false;
 	}
@@ -119,7 +110,7 @@ public class GreenTank : TankAI {
 				lastFoundRay = ray;
 				return true;
 			} else {
-				ray.direction = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
+				ray.direction = new Vector3(Random(-1f, 1f), 0, Random(-1f, 1f));
 			}
 			if(showDebug) {
 				Draw.Line(Pos, hit.point, Color.cyan);
@@ -127,5 +118,27 @@ public class GreenTank : TankAI {
 			}
 		}
 		return false;
+	}
+
+	protected override void ProcessState() {
+		if(HasBeenDestroyed == false) {
+			switch(stateMachine.State) {
+				case GreenState.Attack:
+					StartCoroutine(Attack());
+					break;
+			}
+		}
+	}
+
+	protected override void GoToNextState(float delay = 0.001f) {
+		if(IsAIEnabled) {
+			this.Delay(delay, () => {
+				stateMachine.Push(GreenState.Waiting);
+				while(stateMachine == GreenState.Waiting) {
+					stateMachine.Push(stateMachine.GetRandom());
+				}
+				ProcessState();
+			});
+		}
 	}
 }

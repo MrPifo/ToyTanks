@@ -14,79 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 4
   healthPoints: 40
-  bodyRotSpeed: 360
-  aimRotSpeed: 500
-  angleDiffLock: 500
   shootStunDuration: 0.3
   reloadDuration: 0.2
   randomReloadDuration: 0
-  trackSpawnDistance: 0.35
+  bodyRotSpeed: 360
   destructionVelocity: 500
-  bullet: {fileID: 2289023427519048416, guid: 028ffc27e20b4dc47aa01e10a0da42b7, type: 3}
+  disable2DirectionMovement: 1
+  makeInvincible: 0
+  playerDetectRadius: 99
+  playerLoseRadius: 99
+  showDebug: 0
   hitLayers:
     serializedVersion: 2
     m_Bits: 896
-  obstacleLayers:
-    serializedVersion: 2
-    m_Bits: 256
-  disable2DirectionMovement: 1
-  makeInvincible: 0
-  tankBody: {fileID: 2793118247398941827}
-  tankHead: {fileID: 5094311378394314238}
-  bulletOutput: {fileID: 1111565304698518989}
-  tankTrack: {fileID: 4368261705553961422, guid: 71c9b82c6e364284d854039d3979a603,
-    type: 3}
-  muzzleFlash: {fileID: 2043820674984776400}
-  billboardHolder: {fileID: 3202690618488490159}
-  healthBar: {fileID: 1591325363303627715}
-  hitFlash: {fileID: 5525808718866160506}
-  destroyTransformPieces:
-  - {fileID: 2793118247398941827}
-  - {fileID: 5094311378394314238}
-  - {fileID: 3258954770712978254}
-  destroyFlash: {fileID: 4716092180715343117}
-  sparkDestroyEffect: {fileID: 5230959693574016366}
-  smokeDestroyEffect: {fileID: 8840377814465411812}
-  smokeFireDestroyEffect: {fileID: 4918138221703668141}
-  damageSmokeBody: {fileID: 4764306448496388567}
-  damageSmokeHead: {fileID: 4901688768086377909}
-  shockwaveDisc: {fileID: 9046218173398678351}
-  player: {fileID: 0}
-  level: {fileID: 0}
   levelPredictionMask:
     serializedVersion: 2
     m_Bits: 256
-  minAlwaysShootDistance: 0
-  shootRadius: 99
-  playerDetectRadius: 99
-  playerLoseRadius: 99
-  pathNodeReachTreshold: 2
-  pathUpdateInvervall: 1
-  showDebug: 0
-  disableAI: 0
-  activePatrolPoint:
-    pos:
-      x: 0
-      y: 0
-      z: 0
-    type: 0
-    gCost: 0
-    hCost: 0
-    dist: 0
-  rollerRotSpeed: 100
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 256
   chargeSpeed: 16
-  waitDuration: 1.5
+  waitDuration: 1
+  burstAmount: 6
   chargeLineL: {fileID: 7723204310692415514}
   chargeLineR: {fileID: 9045923375969336373}
   chargeLineM: {fileID: 9174052762025913929}
+  rollerTransform: {fileID: 8150312239008493121}
+  chargePath: {fileID: 7049415272156707321}
+  rollerTrigger: {fileID: 9091360153845353924}
   chargeVibration: {fileID: 5971461261830086749}
   hitChargeFeedback: {fileID: 1563589871300565626}
   chargeSmoke: {fileID: 4870579256896687335}
-  burstAmount: 6
-  rollerTrigger: {fileID: 9091360153845353924}
-  rollerTransform: {fileID: 8150312239008493121}
-  chargeDirection: {x: 0, y: 0, z: 0}
-  chargeDestination: {x: 0, y: 0, z: 0}
 --- !u!1 &420795182123513361
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,7 +75,7 @@ Transform:
   m_Children:
   - {fileID: 875899414444554646}
   m_Father: {fileID: 641670296266361989}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!136 &5681968889008244084
 CapsuleCollider:
@@ -163,7 +121,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 641670296266361989}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5971461261830086749
 MonoBehaviour:
@@ -495,7 +453,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 641670296266361989}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1563589871300565626
 MonoBehaviour:
@@ -980,7 +938,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 641670296266361989}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &4870579256896687335
 ParticleSystem:
@@ -5913,7 +5871,7 @@ Transform:
   - {fileID: 1941224691927971184}
   - {fileID: 3369157730559934921}
   m_Father: {fileID: 641670296266361989}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7709413881396231957
 GameObject:
@@ -6210,6 +6168,27 @@ PrefabInstance:
       propertyPath: m_Name
       value: BossTank01
       objectReference: {fileID: 0}
+    - target: {fileID: 7050499238146579050, guid: deb07d1d6146747469e15b61bffdc376,
+        type: 3}
+      propertyPath: bullet
+      value: 
+      objectReference: {fileID: 5620761198142219836, guid: 8f34fa7294e565d4f9ae3c5a7a9e74e8,
+        type: 3}
+    - target: {fileID: 7050499238146579050, guid: deb07d1d6146747469e15b61bffdc376,
+        type: 3}
+      propertyPath: destroyTransformPieces.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7050499238146579050, guid: deb07d1d6146747469e15b61bffdc376,
+        type: 3}
+      propertyPath: destroyTransformPieces.Array.data[2]
+      value: 
+      objectReference: {fileID: 3258954770712978254}
+    - target: {fileID: 7050499238146579050, guid: deb07d1d6146747469e15b61bffdc376,
+        type: 3}
+      propertyPath: destroyTransformPieces.Array.data[3]
+      value: 
+      objectReference: {fileID: 5094311378394314238}
     - target: {fileID: 7186067371241428572, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -6229,7 +6208,7 @@ PrefabInstance:
     - target: {fileID: 8014281622736527105, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: deb07d1d6146747469e15b61bffdc376, type: 3}
@@ -6245,105 +6224,15 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 5512920536858444172}
   m_PrefabAsset: {fileID: 0}
---- !u!198 &4764306448496388567 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 1053810967963347035, guid: deb07d1d6146747469e15b61bffdc376,
-    type: 3}
-  m_PrefabInstance: {fileID: 5512920536858444172}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5094311378394314238 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 735060014117106802, guid: deb07d1d6146747469e15b61bffdc376,
     type: 3}
   m_PrefabInstance: {fileID: 5512920536858444172}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1111565304698518989 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4894505441659419713, guid: deb07d1d6146747469e15b61bffdc376,
-    type: 3}
-  m_PrefabInstance: {fileID: 5512920536858444172}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &4901688768086377909 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 614635743929222201, guid: deb07d1d6146747469e15b61bffdc376,
-    type: 3}
-  m_PrefabInstance: {fileID: 5512920536858444172}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &5525808718866160506 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 13028962517211894, guid: deb07d1d6146747469e15b61bffdc376,
-    type: 3}
-  m_PrefabInstance: {fileID: 5512920536858444172}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 841b72de2996c5c40bfb394f3d0e0a98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!198 &5230959693574016366 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 295493910551776482, guid: deb07d1d6146747469e15b61bffdc376,
-    type: 3}
-  m_PrefabInstance: {fileID: 5512920536858444172}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &9046218173398678351 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3534001323994987203, guid: deb07d1d6146747469e15b61bffdc376,
-    type: 3}
-  m_PrefabInstance: {fileID: 5512920536858444172}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dd51d29965c9d04599a2fdc8a833c6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!198 &4918138221703668141 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 630900470999441441, guid: deb07d1d6146747469e15b61bffdc376,
-    type: 3}
-  m_PrefabInstance: {fileID: 5512920536858444172}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &264721789128545855 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5705408810080229299, guid: deb07d1d6146747469e15b61bffdc376,
-    type: 3}
-  m_PrefabInstance: {fileID: 5512920536858444172}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &8840377814465411812 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 3904199547837168488, guid: deb07d1d6146747469e15b61bffdc376,
-    type: 3}
-  m_PrefabInstance: {fileID: 5512920536858444172}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &2043820674984776400 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 5826752015924351836, guid: deb07d1d6146747469e15b61bffdc376,
-    type: 3}
-  m_PrefabInstance: {fileID: 5512920536858444172}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1591325363303627715 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6526931892467366479, guid: deb07d1d6146747469e15b61bffdc376,
-    type: 3}
-  m_PrefabInstance: {fileID: 5512920536858444172}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08f210828086c1a4398856e1ba65627c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &4716092180715343117 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1005209663503748225, guid: deb07d1d6146747469e15b61bffdc376,
-    type: 3}
-  m_PrefabInstance: {fileID: 5512920536858444172}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &3202690618488490159 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6986184883598838051, guid: deb07d1d6146747469e15b61bffdc376,
     type: 3}
   m_PrefabInstance: {fileID: 5512920536858444172}
   m_PrefabAsset: {fileID: 0}

@@ -8,24 +8,34 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(MMFeedbacks))]
 public class GameManager : MonoBehaviour {
 
-	public int levelId;
-	public int playerLives;
-	public int score;
-	public int startLevel;
-	public bool isLoading;
-	public static float playTime;
-	MMFeedbackLoadScene loader;
-	MMFeedbacks feedbacks;
-	LoadingScreen screen;
-	UnityAction<Scene, LoadSceneMode> loadingScreenStarted2Callback;
+	public enum GameMode { Campaign, LevelOnly}
+
+	[SerializeField] int startLevel;
+	[SerializeField] Texture2D defaultCursor;
+	[SerializeField] Texture2D pointerCursor;
+	public static int LevelId { get; set; } = 1;
+	public static byte PlayerLives { get; set; } = 3;
+	public static short Score { get; set; } = 0;
+	public static float PlayTime { get; set; } = 0;
+	public static bool isLoading;
+	public static GameMode CurrentMode { get; set; }
+	public static GameManager Instance { get; set; }
+	public static MMFeedbackLoadScene loader;
+	public static MMFeedbacks feedbacks;
+	public static LoadingScreen screen;
 	UnityAction<Scene, LoadSceneMode> loadingScreenStartedCallback;
-	UnityAction<Scene, LoadSceneMode> onLoadStartedCallback;
 	UnityAction<Scene, Scene> loadingScreenExitCallback;
 	UnityAction<Scene, LoadSceneMode> levelBaseLoadedCallback;
 
 	void Awake() {
+		DontDestroyOnLoad(this);
+		Game.AddCursor("default", defaultCursor);
+		Game.AddCursor("pointer", pointerCursor);
+		Instance = this;
 		feedbacks = GetComponent<MMFeedbacks>();
 		loader = feedbacks.GetComponent<MMFeedbackLoadScene>();
+		SaveGame.GameStartUp();
+		Game.SetCursor("default");
 	}
 
 	public void CopyCamera() {
@@ -39,14 +49,21 @@ public class GameManager : MonoBehaviour {
 		thisCam.farClipPlane = mainCam.farClipPlane;
 	}
 
+	public static void StartLevel(int levelId) {
+		CurrentMode = GameMode.LevelOnly;
+		PlayerLives = 0;
+		GameManager.LevelId = levelId;
+		Instance.LoadLevel();
+	}
+
 	public void LoadLevel(bool returnToMenu = false) {
 		if(!isLoading) {
 			isLoading = true;
-			if(!returnToMenu && Application.CanStreamedLevelBeLoaded("Level_" + levelId)) {
+			if(!returnToMenu && Application.CanStreamedLevelBeLoaded("Level_" + LevelId)) {
 				OnLoadingScreenEntered(() => {
 					FindObjectOfType<MMAdditiveSceneLoadingManager>().OnAfterEntryFade.AddListener(() => {
 						screen = FindObjectOfType<LoadingScreen>();
-						screen.SetInfo($"Level {levelId+1}", $"{playerLives} x");
+						screen.SetInfo($"Level {LevelId}", $"{PlayerLives} x");
 					});
 				});
 				OnLoadingScreenEntered(() => LoadLevelBase(() => {
@@ -58,7 +75,7 @@ public class GameManager : MonoBehaviour {
 						FindObjectOfType<LevelManager>().StartGame();
 					});
 				}));
-				StartTransitionToScene("Level_" + levelId);
+				StartTransitionToScene("Level_" + LevelId);
 			} else {
 				OnLoadingScreenEntered(() => {
 					FindObjectOfType<MMAdditiveSceneLoadingManager>().OnAfterEntryFade.AddListener(() => {
@@ -77,18 +94,23 @@ public class GameManager : MonoBehaviour {
 	public void ResetGameStatus() {
 		Cursor.visible = true;
 		Cursor.lockState = CursorLockMode.Confined;
-		LevelManager.playerDeadGameOver = false;
 		Destroy(gameObject);
 	}
 
 	public void StartCampaign() {
 		if(!isLoading) {
-			DontDestroyOnLoad(this);
-			levelId = startLevel <= -1 ? 0 : startLevel;
-			playerLives = 3;
-			playTime = 0;
+			var camp = SaveGame.CurrentCampaign;
+			CurrentMode = GameMode.Campaign;
+			LevelId = camp.levelId;
+			PlayTime = camp.time;
+			Score = camp.score;
+			PlayerLives = camp.lives;
 			LoadLevel();
 		}
+	}
+
+	public static void UpdateCampaign() {
+		SaveGame.UpdateCampaign(LevelId, PlayerLives, Score, PlayTime);
 	}
 
 	public void OnLoadingScreenEntered(UnityAction callback) {

@@ -1,103 +1,92 @@
 using SimpleMan.Extensions;
 using Sperlich.Debug.Draw;
+using Sperlich.FSM;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GreyTank : TankAI {
 
-	public enum GreyTankStates { None, AttackApproach, AttackRetreat }
+	public enum GreyState { Waiting, Attack, Retreat }
+	protected FSM<GreyState> stateMachine = new FSM<GreyState>();
 
-	public float attackPathRefreshIntervall = 1f;
-	public GreyTankStates behaviour;
+	byte pathUpdateInvervall = 1;
+	byte attackPathRefreshIntervall = 4;
 	float behaviourAttackTime;
 
 	protected override void Awake() {
 		base.Awake();
 	}
 
-	public override void Idle() {
-		stateMachine.Push(TankState.Patrol);
+	protected override void GoToNextState(float delay = 0.0001f) {
+		if(IsAIEnabled) {
+			this.Delay(delay, () => {
+				stateMachine.Push(GreyState.Waiting);
+				while(stateMachine == GreyState.Waiting) {
+					stateMachine.Push(stateMachine.GetRandom());
+				}
+				ProcessState();
+			});
+		}
 	}
 
-	public override void Attack() {
-		if(IsPlayerInShootRadius == false || HasSightContactToPlayer == false) {
-			if(behaviour == GreyTankStates.None) {
-				if(Time.frameCount % pathUpdateInvervall == 0) {
-					FetchPathToPlayer();
-				}
-			} else {
-				if(Time.frameCount % pathUpdateInvervall == 0) {
-					FetchPathToPoint(activePatrolPoint);
-				}
-				behaviourAttackTime += Time.deltaTime;
-				if(behaviourAttackTime > attackPathRefreshIntervall) {
-					behaviour = GreyTankStates.None;
-				}
+	public override void InitializeAI() {
+		stateMachine.Push(GreyState.Attack);
+		ProcessState();
+	}
+
+	protected override void ProcessState() {
+		if(HasBeenDestroyed == false) {
+			switch(stateMachine.State) {
+				case GreyState.Attack:
+					StartCoroutine(Attack());
+					break;
+				case GreyState.Retreat:
+					StartCoroutine(Retreat());
+					break;
 			}
 		}
-		if(IsPlayerInShootRadius && HasSightContactToPlayer) {
-			if(behaviour == GreyTankStates.None) {
-				behaviour = GreyTankStates.AttackApproach;
-				behaviourAttackTime = 0;
-			}
-			if(behaviour == GreyTankStates.AttackRetreat) {
-				if(Time.frameCount % pathUpdateInvervall == 0) {
-					FetchPathToPoint(activePatrolPoint);
-				}
-				if(PathNodeCount <= 2) {
-					RefreshRandomPath(GetFurthestPointFrom(player.Pos, player.Pos, shootRadius).pos, shootRadius);
-					behaviourAttackTime = 0;
-				}
-			} else {
-				if(Time.frameCount % pathUpdateInvervall == 0) {
-					FetchPathToPlayer();
-				}
+	}
+
+	IEnumerator Attack() {
+		int bulletsShot = 0;
+		int requiredShots = Random(1, 4);
+		while(bulletsShot < requiredShots && !HasBeenDestroyed) {
+			if(CanShoot && HasSightContactToPlayer && IsAimingAtPlayer) {
 				ShootBullet();
-			}
-
-			Aim();
-			behaviourAttackTime += Time.deltaTime;
-
-			if(behaviourAttackTime > attackPathRefreshIntervall) {
-				if(behaviour == GreyTankStates.AttackRetreat) {
-					behaviour = GreyTankStates.AttackApproach;
+				bulletsShot++;
+			} else {
+				if(HasSightContactToPlayer && IsPlayerInDetectRadius) {
+					Aim();
 				} else {
-					behaviour = GreyTankStates.AttackRetreat;
+					FetchPathToPlayer();
+					MoveAlongPath();
+					KeepHeadRot();
 				}
-				RefreshRandomPath(GetFurthestPointFrom(player.Pos, player.Pos, shootRadius).pos, shootRadius);
-				behaviourAttackTime = 0;
 			}
+			yield return null;
 		}
-		MoveAlongPath();
-
-		if(IsPlayerOutsideLoseRadius) {
-			stateMachine.Push(TankState.Patrol);
-		}
+		stateMachine.Push(GreyState.Retreat);
+		ProcessState();
 	}
 
-	public override void Defense() {
-		
-	}
-
-	public override void Patrol() {
-		if(HasActivePatrolPoint == false || PathNodeCount <= 2) {
-			activePatrolPoint = GetRandomPointOnMap(Pos, playerLoseRadius);
+	IEnumerator Retreat() {
+		float time = 0;
+		while(time < Random(3, 6) && !HasBeenDestroyed) {
+			RefreshRandomPath(Pos, 20, 4);
+			MoveAlongPath();
+			KeepHeadRot();
+			yield return null;
+			time += Time.deltaTime;
 		}
-		if(Time.frameCount % pathUpdateInvervall == 0) {
-			FetchPathToPoint(activePatrolPoint);
-		}
-		MoveAlongPath();
-		if(IsPlayerInDetectRadius) {
-			stateMachine.Push(TankState.Attack);
-		}
+		stateMachine.Push(GreyState.Attack);
+		ProcessState();
 	}
 
 	public override void DrawDebug() {
 		Draw.Text(Pos + Vector3.up * 2, stateMachine.Text + " : " + healthPoints, 10, Color.black, false);
 		Draw.Ring(Pos, Vector3.up, playerLoseRadius, 1f, Color.white, true);
 		Draw.Ring(Pos, Vector3.up, playerDetectRadius, 1f, Color.black, true);
-		Draw.Ring(Pos, Vector3.up, Mathf.Min(shootRadius, distToPlayer), 1f, Color.red, true);
-		pathMesh.DrawPathLines(currentPath);
+		PathMesh.DrawPathLines(currentPath);
 	}
 }

@@ -13,61 +13,70 @@ public class BossTank01 : BossAI {
 	public enum BossBehaviour { Waiting, Charge, Burst }
 	public enum AttackBehaviour { None, Bursting }
 
-	public float rollerRotSpeed = 1;
 	[Header("Charge")]
-	public int chargeSpeed = 8;
-	public float waitDuration = 3;
-	public Line chargeLineL;
-	public Line chargeLineR;
-	public Line chargeLineM;
-	public MMFeedbacks chargeVibration;
-	public MMFeedbacks hitChargeFeedback;
-	public ParticleSystem chargeSmoke;
-	[Header("Burst")]
-	public int burstAmount = 4;
-	[Header("Info")]
-	public HitTrigger rollerTrigger;
-	public Transform rollerTransform;
-	public FSM<BossBehaviour> bossStates = new FSM<BossBehaviour>();
-	public Vector3 chargeDirection;
-	public Vector3 chargeDestination;
+	public byte chargeSpeed = 8;
+	public byte waitDuration = 3;
+	public byte burstAmount = 4;
+	[Header("References")]
+	[SerializeField] Line chargeLineL;
+	[SerializeField] Line chargeLineR;
+	[SerializeField] Line chargeLineM;
+	[SerializeField] Transform rollerTransform;
+	[SerializeField] GameObject chargePath;
+	[SerializeField] HitTrigger rollerTrigger;
+	[SerializeField] MMFeedbacks chargeVibration;
+	[SerializeField] MMFeedbacks hitChargeFeedback;
+	[SerializeField] ParticleSystem chargeSmoke;
+
+	FSM<BossBehaviour> bossStates = new FSM<BossBehaviour>();
+	Vector3 chargeDirection;
 	RaycastHit chargeHit;
-	int normalMoveSpeed;
+	byte rollerRotSpeed = 100;
+	byte normalMoveSpeed;
 
 	protected override void Awake() {
 		base.Awake();
+		chargePath.SetActive(false);
+		trackSpawnDistance = 0.35f;
 		rollerTrigger.PlayerHit.AddListener(() => {
-			if(!player.makeInvincible) {
-				player.GotDestroyed();
+			if(!Player.IsInvincible) {
+				Player.GotDestroyed();
 			}
 		});
+
 		normalMoveSpeed = moveSpeed;
 		chargeDirection = Vector3.zero;
 		HideChargeLine();
-		GoToNextState(5);
 	}
 
-	public override void Initialize() {
-		LevelManager.UI.InitBossBar(maxHealthPoints, 3);
+	public override void InitializeAI() {
+		chargeDirection = Vector3.zero;
+		moveSpeed = normalMoveSpeed;
+		rollerTrigger.TriggerHit.RemoveAllListeners();
+		bossStates.Push(BossBehaviour.Waiting);
+		HideChargeLine();
+
+		if(HasBeenInitialized == false) {
+			HasBeenInitialized = true;
+			LevelManager.UI.InitBossBar(maxHealthPoints, 3);
+		}
 	}
 
 	// State Decision Maker
-	public override void GoToNextState(float delay = 0) {
-		Debug.Log($"<color=red>Status: Waiting</color>");
-		this.Delay(delay, () => {
-			bossStates.Push(BossBehaviour.Waiting);
-			while(bossStates == BossBehaviour.Waiting) {
-				bossStates.Push(bossStates.GetRandom());
-			}
-			BossStates();
-			Debug.Log($"<color=red>Status: {bossStates}</color>");
-		});
+	protected override void GoToNextState(float delay = 0) {
+		if(IsAIEnabled) {
+			this.Delay(delay, () => {
+				bossStates.Push(BossBehaviour.Waiting);
+				while(bossStates == BossBehaviour.Waiting) {
+					bossStates.Push(bossStates.GetRandom());
+				}
+				ProcessState();
+				//Debug.Log($"<color=red>Status: {bossStates}</color>");
+			});
+		}
 	}
 
-	public void BossStates() {
-		if(HasBeenDestroyed) {
-			return;
-		}
+	protected override void ProcessState() {
 		switch(bossStates.State) {
 			case BossBehaviour.Charge:
 				StartCoroutine(ICharge());
@@ -84,15 +93,16 @@ public class BossTank01 : BossAI {
 		CalculateCharge();
 		moveSpeed = chargeSpeed;
 		float dotProd = 0;
-		CanMove = false;
+		canMove = false;
 
+		Debug.Log("<color=red>Charge</color>");
 		while(dotProd < 0.98f) {
 			Move(chargeDirection);
-			Vector3 dirFromAtoB = (player.Pos - Pos).normalized;
+			Vector3 dirFromAtoB = (Player.Pos - Pos).normalized;
 			dotProd = Vector3.Dot(dirFromAtoB, transform.forward);
 			yield return null;
 		}
-		CanMove = true;
+		canMove = true;
 		yield return new WaitForSeconds(0.25f);
 		void action() {
 			HideChargeLine();
@@ -118,6 +128,8 @@ public class BossTank01 : BossAI {
 			Move(chargeDirection);
 			yield return null;
 		}
+		canMove = false;
+		moveSpeed = normalMoveSpeed;
 		rollerTrigger.TriggerHit.RemoveListener(action);
 		GoToNextState(waitDuration);
 	}
@@ -125,7 +137,7 @@ public class BossTank01 : BossAI {
 	IEnumerator IBurst() {
 		int shot = 0;
 		this.RepeatUntil(() => bossStates == BossBehaviour.Burst, () => {
-			MoveHead(player.Pos + player.MovingDir * 1.5f);
+			MoveHead(Player.Pos + Player.MovingDir * 1.5f);
 		}, null);
 		while(shot < burstAmount) {
 			ShootBullet();
@@ -139,9 +151,11 @@ public class BossTank01 : BossAI {
 		chargeLineL.gameObject.SetActive(false);
 		chargeLineR.gameObject.SetActive(false);
 		chargeLineM.gameObject.SetActive(false);
+		chargePath.SetActive(false);
 	}
 
 	void DisplayChargeLine() {
+		chargePath.SetActive(true);
 		Physics.Raycast(Pos, chargeDirection, out chargeHit, Mathf.Infinity, obstacleLayers);
 		chargeLineL.gameObject.SetActive(true);
 		chargeLineR.gameObject.SetActive(true);
@@ -162,7 +176,7 @@ public class BossTank01 : BossAI {
 	}
 
 	void CalculateCharge() {
-		chargeDirection = (player.Pos - Pos).normalized;
+		chargeDirection = (Player.Pos - Pos).normalized;
 		chargeDirection.y = 0;
 		Physics.Raycast(Pos, chargeDirection, out chargeHit, Mathf.Infinity, obstacleLayers);
 		chargeDirection = (chargeHit.point - Pos).normalized;
@@ -180,10 +194,18 @@ public class BossTank01 : BossAI {
 		}
 	}
 
+	public override void EnableAI() {
+		base.EnableAI();
+	}
+
+	public override void DisableAI() {
+		base.DisableAI();
+		StopAllCoroutines();
+	}
+
 	void Update() {
-		rollerTransform.Rotate(-Vector3.forward, rollerRotSpeed * distanceSinceLastFrame);
-		if(HasBeenDestroyed) {
-			StopAllCoroutines();
+		if(IsAIEnabled) {
+			rollerTransform.Rotate(-Vector3.forward, rollerRotSpeed * distanceSinceLastFrame);
 		}
 	}
 }

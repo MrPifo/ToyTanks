@@ -1,8 +1,13 @@
-﻿using System;
-
+﻿using UnityEngine;
 
 public abstract class BossAI : TankAI {
 
-	public abstract void Initialize();
-	public abstract void GoToNextState(float delay = 0);
+	public bool HasBeenInitialized { get; set; }
+	public LayerMask obstacleLayers;
+
+	public override void Revive() {
+		var health = healthPoints;
+		base.Revive();
+		healthPoints = health;
+	}
 }

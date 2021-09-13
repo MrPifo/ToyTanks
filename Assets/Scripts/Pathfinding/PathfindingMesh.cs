@@ -15,7 +15,6 @@ namespace Sperlich.Pathfinding {
 
 #if UNITY_EDITOR
 	[RequireComponent(typeof(NodePainter))]
-	[ExecuteInEditMode]
 #endif
 	public class PathfindingMesh : MonoBehaviour {
 		[Header("Configuration")]
@@ -44,7 +43,10 @@ namespace Sperlich.Pathfinding {
 		public int totalNodes;
 		public int simulationFpsSpeed;
 		string path;
-		PathMesh pathMesh;
+		[HideInInspector]
+		public PathMesh pathMesh;
+
+		public static string saveLocation = "PathMeshes/";	// Assuming default location is in Resources
 #if UNITY_EDITOR
 		public NodePainter painter { get; set; }
 		EditorSceneManager.SceneClosingCallback closingScene;
@@ -168,21 +170,17 @@ namespace Sperlich.Pathfinding {
 				foreach(Node n in node.Neighbours.Keys.ToArray()) {
 					n.FetchNeighbours(distance);
 				}
-				EditorSceneManager.MarkSceneDirty(gameObject.scene);
 			}
 		}
 
 		public void SaveGrid() {
-			/*if(!Directory.Exists(Application.streamingAssetsPath)) {
-				Directory.CreateDirectory(Application.streamingAssetsPath);
-				AssetDatabase.Refresh();
-			}*/
-			path = Application.dataPath + "/Resources/Levels/" + gridName + ".json";
+			path = Application.dataPath + "/Resources/" + saveLocation + gridName + ".json";
 			pathMesh.name = gridName;
 
 			string json = JsonUtility.ToJson(pathMesh, false);
 			File.WriteAllText(path, json);
 			AssetDatabase.Refresh();
+			UnityEngine.Debug.Log("SAVED");
 		}
 #endif
 
@@ -206,7 +204,7 @@ namespace Sperlich.Pathfinding {
 					return RetracePath(start, dest);
 				}
 				foreach(KeyValuePair<Node, float> neighbour in current.Neighbours) {
-					if(closedSet.Contains(neighbour.Key)) {
+					if(closedSet.Contains(neighbour.Key) || neighbour.Key.type == Node.NodeType.wall) {
 						continue;
 					}
 					float newMovementCostToNeighbour = current.gCost + neighbour.Value;
@@ -222,7 +220,6 @@ namespace Sperlich.Pathfinding {
 			}
 			return null;
 		}
-
 
 		public Node GetNodeAt(Vector3 origin) => Nodes.Find(n => n.pos == new Float3(origin, 2));
 		public Node GetNodeFromPos(Vector3 origin, float treshold = 0.01f) {
@@ -299,7 +296,7 @@ namespace Sperlich.Pathfinding {
 
 		public void LoadGrid() {
 			ClearGrid();
-			path = "Levels/" + gridName;
+			path = saveLocation + gridName;
 			var asset = Resources.Load<TextAsset>(path);
 			if(asset != null) {
 				pathMesh = JsonUtility.FromJson<PathMesh>(asset.text);
@@ -346,7 +343,7 @@ namespace Sperlich.Pathfinding {
 							}
 						}
 						if(showNodes) {
-							if(painter.selectedNodes.Contains(n)) {
+							if(painter.selectedNodes != null && painter.selectedNodes.Contains(n)) {
 								Gizmos.color = Color.white;
 								if(NodePainterHelper.shiftDown) {
 									Gizmos.color = Color.red;

@@ -15,6 +15,7 @@ namespace Sperlich.Debug.Draw {
 		static Queue<DrawDisc> Discs { get; set; } = new Queue<DrawDisc>();
 		static Queue<DrawRing> Rings { get; set; } = new Queue<DrawRing>();
 		static Queue<DrawText> Texts { get; set; } = new Queue<DrawText>();
+		static Queue<DrawSphere> Spheres { get; set; } = new Queue<DrawSphere>();
 
 		void Start() {
 			instance = FindObjectOfType<Draw>();
@@ -109,6 +110,13 @@ namespace Sperlich.Debug.Draw {
 
 					Shapes.Draw.Text(t.pos, t.normal, t.text, TextAlign.Center, t.fontSize, t.color);
 				}
+				while(Spheres.Count > 0) {
+					var s = Spheres.Dequeue();
+					Shapes.Draw.ResetAllDrawStates();
+					SetZTest(s.zTest);
+
+					Shapes.Draw.Sphere(s.pos, s.radius, s.color);
+				}
 			}
 		}
 
@@ -182,6 +190,17 @@ namespace Sperlich.Debug.Draw {
 			});
 		}
 
+		public static void Sphere(Vector3 pos) => Sphere(pos, 1f);
+		public static void Sphere(Vector3 pos, float radius) => Sphere(pos, radius, Color.white);
+		public static void Sphere(Vector3 pos, float radius, Color32 color, bool zTest = false) {
+			Spheres.Enqueue(new DrawSphere() {
+				pos = pos,
+				radius = radius,
+				color = color,
+				zTest = zTest
+			});
+		}
+
 		public static void SetZTest(bool state) {
 			if(state) {
 				Shapes.Draw.ZTest = UnityEngine.Rendering.CompareFunction.LessEqual;
@@ -243,6 +262,12 @@ namespace Sperlich.Debug.Draw {
 			public Color32 color;
 			public float fontSize;
 			public string text;
+			public bool zTest;
+		}
+		struct DrawSphere {
+			public Vector3 pos;
+			public Color32 color;
+			public float radius;
 			public bool zTest;
 		}
 	}

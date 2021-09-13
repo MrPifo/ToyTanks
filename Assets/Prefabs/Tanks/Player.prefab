@@ -5557,7 +5557,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1338643855518748788}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -20571,8 +20571,7 @@ GameObject:
   - component: {fileID: 2598458729238287636}
   - component: {fileID: 2559501505971335933}
   - component: {fileID: 3405922942590291885}
-  - component: {fileID: 2896205987736973856}
-  - component: {fileID: 7635900932049094117}
+  - component: {fileID: 122033115306017399}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -20596,6 +20595,7 @@ Transform:
   - {fileID: 43349243839713598}
   - {fileID: 849243965072347956}
   - {fileID: 1103832055090972444}
+  - {fileID: 5883180482167086451}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -20612,9 +20612,9 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 116
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &3405922942590291885
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20629,50 +20629,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   healthPoints: 1
-  bodyRotSpeed: 360
-  aimRotSpeed: 500
-  angleDiffLock: 500
   shootStunDuration: 0.2
   reloadDuration: 0.35
   randomReloadDuration: 0
-  trackSpawnDistance: 0.75
+  bodyRotSpeed: 360
   destructionVelocity: 500
-  bullet: {fileID: 6544939384501452804, guid: 56aa5ef793c109f48b213166e33a3a72, type: 3}
-  hitLayers:
-    serializedVersion: 2
-    m_Bits: 384
-  obstacleLayers:
-    serializedVersion: 2
-    m_Bits: 0
   disable2DirectionMovement: 0
   makeInvincible: 1
-  tankBody: {fileID: 732707888056941842}
-  tankHead: {fileID: 7663612518078540911}
-  bulletOutput: {fileID: 2559501506266440796}
-  tankTrack: {fileID: 4368261705553961422, guid: 71c9b82c6e364284d854039d3979a603,
-    type: 3}
-  muzzleFlash: {fileID: 3509750917726702401}
-  billboardHolder: {fileID: 43349243839713598}
-  healthBar: {fileID: 3384721752186359762}
-  hitFlash: {fileID: 6937691935236981483}
-  destroyTransformPieces:
-  - {fileID: 732707888056941842}
-  - {fileID: 7663612518078540911}
-  destroyFlash: {fileID: 7897856994695681180}
-  sparkDestroyEffect: {fileID: 7237326305752978687}
-  smokeDestroyEffect: {fileID: 6217055487735030645}
-  smokeFireDestroyEffect: {fileID: 7541422066328254524}
-  damageSmokeBody: {fileID: 7995587768629096518}
-  damageSmokeHead: {fileID: 7561108611044023332}
-  shockwaveDisc: {fileID: 5864426349178839774}
-  crosshair: {fileID: 0}
+  crosshair: {fileID: 5482586449239005953}
   crossHairColor: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   crossHairColor2: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   crossHairSize: 0.3
   crossHairThickness: 0.2
   disableCrossHair: 0
   disableControl: 0
---- !u!114 &2896205987736973856
+--- !u!114 &122033115306017399
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20681,84 +20652,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 3405922942590291886}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 841b72de2996c5c40bfb394f3d0e0a98, type: 3}
+  m_Script: {fileID: 11500000, guid: 73b52ae55729f4f4588b02582de68d69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Feedbacks:
-  - {fileID: 7635900932049094117}
-  InitializationMode: 2
-  SafeMode: 3
-  Direction: 0
-  AutoChangeDirectionOnEnd: 0
-  AutoPlayOnStart: 0
-  AutoPlayOnEnable: 0
-  DurationMultiplier: 1
-  DisplayFullDurationDetails: 0
-  CooldownDuration: 0
-  InitialDelay: 0
-  CanPlayWhileAlreadyPlaying: 1
-  FeedbacksIntensity: 1
-  Events:
-    TriggerMMFeedbacksEvents: 0
-    TriggerUnityEvents: 1
-    OnPlay:
-      m_PersistentCalls:
-        m_Calls: []
-    OnPause:
-      m_PersistentCalls:
-        m_Calls: []
-    OnResume:
-      m_PersistentCalls:
-        m_Calls: []
-    OnRevert:
-      m_PersistentCalls:
-        m_Calls: []
-    OnComplete:
-      m_PersistentCalls:
-        m_Calls: []
-  DebugActive: 0
---- !u!114 &7635900932049094117
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3405922942590291886}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6e66b87bc2da2a4dba77662c88de2ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Active: 1
-  Label: Wiggle
-  Chance: 100
-  Timing:
-    TimescaleMode: 0
-    InitialDelay: 0
-    CooldownDuration: 0
-    ExcludeFromHoldingPauses: 0
-    InterruptsOnStop: 1
-    NumberOfRepeats: 0
-    RepeatForever: 0
-    DelayBetweenRepeats: 1
-    MMFeedbacksDirectionCondition: 0
-    PlayDirection: 0
-    ConstantIntensity: 0
-    UseIntensityInterval: 0
-    IntensityIntervalMin: 0
-    IntensityIntervalMax: 0
-    Sequence: {fileID: 0}
-    TrackID: 0
-    Quantized: 0
-    TargetBPM: 120
-  DebugActive: 0
-  TargetWiggle: {fileID: 4750783975378402357}
-  WigglePosition: 1
-  WigglePositionDuration: 0.15
-  WiggleRotation: 0
-  WiggleRotationDuration: 0
-  WiggleScale: 1
-  WiggleScaleDuration: 0.2
+  bullet: {fileID: 4435059737398416180, guid: 56aa5ef793c109f48b213166e33a3a72, type: 3}
+  shockwaveDisc: {fileID: 5864426349178839774}
+  healthBar: {fileID: 4250758351008997970}
+  tankBody: {fileID: 732707888056941842}
+  tankHead: {fileID: 7663612518078540911}
+  bulletOutput: {fileID: 2559501506266440796}
+  billboardHolder: {fileID: 43349243839713598}
+  blobShadow: {fileID: 5482586449239005953}
+  tankTrack: {fileID: 4368261705553961422, guid: 71c9b82c6e364284d854039d3979a603,
+    type: 3}
+  destroyFlash: {fileID: 7897856994695681180}
+  destroyTransformPieces:
+  - {fileID: 732707888056941842}
+  - {fileID: 7663612518078540911}
+  muzzleFlash: {fileID: 3509750917726702401}
+  sparkDestroyEffect: {fileID: 7237326305752978687}
+  smokeDestroyEffect: {fileID: 6217055487735030645}
+  smokeFireDestroyEffect: {fileID: 7541422066328254524}
+  damageSmokeBody: {fileID: 7995587768629096518}
+  damageSmokeHead: {fileID: 7561108611044023332}
+  hitFlash: {fileID: 6937691935236981483}
 --- !u!1 &3919826882413021753
 GameObject:
   m_ObjectHideFlags: 0
@@ -30678,6 +30595,62 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &5482586449239005953
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5883180482167086451}
+  - component: {fileID: 1802682392810692839}
+  m_Layer: 0
+  m_Name: BlobShadow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5883180482167086451
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5482586449239005953}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.336, z: 0}
+  m_LocalScale: {x: 0.39, y: 1, z: 0.28}
+  m_Children: []
+  m_Father: {fileID: 2598458729238287636}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &1802682392810692839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5482586449239005953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f19d9143a39eb3b46bc4563e9889cfbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 2100000, guid: 5ef7557ca570da1408d8ad808b998714, type: 2}
+  m_DrawDistance: 1000
+  m_FadeScale: 1
+  m_StartAngleFade: 180
+  m_EndAngleFade: 180
+  m_UVScale: {x: 1, y: 1}
+  m_UVBias: {x: 0, y: 0}
+  m_AffectsTransparency: 0
+  m_DecalLayerMask: 1
+  m_Offset: {x: 0, y: 0, z: 0}
+  m_Size: {x: 2.8, y: 3.8, z: 0.4}
+  m_FadeFactor: 1
+  m_Version: 2
 --- !u!1 &6747142090435317142
 GameObject:
   m_ObjectHideFlags: 0
@@ -36134,7 +36107,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8924501033545320749}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0

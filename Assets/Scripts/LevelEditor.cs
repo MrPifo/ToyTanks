@@ -6,12 +6,13 @@ using UnityEditor.Callbacks;
 #endif
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(LevelManager))]
 public class LevelEditor : MonoBehaviour {
 	
-	public enum LevelTheme { LightWood, FirWood }
+	public enum LevelTheme { LightWood, FirWood, Floor }
 
 	public LevelManager level;
 	public GameObject prefab;
@@ -74,6 +75,8 @@ public class LevelEditor : MonoBehaviour {
 			instance.layer = LayerMask.NameToLayer("Level");
 			instance.transform.parent = parent.transform;
 			instance = null;
+		} else {
+			Debug.LogError("Couldnt find a parent with the tag [Level]");
 		}
 	}
 
@@ -93,6 +96,7 @@ public class LevelEditor : MonoBehaviour {
 	}
 
 	void OnDrawGizmosSelected() {
+		if(Selection.activeGameObject == gameObject)
 		Update();
 	}
 
@@ -135,7 +139,7 @@ public class CustomLevelEditor : Editor {
 
 	void OnSceneGUI() {
 		Event guiEvent = Event.current;
-		if(guiEvent.type == EventType.MouseDown && Event.current.button == 0) {
+		if(guiEvent.type == EventType.MouseDrag && Event.current.button == 0 || guiEvent.type == EventType.MouseDown && Event.current.button == 0) {
 			spaceDown.Invoke();
 		}
 		mouseRay = HandleUtility.GUIPointToWorldRay(guiEvent.mousePosition);
