@@ -1,50 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &8432486042793204235
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 264721789128545855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8c28993904e72b42bb76d14d509fc83, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 4
-  healthPoints: 40
-  shootStunDuration: 0.3
-  reloadDuration: 0.2
-  randomReloadDuration: 0
-  bodyRotSpeed: 360
-  destructionVelocity: 500
-  disable2DirectionMovement: 1
-  makeInvincible: 0
-  playerDetectRadius: 99
-  playerLoseRadius: 99
-  showDebug: 0
-  hitLayers:
-    serializedVersion: 2
-    m_Bits: 896
-  levelPredictionMask:
-    serializedVersion: 2
-    m_Bits: 256
-  obstacleLayers:
-    serializedVersion: 2
-    m_Bits: 256
-  chargeSpeed: 16
-  waitDuration: 1
-  burstAmount: 6
-  chargeLineL: {fileID: 7723204310692415514}
-  chargeLineR: {fileID: 9045923375969336373}
-  chargeLineM: {fileID: 9174052762025913929}
-  rollerTransform: {fileID: 8150312239008493121}
-  chargePath: {fileID: 7049415272156707321}
-  rollerTrigger: {fileID: 9091360153845353924}
-  chargeVibration: {fileID: 5971461261830086749}
-  hitChargeFeedback: {fileID: 1563589871300565626}
-  chargeSmoke: {fileID: 4870579256896687335}
 --- !u!1 &420795182123513361
 GameObject:
   m_ObjectHideFlags: 0
@@ -75,7 +30,7 @@ Transform:
   m_Children:
   - {fileID: 875899414444554646}
   m_Father: {fileID: 641670296266361989}
-  m_RootOrder: 7
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!136 &5681968889008244084
 CapsuleCollider:
@@ -121,7 +76,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 641670296266361989}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5971461261830086749
 MonoBehaviour:
@@ -453,7 +408,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 641670296266361989}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1563589871300565626
 MonoBehaviour:
@@ -908,6 +863,51 @@ MonoBehaviour:
     m_RotationOrder: 4
   RemapIntensityZero: 0
   RemapIntensityOne: 0.2
+--- !u!114 &8432486042793204235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264721789128545855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c28993904e72b42bb76d14d509fc83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 4
+  healthPoints: 40
+  shootStunDuration: 0.3
+  reloadDuration: 0.2
+  randomReloadDuration: 0
+  bodyRotSpeed: 360
+  destructionVelocity: 500
+  disable2DirectionMovement: 1
+  makeInvincible: 0
+  playerDetectRadius: 99
+  playerLoseRadius: 99
+  showDebug: 0
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 896
+  levelPredictionMask:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  chargeSpeed: 16
+  waitDuration: 1
+  burstAmount: 6
+  chargeLineL: {fileID: 7723204310692415514}
+  chargeLineR: {fileID: 9045923375969336373}
+  chargeLineM: {fileID: 9174052762025913929}
+  rollerTransform: {fileID: 8150312239008493121}
+  chargePath: {fileID: 7049415272156707321}
+  rollerTrigger: {fileID: 9091360153845353924}
+  chargeVibration: {fileID: 5971461261830086749}
+  hitChargeFeedback: {fileID: 1563589871300565626}
+  chargeSmoke: {fileID: 4870579256896687335}
 --- !u!1 &6421596810744439275
 GameObject:
   m_ObjectHideFlags: 0
@@ -938,7 +938,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 641670296266361989}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &4870579256896687335
 ParticleSystem:
@@ -5871,7 +5871,7 @@ Transform:
   - {fileID: 1941224691927971184}
   - {fileID: 3369157730559934921}
   m_Father: {fileID: 641670296266361989}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7709413881396231957
 GameObject:
@@ -6083,15 +6083,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9044886261394312379, guid: b39377923953a3342bab5a94c82e83c9,
         type: 3}
-    - target: {fileID: 2652769984047386804, guid: deb07d1d6146747469e15b61bffdc376,
+    - target: {fileID: 3588430680818795886, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
-      propertyPath: TargetRenderer
-      value: 
-      objectReference: {fileID: 5541079897438813905}
-    - target: {fileID: 2652769984047386804, guid: deb07d1d6146747469e15b61bffdc376,
-        type: 3}
-      propertyPath: TargetMaterialID
-      value: 0
+      propertyPath: m_RootOrder
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4928767275110436105, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}

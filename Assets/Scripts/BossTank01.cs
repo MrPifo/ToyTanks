@@ -6,7 +6,6 @@ using Sperlich.FSM;
 using System.Collections;
 using UnityEngine;
 using MoreMountains.Feedbacks;
-using UnityEngine.Events;
 
 public class BossTank01 : BossAI {
 

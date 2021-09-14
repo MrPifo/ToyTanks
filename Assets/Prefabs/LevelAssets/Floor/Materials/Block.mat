@@ -147,7 +147,7 @@ Material:
     m_Floats:
     - Metallic: 0.08
     - Normal_Strength: 0.75
-    - Smoothness: 0.7
+    - Smoothness: 0.56
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1

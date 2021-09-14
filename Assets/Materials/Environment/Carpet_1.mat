@@ -172,9 +172,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - Height: 0.05
-    - Hue: 200
-    - Metallic: 0
+    - Height: 0.1
+    - Hue: 205
+    - Metallic: 0.15
     - NoiseScale: 3
     - Normal_Strength: 0.4
     - RandomRot: 0

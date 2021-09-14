@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
+
 using DG.Tweening;
 using MoreMountains.Feedbacks;
+using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.UI;
 
 public class LevelUI : MonoBehaviour {
 
@@ -24,6 +26,8 @@ public class LevelUI : MonoBehaviour {
 	public Slider bossBar;
 	public CanvasGroup loadingScreenCanvasGroup;
 	public Canvas canvas;
+	[SerializeField] CustomPassVolume outlinePass;
+	public Outline OutlinePass => (Outline)outlinePass.customPasses[0];
 
 	void Awake() {
 		gameplay.SetActive(false);

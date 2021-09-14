@@ -7,6 +7,7 @@ using Sperlich.Pathfinding;
 using Sperlich.Types;
 using Sperlich.Debug.Draw;
 using System.Collections.Generic;
+using DG.Tweening;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -149,6 +150,7 @@ public class LevelManager : MonoBehaviour {
 		MoveLevelBase();
 		yield return new WaitForSeconds(2.5f);
 		Feedback.PlayStartFadeText();
+		DOTween.To(x => UI.OutlinePass.threshold = x, UI.OutlinePass.threshold, 100, 2).SetEase(Ease.InCubic);
 		yield return new WaitForSeconds(1);
 		IsGameOver = false;
 		UI.counterBanner.SetActive(false);

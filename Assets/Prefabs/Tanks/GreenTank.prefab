@@ -48,11 +48,6 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[1]
       value: 
       objectReference: {fileID: 2100000, guid: 4b61c2e1f36df0b4f9713ac4227cb815, type: 2}
-    - target: {fileID: 2634543822221764353, guid: deb07d1d6146747469e15b61bffdc376,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4928767275110436105, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: m_RootOrder
@@ -118,11 +113,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GreenTank
       objectReference: {fileID: 0}
-    - target: {fileID: 5705408810080229299, guid: deb07d1d6146747469e15b61bffdc376,
-        type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 7050499238146579050, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: bullet
@@ -139,11 +129,6 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[1]
       value: 
       objectReference: {fileID: 2100000, guid: 4b61c2e1f36df0b4f9713ac4227cb815, type: 2}
-    - target: {fileID: 7553651770064039502, guid: deb07d1d6146747469e15b61bffdc376,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: deb07d1d6146747469e15b61bffdc376, type: 3}
 --- !u!1 &2512425083838510290 stripped

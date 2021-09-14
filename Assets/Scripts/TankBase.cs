@@ -5,6 +5,7 @@ using MoreMountains.Feedbacks;
 using MoreMountains.Tools;
 using System.Collections;
 using Shapes;
+using DG.Tweening;
 using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -46,7 +47,6 @@ public class TankBase : MonoBehaviour {
 	Rigidbody rig;
 	Transform trackContainer;
 	MMFeedbacks headShotFeedback;
-	MMWiggle headWiggle;
 	List<Vector3> destroyRestPoses;
 	List<Quaternion> destroyRestRots;
 
@@ -81,14 +81,14 @@ public class TankBase : MonoBehaviour {
 	public ParticleSystem smokeFireDestroyEffect => References.smokeFireDestroyEffect;
 	public ParticleSystem damageSmokeBody => References.damageSmokeBody;
 	public ParticleSystem damageSmokeHead => References.damageSmokeHead;
+	public ParticleSystem mudParticlesFront => References.mudParticlesFront;
+	public ParticleSystem mudParticlesBack => References.mudParticlesBack;
 	public MMFeedbacks hitFlash => References.hitFlash;
 
 	protected virtual void Awake() {
 		References = GetComponent<TankReferences>();
 		rig = GetComponent<Rigidbody>();
 		Bullet = References.bullet.GetComponent<Bullet>();
-		//headShotFeedback = GetComponent<MMFeedbacks>();
-		headWiggle = tankHead.GetComponent<MMWiggle>();
 		LevelManager = FindObjectOfType<LevelManager>();
 		spawnPos = rig.position;
 		initLayer = gameObject.layer;
@@ -131,7 +131,7 @@ public class TankBase : MonoBehaviour {
 		if(!isShootStunned && canMove) {
 			rig.MovePosition(rig.position + movePos);
 		}
-		TrackTracer();
+		TrackTracer(temp);
 	}
 
 	public void AdjustRotation(Vector3 moveDir) {
@@ -153,9 +153,14 @@ public class TankBase : MonoBehaviour {
 
 	public Vector3 GetLookDirection(Vector3 lookTarget) => (new Vector3(lookTarget.x, 0, lookTarget.z) - new Vector3(Pos.x, 0, Pos.z)).normalized;
 
-	void TrackTracer() {
+	void TrackTracer(float temp = 0) {
 		float distToLastTrack = Vector2.Distance(new Vector2(lastTrackPos.x, lastTrackPos.z), new Vector2(rig.position.x, rig.position.z));
 		if(distToLastTrack > trackSpawnDistance) {
+			if(temp == 1) {
+				mudParticlesBack.Emit(2);
+			} else {
+				mudParticlesFront.Emit(2);
+			}
 			lastTrackPos = SpawnTrack();
 		}
 	}
@@ -173,10 +178,11 @@ public class TankBase : MonoBehaviour {
 		if(!isReloading) {
 			var bounceDir = -tankHead.right * 2f;
 			bounceDir.y = 0;
-			headWiggle.PositionWiggleProperties.AmplitudeMin = bounceDir;
-			headWiggle.PositionWiggleProperties.AmplitudeMax = bounceDir;
+			
 			muzzleFlash.Play();
-			//headShotFeedback.PlayFeedbacks();
+			var wiggleDir = tankHead.rotation * Vector3.forward * 0.25f;
+			tankHead.DOLocalMove(tankHead.localPosition + wiggleDir, 0.1f);
+			this.Delay(0.1f, () => tankHead.DOLocalMove(tankHead.localPosition - wiggleDir, 0.1f));
 			Instantiate(Bullet).SetupBullet(bulletOutput.forward, bulletOutput.position);
 			
 			if(reloadDuration > 0) {
@@ -233,6 +239,8 @@ public class TankBase : MonoBehaviour {
 		if(CompareTag("Player")) {
 			Audio.Play("PlayerTankExplode", 0.5f, Random.Range(0.9f, 1.1f));
 		}
+		Camera.main.DOOrthoSize(Camera.main.orthographicSize + 1, 0.15f);
+		this.Delay(0.15f, () => Camera.main.DOOrthoSize(Camera.main.orthographicSize - 1, 0.15f));
 		LevelManager.Feedback.TankExplode();
 		if(this is PlayerInput) {
 			LevelManager.Feedback.PlayerDead();

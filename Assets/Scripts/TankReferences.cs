@@ -24,6 +24,8 @@ public class TankReferences : MonoBehaviour {
 	public ParticleSystem smokeFireDestroyEffect;
 	public ParticleSystem damageSmokeBody;
 	public ParticleSystem damageSmokeHead;
+	public ParticleSystem mudParticlesFront;
+	public ParticleSystem mudParticlesBack;
 	[Header("Feedbacks")]
 	public MMFeedbacks hitFlash;
 

@@ -415,8 +415,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Feedbacks:
   - {fileID: 308840772}
-  InitializationMode: 2
-  SafeMode: 3
+  InitializationMode: 1
+  SafeMode: 2
   Direction: 0
   AutoChangeDirectionOnEnd: 0
   AutoPlayOnStart: 0
@@ -570,8 +570,8 @@ MonoBehaviour:
   Feedbacks:
   - {fileID: 357286730}
   - {fileID: 357286732}
-  InitializationMode: 2
-  SafeMode: 3
+  InitializationMode: 1
+  SafeMode: 2
   Direction: 0
   AutoChangeDirectionOnEnd: 0
   AutoPlayOnStart: 0
@@ -900,7 +900,7 @@ MonoBehaviour:
   TimeScaleLerp: 0
   TimeScaleLerpSpeed: 1
   ResetTimescaleOnStop: 0
---- !u!21 &365217599
+--- !u!21 &358049707
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -1473,38 +1473,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 465979537}
   m_CullTransparentMesh: 1
---- !u!21 &526747021
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Line 2D Opaque [CAP_ROUND] (instance)
-  m_Shader: {fileID: 4800000, guid: f70b158aaf2f00a47be44d933b54c341, type: 3}
-  m_ShaderKeywords: CAP_ROUND
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _StencilComp: 8
-    - _StencilID: 0
-    - _StencilOp: 0
-    - _StencilOpPass: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _ZOffsetFactor: 0
-    - _ZOffsetUnits: 0
-    - _ZTest: 8
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &556519923
 GameObject:
   m_ObjectHideFlags: 0
@@ -1538,6 +1506,72 @@ Transform:
   - {fileID: 2053297967}
   m_Father: {fileID: 0}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &595587323
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 595587326}
+  - component: {fileID: 595587325}
+  - component: {fileID: 595587324}
+  m_Layer: 0
+  m_Name: EventSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!114 &595587324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 595587323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalAxis: Horizontal
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Submit
+  m_CancelButton: Cancel
+  m_InputActionsPerSecond: 10
+  m_RepeatDelay: 0.5
+  m_ForceModuleActive: 0
+--- !u!114 &595587325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 595587323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+--- !u!4 &595587326
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 595587323}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &622155349
 GameObject:
@@ -1664,6 +1698,142 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!1 &649618375
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 649618377}
+  - component: {fileID: 649618376}
+  - component: {fileID: 649618379}
+  m_Layer: 0
+  m_Name: SeeThroughPass
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &649618376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649618375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d6499a6bd256e47b859377446493a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isGlobal: 1
+  fadeRadius: 0
+  priority: 0
+  customPasses:
+  - id: 0
+  injectionPoint: 2
+  references:
+    version: 1
+    00000000:
+      type: {class: SeeThrough, ns: , asm: CustomPasses}
+      data:
+        m_Name: SeeThrough
+        enabled: 1
+        targetColorBuffer: 0
+        targetDepthBuffer: 0
+        clearFlags: 0
+        passFoldout: 0
+        m_Version: 0
+        seeThroughLayer:
+          serializedVersion: 2
+          m_Bits: 576
+        seeThroughMaterial: {fileID: 2100000, guid: 89ca4ac1ad298734796d4d6a18e6a8a9,
+          type: 2}
+        stencilShader: {fileID: 4800000, guid: cbfa2cf05d9f26743a3c8bfeffec3eea, type: 3}
+--- !u!4 &649618377
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649618375}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &649618379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649618375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d6499a6bd256e47b859377446493a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isGlobal: 1
+  fadeRadius: 0
+  priority: 0
+  customPasses:
+  - id: 0
+  injectionPoint: 2
+  references:
+    version: 1
+    00000000:
+      type: {class: SeeThrough, ns: , asm: CustomPasses}
+      data:
+        m_Name: SeeThroughPlayer
+        enabled: 1
+        targetColorBuffer: 0
+        targetDepthBuffer: 0
+        clearFlags: 0
+        passFoldout: 0
+        m_Version: 0
+        seeThroughLayer:
+          serializedVersion: 2
+          m_Bits: 128
+        seeThroughMaterial: {fileID: 2100000, guid: 981fc4f543213c341a8dfce070859e63,
+          type: 2}
+        stencilShader: {fileID: 4800000, guid: cbfa2cf05d9f26743a3c8bfeffec3eea, type: 3}
+--- !u!21 &653790895
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Line 2D Opaque [CAP_ROUND] (instance)
+  m_Shader: {fileID: 4800000, guid: f70b158aaf2f00a47be44d933b54c341, type: 3}
+  m_ShaderKeywords: CAP_ROUND
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _StencilComp: 8
+    - _StencilID: 0
+    - _StencilOp: 0
+    - _StencilOpPass: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _ZOffsetFactor: 0
+    - _ZOffsetUnits: 0
+    - _ZTest: 8
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &655475723
 GameObject:
   m_ObjectHideFlags: 0
@@ -1883,11 +2053,11 @@ MonoBehaviour:
   priority: 0
   customPasses:
   - id: 0
-  injectionPoint: 3
+  injectionPoint: 2
   references:
     version: 1
     00000000:
-      type: {class: SlightBlur, ns: , asm: NewAssembly}
+      type: {class: SlightBlur, ns: , asm: CustomPasses}
       data:
         m_Name: Custom Pass
         enabled: 1
@@ -1896,7 +2066,7 @@ MonoBehaviour:
         clearFlags: 0
         passFoldout: 0
         m_Version: 0
-        radius: 17.3
+        radius: 16
         resolution: 8
         fullResolution: 0
         useMask: 1
@@ -2058,6 +2228,7 @@ MonoBehaviour:
   bossBar: {fileID: 1056800141}
   loadingScreenCanvasGroup: {fileID: 641820784}
   canvas: {fileID: 1275594897}
+  outlinePass: {fileID: 1716795974}
 --- !u!1 &876929215
 GameObject:
   m_ObjectHideFlags: 0
@@ -2134,8 +2305,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Feedbacks:
   - {fileID: 876929216}
-  InitializationMode: 2
-  SafeMode: 3
+  InitializationMode: 1
+  SafeMode: 2
   Direction: 0
   AutoChangeDirectionOnEnd: 0
   AutoPlayOnStart: 0
@@ -2358,8 +2529,8 @@ MonoBehaviour:
   - {fileID: 882414798}
   - {fileID: 882414801}
   - {fileID: 882414800}
-  InitializationMode: 2
-  SafeMode: 3
+  InitializationMode: 1
+  SafeMode: 2
   Direction: 0
   AutoChangeDirectionOnEnd: 0
   AutoPlayOnStart: 0
@@ -2600,7 +2771,7 @@ RectTransform:
   m_GameObject: {fileID: 957763875}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.6, y: 2, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1275594898}
   m_RootOrder: 0
@@ -2781,8 +2952,8 @@ MonoBehaviour:
   - {fileID: 1005042037}
   - {fileID: 1005042040}
   - {fileID: 1005042042}
-  InitializationMode: 2
-  SafeMode: 3
+  InitializationMode: 1
+  SafeMode: 2
   Direction: 0
   AutoChangeDirectionOnEnd: 0
   AutoPlayOnStart: 0
@@ -3104,6 +3275,38 @@ MonoBehaviour:
   AllowAdditivePlays: 0
   DetermineScaleOnPlay: 0
   DestinationScale: {x: 0.5, y: 0.5, z: 0.5}
+--- !u!21 &1047091242
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Line 2D Opaque [CAP_ROUND] (instance)
+  m_Shader: {fileID: 4800000, guid: f70b158aaf2f00a47be44d933b54c341, type: 3}
+  m_ShaderKeywords: CAP_ROUND
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _StencilComp: 8
+    - _StencilID: 0
+    - _StencilOp: 0
+    - _StencilOpPass: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _ZOffsetFactor: 0
+    - _ZOffsetUnits: 0
+    - _ZTest: 8
+    m_Colors: []
+  m_BuildTextureStacks: []
 --- !u!1 &1056800139
 GameObject:
   m_ObjectHideFlags: 0
@@ -3988,7 +4191,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1890357095}
+  - {fileID: 1708651481}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4179,8 +4382,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Feedbacks:
   - {fileID: 1461692834}
-  InitializationMode: 2
-  SafeMode: 3
+  InitializationMode: 1
+  SafeMode: 2
   Direction: 0
   AutoChangeDirectionOnEnd: 0
   AutoPlayOnStart: 0
@@ -4420,38 +4623,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1548156201}
   m_CullTransparentMesh: 1
---- !u!21 &1632156434
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Line 2D Opaque [CAP_ROUND] (instance)
-  m_Shader: {fileID: 4800000, guid: f70b158aaf2f00a47be44d933b54c341, type: 3}
-  m_ShaderKeywords: CAP_ROUND
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _StencilComp: 8
-    - _StencilID: 0
-    - _StencilOp: 0
-    - _StencilOpPass: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _ZOffsetFactor: 0
-    - _ZOffsetUnits: 0
-    - _ZTest: 8
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &1663819786
 GameObject:
   m_ObjectHideFlags: 0
@@ -4716,7 +4887,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 526747021}
+  - {fileID: 653790895}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4789,6 +4960,105 @@ MonoBehaviour:
     spacing: 4
     offset: 0
     shapeModifier: 1
+--- !u!21 &1708651481
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Line 2D Opaque [CAP_ROUND] (instance)
+  m_Shader: {fileID: 4800000, guid: f70b158aaf2f00a47be44d933b54c341, type: 3}
+  m_ShaderKeywords: CAP_ROUND
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _StencilComp: 8
+    - _StencilID: 0
+    - _StencilOp: 0
+    - _StencilOpPass: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _ZOffsetFactor: 0
+    - _ZOffsetUnits: 0
+    - _ZTest: 8
+    m_Colors: []
+  m_BuildTextureStacks: []
+--- !u!1 &1716795973
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1716795977}
+  - component: {fileID: 1716795974}
+  m_Layer: 0
+  m_Name: OutlinePass
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1716795974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716795973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d6499a6bd256e47b859377446493a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isGlobal: 1
+  fadeRadius: 0
+  priority: 1
+  customPasses:
+  - id: 0
+  injectionPoint: 2
+  references:
+    version: 1
+    00000000:
+      type: {class: Outline, ns: , asm: CustomPasses}
+      data:
+        m_Name: OutlinePass
+        enabled: 1
+        targetColorBuffer: 0
+        targetDepthBuffer: 0
+        clearFlags: 0
+        passFoldout: 0
+        m_Version: 0
+        outlineLayer:
+          serializedVersion: 2
+          m_Bits: 128
+        outlineColor: {r: 1, g: 1, b: 1, a: 1}
+        threshold: 1
+        outlineShader: {fileID: 4800000, guid: 67b51d016f2a4974d92bcd1779197183, type: 3}
+--- !u!4 &1716795977
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716795973}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1754204044
 GameObject:
   m_ObjectHideFlags: 0
@@ -6044,8 +6314,8 @@ MonoBehaviour:
   Feedbacks:
   - {fileID: 1818204564}
   - {fileID: 1818204563}
-  InitializationMode: 2
-  SafeMode: 3
+  InitializationMode: 1
+  SafeMode: 2
   Direction: 0
   AutoChangeDirectionOnEnd: 0
   AutoPlayOnStart: 0
@@ -6499,8 +6769,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Feedbacks:
   - {fileID: 1878791335}
-  InitializationMode: 2
-  SafeMode: 3
+  InitializationMode: 1
+  SafeMode: 2
   Direction: 0
   AutoChangeDirectionOnEnd: 0
   AutoPlayOnStart: 0
@@ -6530,38 +6800,6 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   DebugActive: 0
---- !u!21 &1890357095
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Line 2D Opaque [CAP_ROUND] (instance)
-  m_Shader: {fileID: 4800000, guid: f70b158aaf2f00a47be44d933b54c341, type: 3}
-  m_ShaderKeywords: CAP_ROUND
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs: []
-    m_Ints: []
-    m_Floats:
-    - _StencilComp: 8
-    - _StencilID: 0
-    - _StencilOp: 0
-    - _StencilOpPass: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _ZOffsetFactor: 0
-    - _ZOffsetUnits: 0
-    - _ZTest: 8
-    m_Colors: []
-  m_BuildTextureStacks: []
 --- !u!1 &1952643706
 GameObject:
   m_ObjectHideFlags: 0
@@ -6573,7 +6811,6 @@ GameObject:
   - component: {fileID: 1952643709}
   - component: {fileID: 1952643707}
   - component: {fileID: 1952643708}
-  - component: {fileID: 1952643710}
   - component: {fileID: 1952643712}
   - component: {fileID: 1952643711}
   m_Layer: 0
@@ -6597,11 +6834,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Feedbacks:
   - {fileID: 1952643708}
-  - {fileID: 1952643710}
   - {fileID: 1952643712}
   - {fileID: 1952643711}
   InitializationMode: 1
-  SafeMode: 3
+  SafeMode: 2
   Direction: 0
   AutoChangeDirectionOnEnd: 0
   AutoPlayOnStart: 0
@@ -6689,81 +6925,6 @@ Transform:
   m_Father: {fileID: 195584475}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1952643710
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1952643706}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 174b87f4e7a102a4ba0495310257cda6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Active: 1
-  Label: Orthographic Size
-  Chance: 100
-  Timing:
-    TimescaleMode: 0
-    InitialDelay: 0
-    CooldownDuration: 0
-    ExcludeFromHoldingPauses: 0
-    InterruptsOnStop: 1
-    NumberOfRepeats: 0
-    RepeatForever: 0
-    DelayBetweenRepeats: 1
-    MMFeedbacksDirectionCondition: 0
-    PlayDirection: 0
-    ConstantIntensity: 0
-    UseIntensityInterval: 0
-    IntensityIntervalMin: 0
-    IntensityIntervalMax: 0
-    Sequence: {fileID: 0}
-    TrackID: 0
-    Quantized: 0
-    TargetBPM: 120
-  DebugActive: 0
-  Channel: 0
-  Duration: 0.3
-  ResetShakerValuesAfterShake: 1
-  ResetTargetValuesAfterShake: 1
-  RelativeOrthographicSize: 1
-  ShakeOrthographicSize:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.5
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  RemapOrthographicSizeZero: 0
-  RemapOrthographicSizeOne: -1
 --- !u!114 &1952643711
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -6968,7 +7129,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 365217599}
+  - {fileID: 1047091242}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7145,7 +7306,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1632156434}
+  - {fileID: 358049707}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -13,6 +13,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4140277590760443693, guid: 2c36144904bf9a94a818de7e4160341b,
         type: 3}
+    - target: {fileID: 1338643855518748788, guid: 9a1a86a39ef1e484ba355f2ddbe2a96a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 2413820949687891308, guid: 9a1a86a39ef1e484ba355f2ddbe2a96a,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -112,6 +117,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[2]
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924501033545320749, guid: 9a1a86a39ef1e484ba355f2ddbe2a96a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3405922942590291885, guid: 9a1a86a39ef1e484ba355f2ddbe2a96a, type: 3}

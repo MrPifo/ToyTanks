@@ -5,7 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
 public class Bullet : MonoBehaviour {
 
 	public float velocity;
@@ -62,8 +61,10 @@ public class Bullet : MonoBehaviour {
 		explodeSmokeFire.Play();
 		explodePieces.Play();
 		impactSparks.Play();
+		smokeTrail.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+		smokeFireTrail.Stop(false, ParticleSystemStopBehavior.StopEmitting);
 
-		new GameObject().AddComponent<DestructionTimer>().Destruct(5, new GameObject[] { explodeSmoke.gameObject, explodeSmokeFire.gameObject, explodePieces.gameObject });
+		new GameObject().AddComponent<DestructionTimer>().Destruct(5, new GameObject[] { explodeSmoke.gameObject, explodeSmokeFire.gameObject, explodePieces.gameObject, smokeTrail.gameObject, smokeFireTrail.gameObject });
 		Destroy(gameObject);
 	}
 
