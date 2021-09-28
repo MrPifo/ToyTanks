@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 4435059737398416180, guid: 56aa5ef793c109f48b213166e33a3a72,
         type: 3}
       propertyPath: m_Name
-      value: Bullet_Bounce_1 Variant
+      value: Bullet_Bounce_1
       objectReference: {fileID: 0}
     - target: {fileID: 4435059737398416186, guid: 56aa5ef793c109f48b213166e33a3a72,
         type: 3}
@@ -70,7 +70,7 @@ PrefabInstance:
     - target: {fileID: 6544939384501452804, guid: 56aa5ef793c109f48b213166e33a3a72,
         type: 3}
       propertyPath: velocity
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6544939384501452804, guid: 56aa5ef793c109f48b213166e33a3a72,
         type: 3}

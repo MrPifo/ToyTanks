@@ -1,0 +1,1 @@
+﻿public enum TankTypes { Player, Brown, Grey, Green, Orange, BossTank01 }

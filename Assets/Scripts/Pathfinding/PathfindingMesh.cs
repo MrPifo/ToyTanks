@@ -99,6 +99,17 @@ namespace Sperlich.Pathfinding {
 			simulationFpsSpeed = (int)(1000d / watch.Elapsed.TotalMilliseconds);
 		}
 
+		public void AddNode(Float3 pos, float distance, Node.NodeType typ, bool noReload = false) {
+			pos = new Float3(pos, 2);
+
+			if(Nodes.Find(n => n.pos == pos) != null) return;
+			Nodes.Add(new Node(this, pos, typ, distance));
+
+			if(noReload == false) {
+				Reload();
+			}
+		}
+
 #if UNITY_EDITOR
 		[DidReloadScripts]
 		public static void ScriptReload() {
@@ -112,6 +123,7 @@ namespace Sperlich.Pathfinding {
 
 		public void GenerateGrid() {
 			ClearGrid();
+			painter = FindObjectOfType<NodePainter>();
 			for(float x = -dimensions.x; x < dimensions.x; x++) {
 				Ray? lastRay = null;
 				for(float z = -dimensions.z; z < dimensions.z; z++) {
@@ -128,16 +140,6 @@ namespace Sperlich.Pathfinding {
 					}
 				}
 			}
-			Reload();
-		}
-
-		public void AddNode(Float3 pos, float distance, Node.NodeType typ) {
-			pos = new Float3(pos, 2);
-
-			if(Nodes.Find(n => n.pos == pos) != null) return;
-			Nodes.Add(new Node(this, pos, typ, distance));
-
-			EditorSceneManager.MarkSceneDirty(gameObject.scene);
 			Reload();
 		}
 

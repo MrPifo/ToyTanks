@@ -2,6 +2,7 @@
 using SimpleMan.Extensions;
 using System.Collections.Generic;
 using System.Linq;
+using ToyTanks.UI;
 using UnityEngine;
 
 public class LevelSelector : MonoBehaviour {
@@ -11,9 +12,9 @@ public class LevelSelector : MonoBehaviour {
 	public GameObject nextButton;
 	public GameObject previousButton;
 	MenuCameraSettings originalCamSettings = new MenuCameraSettings() {
-		pos = new Vector3(0, 25, -25),
-		rot = new Vector3(45, 0, 0),
-		orthograpicSize = 10,
+		pos = new Vector3(0, 12, -24),
+		rot = new Vector3(25, 0, 0),
+		orthograpicSize = 2.5f,
 	};
 	public Ease menuCameraTransitionEase;
 	public AnimationCurve mouseDeacceleration;
@@ -79,7 +80,6 @@ public class LevelSelector : MonoBehaviour {
 	}
 
 	public void RenderWorldOverview(Worlds world) {
-		DOTween.Clear();
 		foreach(var w in WorldMenuUIs) {
 			w.ResetLines();
 		}

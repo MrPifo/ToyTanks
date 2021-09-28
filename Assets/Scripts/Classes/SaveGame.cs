@@ -6,19 +6,18 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
+
 public static class SaveGame {
 
 	public static SaveV1 SaveInstance { get; set; }
-	public static Campaign CurrentCampaign => SaveInstance.CurrentCampaign;
-	public static string SaveGamePath { get; set; } = Application.persistentDataPath + "/SaveGame.dat";
 	public static Formatting JsonFormatting => Formatting.Indented;
 
 	public static void GameStartUp() {
-		if(File.Exists(SaveGamePath) == false) {
+		if(File.Exists(GamePaths.SaveGamePath) == false) {
 			SaveInstance = CreateFreshSaveGame();
 			var json = JsonConvert.SerializeObject(SaveInstance, JsonFormatting);
-			using(File.Create(SaveGamePath)) {}
-			File.WriteAllText(SaveGamePath, json);
+			using(File.Create(GamePaths.SaveGamePath)) {}
+			File.WriteAllText(GamePaths.SaveGamePath, json);
 		} else {
 			LoadGame();
 		}
@@ -46,16 +45,42 @@ public static class SaveGame {
 		return save;
 	}
 
-	public static void CreateFreshCampaign(Campaign.Difficulty difficulty, byte startLives) {
-		var campaign = new Campaign() {
-			difficulty = difficulty,
-			levelId = 1,
-			lives = startLives,
-			score = 0,
-			time = 0
-		};
-		SaveInstance.CurrentCampaign = campaign;
-		Save();
+	public static void CreateFreshCampaign(Campaign.Difficulty difficulty, byte saveSlot) {
+		Campaign campaign;
+		Debug.Log("Creating new campaign with difficulty " + difficulty.ToString() + " on save slot " + saveSlot);
+		switch(difficulty) {
+			case Campaign.Difficulty.Easy:
+				campaign = new Campaign() {
+					difficulty = Campaign.Difficulty.Easy,
+					levelId = 1,
+					lives = 0,
+				};
+				break;
+			case Campaign.Difficulty.Medium:
+				campaign = new Campaign() {
+					difficulty = Campaign.Difficulty.Medium,
+					levelId = 1,
+					lives = 4,
+				};
+				break;
+			case Campaign.Difficulty.Hard:
+				campaign = new Campaign() {
+					difficulty = Campaign.Difficulty.Hard,
+					levelId = 1,
+					lives = 2,
+				};
+				break;
+			case Campaign.Difficulty.HardCore:
+				campaign = new Campaign() {
+					difficulty = Campaign.Difficulty.HardCore,
+					levelId = 1,
+					lives = 3,
+				};
+				break;
+			default:
+				throw new NotImplementedException("Failed creating campaign with difficulty: " + difficulty.ToString());
+		}
+		SaveInstance.WriteSaveSlot(saveSlot, campaign);
 	}
 
 	public static List<SaveV1.World> CheckAddWorlds() {
@@ -81,15 +106,15 @@ public static class SaveGame {
 	}
 
 	public static void Save() {
-		if(File.Exists(SaveGamePath)) {
+		if(File.Exists(GamePaths.SaveGamePath)) {
 			var json = JsonConvert.SerializeObject(SaveInstance, JsonFormatting);
-			File.WriteAllText(SaveGamePath, json);
+			File.WriteAllText(GamePaths.SaveGamePath, json);
 		}
 	}
 
 	public static void LoadGame() {
-		if(File.Exists(SaveGamePath)) {
-			var txt = File.ReadAllText(SaveGamePath);
+		if(File.Exists(GamePaths.SaveGamePath)) {
+			var txt = File.ReadAllText(GamePaths.SaveGamePath);
 			var json = JObject.Parse(txt);
 			var version = json[nameof(ISaveGame.SaveGameVersion)].Value<int>();
 			Debug.Log("Detected SaveGame version: " + version);
@@ -111,31 +136,47 @@ public static class SaveGame {
 		}
 	}
 
-	public static void UpdateCampaign(int levelId, byte lives, short score, float time) {
-		CurrentCampaign.levelId = levelId;
-		CurrentCampaign.lives = lives;
-		CurrentCampaign.score = score;
-		CurrentCampaign.time = time;
+	public static void UpdateCampaign(ulong levelId, byte lives, short score, float time, byte saveSlot = 99) {
+		if(saveSlot == 99) {
+			SaveInstance.UpdateSaveSlot(SaveInstance.currentSaveSlot, levelId, lives, score, time);
+		} else {
+			SaveInstance.UpdateSaveSlot(saveSlot, levelId, lives, score, time);
+		}
 		Save();
 	}
 
+	public static Campaign GetCampaign(byte saveSlot) {
+		switch(saveSlot) {
+			case 0: return SaveInstance.saveSlot1;
+			case 1: return SaveInstance.saveSlot2;
+			case 2: return SaveInstance.saveSlot3;
+			default:
+				throw new NotImplementedException("SaveSlot " + saveSlot + " is not available.");
+		}
+	}
+
+	public static void UnlockLevel(byte saveSlot, ulong levelId) {
+		GetWorld(GetCampaign(saveSlot).CurrentWorld).levels.Where(l => l.LevelId == levelId).First().IsUnlocked = true;
+	}
+
 	// Version dependent Helper functions
+	public static bool HasGameBeenCompletedOnce => SaveInstance.GameCompletedOnce;
 	public static SaveV1.World GetWorld(Worlds world) => SaveInstance.Worlds.Find(w => w.world == world);
-	public static SaveV1.Level GetLevel(Worlds world, int levelId) => GetWorld(world).levels.Where(l => l.LevelId == levelId).First();
-
+	public static SaveV1.Level GetLevel(Worlds world, ulong levelId) => GetWorld(world).levels.Where(l => l.LevelId == levelId).First();
 	public static int UnlockedLevelCount(Worlds world) => GetWorld(world).levels.Count(l => l.IsUnlocked == true);
-
-	public static bool IsLevelUnlocked(Worlds world, int levelId) => GetLevel(world, levelId).IsUnlocked;
+	public static bool IsLevelUnlocked(Worlds world, ulong levelId) => GetLevel(world, levelId).IsUnlocked;
 
 	public class Campaign {
 
-		public enum Difficulty { Easy, Medium, Hard, Extreme }
+		public enum Difficulty { Easy, Medium, Hard, HardCore }
 
-		public Worlds CurrentWorld => Game.GetWorld(levelId).WorldType;
+		[JsonIgnore] public Worlds CurrentWorld => Game.GetWorld(levelId).WorldType;
 		public Difficulty difficulty;
-		public int levelId;
+		public ulong levelId;
 		public byte lives;
 		public short score;
 		public float time;
+
+		[JsonIgnore] public float PrettyTime => Mathf.Round(time * 100f) / 100f;
 	}
 }

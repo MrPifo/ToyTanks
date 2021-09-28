@@ -11,15 +11,15 @@ public static class Game {
 
 	static readonly List<World> Worlds = new List<World>() {
 		new World(global::Worlds.WoodWorld, new Level[10] {
-			new Level(0, 1, false),
-			new Level(1, 2, false),
-			new Level(2, 3, false),
-			new Level(3, 4, false),
-			new Level(4, 5, false),
-			new Level(5, 6, false),
-			new Level(6, 7, false),
-			new Level(7, 8, false),
-			new Level(8, 9, false),
+			new Level(0, 1),
+			new Level(1, 2),
+			new Level(2, 3),
+			new Level(3, 4),
+			new Level(4, 5),
+			new Level(5, 6),
+			new Level(6, 7),
+			new Level(7, 8),
+			new Level(8, 9),
 			new Level(9, 10, true),
 		}, new MenuCameraSettings() {
 			orthograpicSize = 28,
@@ -28,15 +28,15 @@ public static class Game {
 		}),
 
 		new World(global::Worlds.FloorWorld, new Level[10] {
-			new Level(0, 11, false),
-			new Level(1, 12, false),
-			new Level(2, 13, false),
-			new Level(3, 14, false),
-			new Level(4, 15, false),
-			new Level(5, 16, false),
-			new Level(6, 17, false),
-			new Level(7, 18, false),
-			new Level(8, 19, false),
+			new Level(0, 11),
+			new Level(1, 12),
+			new Level(2, 13),
+			new Level(3, 14),
+			new Level(4, 15),
+			new Level(5, 16),
+			new Level(6, 17),
+			new Level(7, 18),
+			new Level(8, 19),
 			new Level(9, 20, true),
 		}, new MenuCameraSettings() {
 			orthograpicSize = 28,
@@ -46,6 +46,8 @@ public static class Game {
 	};
 	public static Dictionary<string, Texture2D> Cursors { get; set; } = new Dictionary<string, Texture2D>();
 	public static string LevelScreenshotPath => "Levels/Screenshots/Level_";
+	public static Level[] Levels => Worlds.SelectMany(l => l.Levels).ToArray();
+	public static ulong TotalLevels => (ulong)Levels.Length;
 
 	public class World {
 		public World(Worlds worldType, Level[] levels, MenuCameraSettings menuCameraSettings) {
@@ -64,27 +66,28 @@ public static class Game {
 		public Level GetLevel(int id) => new List<Level>(levels).Find(l => l.Order == id);
 	}
 	public class Level {
-		public Level(int order, int levelId, bool isBoss) {
+		public Level(int order, ulong levelId, bool isBoss = false) {
 			this.order = order;
 			this.levelId = levelId;
 			this.isBoss = isBoss;
 		}
-		readonly int levelId;
+		readonly ulong levelId;
 		readonly int order;
 		readonly bool isBoss;
 
 		public int Order => order;
-		public int LevelId => levelId;
+		public ulong LevelId => levelId;
 		public bool IsBoss => isBoss;
 	}
 
 	// Getter Methods
 	public static World[] GetWorlds => Worlds.ToArray();
 	public static World GetWorld(Worlds worldType) => Worlds.Find(w => w.WorldType == worldType);
-	public static World GetWorld(int levelId) => Worlds.Find(w => w.Levels.Any(l => l.LevelId == levelId));
+	public static World GetWorld(ulong levelId) => Worlds.Find(w => w.Levels.Any(l => l.LevelId == levelId));
 	public static Level[] GetLevels(Worlds worldType) => GetWorld(worldType).Levels;
 	public static Level GetLevelByOrder(Worlds worldType, int order) => GetWorld(worldType).Levels.Where(l => l.Order == order).First();
-	public static Level GetLevelById(Worlds worldType, int levelId) => GetWorld(worldType).Levels.Where(l => l.LevelId == levelId).First();
+	public static Level GetLevelById(Worlds worldType, ulong levelId) => GetWorld(worldType).Levels.Where(l => l.LevelId == levelId).First();
+	public static bool LevelExists(ulong levelId) => Levels.Any(l => l.LevelId == levelId);
 	public static int LevelCount(Worlds worldType) => GetWorld(worldType).Levels.Length;
 	public static void SetCursor(string cursor = "") {
 		if(Cursors.ContainsKey(cursor.ToLower())) {

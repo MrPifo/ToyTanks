@@ -30,7 +30,6 @@ public class JsonEditor : EditorWindow {
     private bool initialized = false;
     private string previousLabelType = "";
 
-    [MenuItem("Window/JsonEditor")]
     public static void ShowWindow() {
         GetWindow(typeof(JsonEditor));
     }

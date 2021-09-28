@@ -5034,11 +5034,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9b79bf1b3ea2a14c8349fd1f7c4490c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocity: 10
+  velocity: 15
   maxBounces: 1
   reflectLayers:
     serializedVersion: 2
-    m_Bits: 896
+    m_Bits: 33664
   explodeSmoke: {fileID: 8465004998196034509}
   explodeSmokeFire: {fileID: 3351028027152216380}
   explodePieces: {fileID: 1847852265992880024}

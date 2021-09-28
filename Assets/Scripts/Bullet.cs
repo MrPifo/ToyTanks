@@ -63,6 +63,7 @@ public class Bullet : MonoBehaviour {
 		impactSparks.Play();
 		smokeTrail.Stop(false, ParticleSystemStopBehavior.StopEmitting);
 		smokeFireTrail.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+		GetComponent<Collider>().enabled = false;
 
 		new GameObject().AddComponent<DestructionTimer>().Destruct(5, new GameObject[] { explodeSmoke.gameObject, explodeSmokeFire.gameObject, explodePieces.gameObject, smokeTrail.gameObject, smokeFireTrail.gameObject });
 		Destroy(gameObject);

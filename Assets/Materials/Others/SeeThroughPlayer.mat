@@ -121,7 +121,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - Alpha: 0.8
+    - Alpha: 1
     - DitherSize: 4
     - Vector1_26270EFD: 0.5
     - Vector1_7F93466: 1

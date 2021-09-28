@@ -17,6 +17,15 @@ TagManager:
   - Level
   - CrossHair
   - CameraPos
+  - LevelTanks
+  - LevelBlocks
+  - BlobShadow
+  - Toggle Bg
+  - Off Text
+  - Handle
+  - OnText
+  - MenuItem
+  - TransitionFlashScreen
   layers:
   - Default
   - TransparentFX
@@ -33,9 +42,9 @@ TagManager:
   - Blur
   - LoadingScreen
   - BulletReject
-  - 
-  - 
-  - 
+  - LevelBoundary
+  - BulletTraverse
+  - IgnoreSeeThrough
   - 
   - 
   - 
