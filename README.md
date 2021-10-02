@@ -29,7 +29,7 @@ The artstyle is a mix of cartoonish and realistic graphics. It is supposed to lo
 
 #### Lightmapping
 
-Campaign levels include baked lightmapping, which are swapped out and applied if a level is loaded. This does not apply to user create leves, since it is not possible to bake at Runtime. To save space and upload time, these Lightmaps wont be uploaded here on GitHub and need therefore to be rebaked if desired.
+Campaign levels include baked Lightmaps, which are swapped out and applied if a level is loaded. This does not apply to user created levels, since it is not possible to bake at Runtime. To save space and upload time, these Lightmaps won't be uploaded here on GitHub and need therefore to be rebaked if desired.
 
 ## Editor
 
