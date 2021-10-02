@@ -27,6 +27,10 @@ There are also 4 difficulties available for more challening gameplay.
 
 The artstyle is a mix of cartoonish and realistic graphics. It is supposed to look like little toys, but mixed with bits of violence to express more power.
 
+#### Lightmapping
+
+Campaign levels include baked lightmapping, which are swapped out and applied if a level is loaded. This does not apply to user create leves, since it is not possible to bake at Runtime. To save space and upload time, these Lightmaps wont be uploaded here on GitHub and need therefore to be rebaked if desired.
+
 ## Editor
 
 The editor is a tool to build your own levels and make usage of already prexisting level elements. With the same tool I also create the campaign levels.
