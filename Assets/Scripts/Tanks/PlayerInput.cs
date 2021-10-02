@@ -5,7 +5,16 @@ using Shapes;
 
 public class PlayerInput : TankBase {
 
-	public GameObject crosshair => LevelManager.UI.crossHair;
+	[SerializeField] private GameObject _crossHair;
+	public GameObject crosshair {
+		get {
+			if(_crossHair != null) {
+				return _crossHair;
+			} else {
+				return LevelManager.UI.crossHair;
+			}
+		}
+	}
 	public Color crossHairColor;
 	public Color crossHairColor2;
 	public float crossHairSize;
@@ -30,15 +39,15 @@ public class PlayerInput : TankBase {
 
 	void Update() {
 		if(HasBeenInitialized) {
-			if(!disableCrossHair && crosshair != null) {
-				Crosshair();
-			}
 			if(!disableControl && crosshair != null) {
 				MoveTank();
 				if(Input.GetKeyDown(KeyCode.Mouse0)) {
 					ShootBullet();
 				}
 			}
+		}
+		if(LevelManager.UI != null && crosshair != null && !disableCrossHair || DebugPlay.isDebug) {
+			Crosshair();
 		}
 	}
 
@@ -101,13 +110,11 @@ public class PlayerInput : TankBase {
 
 	public void DisablePlayer() {
 		disableControl = true;
-		disableCrossHair = true;
 		IsInvincible = true;
 	}
 
 	public void EnablePlayer() {
 		disableControl = false;
-		disableCrossHair = false;
 		IsInvincible = false;
 	}
 }

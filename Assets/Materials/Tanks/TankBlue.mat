@@ -48,7 +48,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Normal_Map:
-        m_Texture: {fileID: 2800000, guid: 43cfa3b308732c941a0fbb4334ecefcc, type: 3}
+        m_Texture: {fileID: 2800000, guid: 729b588c65455804eb13b9838a5d0e03, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - SPEC:
@@ -154,7 +154,7 @@ Material:
     m_Ints: []
     m_Floats:
     - Metallic: 0
-    - Normal_Strength: 0.35
+    - Normal_Strength: 0.5
     - Smoothness: 0.3
     - _AORemapMax: 1
     - _AORemapMin: 0
@@ -270,9 +270,10 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
+    - Tiling: {r: 2, g: 2, b: 0, a: 0}
     - _BaseColor: {r: 0.3160377, g: 0.68618613, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0.25882357, g: 0.4677304, b: 0.6509804, a: 1}
+    - _Color: {r: 0.19744569, g: 0.5589531, b: 0.8207547, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}

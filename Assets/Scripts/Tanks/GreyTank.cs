@@ -63,6 +63,7 @@ public class GreyTank : TankAI {
 				}
 			}
 			yield return null;
+			while(LevelManager.GamePaused) yield return null;   // Pause AI
 		}
 		stateMachine.Push(GreyState.Retreat);
 		ProcessState();
@@ -75,6 +76,7 @@ public class GreyTank : TankAI {
 			MoveAlongPath();
 			KeepHeadRot();
 			yield return null;
+			while(LevelManager.GamePaused) yield return null;   // Pause AI
 			time += Time.deltaTime;
 		}
 		stateMachine.Push(GreyState.Attack);

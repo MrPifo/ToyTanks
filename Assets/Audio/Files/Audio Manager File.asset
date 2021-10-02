@@ -33,3 +33,15 @@ MonoBehaviour:
     value: {fileID: 8300000, guid: 1703a275ba1f0d24c8135d70acf60ae1, type: 3}
   - key: PlayerTankExplode
     value: {fileID: 8300000, guid: 6f183f71546f1f54e9fd6cfe5d2dc67f, type: 3}
+  - key: Switch1
+    value: {fileID: 8300000, guid: 6ef53ca4e1ec76f43aa00d2d5fcb92d1, type: 3}
+  - key: Switch2
+    value: {fileID: 8300000, guid: 325d7541764c29e45913b8dbae083b64, type: 3}
+  - key: Switch3
+    value: {fileID: 8300000, guid: ae6e3c2b5f0b309478054d92c1ae9371, type: 3}
+  - key: Switch4
+    value: {fileID: 8300000, guid: 2121d6353fdeddd49964bcdc123a2f3e, type: 3}
+  - key: PelletShot
+    value: {fileID: 8300000, guid: 658922a0ff61c5e46bf645a52e5f94f5, type: 3}
+  - key: SmallExplosion
+    value: {fileID: 8300000, guid: 06199183f640c484ead3cc916d43d09e, type: 3}

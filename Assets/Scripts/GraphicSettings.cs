@@ -17,7 +17,6 @@ public class GraphicSettings : MonoBehaviour {
 
     public static Int2 nativeScreenResolution;
     public static GraphicSettings Instance;
-    public static bool HasBeenInitialized = false;
     public static UnityEvent OnGraphicSettingsOpen = new UnityEvent();
     public static UnityEvent OnGraphicSettingsClose = new UnityEvent();
     // User Interface
@@ -37,18 +36,8 @@ public class GraphicSettings : MonoBehaviour {
     public Toggle softShadowsToggle;
 
 	void Awake() {
-        if(!HasBeenInitialized) {
-            nativeScreenResolution = new Int2(Screen.currentResolution.width, Screen.currentResolution.height);
-            HasBeenInitialized = true;
-            overrideVolume.profile.TryGet(out volumeSSR);
-        } else {
-            Destroy(gameObject);
-		}
-    }
-
-	void Start() {
-        Instance.menu.Initialize();
-        Instance.menu.FadeOut();
+        nativeScreenResolution = new Int2(Screen.currentResolution.width, Screen.currentResolution.height);
+        overrideVolume.profile.TryGet(out volumeSSR);
     }
 
 	public static void RenderResolutionDropdown() {
@@ -221,15 +210,15 @@ public class GraphicSettings : MonoBehaviour {
     static string AudioSection => "Audio";
     static string WindowSettings => "WindowSettings";
     static string Graphics => "Graphics";
-    static int MainVolume {
+    public static int MainVolume {
         get => ParseInt(GetValue(AudioSection, nameof(MainVolume)));
         set => SetValue(AudioSection, nameof(MainVolume), value);
 	}
-    static int MusicVolume {
+    public static int MusicVolume {
         get => ParseInt(GetValue(AudioSection, nameof(MusicVolume)));
         set => SetValue(AudioSection, nameof(MusicVolume), value);
     }
-    static int SoundEffectVolume {
+    public static int SoundEffectVolume {
         get => ParseInt(GetValue(AudioSection, nameof(SoundEffectVolume)));
         set => SetValue(AudioSection, nameof(SoundEffectVolume), value);
     }
@@ -281,10 +270,6 @@ public class GraphicSettings : MonoBehaviour {
 
     public static void Initialize() {
         Instance = FindObjectOfType<GraphicSettings>();
-        if(Instance == null) {
-            throw new GraphicSettingsNotFound("There is no instance found of Graphic Settings!");
-		}
-        DontDestroyOnLoad(Instance);
 
         if(File.Exists(GamePaths.UserGraphicSettings) == false) {
             // Create new User-Settings
@@ -293,7 +278,14 @@ public class GraphicSettings : MonoBehaviour {
         } else {
             LoadSettings();
 		}
-	}
+
+        if(Instance == null) {
+            //throw new GraphicSettingsNotFound("There is no instance found of Graphic Settings!");
+        } else {
+            DontDestroyOnLoad(Instance);
+            Instance.menu.Initialize();
+        }
+    }
 
     // Apply Settings
     static void SetMainVolume(int volume) {
@@ -322,7 +314,9 @@ public class GraphicSettings : MonoBehaviour {
 	}
     static void SetSSR(bool state) {
         SSR = state;
-        Instance.volumeSSR.active = state;
+        if(Instance != null) {
+            Instance.volumeSSR.active = state;
+        }
     }
     static void SetVsync(bool state) {
         VSYNC = state;

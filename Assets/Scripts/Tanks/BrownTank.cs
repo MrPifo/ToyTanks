@@ -25,6 +25,7 @@ public class BrownTank : TankAI {
 				}
 			}
 			yield return null;
+			while(LevelManager.GamePaused) yield return null;   // Pause AI
 		}
 	}
 

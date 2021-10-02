@@ -39,6 +39,7 @@ public class GreenTank : TankAI {
 				}
 			}
 			yield return null;
+			while(LevelManager.GamePaused) yield return null;   // Pause AI
 		}
 	}
 

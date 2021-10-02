@@ -33,6 +33,8 @@ public class Bullet : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
+		if(LevelManager.GamePaused) return;
+
 		Vector3 dir = (transform.position - (transform.position - direction)).normalized;
 		Quaternion look = Quaternion.LookRotation(dir, transform.up);
 
@@ -72,7 +74,7 @@ public class Bullet : MonoBehaviour {
 	public void SetupBullet(Vector3 dir, Vector3 startPos) {
 		transform.position = startPos;
 		direction = dir;
-		AudioManager.instance.Play("BulletShot", 0.25f, Random.Range(0.9f, 1.1f));
+		AudioPlayer.Play("BulletShot", 0.8f, 1.2f);
 		this.Delay(15, () => Destroy(gameObject));
 	}
 
@@ -100,6 +102,6 @@ public class Bullet : MonoBehaviour {
 	void Reflect(Vector3 inNormal) {
 		direction = Vector3.Reflect(direction, inNormal);
 		impactSparks.Play();
-		AudioManager.instance.Play("BulletReflect", 0.5f, Random.Range(0.8f, 1.2f));
+		AudioPlayer.Play("BulletReflect", 0.8f, 1.2f, 0.5f);
 	}
 }

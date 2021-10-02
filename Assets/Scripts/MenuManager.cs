@@ -41,7 +41,7 @@ namespace ToyTanks.UI {
 		public const float fadeDuration = 0.35f;
 		LevelData currentLevelData;
 
-		void Awake() {
+		public void Initialize() {
 			foreach(var menu in GameObject.FindGameObjectsWithTag("MenuItem")) {
 				menu.gameObject.SetActive(true);
 				menu.GetComponent<MenuItem>().Initialize();
@@ -51,8 +51,6 @@ namespace ToyTanks.UI {
 			customLevelButton = customLevelsScrollRect.content.transform.GetChild(0).gameObject;
 			customLevelButton.gameObject.SetActive(false);
 			flashScreen.alpha = 0;
-			mainMenu.FadeIn();
-			FadeOutBlur();
 		}
 
 		public void SetActiveSaveSlot(byte slot) => SaveGame.SaveInstance.currentSaveSlot = slot;

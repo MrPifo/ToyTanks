@@ -123,6 +123,7 @@ public class BossTank01 : BossAI {
 			chargeSmoke.Play();
 			Move(chargeDirection);
 			yield return null;
+			while(LevelManager.GamePaused) yield return null;   // Pause AI
 		}
 		canMove = false;
 		moveSpeed = normalMoveSpeed;
@@ -139,6 +140,7 @@ public class BossTank01 : BossAI {
 			ShootBullet();
 			shot++;
 			yield return new WaitForSeconds(reloadDuration);
+			while(LevelManager.GamePaused) yield return null;   // Pause AI
 		}
 		GoToNextState(waitDuration);
 	}

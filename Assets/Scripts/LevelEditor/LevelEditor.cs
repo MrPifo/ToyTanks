@@ -28,24 +28,25 @@ namespace ToyTanks.LevelEditor {
 		public LevelData levelData;
 
 		[Header("Others")]
-		public GameObject ui;
-		public GameObject gameUI;
+		public CanvasGroup editorUI;
+		public CanvasGroup gameUI;
+		public CanvasGroup editGameUI;
 		public GameObject themeUIAsset;
 		public GameObject tankSelectUI;
 		public GameObject floor;
 		public GameObject optionsMenu;
+		public GameObject levelUI;
+		public GameObject saveButton;
 		public Button playTestButton;
 		public Slider pathMeshGeneratorProgressBar;
 		public TextMeshProUGUI playTestButtonText;
-		public CanvasGroup editorUI;
-		public CanvasGroup editorGameUI;
 		public LevelManager levelManager;
 		public ScrollRect assetScrollRect;
 		public ScrollRect tankScrollRect;
 		public ReflectionProbe ReflectionProbe;
 		public TMP_Dropdown themesDropdown;
 		public TMP_Dropdown gridSizeDropdown;
-		public ToyTanks.UI.ToggleController buildModeToggle;
+		public UI.ToggleController buildModeToggle;
 		public SegmentedControl cameraViews;
 		public Material removeMaterial;
 		public Material previewMaterial;
@@ -99,43 +100,9 @@ namespace ToyTanks.LevelEditor {
 			Grid = null;
 			GameView = null;
 			PreviewInstance = null;
+			editorUI.alpha = 0;
 			optionsMenu.SetActive(false);
 			ClearLevel();
-		}
-
-		public void StartLevelEditor() {
-			FindObjectsOfType<TankBase>().ToList().ForEach(t => t.enabled = false);
-			editorCamera = FindObjectOfType<EditorCamera>();
-			gameCamera = FindObjectOfType<GameCamera>();
-			levelManager = FindObjectOfType<LevelManager>();
-			editorCamera.Initialize();
-			LevelManager.Grid.ClearGrid();
-			pathMeshGeneratorProgressBar.gameObject.SetActive(false);
-			GameView = new MenuCameraSettings() {
-				orthograpicSize = Camera.main.orthographicSize,
-				pos = Camera.main.transform.position,
-				rot = Camera.main.transform.rotation.eulerAngles
-			};
-			playTestButton.image.color = Color.green;
-			ui.SetActive(true);
-			gameUI.SetActive(false);
-
-			LoadThemeAssets();
-			LoadTanks();
-			SwitchTheme(Theme);
-			/*buildModeToggle.onToggle.AddListener(() => {
-				if(buildModeToggle.isOn) {
-					buildModeToggle.toggleText.SetText("Build");
-				} else {
-					buildModeToggle.toggleText.SetText("Remove");
-				}
-			});*/
-			//buildModeToggle.Initialize();
-			buildModeToggle.Toggle(false);
-			LevelEditorStarted = true;
-			SwitchToEditView(1);
-			RefreshUI();
-			Debug.Log("<color=red>Level Editor has been started!</color>");
 		}
 
 		void Update() {
@@ -152,6 +119,35 @@ namespace ToyTanks.LevelEditor {
 				PaintSelection();
 			}
 			hovers = hoverSpaceIndexes;
+		}
+
+		public void StartLevelEditor() {
+			FindObjectsOfType<TankBase>().ToList().ForEach(t => t.enabled = false);
+			editorCamera = FindObjectOfType<EditorCamera>();
+			gameCamera = FindObjectOfType<GameCamera>();
+			levelManager = FindObjectOfType<LevelManager>();
+			editorCamera.Initialize();
+			LevelManager.Grid.ClearGrid();
+			pathMeshGeneratorProgressBar.gameObject.SetActive(false);
+			GameView = new MenuCameraSettings() {
+				orthograpicSize = Camera.main.orthographicSize,
+				pos = Camera.main.transform.position,
+				rot = Camera.main.transform.rotation.eulerAngles
+			};
+			playTestButton.image.color = Color.green;
+
+			LoadThemeAssets();
+			LoadTanks();
+			SwitchTheme(Theme);
+			FadeInEditorUI();
+			buildModeToggle.Initialize();
+			buildModeToggle.Toggle(false);
+			LevelEditorStarted = true;
+			levelUI.SetActive(false);
+			SwitchToEditView(1);
+			RefreshUI();
+			GameManager.ShowCursor();
+			Debug.Log("<color=red>Level Editor has been started!</color>");
 		}
 
 		void ComputeMouseSelection() {
@@ -252,7 +248,6 @@ namespace ToyTanks.LevelEditor {
 					return;
 				}
 
-				int fadeDurtaion = 2;
 				isTestPlaying = true;
 				CurrentAsset = null;
 				SwitchToGameView(1);
@@ -266,16 +261,17 @@ namespace ToyTanks.LevelEditor {
 				foreach(var t in FindObjectsOfType<TankBase>()) {
 					t.enabled = true;
 				}
-				editorUI.DOFade(0, fadeDurtaion);
+
+				FadeInEditorUI();
 				playTestButton.interactable = false;
 				playTestButtonText.SetText("Stop");
 				playTestButton.image.color = Color.red;
-				gameUI.SetActive(true);
+				gameUI.DOFade(1, 2);
+				editGameUI.DOFade(0, 2);
 				LevelManager.Grid.ClearGrid();
-				GameManager.PlayTime = 0;
-				GameManager.PlayerLives = 0;
 				levelManager.StartGame();
-				DOTween.ToAlpha(() => gridColor, x => gridColor = x, 0, fadeDurtaion);
+				DOTween.ToAlpha(() => gridColor, x => gridColor = x, 0, 2);
+				GameManager.HideCursor();
 			}
 		}
 
@@ -283,20 +279,17 @@ namespace ToyTanks.LevelEditor {
 			isTestPlaying = false;
 			int fadeDurtaion = 2;
 			pathMeshGeneratorProgressBar.gameObject.SetActive(false);
-			levelManager.player.DisablePlayer();
-			editorUI.DOFade(1, fadeDurtaion);
+			LevelManager.player.DisablePlayer();
+			FadeInEditorUI();
 			SwitchToEditView(fadeDurtaion);
 			DeletePreview();
 			playTestButtonText.SetText("Play");
-			levelManager.GameStarted = false;
+			LevelManager.GameStarted = false;
 			playTestButton.interactable = false;
 			playTestButton.image.color = Color.green;
-			gameUI.SetActive(false);
-			LevelManager.ReviveDeadAI = true;
+			gameUI.DOFade(0, 2);
 			LevelManager.UI.crossHair.SetActive(false);
 			LevelManager.UI.gameplay.SetActive(false);
-			Cursor.lockState = CursorLockMode.Confined;
-			Cursor.visible = true;
 			DOTween.ToAlpha(() => gridColor, x => gridColor = x, 1, fadeDurtaion);
 
 			foreach(var t in FindObjectsOfType<TankBase>()) {
@@ -313,6 +306,7 @@ namespace ToyTanks.LevelEditor {
 				playTestButton.interactable = true;
 			});
 			RefreshUI();
+			GameManager.ShowCursor();
 		}
 
 		bool AllowTestPlay() {
@@ -682,7 +676,7 @@ namespace ToyTanks.LevelEditor {
 			Tanks = Tanks.OrderBy(t => (int)t.tankType).ToList();
 		}
 
-		// Themes & ScrollView
+		// UI
 		void SetAssetScrollView(Themes theme) {
 			var themeAsset = ThemeAssets.Find(t => t.theme == theme);
 
@@ -813,6 +807,9 @@ namespace ToyTanks.LevelEditor {
 			SetThemesDropdown();
 		}
 
+		public void FadeInEditorUI(float duration = 1) => editorUI.DOFade(1f, duration);
+		public void FadeOutEditorUI(float duration = 1) => editorUI.DOFade(0, duration);
+
 		// Options
 		public void OpenOptionsMenu() {
 			optionsMenu.SetActive(true);
@@ -851,12 +848,12 @@ namespace ToyTanks.LevelEditor {
 			string json = JsonConvert.SerializeObject(levelData, Formatting.Indented);
 			File.WriteAllText(GamePaths.GetLevelPath(levelData), json);
 			GameManager.CurrentLevel = levelData;
+			saveButton.SetActive(false);
 			RefreshUI();
+			this.Delay(1, () => saveButton.SetActive(true));
 		}
 		public void ExitLevelEditor() {
-			gameUI.SetActive(false);
-			optionsMenu.SetActive(false);
-			editorUI.gameObject.SetActive(false);
+			FadeOutEditorUI(0.25f);
 			FindObjectOfType<GameManager>().ReturnToMenu("Exiting Editor");
 		}
 
@@ -1025,6 +1022,9 @@ namespace ToyTanks.LevelEditor {
 			}
 			if(GUILayout.Button("Editor View")) {
 				builder.SwitchToEditView(2);
+			}
+			if(GUILayout.Button("Clear")) {
+				builder.ClearLevel();
 			}
 			GUILayout.Space(25);
 			GUILayout.Label("Load Level by ID");

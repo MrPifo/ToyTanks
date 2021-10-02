@@ -1,5 +1,20 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6642138862006091392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8249244236357802834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b6ece6cde5b7b14bb957f7c91b1fa99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverAudio: Switch2
+  clickAudio: 
+  randomPitchTreshold: 0.1
 --- !u!1001 &849265558621256595
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -211,13 +226,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9de664ec5ecbe9747bda724bd80b67b7, type: 3}
+--- !u!1 &8249244236357802834 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8769072985934684353, guid: 9de664ec5ecbe9747bda724bd80b67b7,
+    type: 3}
+  m_PrefabInstance: {fileID: 849265558621256595}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8353865932186953652 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8658124427741518887, guid: 9de664ec5ecbe9747bda724bd80b67b7,
     type: 3}
   m_PrefabInstance: {fileID: 849265558621256595}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 8249244236357802834}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}

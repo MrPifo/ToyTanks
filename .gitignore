@@ -53,3 +53,5 @@ Assets/easy-state
 Assets/Scenes/World?/Level_*
 Assets/Scenes/Debug
 Assets/Scenes/Menu
+Assets/Scenes/Level
+Assets/Resources/Lightmaps/Level_*

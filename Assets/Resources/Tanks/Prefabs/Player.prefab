@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08f210828086c1a4398856e1ba65627c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blendMode: 1
+  blendMode: 3
   scaleMode: 0
   color: {r: 0.29411766, g: 0.29411766, b: 0.29411766, a: 0.78431374}
   detailLevel: 2
@@ -62,8 +62,8 @@ MonoBehaviour:
   width: 2
   height: 0.2
   type: 0
-  cornerRadiusMode: 0
-  cornerRadii: {x: 0.25, y: 0.25, z: 0.25, w: 0.25}
+  cornerRadiusMode: 1
+  cornerRadii: {x: 0.25, y: 0, z: 0.25, w: 0.25}
   thickness: 0.1
   thicknessSpace: 0
   matchDashSpacingToSize: 1
@@ -114,7 +114,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4c5c07ca7d8914b49b41056dfe1c19f3, type: 2}
+  - {fileID: 2100000, guid: 1119202d6e4a9f945abe9ec91a46ec7b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -20321,8 +20321,8 @@ MonoBehaviour:
   destructionVelocity: 500
   disable2DirectionMovement: 0
   makeInvincible: 0
-  crossHairColor: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  crossHairColor2: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  crossHairColor: {r: 0, g: 0, b: 0, a: 1}
+  crossHairColor2: {r: 0, g: 0, b: 0, a: 1}
   crossHairSize: 0.3
   crossHairThickness: 0.2
   disableCrossHair: 0
@@ -35364,9 +35364,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08f210828086c1a4398856e1ba65627c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blendMode: 1
+  blendMode: 3
   scaleMode: 0
-  color: {r: 1.7814789, g: 0.35443035, b: 0.35443035, a: 1}
+  color: {r: 5.992157, g: 0, b: 0.114997074, a: 1}
   detailLevel: 2
   renderQueue: -1
   zTest: 4
@@ -35380,9 +35380,9 @@ MonoBehaviour:
   pivot: 0
   width: 2
   height: 0.2
-  type: 0
-  cornerRadiusMode: 0
-  cornerRadii: {x: 0.25, y: 0.25, z: 0.25, w: 0.25}
+  type: 1
+  cornerRadiusMode: 1
+  cornerRadii: {x: 0.25, y: 0, z: 0.25, w: 0.25}
   thickness: 0.1
   thicknessSpace: 0
   matchDashSpacingToSize: 1
@@ -35398,8 +35398,8 @@ MonoBehaviour:
   fill:
     type: 0
     space: 0
-    colorStart: {r: 1, g: 1, b: 1, a: 1}
-    colorEnd: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 1}
+    colorStart: {r: 1, g: 0, b: 0, a: 1}
+    colorEnd: {r: 1, g: 0.47288004, b: 0.0990566, a: 1}
     linearStart: {x: 0, y: 0.1, z: 0}
     linearEnd: {x: 2, y: 0.1, z: 0}
     radialOrigin: {x: 1, y: 0.25, z: 0}
@@ -35433,7 +35433,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4c5c07ca7d8914b49b41056dfe1c19f3, type: 2}
+  - {fileID: 2100000, guid: 9de2bc2d3f5fb814ca7d0a18b9577a52, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

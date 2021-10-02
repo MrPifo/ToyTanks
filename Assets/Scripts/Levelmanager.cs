@@ -10,8 +10,6 @@ using System.Collections.Generic;
 using DG.Tweening;
 using System.Linq;
 using ToyTanks.LevelEditor;
-using UnityEngine.Rendering;
-using UnityEngine.UI;
 using UnityEngine.Rendering.HighDefinition;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -24,18 +22,19 @@ public class LevelManager : MonoBehaviour {
 	public float gridPointOverlapRadius = 1f;
 	public bool showGrid;
 	public bool IsGameOver;
-	public bool IsDebug;
+	public static bool IsDebug;
 	public const int maxTracksOnStage = 1500;
 	public bool IsBossLevel;
-	public bool GameStarted;
+	public static bool GameStarted;
 	public bool IsPathMeshReady;
 	public bool HasBeenInitialized;
 	public bool HasLevelBeenBuild;
-	public GameObject optionsMenu;
+	public static bool awardBonusLife;
+	public int scoreOnLevelEnter;
+	public CanvasGroup optionsMenu;
 	public HDAdditionalLightData sunLight;
 	public LayerMask baseLayer;
 	public bool IsEditor => Mode == GameManager.GameMode.Editor;
-	public bool isOptionsMenuOpen => optionsMenu.activeSelf;
 	public static LevelEditor Editor;
 	public static PathfindingMesh Grid;
 	public static GameCamera gameCamera;
@@ -43,7 +42,6 @@ public class LevelManager : MonoBehaviour {
 		get => GameManager.CurrentMode;
 		set => GameManager.CurrentMode = value;
 	}
-	public static bool ReviveDeadAI = false;
 	public static bool GamePaused;
 	public static LevelUI UI;
 	public static LevelFeedbacks Feedback;
@@ -53,16 +51,18 @@ public class LevelManager : MonoBehaviour {
 	public static Transform TanksContainer => GameObject.FindGameObjectWithTag("LevelTanks").transform;
 	public static SaveGame.Campaign.Difficulty Difficulty => SaveGame.GetCampaign(SaveGame.SaveInstance.currentSaveSlot).difficulty;
 	public static Transform TrackContainer;
+	public static LevelManager Instance;
 	GameManager GameManager;
 	BossAI bossTank;
 
-	[HideInInspector] public PlayerInput player;
+	[HideInInspector] public static PlayerInput player;
 	[HideInInspector] public static AudioManager audioManager;
-	[HideInInspector] public TankAI[] tankAIs;
+	[HideInInspector] public static TankAI[] tankAIs;
 	public Scene Scene => gameObject.scene;
 
 	// Initialization
 	void Awake() {
+		Instance = this;
 		Editor = FindObjectOfType<LevelEditor>();
 		Grid = FindObjectOfType<PathfindingMesh>();
 		GameManager = FindObjectOfType<GameManager>();
@@ -71,9 +71,11 @@ public class LevelManager : MonoBehaviour {
 		Feedback = FindObjectOfType<LevelFeedbacks>();
 		gameCamera = FindObjectOfType<GameCamera>();
 		TrackContainer = new GameObject("TrackContainer").transform;
+		TrackContainer.SetParent(GameObject.FindGameObjectWithTag("Level").transform);
 		UI.gameplay.SetActive(false);
 		UI.crossHair.gameObject.SetActive(false);
-		optionsMenu.SetActive(false);
+		optionsMenu.alpha = 0;
+		optionsMenu.gameObject.SetActive(false);
 
 		// Start Editor if no GameManager is present
 		if(GameManager == false) {
@@ -81,18 +83,14 @@ public class LevelManager : MonoBehaviour {
 			IsDebug = true;
 			Editor.ClearLevel();
 			Editor.StartLevelEditor();
+			GraphicSettings.Initialize();
 		}
-
-		GraphicSettings.OnGraphicSettingsOpen.AddListener(CloseOptionsMenu);
-		GraphicSettings.OnGraphicSettingsClose.AddListener(OpenOptionsMenu);
-		CloseOptionsMenu();
 	}
 
 	public void Initialize() {
 		if(HasBeenInitialized == false) {
 			// Must be called before TankBase Script
 			if(GameManager.CurrentMode == GameManager.GameMode.Campaign || GameManager.CurrentMode == GameManager.GameMode.LevelOnly) {
-				ReviveDeadAI = false;
 				HasBeenInitialized = true;
 				Destroy(Editor.gameObject);
 			}
@@ -118,7 +116,7 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	void Update() {
-		if(IsGameOver == false && GameStarted) {
+		if(IsGameOver == false && GameStarted && GamePaused == false) {
 			CheckTankTracks();
 			UpdateRunTime();
 
@@ -129,29 +127,52 @@ public class LevelManager : MonoBehaviour {
 			}
 #endif
 		}
-		if(Input.GetKeyDown(KeyCode.Escape) && HasBeenInitialized) {
-			if(isOptionsMenuOpen) {
-				CloseOptionsMenu();
+		if(IsDebug == false && Input.GetKeyDown(KeyCode.Escape) && HasBeenInitialized && IsGameOver == false && GameStarted && (Time.timeScale == 1f || Time.timeScale == 0f)) {
+			if(GamePaused) {
+				ResumeGame();
 			} else {
-				OpenOptionsMenu();
+				PauseGame();
 			}
+		}
+		if(GamePaused == false && IsDebug == false) {
+			GameManager.HideCursor();
 		}
 	}
 
-	void OpenOptionsMenu() {
-		optionsMenu.SetActive(true);
+	public void PauseGame() {
 		GamePaused = true;
-		Time.timeScale = 0;
+		optionsMenu.gameObject.SetActive(true);
+		optionsMenu.DOFade(1, 0.15f);
+		player.DisablePlayer();
+		player.disableCrossHair = true;
+		GameManager.ShowCursor();
+		Time.timeScale = 1f;
+		DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 0.1f, 0.1f).SetEase(Ease.Linear).OnComplete(() => {
+			Time.timeScale = 0;
+		});
 	}
 
-	public void CloseOptionsMenu() {
-		optionsMenu.SetActive(false);
+	public void ResumeGame() {
 		GamePaused = false;
-		Time.timeScale = 1;
+		optionsMenu.DOFade(0, 0.3f);
+		player.EnablePlayer();
+		GameManager.HideCursor();
+		player.disableCrossHair = false;
+		Time.timeScale = 0.2f;
+		DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1, 0.1f).SetEase(Ease.Linear).OnComplete(() => {
+			optionsMenu.gameObject.SetActive(false);
+		});
+	}
+
+	public void ReturnToMenu() {
+		Time.timeScale = 0.1f;
+		DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1, 0.1f).SetEase(Ease.Linear);
+		optionsMenu.DOFade(0, 0.5f);
+		GameManager.ReturnToMenu("Quitting");
 	}
 
 	void UpdateRunTime() {
-		if(GameStarted) {
+		if(!IsDebug) {
 			GameManager.PlayTime += Time.deltaTime;
 			UI.playTime.SetText(Mathf.Round(GameManager.PlayTime * 100f) / 100f + "s");
 		}
@@ -168,33 +189,35 @@ public class LevelManager : MonoBehaviour {
 		ground.lightmapScaleOffset = new Vector4(0, 0, 0, 0);
 	}
 
-	public bool LoadAndBuildMap(LevelData data) {
+	public IEnumerator LoadAndBuildMap(LevelData data, float loadDuration) {
 		ClearMap();
 		var blockAssets = Resources.LoadAll<ThemeAsset>("LevelAssets").ToList().Find(t => t.theme == data.theme);
 		var tanks = Resources.LoadAll<TankAsset>("Tanks").ToList();
 		gameCamera.SetOrthographicSize(GetOrthographicSize(CurrentLevel.gridSize));
+		float timePerBlock = loadDuration / data.blocks.Count;
 
 		foreach(var block in data.blocks) {
 			ThemeAsset.BlockAsset asset = blockAssets.GetAsset(block.type);
 			var b = Instantiate(asset.prefab, block.pos, Quaternion.Euler(block.rotation)).GetComponent<LevelBlock>();
 			b.transform.SetParent(BlocksContainer);
 			b.Index = block.index;
-			//b.gameObject.layer = LayerMask.NameToLayer("Level");
 			b.meshRender.sharedMaterial = asset.material;
 			b.gameObject.isStatic = true;
 			b.GetComponent<LevelBlock>().SetPosition(block.pos);
+			yield return new WaitForSeconds(timePerBlock);
 		}
 
 		foreach(var tank in data.tanks) {
 			var asset = tanks.Find(t => t.tankType == tank.tankType);
 			var t = Instantiate(asset.prefab, tank.pos + asset.tankSpawnOffset, Quaternion.Euler(tank.rotation)).GetComponent<TankBase>();
+			t.transform.SetParent(TanksContainer);
 		}
 		var floor = GameObject.FindGameObjectWithTag("Ground").GetComponent<MeshRenderer>();
 		floor.sharedMaterial = blockAssets.floorMaterial;
 		LevelLightmapper.SwitchLightmaps(CurrentLevel.levelId);
 		sunLight.SetShadowResolutionOverride(true);
 		sunLight.SetShadowResolution(GraphicSettings.GetShadowResolution());
-		return true;
+		HasLevelBeenBuild = true;
 	}
 
 	void SetLevelBoundaryWalls() {
@@ -235,18 +258,17 @@ public class LevelManager : MonoBehaviour {
 	public void StartGame() => StartCoroutine(nameof(IStartGame));
 	IEnumerator IStartGame() {
 		if(Mode != GameManager.GameMode.Editor && HasLevelBeenBuild == false) {
-			yield return new WaitUntil(() => LoadAndBuildMap(CurrentLevel));
-			HasLevelBeenBuild = true;
+			StartCoroutine(LoadAndBuildMap(CurrentLevel, 0));
+			yield return new WaitUntil(() => HasLevelBeenBuild);
 		}
 
 		SetLevelBoundaryWalls();
 		UI.gameplay.SetActive(true);
 		UI.levelStage.SetText($"Level {CurrentLevel.levelId}");
 		UI.counterBanner.SetActive(true);
-		Cursor.visible = false;
-		Cursor.lockState = CursorLockMode.Confined;
 
 		if(!IsDebug) {
+			scoreOnLevelEnter = GameManager.Score;
 			UI.playerScore.SetText(GameManager.Score.ToString());
 			UI.playerLives.SetText(GameManager.PlayerLives.ToString());
 			UI.playTime.SetText(Mathf.Round(GameManager.PlayTime * 100f) / 100f + "s");
@@ -259,7 +281,10 @@ public class LevelManager : MonoBehaviour {
 		Feedback.FadeInGameplayUI();
 		InitializeTanks();
 		player.SetupCross();
+		player.disableCrossHair = false;
 		StartCoroutine(GenerateDynamicGrid());
+		GameManager.HideCursor();
+
 		if(IsBossLevel) {
 			UI.InitBossBar(bossTank.MaxHealth, 3);
 		}
@@ -283,31 +308,49 @@ public class LevelManager : MonoBehaviour {
 		}
 	}
 
-	public void TankDestroyedCheck() {
+	public static void TankDestroyedCheck() {
 		AddScore();
-		foreach(TankAI t in tankAIs) {
-			if(t.HasBeenDestroyed == false) {
-				// All TankAIs must be destroyed or else returns
-				return;
+		if(tankAIs != null) {
+			foreach(TankAI t in tankAIs) {
+				if(t.HasBeenDestroyed == false) {
+					// All TankAIs must be destroyed or else returns
+					return;
+				}
 			}
 		}
-		StartCoroutine(GameOver());
+		if(IsDebug == false) {
+			Instance.StartCoroutine(Instance.GameOver());
+		}
 	}
 
-	public void AddScore() {
+	public static void AddScore() {
 		if(!IsDebug) {
 			GameManager.Score++;
 			UI.playerScore.SetText(GameManager.Score.ToString());
 			Feedback.PlayScore();
+
+			switch(Difficulty) {
+				case SaveGame.Campaign.Difficulty.Medium:
+					if(GameManager.Score % 15 == 0) {
+						awardBonusLife = true;
+					}
+					break;
+				case SaveGame.Campaign.Difficulty.Hard:
+					if(GameManager.Score % 30 == 0) {
+						awardBonusLife = true;
+					}
+					break;
+			}
 		} else {
-			UI.playerScore.SetText(Random.Range(0, 9).ToString());
-			Feedback.PlayScore();
+			UI?.playerScore.SetText(Random.Range(0, 9).ToString());
+			Feedback?.PlayScore();
 		}
 	}
 
-	public void PlayerDead() {
+	public static void PlayerDead() {
 		player.DisablePlayer();
 		DisableAllAIs();
+		GameStarted = false;
 
 		if(!IsDebug) {
 			if(Difficulty != SaveGame.Campaign.Difficulty.Easy && Mode != GameManager.GameMode.LevelOnly && GameManager.PlayerLives > 0) {
@@ -320,23 +363,24 @@ public class LevelManager : MonoBehaviour {
 			if(GameManager.PlayerLives > 0 || GameManager.Difficulty == SaveGame.Campaign.Difficulty.Easy) {
 				Respawn();
 			} else {
-				StartCoroutine(GameOver());
+				Instance.StartCoroutine(Instance.GameOver());
 			}
 		} else if(Mode == GameManager.GameMode.Editor) {
 			Editor.StopTestPlay();
 		}
 	}
 
-	public void Respawn() => StartCoroutine(IRespawnAnimate());
+	public static void Respawn() => Instance.StartCoroutine(Instance.IRespawnAnimate());
 	IEnumerator IRespawnAnimate() {
 		Feedback.PlayLives();
+		Debug.Log("Respawning");
 		yield return new WaitForSeconds(4f);
 		player.Revive();
 
 		foreach(TankAI t in FindObjectsOfType<TankAI>()) {
 			if(t.HasBeenDestroyed == false) {
 				t.Revive();
-			} else if(ReviveDeadAI) {
+			} else if(Difficulty == SaveGame.Campaign.Difficulty.Hard || Difficulty == SaveGame.Campaign.Difficulty.HardCore) {
 				t.Revive();
 			}
 		}
@@ -357,10 +401,16 @@ public class LevelManager : MonoBehaviour {
 						// Continue when players live are sufficient OR playing in EASY
 						SaveGame.UnlockLevel(SaveGame.SaveInstance.currentSaveSlot, GameManager.LevelId);
 						GameManager.LevelId++;
+						if(awardBonusLife || IsBossLevel) {
+							GameManager.PlayerLives++;
+							UI.playerLives.SetText(GameManager.PlayerLives.ToString());
+						}
 						GameManager.UpdateCampaign();
 						Debug.Log("Continue to next Level: " + GameManager.LevelId);
 						yield return new WaitForSeconds(2);
-						GameManager.LoadLevel();
+						// Reward Extra Lives
+						Feedback.FadeOutGameplayUI();
+						GameManager.LoadLevel("", true);
 					} else {
 						// Reset Player to CheckPoint
 						switch(GameManager.Difficulty) {
@@ -377,7 +427,7 @@ public class LevelManager : MonoBehaviour {
 								}
 								Debug.Log("Returning to Checkpoint in Level: " + GameManager.LevelId);
 								yield return new WaitForSeconds(2);
-								GameManager.LoadLevel();
+								GameManager.LoadLevel("", true);
 								break;
 							case SaveGame.Campaign.Difficulty.Hard:
 								// Hard Mode resets to the currents world first level
@@ -385,7 +435,7 @@ public class LevelManager : MonoBehaviour {
 								GameManager.LevelId = Game.GetWorld(GameManager.CurrentLevel.levelId).Levels[0].LevelId;
 								Debug.Log("Returning to Checkpoint in Level: " + GameManager.LevelId);
 								yield return new WaitForSeconds(2);
-								GameManager.LoadLevel();
+								GameManager.LoadLevel("Mission Failed");
 								break;
 							case SaveGame.Campaign.Difficulty.HardCore:
 								// HardCore deletes SaveSlot
@@ -393,7 +443,7 @@ public class LevelManager : MonoBehaviour {
 								SaveGame.SaveInstance.WipeSlot(SaveGame.SaveInstance.currentSaveSlot);
 								SaveGame.Save();
 								yield return new WaitForSeconds(2);
-								GameManager.ReturnToMenu("Mission Failed");
+								//GameManager.ReturnToMenu("Mission Failed");
 								break;
 						}
 					}
@@ -418,17 +468,21 @@ public class LevelManager : MonoBehaviour {
 		}
 	}
 
-	void DisableAllAIs() {
-		foreach(TankAI t in tankAIs) {
-			t.DisableAI();
-			t.makeInvincible = true;
+	static void DisableAllAIs() {
+		if(tankAIs != null) {
+			foreach(TankAI t in tankAIs) {
+				t.DisableAI();
+				t.makeInvincible = true;
+			}
 		}
 	}
 
-	void EnableAllAIs() {
-		foreach(TankAI t in tankAIs) {
-			t.EnableAI();
-			t.makeInvincible = false;
+	static void EnableAllAIs() {
+		if(tankAIs != null) {
+			foreach(TankAI t in tankAIs) {
+				t.EnableAI();
+				t.makeInvincible = false;
+			}
 		}
 	}
 
@@ -522,7 +576,7 @@ public class LevelManagerEditor : Editor {
 		DrawDefaultInspector();
 		LevelManager builder = (LevelManager)target;
 		if(GUILayout.Button("Reset")) {
-			builder.Respawn();
+			LevelManager.Respawn();
 		}
 		if(GUILayout.Button("Generate Grid")) {
 			builder.GenerateGrid();

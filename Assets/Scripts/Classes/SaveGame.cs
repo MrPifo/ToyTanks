@@ -67,7 +67,7 @@ public static class SaveGame {
 				campaign = new Campaign() {
 					difficulty = Campaign.Difficulty.Hard,
 					levelId = 1,
-					lives = 2,
+					lives = 3,
 				};
 				break;
 			case Campaign.Difficulty.HardCore:

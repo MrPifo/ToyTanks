@@ -69,8 +69,15 @@ public class TankBase : MonoBehaviour {
 	public Bullet Bullet { get; set; }
 	public int MaxHealth => maxHealthPoints;
 	private TankReferences References { get; set; }
-	protected AudioManager Audio => LevelManager.audioManager;
-	protected LevelManager LevelManager { get; set; }
+	protected AudioManager Audio {
+		get {
+			if(LevelManager.audioManager == null) {
+				return GameObject.Find("AudioManager").GetComponent<AudioManager>();
+			} else {
+				return LevelManager.audioManager;
+			}
+		}
+	}
 
 	// Tank References Shortcuts
 	public Disc shockwaveDisc => References.shockwaveDisc;
@@ -104,7 +111,6 @@ public class TankBase : MonoBehaviour {
 
 	public virtual void InitializeTank() {
 		Bullet = References.bullet.GetComponent<Bullet>();
-		LevelManager = FindObjectOfType<LevelManager>();
 		spawnPos = rig.position;
 		spawnRot = rig.rotation;
 		initLayer = gameObject.layer;
@@ -252,15 +258,16 @@ public class TankBase : MonoBehaviour {
 		damageSmokeBody.Play();
 		damageSmokeHead.Play();
 		smokeFireDestroyEffect.Play();
-		Audio.Play("TankExplode", 0.5f, Random.Range(0.9f, 1.1f));
+		AudioPlayer.Play("TankExplode", 0.8f, 1.2f);
+
 		if(CompareTag("Player")) {
-			Audio.Play("PlayerTankExplode", 0.5f, Random.Range(0.9f, 1.1f));
+			AudioPlayer.Play("PlayerTankExplode", 0.8f, 1.2f);
 		}
 		Camera.main.DOOrthoSize(Camera.main.orthographicSize + 1, 0.15f);
 		this.Delay(0.15f, () => Camera.main.DOOrthoSize(Camera.main.orthographicSize - 1, 0.15f));
-		LevelManager.Feedback.TankExplode();
+		LevelManager.Feedback?.TankExplode();
 		if(this is PlayerInput) {
-			LevelManager.Feedback.PlayerDead();
+			LevelManager.Feedback?.PlayerDead();
 		}
 		shockwaveDisc.gameObject.SetActive(true);
 		
@@ -281,15 +288,14 @@ public class TankBase : MonoBehaviour {
 
 		int c = 0;
 		foreach(Transform t in destroyTransformPieces) {
-			t.position = Vector3.zero;
-			t.rotation = Quaternion.identity;
-			t.parent = transform;
-			t.localPosition = destroyRestPoses[c];
-			t.localRotation = destroyRestRots[c];
+			t.DOLocalMove(destroyRestPoses[c], 1.5f).SetEase(Ease.OutCubic);
+			t.DOLocalRotate(destroyRestRots[c].eulerAngles, 1.5f).SetEase(Ease.OutCubic);
 			t.gameObject.layer = initLayer;
+			t.parent = transform;
 			Destroy(t.gameObject.GetComponent<Rigidbody>());
 			c++;
 		}
+		
 		damageSmokeBody.Stop();
 		damageSmokeHead.Stop();
 	}

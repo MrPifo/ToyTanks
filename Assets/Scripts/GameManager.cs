@@ -1,20 +1,18 @@
-using MoreMountains.Feedbacks;
-using MoreMountains.Tools;
 using UnityEngine;
-using TMPro;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System;
+using System.Collections;
 
-[RequireComponent(typeof(MMFeedbacks))]
 public class GameManager : MonoBehaviour {
 
 	public enum GameMode { None, Campaign, LevelOnly, Editor }
 
-	[SerializeField] int startLevel;
+	public float loadingScreenFadeDuration = 2f;
+	public float bannerFadeDuration = 1f;
+	public float totalLoadingFadeDuration = 2f;
 	[SerializeField] Texture2D defaultCursor;
 	[SerializeField] Texture2D pointerCursor;
 
@@ -40,9 +38,8 @@ public class GameManager : MonoBehaviour {
 	public static GameMode CurrentMode;
 
 	public static GameManager Instance;
-	public static MMFeedbackLoadScene loader;
-	public static MMFeedbacks feedbacks;
 	public static LoadingScreen screen;
+	public static bool GameBooted = false;
 	public static List<LevelData> Levels { get; set; }
 	static LevelData _currentLevel;
 	public static LevelData CurrentLevel {
@@ -62,14 +59,20 @@ public class GameManager : MonoBehaviour {
 
 	void Awake() {
 		DontDestroyOnLoad(this);
-		Game.AddCursor("default", defaultCursor);
-		Game.AddCursor("pointer", pointerCursor);
-		Instance = this;
-		feedbacks = GetComponent<MMFeedbacks>();
-		loader = feedbacks.GetComponent<MMFeedbackLoadScene>();
-		SaveGame.GameStartUp();
-		Game.SetCursor("default");
+		var menu = FindObjectOfType<ToyTanks.UI.MenuManager>();
+		menu.Initialize();
 		GraphicSettings.Initialize();
+		Instance = this;
+
+		if(GameBooted == false) {
+			Game.AddCursor("default", defaultCursor);
+			Game.AddCursor("pointer", pointerCursor);
+			SaveGame.GameStartUp();
+			Game.SetCursor("default");
+			menu.mainMenu.FadeIn();
+			menu.FadeOutBlur();
+			GameBooted = true;
+		}
 	}
 
 	public void CopyCamera() {
@@ -88,73 +91,16 @@ public class GameManager : MonoBehaviour {
 		PlayerLives = 1;
 		LevelId = levelId;
 		Instance.LoadAllAvailableLevels();
-		Instance.LoadLevel();
+		Instance.LoadLevel("Level " + levelId);
 	}
 
 	public static void StartEditor(LevelData level) {
 		CurrentMode = GameMode.Editor;
 		LevelId = level.levelId;
 		CurrentLevel = level;
-		Instance.StartEditor();
-	}
-	public void StartEditor() {
-		OnLoadingScreenEntered(() => {
-			FindObjectOfType<MMAdditiveSceneLoadingManager>().OnAfterEntryFade.AddListener(() => {
-				screen = FindObjectOfType<LoadingScreen>();
-				screen.SetSingleMessage("");
-			});
-		});
-		OnLoadingScreenEntered(() => {
-			CopyCamera();
-			OnLoadingScreenExit(() => {
-				var level = FindObjectOfType<LevelManager>();
-				LevelManager.Editor.StartLevelEditor();
-				LevelManager.Editor.LoadUserLevel(CurrentLevel);
-				CopyCamera();
-			});
-		});
-		StartTransitionToScene("Level");
+		Instance.LoadLevel("Starting Editor");
 	}
 
-	public void LoadLevel() {
-		if(!isLoading) {
-			isLoading = true;
-			if(LevelExists(LevelId)) {
-				OnLoadingScreenEntered(() => {
-					FindObjectOfType<MMAdditiveSceneLoadingManager>().OnAfterEntryFade.AddListener(() => {
-						screen = FindObjectOfType<LoadingScreen>();
-						screen.SetInfo($"Level {LevelId}", $"{PlayerLives} x");
-					});
-				});
-				OnLoadingScreenEntered(() => {
-					CopyCamera();
-					
-					OnLoadingScreenExit(() => {
-						var level = FindObjectOfType<LevelManager>();
-						level.Initialize();
-						CopyCamera();
-						level.StartGame();
-					});
-				});
-				StartTransitionToScene("Level");
-			}
-		}
-	}
-
-	public void ReturnToMenu(string customMessage) {
-		isLoading = true;
-		OnLoadingScreenEntered(() => {
-			FindObjectOfType<MMAdditiveSceneLoadingManager>().OnAfterEntryFade.AddListener(() => {
-				screen = FindObjectOfType<LoadingScreen>();
-				screen.SetSingleMessage(customMessage);
-			});
-		});
-		OnLoadingScreenExit(() => {
-			ResetGameStatus();
-		});
-		StartTransitionToScene("Menu");
-	}
-	
 	public void ResetGameStatus() {
 		Cursor.visible = true;
 		Cursor.lockState = CursorLockMode.Confined;
@@ -185,43 +131,121 @@ public class GameManager : MonoBehaviour {
 			PlayTime = camp.time;
 			Score = camp.score;
 			PlayerLives = camp.lives;
-			LoadLevel();
+			LoadLevel("", true);
 		}
 	}
 
 	public static void UpdateCampaign() => SaveGame.UpdateCampaign(LevelId, PlayerLives, Score, PlayTime);
 
-	public void OnLoadingScreenEntered(UnityAction callback) {
-		loadingScreenStartedCallback = (Scene scene, LoadSceneMode mode) => {
-			if(scene.name == "LoadingScreen") {
-				SceneManager.sceneLoaded -= loadingScreenStartedCallback;
-				FindObjectOfType<MMAdditiveSceneLoadingManager>().OnEntryFade.AddListener(() => {
-					callback.Invoke();
-				});
+	public void ReturnToMenu(string message) => StartCoroutine(TransitionToMenu(message));
+	public void LoadLevel(string message, bool displayCampaignInformation = false) => StartCoroutine(TransitionToLevel(message, displayCampaignInformation));
+	IEnumerator TransitionToLevel(string message, bool displayCampaignInformation = false) {
+		Scene activeScene = SceneManager.GetActiveScene();
+
+		// Load LoadingScreen
+		AsyncOperation loadingScreen = SceneManager.LoadSceneAsync("LoadingScreen", LoadSceneMode.Additive);
+		loadingScreen.allowSceneActivation = true;
+
+		yield return new WaitUntil(() => loadingScreen.isDone);
+		LoadingScreen transitionScreen = FindObjectOfType<LoadingScreen>();
+		transitionScreen.FadeIn(loadingScreenFadeDuration);
+
+		yield return new WaitUntil(() => transitionScreen.onFadeInFinished);
+		if(activeScene.name == "Menu") {
+			AsyncOperation unloadLevel = SceneManager.UnloadSceneAsync("Menu");
+			unloadLevel.allowSceneActivation = true;
+			yield return new WaitUntil(() => unloadLevel.isDone);
+		}
+		if(activeScene.name == "Level") {
+			AsyncOperation unloadLevel = SceneManager.UnloadSceneAsync("Level");
+			yield return new WaitUntil(() => unloadLevel.isDone);
+		}
+		AsyncOperation level = SceneManager.LoadSceneAsync("Level", LoadSceneMode.Additive);
+		level.allowSceneActivation = true;
+		yield return new WaitUntil(() => level.isDone);
+		LevelManager levelManager = FindObjectOfType<LevelManager>();
+		levelManager.Initialize();
+		yield return new WaitForSeconds(1f);
+
+		transitionScreen.FadeInBanner(bannerFadeDuration);
+		if(displayCampaignInformation) {
+			if(Difficulty == SaveGame.Campaign.Difficulty.Easy) {
+				transitionScreen.SetSingleMessage("Mission " + LevelId);
+			} else {
+				transitionScreen.SetInfo("Mission " + LevelId, PlayerLives.ToString());
 			}
-		};
-		SceneManager.sceneLoaded += loadingScreenStartedCallback;
+		} else {
+			transitionScreen.SetSingleMessage(message);
+		}
+		yield return new WaitUntil(() => transitionScreen.onBannerFadeInFinished);
+		StartCoroutine(levelManager.LoadAndBuildMap(CurrentLevel, totalLoadingFadeDuration));
+		yield return new WaitUntil(() => levelManager.HasLevelBeenBuild);
+
+		transitionScreen.FadeOutBanner(bannerFadeDuration);
+		yield return new WaitUntil(() => transitionScreen.onBannerFadeOutFinished);
+
+		transitionScreen.FadeOut(loadingScreenFadeDuration);
+		yield return new WaitUntil(() => transitionScreen.onFadeOutFinished);
+		AsyncOperation loadingScreenUnload = SceneManager.UnloadSceneAsync("LoadingScreen");
+		yield return new WaitUntil(() => loadingScreenUnload.isDone);
+		switch(CurrentMode) {
+			case GameMode.Campaign:
+				levelManager.StartGame();
+				break;
+			case GameMode.LevelOnly:
+				levelManager.StartGame();
+				break;
+			case GameMode.Editor:
+				LevelManager.Editor.StartLevelEditor();
+				LevelManager.Editor.LoadUserLevel(CurrentLevel);
+				break;
+		}
+	}
+	IEnumerator TransitionToMenu(string message) {
+		Scene activeScene = SceneManager.GetActiveScene();
+
+		// Load LoadingScreen
+		AsyncOperation loadingScreen = SceneManager.LoadSceneAsync("LoadingScreen", LoadSceneMode.Additive);
+		loadingScreen.allowSceneActivation = true;
+		yield return new WaitUntil(() => loadingScreen.isDone);
+
+		LoadingScreen transitionScreen = FindObjectOfType<LoadingScreen>();
+		transitionScreen.FadeIn(loadingScreenFadeDuration);
+		yield return new WaitUntil(() => transitionScreen.onFadeInFinished);
+
+		transitionScreen.FadeInBanner(bannerFadeDuration);
+		transitionScreen.SetSingleMessage(message);
+		yield return new WaitUntil(() => transitionScreen.onBannerFadeInFinished);
+
+		AsyncOperation unloadLevel = SceneManager.UnloadSceneAsync("Level");
+		yield return new WaitUntil(() => unloadLevel.isDone);
+
+		AsyncOperation menu = SceneManager.LoadSceneAsync("Menu", LoadSceneMode.Additive);
+		menu.allowSceneActivation = true;
+		yield return new WaitUntil(() => menu.isDone);
+
+		yield return new WaitForSeconds(totalLoadingFadeDuration);
+		transitionScreen.FadeOutBanner(bannerFadeDuration);
+		yield return new WaitUntil(() => transitionScreen.onBannerFadeOutFinished);
+
+		transitionScreen.FadeOut(loadingScreenFadeDuration);
+		FindObjectOfType<ToyTanks.UI.MenuManager>().mainMenu.FadeIn();
+		FindObjectOfType<ToyTanks.UI.MenuManager>().FadeOutBlur();
+		yield return new WaitUntil(() => transitionScreen.onFadeOutFinished);
+		AsyncOperation loadingScreenUnload = SceneManager.UnloadSceneAsync("LoadingScreen");
+		yield return new WaitUntil(() => loadingScreenUnload.isDone);
+		Destroy(gameObject);
 	}
 
-	public void OnLoadingScreenExit(UnityAction callback) {
-		loadingScreenExitCallback = (Scene from, Scene to) => {
-			if(to.name == "LoadingScreen") {
-				SceneManager.activeSceneChanged -= loadingScreenExitCallback;
-				FindObjectOfType<MMAdditiveSceneLoadingManager>().OnExitFade.AddListener(() => {
-					isLoading = false;
-					callback.Invoke();
-				});
-			}
-		};
-		SceneManager.activeSceneChanged += loadingScreenExitCallback;
+	public static void ShowCursor() {
+		Cursor.visible = true;
+		Cursor.lockState = CursorLockMode.None;
 	}
 
-	public void StartTransitionToScene(string scene) {
-		SetSceneLoadName(scene);
-		feedbacks.PlayFeedbacks();
+	public static void HideCursor() {
+		Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Confined;
 	}
-
-	void SetSceneLoadName(string scene) => loader.DestinationSceneName = scene;
 
 	// Helpers
 	public bool LevelExists(ulong levelId) => Levels.Exists(t => t.levelId == levelId);
