@@ -38,6 +38,11 @@ Currently this is a basic feature which can be expanded in future.
 
 <img src="https://sperlich.at/assets/project_pictures/toytanks_2.png" style="width:25vw" />
 
+## Roadmap
+
+You can find my current Roadmap on [Trello](https://trello.com/b/6AdUI6QP/toytanks) and can get a look at what's coming next! <br><br>
+Link: https://trello.com/b/6AdUI6QP/toytanks
+
 ## Steam Release
 
 Aiming for my first ever Steam Release I need to make sure this game is as polished as possible. Also, I haven't included any Steam related features yet.
