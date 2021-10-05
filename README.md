@@ -81,6 +81,8 @@ Here is a list of required packages to make the project work:
 * [IniFileParser](https://github.com/rickyah/ini-parser)
 * [Shapes](https://assetstore.unity.com/packages/tools/particles-effects/shapes-173167)
 * [Unity UI Extensions](https://github.com/JohannesDeml/unity-ui-extensions)
+* [GG Camera Shake](https://github.com/gasgiant/Camera-Shake)
+* [Unity Command Terminal](https://github.com/stillwwater/command_terminal)
 * TextMeshPro
 
 <img src="https://sperlich.at/assets/project_pictures/toytanks_extensions.png" style="width:25vw" />
