@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
+using CommandTerminal;
 
 // This class holds all the Games information
 // - Existing Worlds
@@ -48,6 +49,11 @@ public static class Game {
 	public static string LevelScreenshotPath => "Levels/Screenshots/Level_";
 	public static Level[] Levels => Worlds.SelectMany(l => l.Levels).ToArray();
 	public static ulong TotalLevels => (ulong)Levels.Length;
+	public static AIGrid ActiveGrid { get; set; }
+	public static bool IsTerminal => Terminal.Instance == null ? false : !Terminal.Instance.IsClosed;
+	public static bool showGrid;
+	public static bool showTankDebugs;
+	public static bool isPlayerGodMode;
 
 	public class World {
 		public World(Worlds worldType, Level[] levels, MenuCameraSettings menuCameraSettings) {
@@ -78,6 +84,17 @@ public static class Game {
 		public int Order => order;
 		public ulong LevelId => levelId;
 		public bool IsBoss => isBoss;
+	}
+
+	// Generation Methods
+	public static void CreateAIGrid(GridSizes size, LayerMask mask, bool visualize = false) {
+		var existingGrid = UnityEngine.Object.FindObjectOfType<AIGrid>();
+		if(existingGrid != null) {
+			UnityEngine.Object.Destroy(existingGrid.gameObject);
+		}
+		ActiveGrid = new GameObject().AddComponent<AIGrid>();
+		ActiveGrid.GenerateGrid(size, mask);
+		ActiveGrid.name = "AIGrid";
 	}
 
 	// Getter Methods

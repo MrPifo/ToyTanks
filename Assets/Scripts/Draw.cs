@@ -48,22 +48,6 @@ namespace Sperlich.Debug.Draw {
 
 		public override void DrawShapes(Camera cam) {
 			using(Shapes.Draw.Command(cam)) {
-				while(Lines.Count > 0) {
-					var l = Lines.Dequeue();
-					Shapes.Draw.ResetAllDrawStates();
-					Shapes.Draw.LineGeometry = l.geometry;
-					Shapes.Draw.Thickness = l.thickness;
-					Shapes.Draw.ThicknessSpace = ThicknessSpace.Pixels;
-
-					if(IsTransparent(l.startColor) || IsTransparent(l.endColor)) {
-						Shapes.Draw.BlendMode = ShapesBlendMode.Transparent;
-					} else {
-						Shapes.Draw.BlendMode = ShapesBlendMode.Opaque;
-					}
-
-					SetZTest(l.zTest);
-					Shapes.Draw.Line(l.start, l.end, l.thickness, l.endCaps, l.startColor, l.endColor);
-				}
 				while(Discs.Count > 0) {
 					var d = Discs.Dequeue();
 					Shapes.Draw.ResetAllDrawStates();
@@ -132,16 +116,32 @@ namespace Sperlich.Debug.Draw {
 
 					Shapes.Draw.Cuboid(c.pos, c.normal, c.size, c.color);
 				}
+				while(Lines.Count > 0) {
+					var l = Lines.Dequeue();
+					Shapes.Draw.ResetAllDrawStates();
+					Shapes.Draw.LineGeometry = l.geometry;
+					Shapes.Draw.Thickness = l.thickness;
+					Shapes.Draw.ThicknessSpace = ThicknessSpace.Pixels;
+
+					if(IsTransparent(l.startColor) || IsTransparent(l.endColor)) {
+						Shapes.Draw.BlendMode = ShapesBlendMode.Transparent;
+					} else {
+						Shapes.Draw.BlendMode = ShapesBlendMode.Opaque;
+					}
+
+					SetZTest(l.zTest);
+					Shapes.Draw.Line(l.start, l.end, l.thickness, l.endCaps, l.startColor, l.endColor);
+				}
 			}
 		}
 
 		public static void Ray(Vector3 origin, Vector3 direction, Color32 color, bool zTest = false) => Line(origin, origin + direction * 2, 2f, color, zTest);
 		public static void Line(Vector3 start, Vector3 end, Color32 color, bool zTest = false) => Line(start, end, 2f, color, zTest);
-		public static void Line(Vector3 start, Vector3 end, float thickness, bool zTest = true) => Line(start, end, thickness, Color.white, zTest);
-		public static void Line(Vector3 start, Vector3 end, float thickness, Color32 color, bool zTest = true) => Line(start, end, thickness, color, color, zTest);
+		public static void Line(Vector3 start, Vector3 end, float thickness, bool zTest = false) => Line(start, end, thickness, Color.white, zTest);
+		public static void Line(Vector3 start, Vector3 end, float thickness, Color32 color, bool zTest = false) => Line(start, end, thickness, color, color, zTest);
 		public static void Line(Vector3 start, Vector3 end, float thickness, Color32 color, LineGeometry geometry, bool zTest = false) => Line(start, end, thickness, color, color, LineEndCap.Round, geometry, zTest);
-		public static void Line(Vector3 start, Vector3 end, float thickness, Color32 startColor, Color32 endColor, bool zTest = true) => Line(start, end, thickness, startColor, endColor, LineEndCap.Round, zTest);
-		public static void Line(Vector3 start, Vector3 end, float thickness, Color32 startColor, Color32 endColor, LineEndCap endCaps, bool zTest = true) => Line(start, end, thickness, startColor, endColor, endCaps, LineGeometry.Billboard, zTest);
+		public static void Line(Vector3 start, Vector3 end, float thickness, Color32 startColor, Color32 endColor, bool zTest = false) => Line(start, end, thickness, startColor, endColor, LineEndCap.Round, zTest);
+		public static void Line(Vector3 start, Vector3 end, float thickness, Color32 startColor, Color32 endColor, LineEndCap endCaps, bool zTest = false) => Line(start, end, thickness, startColor, endColor, endCaps, LineGeometry.Billboard, zTest);
 		public static void Line(Vector3 start, Vector3 end, float thickness, Color32 startColor, Color32 endColor, LineEndCap endCaps, LineGeometry geometry, bool zTest) {
 			Lines.Enqueue(new DrawLine() {
 				start = start,

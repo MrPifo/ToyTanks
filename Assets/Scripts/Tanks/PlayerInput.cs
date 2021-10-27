@@ -1,111 +1,130 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Shapes;
+using Rewired;
+using DG.Tweening;
 
-public class PlayerInput : TankBase {
+public class PlayerInput : TankBase, IHittable {
 
-	[SerializeField] private GameObject _crossHair;
+	GameObject _crossHair;
+	Line crossLine;
+	public Player player;
+	public Material crossHairMat;
 	public GameObject crosshair {
 		get {
-			if(_crossHair != null) {
-				return _crossHair;
-			} else {
-				return LevelManager.UI.crossHair;
+			if(_crossHair == null) {
+				_crossHair = GameObject.FindGameObjectWithTag("CrossHair");
+				crossLine = _crossHair.transform.GetChild(0).GetComponent<Line>();
 			}
+			return _crossHair;
 		}
 	}
-	public Color crossHairColor;
-	public Color crossHairColor2;
-	public float crossHairSize;
-	public float crossHairThickness;
+	public float crossHairMaxAppearanceDistance = 10f;
+	public float crossHairSize = 1.5f;
 	public bool disableCrossHair = true;
 	public bool disableControl;
-	Line[] crossHairLines;
+	public bool IgnoreDisables;
+	public float crossHairRotSpeed;
+	Vector2 mouseLocation;
+
+	private new void Awake() {
+		base.Awake();
+		HideCrosshair();
+	}
 
 	public override void InitializeTank() {
 		base.InitializeTank();
-		healthPoints = 0;
+		player = ReInput.players.GetPlayer(0);
+
+		Debug.Log("Currently connected controllers: " + ReInput.controllers.controllerCount);
+		foreach(var controller in ReInput.controllers.Controllers) {
+			Debug.Log(controller.hardwareName + " : " + controller.identifier.controllerType);
+		}
+		ReInput.ControllerConnectedEvent += (ControllerStatusChangedEventArgs args) => {
+			Debug.Log("Controller connected: " + args.name);
+		};
+		makeInvincible = Game.isPlayerGodMode;
+		EnableCrosshair();
+		SetupCross();
 	}
 
 	public void SetupCross() {
 		crosshair.gameObject.SetActive(true);
-		crossHairLines = crosshair.transform.GetComponentsInChildren<Line>();
+		crossLine.gameObject.SetActive(true);
 		crosshair.transform.position = Vector3.zero;
-		crosshair.transform.LookAt(Camera.main.transform);
 		disableCrossHair = false;
-		AdjustCrosshair();
+		crossHairMat.SetFloat("_RotAngle", 0);
+		crosshair.transform.parent = null;
+		crosshair.transform.rotation = Quaternion.identity;
+		EnableCrosshair();
 	}
 
 	void Update() {
-		if(HasBeenInitialized) {
-			if(!disableControl && crosshair != null) {
+		if(HasBeenInitialized && IsPaused == false || IgnoreDisables) {
+			if(!disableControl && crosshair != null || IgnoreDisables) {
 				MoveTank();
-				if(Input.GetKeyDown(KeyCode.Mouse0)) {
+				if(player.GetButtonDown("Shoot")) {
 					ShootBullet();
 				}
 			}
 		}
-		if(LevelManager.UI != null && crosshair != null && !disableCrossHair || DebugPlay.isDebug) {
+
+		if(Camera.main != null && crosshair != null && !disableCrossHair || DebugPlay.isDebug) {
 			Crosshair();
 		}
 	}
 
 	void MoveTank() {
-		var moveVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+		var moveVector = new Vector2(player.GetAxis("Move X"), player.GetAxis("Move Y"));
 
 		if(moveVector.x != 0f || moveVector.y != 0f) {
 			Move(moveVector);
 		}
 		MoveHead(new Vector3(crosshair.transform.position.x, 0, crosshair.transform.position.z));
+		AdjustOccupiedGridPos();
 	}
 
 	void Crosshair() {
-		Vector2 mouseInput = Input.mousePosition;
-		Ray camRay = Camera.main.ScreenPointToRay(mouseInput);
-		float distToPlayground = Vector3.Distance(transform.position, camRay.origin);
-		float my = camRay.origin.y / camRay.direction.y;
-
+		//mouseLocation += new Vector2(player.GetAxis("Aim X"), player.GetAxis("Aim Y"));
+		//float distToPlayground = Vector3.Distance(transform.position, camRay.origin);
+		mouseLocation = Input.mousePosition;
+		Ray camRay = Camera.main.ScreenPointToRay(mouseLocation);
 		Plane plane = new Plane(Vector3.up, 0f);
 		plane.Raycast(camRay, out float enter);
 		Vector3 hitPoint = camRay.GetPoint(enter);
 
 		crosshair.transform.position = hitPoint;
-		Debug.DrawLine(camRay.origin, camRay.origin + camRay.direction * distToPlayground * 1.5f, Color.red);
+		crosshair.transform.localScale = Vector3.one * (crossHairSize / 10f);
+
+		if(Vector3.Distance(Pos, crosshair.transform.position) > crossHairMaxAppearanceDistance) {
+			crossLine.gameObject.SetActive(true);
+			crossLine.Start = crossLine.transform.InverseTransformPoint(((tankHead.position + bulletOutput.position) / 2f) + Vector3.up * 0.35f);
+			crossLine.End = Vector3.zero;
+			crossLine.DashOffset += Time.deltaTime / 2f;
+		} else {
+			crossLine.gameObject.SetActive(false);
+		}
 	}
 
-	void AdjustCrosshair() {
-		crossHairLines[0].Start = new Vector3(crossHairSize, crossHairSize, 0);
-		crossHairLines[0].End = new Vector3(crossHairSize * 2f, crossHairSize * 2f, 0);
-		crossHairLines[0].Thickness = crossHairThickness;
-		crossHairLines[0].Color = crossHairColor;
-		crossHairLines[0].ColorStart = crossHairColor;
-		crossHairLines[0].ColorEnd = crossHairColor2;
-
-		crossHairLines[1].Start = new Vector3(-crossHairSize, crossHairSize, 0);
-		crossHairLines[1].End = new Vector3(-crossHairSize * 2f, crossHairSize * 2f, 0);
-		crossHairLines[1].Thickness = crossHairThickness;
-		crossHairLines[1].Color = crossHairColor;
-		crossHairLines[1].ColorStart = crossHairColor;
-		crossHairLines[1].ColorEnd = crossHairColor2;
-
-		crossHairLines[2].Start = new Vector3(crossHairSize, -crossHairSize, 0);
-		crossHairLines[2].End = new Vector3(crossHairSize * 2f, -crossHairSize * 2f, 0);
-		crossHairLines[2].Thickness = crossHairThickness;
-		crossHairLines[2].Color = crossHairColor;
-		crossHairLines[2].ColorStart = crossHairColor;
-		crossHairLines[2].ColorEnd = crossHairColor2;
-
-		crossHairLines[3].Start = new Vector3(-crossHairSize, -crossHairSize, 0);
-		crossHairLines[3].End = new Vector3(-crossHairSize * 2f, -crossHairSize * 2f, 0);
-		crossHairLines[3].Thickness = crossHairThickness;
-		crossHairLines[3].Color = crossHairColor;
-		crossHairLines[3].ColorStart = crossHairColor;
-		crossHairLines[3].ColorEnd = crossHairColor2;
+	public new void Revive() {
+		base.Revive();
+		HideCrosshair();
+		EnablePlayer();
 	}
 
-	public override void GotHitByBullet() {
-		base.GotHitByBullet();
+	public new void TakeDamage(IDamageEffector effector) {
+		base.TakeDamage(effector);
+		if(IsInvincible == false) {
+			DisablePlayer();
+		}
+	}
+
+	public override void ShootBullet() {
+		if(CanShoot) {
+			crossHairMat.DOFloat(crossHairMat.GetFloat("_RotAngle") + crossHairRotSpeed, "_RotAngle", reloadDuration).SetEase(Ease.OutCirc);
+		}
+		base.ShootBullet();
+		//DOTween.To(() => t = x, , reloadDuration);
+		//crossHairContainer.transform.DOLocalRotate(crossHairContainer.rotation.eulerAngles + new Vector3(0, 0, 45), 1f);
 	}
 
 	public void DisablePlayer() {
@@ -116,5 +135,15 @@ public class PlayerInput : TankBase {
 	public void EnablePlayer() {
 		disableControl = false;
 		IsInvincible = false;
+	}
+
+	public void HideCrosshair() {
+		crosshair.gameObject.SetActive(false);
+		crossLine.gameObject.SetActive(false);
+	}
+
+	public void EnableCrosshair() {
+		crosshair.gameObject.SetActive(true);
+		crossLine.gameObject.SetActive(true);
 	}
 }

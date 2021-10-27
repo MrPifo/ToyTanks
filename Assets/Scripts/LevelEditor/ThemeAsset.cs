@@ -19,6 +19,17 @@ namespace ToyTanks.LevelEditor {
 			public Material material;
 			public Sprite preview;
 			public Vector3 Size => prefab.GetComponent<LevelBlock>().Size;
+
+			public bool isDynamic {
+				get {
+					switch(block) {
+						case LevelEditor.BlockTypes.BoxDestructable:
+							return true;
+						default:
+							return false;
+					}
+				}
+			}
 		}
 
 		public BlockAsset GetAsset(LevelEditor.BlockTypes type) {

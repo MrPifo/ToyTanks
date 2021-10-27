@@ -13,12 +13,12 @@ GameObject:
   - component: {fileID: 1471779489359067024}
   - component: {fileID: 8052644108411488116}
   - component: {fileID: 8567156213374218119}
-  m_Layer: 8
+  m_Layer: 18
   m_Name: TriangleRoof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &299458011203374335
 Transform:
@@ -118,5 +118,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 5.5, y: 4, z: 4}
+  m_Size: {x: 5.7, y: 4, z: 4}
   m_Center: {x: 0, y: 2, z: 0}

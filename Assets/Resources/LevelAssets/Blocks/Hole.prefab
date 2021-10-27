@@ -11,14 +11,14 @@ GameObject:
   - component: {fileID: 196094488514183705}
   - component: {fileID: 196094488514183704}
   - component: {fileID: 196094488514183707}
-  - component: {fileID: 196094488514183706}
   - component: {fileID: 196094488514183910}
+  - component: {fileID: 2337637534590835638}
   m_Layer: 16
   m_Name: Hole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &196094488514183705
 Transform:
@@ -84,19 +84,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &196094488514183706
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 196094488514183709}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 10, y: 2, z: 10}
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &196094488514183910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,3 +107,17 @@ MonoBehaviour:
     y: 0
     z: 0
   allIndexes: []
+--- !u!136 &2337637534590835638
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196094488514183709}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 5
+  m_Height: 5
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}

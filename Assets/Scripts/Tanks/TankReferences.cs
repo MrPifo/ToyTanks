@@ -7,6 +7,7 @@ public class TankReferences : MonoBehaviour {
 
 	[Header("REFERENCES")]
 	public GameObject bullet;
+	public ForceShield shield;
 	public Disc shockwaveDisc;
 	public Rectangle healthBar;
 	public Transform tankBody;

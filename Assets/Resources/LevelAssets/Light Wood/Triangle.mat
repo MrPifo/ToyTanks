@@ -132,6 +132,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - Alpha: 0
     - Metallic: 0
     - Normal_Strength: 0.35
     - Smoothness: 0.3

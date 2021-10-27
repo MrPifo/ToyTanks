@@ -4,16 +4,17 @@ using UnityEngine;
 
 public class BulletRejector : MonoBehaviour {
 
-	[HideInInspector]
-	public Bullet bullet;
+	public IHittable bullet;
+	public IDamageEffector damageEffector;
 
 	void Awake() {
-		bullet = GetComponentInParent<Bullet>();
+		bullet = transform.SearchComponent<IHittable>();
+		damageEffector = transform.SearchComponent<IDamageEffector>();
 	}
 
 	void OnCollisionEnter(Collision target) {
-		target.transform.GetComponent<BulletRejector>().bullet.Destroy();
-		bullet.Destroy();
+		target.transform.GetComponent<BulletRejector>().bullet.TakeDamage(damageEffector);
+		bullet.TakeDamage(damageEffector);
 	}
 
 }

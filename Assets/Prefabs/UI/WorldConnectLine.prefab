@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blendMode: 0
   scaleMode: 0
-  color: {r: 1, g: 0.2028302, b: 0.2028302, a: 1}
+  color: {r: 0, g: 0.62468463, b: 1.318779, a: 1}
   detailLevel: 2
   renderQueue: -1
   zTest: 4
@@ -60,7 +60,7 @@ MonoBehaviour:
   stencilWriteMask: 255
   geometry: 0
   colorMode: 1
-  colorEnd: {r: 0.7529412, g: 0.1498353, b: 0.1498353, a: 1}
+  colorEnd: {r: 0, g: 0.5875031, b: 1.2484441, a: 1}
   start: {x: 0, y: 0, z: 0}
   end: {x: 17, y: 0, z: 0}
   thickness: 1.5

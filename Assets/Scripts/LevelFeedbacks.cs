@@ -1,3 +1,4 @@
+using CameraShake;
 using MoreMountains.Feedbacks;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,7 +20,9 @@ public class LevelFeedbacks : MonoBehaviour {
 	public void PlayBulletShoot() => bulletShoot.PlayFeedbacks();
 	public void PlayBulletReflect() => bulletReflect.PlayFeedbacks();
 	public void PlayBulletExplode() => bulletExplode.PlayFeedbacks();
-	public void TankExplode() => tankExplode.PlayFeedbacks();
+	public void TankExplode() {
+		tankExplode.PlayFeedbacks();
+	}
 	public void PlayerDead() => playerExplode.PlayFeedbacks();
 	public void PlayScore() => playerScore.PlayFeedbacks();
 	public void PlayLives() => playerLives.PlayFeedbacks();

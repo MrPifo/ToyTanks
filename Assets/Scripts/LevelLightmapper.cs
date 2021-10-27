@@ -89,34 +89,32 @@ namespace ToyTanks.LevelEditor {
 			onBakeFinished.Invoke();
 		}
 
-		public static void BakeAllLevels() {
+		public static void BakeAllLevels(int from, int to) {
 			var textAssets = Resources.LoadAll<TextAsset>($"Levels/");
 			onBakeFinished = new UnityEvent();
 			onBakeFinished.RemoveAllListeners();
 			bakeQueue = new Queue<LevelData>();
 			foreach(var asset in textAssets) {
 				var data = JsonConvert.DeserializeObject<LevelData>(asset.text);
-				bakeQueue.Enqueue(data);
+				if(from == 0 && to == 0) {
+					bakeQueue.Enqueue(data);
+				} else if(from >= 0 && to > from) {
+					if(data.levelId >= (uint)from && data.levelId < (uint)to) {
+						bakeQueue.Enqueue(data);
+					}
+				}
 			}
 
 			onBakeFinished.AddListener(() => {
 				var nextLevel = bakeQueue.Dequeue();
 				FindObjectOfType<LevelEditor>().LoadOfficialLevel(nextLevel.levelId);
 				BakeLighting(nextLevel);
-				PrintBakeQueue();
+				Debug.Log("Remaining levels to be baked: " + bakeQueue.Count);
 			});
-			PrintBakeQueue();
+			Debug.Log("Baking total Levels: " + bakeQueue.Count);
 			var nextLevel = bakeQueue.Dequeue();
 			FindObjectOfType<LevelEditor>().LoadOfficialLevel(nextLevel.levelId);
 			BakeLighting(nextLevel);
-		}
-
-		static void PrintBakeQueue() {
-			string print = "Bake Progress: ";
-			for(int i = 0; i < bakeQueue.Count; i++) {
-				print += "#";
-			}
-			Debug.Log(print);
 		}
 #endif
 
@@ -198,6 +196,7 @@ namespace ToyTanks.LevelEditor {
 	class LevelLightmapperEditor : Editor {
 
 		public string levelId;
+		public Vector2Int bakeRange;
 
 		public override void OnInspectorGUI() {
 			DrawDefaultInspector();
@@ -206,8 +205,10 @@ namespace ToyTanks.LevelEditor {
 				LevelLightmapper.BakeLighting(FindObjectOfType<LevelEditor>().levelData);
 			}
 			if(GUILayout.Button("Bake All Levels") && Lightmapping.isRunning == false) {
-				LevelLightmapper.BakeAllLevels();
+				LevelLightmapper.BakeAllLevels(bakeRange.x, bakeRange.y);
 			}
+			
+			bakeRange = EditorGUILayout.Vector2IntField("Bake Levels (From, To)", bakeRange);
 		}
 	}
 #endif

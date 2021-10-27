@@ -8,12 +8,14 @@ using Newtonsoft.Json;
 using ToyTanks.LevelEditor;
 using UnityEngine.Rendering.HighDefinition;
 using System.Text.RegularExpressions;
+using CommandTerminal;
 
 namespace ToyTanks.UI {
 	public class MenuManager : MonoBehaviour {
 
 		public MenuItem mainMenu;
 		LevelSelector levelSelector;
+		MenuCamera menuCamera;
 		[Header("Others")]
 		public ScrollRect customLevelsScrollRect;
 		public CanvasGroup flashScreen;
@@ -51,6 +53,8 @@ namespace ToyTanks.UI {
 			customLevelButton = customLevelsScrollRect.content.transform.GetChild(0).gameObject;
 			customLevelButton.gameObject.SetActive(false);
 			flashScreen.alpha = 0;
+			menuCamera = FindObjectOfType<MenuCamera>();
+			Terminal.InitializeCommandConsole();
 		}
 
 		public void SetActiveSaveSlot(byte slot) => SaveGame.SaveInstance.currentSaveSlot = slot;
@@ -216,11 +220,15 @@ namespace ToyTanks.UI {
 		}
 
 		public void EnterWorldOverview() {
+			menuCamera.WiggleActive = false;
 			levelSelector.RenderWorldOverview(Worlds.WoodWorld);
 			levelSelector.CheckNextPreviousButtons();
 		}
 
-		public void ExitWorldOverview() => levelSelector.ExitWorldOverview();
+		public void ExitWorldOverview() {
+			menuCamera.WiggleActive = true;
+			levelSelector.ExitWorldOverview();
+		}
 
 		public void FadeInBlur() {
 			BlurUIPass.enabled = true;

@@ -13,12 +13,13 @@ using UnityEngine.UI.Extensions;
 using Newtonsoft.Json;
 using TMPro;
 using UnityEngine.SceneManagement;
+using CameraShake;
 
 namespace ToyTanks.LevelEditor {
 	public class LevelEditor : MonoBehaviour {
 
 		public enum Themes { Light, Fir, Floor}
-		public enum BlockTypes { Block, Block2, BlockHalf, Block2x2, Triangle, TriangleRoof, Cylinder, Hole  }
+		public enum BlockTypes { Block, Block2, BlockHalf, Block2x2, Triangle, TriangleRoof, Cylinder, Hole, BoxDestructable  }
 
 		[Header("Configuration")]
 		public float editSpeed = 0.025f;
@@ -127,7 +128,7 @@ namespace ToyTanks.LevelEditor {
 			gameCamera = FindObjectOfType<GameCamera>();
 			levelManager = FindObjectOfType<LevelManager>();
 			editorCamera.Initialize();
-			LevelManager.Grid.ClearGrid();
+			
 			pathMeshGeneratorProgressBar.gameObject.SetActive(false);
 			GameView = new MenuCameraSettings() {
 				orthograpicSize = Camera.main.orthographicSize,
@@ -143,7 +144,6 @@ namespace ToyTanks.LevelEditor {
 			buildModeToggle.Initialize();
 			buildModeToggle.Toggle(false);
 			LevelEditorStarted = true;
-			levelUI.SetActive(false);
 			SwitchToEditView(1);
 			RefreshUI();
 			GameManager.ShowCursor();
@@ -252,12 +252,8 @@ namespace ToyTanks.LevelEditor {
 				CurrentAsset = null;
 				SwitchToGameView(1);
 				DeletePreview();
+				DeselectEverything();
 				pathMeshGeneratorProgressBar.gameObject.SetActive(true);
-				gameCamera.SetCameraView(new MenuCameraSettings() {
-					orthograpicSize = LevelManager.GetOrthographicSize(GridSize),
-					pos = gameCamera.camSettings.pos,
-					rot = gameCamera.camSettings.rot
-				}, 2);
 				foreach(var t in FindObjectsOfType<TankBase>()) {
 					t.enabled = true;
 				}
@@ -266,9 +262,7 @@ namespace ToyTanks.LevelEditor {
 				playTestButton.interactable = false;
 				playTestButtonText.SetText("Stop");
 				playTestButton.image.color = Color.red;
-				gameUI.DOFade(1, 2);
 				editGameUI.DOFade(0, 2);
-				LevelManager.Grid.ClearGrid();
 				levelManager.StartGame();
 				DOTween.ToAlpha(() => gridColor, x => gridColor = x, 0, 2);
 				GameManager.HideCursor();
@@ -287,8 +281,8 @@ namespace ToyTanks.LevelEditor {
 			LevelManager.GameStarted = false;
 			playTestButton.interactable = false;
 			playTestButton.image.color = Color.green;
-			gameUI.DOFade(0, 2);
-			LevelManager.UI.crossHair.SetActive(false);
+			editGameUI.DOFade(1, 2);
+			LevelManager.UI.bossBar.gameObject.SetActive(false);
 			LevelManager.UI.gameplay.SetActive(false);
 			DOTween.ToAlpha(() => gridColor, x => gridColor = x, 1, fadeDurtaion);
 
@@ -300,7 +294,10 @@ namespace ToyTanks.LevelEditor {
 				}
 			}
 			foreach(var b in FindObjectsOfType<Bullet>()) {
-				b.Destroy();
+				b.TakeDamage(null);
+			}
+			foreach(var d in FindObjectsOfType<Destructable>()) {
+				d.Reset();
 			}
 			this.Delay(3, () => {
 				playTestButton.interactable = true;
@@ -400,11 +397,14 @@ namespace ToyTanks.LevelEditor {
 					rotateSelection = 3;
 					break;
 			}
-			var indexes = GetOccupationIndexes(block.index, new Int3(asset.Size));
+			var indexes = GetOccupationIndexes(block.index, new Int3(asset.Size.x, asset.Size.y, asset.Size.z));
 			if(Grid.AreAllIndexesAvailable(indexes)) {
 				var o = Instantiate(asset.prefab, block.pos, Quaternion.Euler(block.rotation));
-				//o.layer = LevelLayer;
-				o.isStatic = true;
+				if(asset.isDynamic == false) {
+					o.isStatic = true;
+				} else {
+					o.isStatic = false;
+				}
 				o.transform.SetParent(LevelManager.BlocksContainer);
 				var comp = o.GetComponent<LevelBlock>();
 				comp.SetData(block.index, indexes, block.type);
@@ -597,7 +597,7 @@ namespace ToyTanks.LevelEditor {
 						}
 						index += startIndex;
 						
-						if(indexes.Contains(index) == false && Grid.Grid.ContainsKey(index)) {
+						if(indexes.Contains(index) == false && Grid.Grid.ContainsKey(index) && Grid.IsIndexAvailable(index)) {
 							indexes.Add(index);
 						} else {
 							return null;
@@ -749,6 +749,9 @@ namespace ToyTanks.LevelEditor {
 		public void SwitchGridSizeDropdown() => SwitchGridSize((GridSizes)gridSizeDropdown.value);
 		void SwitchGridSize(GridSizes newSize) {
 			if(newSize != GridSize) {
+				GridSize = newSize;
+				Grid = new LevelGrid(GridBoundary, 2);
+
 				// Rescaling Grid
 				foreach(var block in FindObjectsOfType<LevelBlock>()) {
 					if(Grid.AreAllIndexesAvailable(block.allIndexes)) {
@@ -765,8 +768,6 @@ namespace ToyTanks.LevelEditor {
 					}
 				}
 			}
-			GridSize = newSize;
-			Grid = new LevelGrid(GridBoundary, 2);
 
 			
 			if(Application.isPlaying && editorCamera.Camera.orthographic) {
@@ -823,6 +824,7 @@ namespace ToyTanks.LevelEditor {
 				stream.Close();
 			}
 
+			DeletePreview();
 			levelData.blocks = new List<LevelData.BlockData>();
 			levelData.tanks = new List<LevelData.TankData>();
 
@@ -841,7 +843,7 @@ namespace ToyTanks.LevelEditor {
 					pos = new Int3(t.transform.position),
 					index = t.PlacedIndex,
 					rotation = GetValidRotation(t.transform.rotation.eulerAngles),
-					tankType = t.type
+					tankType = t.TankType
 				};
 				levelData.tanks.Add(data);
 			}
@@ -901,6 +903,7 @@ namespace ToyTanks.LevelEditor {
 				stream.Close();
 			}
 
+			DeletePreview();
 			levelData.blocks = new List<LevelData.BlockData>();
 			levelData.tanks = new List<LevelData.TankData>();
 			levelData.gridSize = GridSize;
@@ -908,7 +911,7 @@ namespace ToyTanks.LevelEditor {
 
 			foreach(var b in FindObjectsOfType<LevelBlock>()) {
 				var data = new LevelData.BlockData() {
-					pos = new Int3(b.transform.position),
+					pos = new Int3(b.transform.position - b.offset),
 					index = b.Index,
 					rotation = GetValidRotation(b.transform.rotation.eulerAngles),
 					theme = b.theme,
@@ -921,7 +924,7 @@ namespace ToyTanks.LevelEditor {
 					pos = new Int3(t.transform.position),
 					index = t.PlacedIndex,
 					rotation = GetValidRotation(t.transform.rotation.eulerAngles),
-					tankType = t.type
+					tankType = t.TankType
 				};
 				levelData.tanks.Add(data);
 			}
@@ -942,6 +945,7 @@ namespace ToyTanks.LevelEditor {
 			GameManager.CurrentLevel = levelData;
 			Grid = new LevelGrid(GridBoundary, 2);
 			History = new List<LevelBlock>();
+			SwitchTheme(Theme);
 
 			foreach(var block in levelData.blocks) {
 				PlaceLoadedBlock(block);
@@ -955,7 +959,7 @@ namespace ToyTanks.LevelEditor {
 			if(Application.isPlaying && GameManager.CurrentMode == GameManager.GameMode.Editor) {
 				RefreshUI();
 			}
-			SwitchTheme(Theme);
+			
 			LevelLightmapper.SwitchLightmaps(levelData.levelId);
 			HasLevelBeenLoaded = true;
 		}

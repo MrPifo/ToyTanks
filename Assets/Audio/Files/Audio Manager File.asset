@@ -45,3 +45,5 @@ MonoBehaviour:
     value: {fileID: 8300000, guid: 658922a0ff61c5e46bf645a52e5f94f5, type: 3}
   - key: SmallExplosion
     value: {fileID: 8300000, guid: 06199183f640c484ead3cc916d43d09e, type: 3}
+  - key: BoxDestructable
+    value: {fileID: 8300000, guid: 45e02ac1d7bd4ec43bc9a553d87a034d, type: 3}

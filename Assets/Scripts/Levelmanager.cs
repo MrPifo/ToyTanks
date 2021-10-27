@@ -11,6 +11,8 @@ using DG.Tweening;
 using System.Linq;
 using ToyTanks.LevelEditor;
 using UnityEngine.Rendering.HighDefinition;
+using CommandTerminal;
+using EpPathFinding.cs;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -23,7 +25,6 @@ public class LevelManager : MonoBehaviour {
 	public bool showGrid;
 	public bool IsGameOver;
 	public static bool IsDebug;
-	public const int maxTracksOnStage = 1500;
 	public bool IsBossLevel;
 	public static bool GameStarted;
 	public bool IsPathMeshReady;
@@ -36,7 +37,6 @@ public class LevelManager : MonoBehaviour {
 	public LayerMask baseLayer;
 	public bool IsEditor => Mode == GameManager.GameMode.Editor;
 	public static LevelEditor Editor;
-	public static PathfindingMesh Grid;
 	public static GameCamera gameCamera;
 	public static GameManager.GameMode Mode {
 		get => GameManager.CurrentMode;
@@ -64,7 +64,6 @@ public class LevelManager : MonoBehaviour {
 	void Awake() {
 		Instance = this;
 		Editor = FindObjectOfType<LevelEditor>();
-		Grid = FindObjectOfType<PathfindingMesh>();
 		GameManager = FindObjectOfType<GameManager>();
 		UI = FindObjectOfType<LevelUI>();
 		audioManager = FindObjectOfType<AudioManager>();
@@ -73,9 +72,9 @@ public class LevelManager : MonoBehaviour {
 		TrackContainer = new GameObject("TrackContainer").transform;
 		TrackContainer.SetParent(GameObject.FindGameObjectWithTag("Level").transform);
 		UI.gameplay.SetActive(false);
-		UI.crossHair.gameObject.SetActive(false);
 		optionsMenu.alpha = 0;
 		optionsMenu.gameObject.SetActive(false);
+		Terminal.InitializeCommandConsole();
 
 		// Start Editor if no GameManager is present
 		if(GameManager == false) {
@@ -102,6 +101,7 @@ public class LevelManager : MonoBehaviour {
 		tankAIs = FindObjectsOfType<TankAI>();
 
 		// Ensure debug is set off
+		IsBossLevel = false;
 		foreach(var t in FindObjectsOfType<TankBase>()) {
 			if(t as TankAI) {
 				var ai = t as TankAI;
@@ -117,15 +117,7 @@ public class LevelManager : MonoBehaviour {
 
 	void Update() {
 		if(IsGameOver == false && GameStarted && GamePaused == false) {
-			CheckTankTracks();
 			UpdateRunTime();
-
-#if UNITY_EDITOR
-			if(showGrid) {
-				DrawGridLines();
-				DrawGridPoints();
-			}
-#endif
 		}
 		if(IsDebug == false && Input.GetKeyDown(KeyCode.Escape) && HasBeenInitialized && IsGameOver == false && GameStarted && (Time.timeScale == 1f || Time.timeScale == 0f)) {
 			if(GamePaused) {
@@ -165,8 +157,9 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void ReturnToMenu() {
-		Time.timeScale = 0.1f;
-		DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1, 0.1f).SetEase(Ease.Linear);
+		Time.timeScale = 1f;
+		player.disableCrossHair = false;
+		GameManager.ShowCursor();
 		optionsMenu.DOFade(0, 0.5f);
 		GameManager.ReturnToMenu("Quitting");
 	}
@@ -193,7 +186,6 @@ public class LevelManager : MonoBehaviour {
 		ClearMap();
 		var blockAssets = Resources.LoadAll<ThemeAsset>("LevelAssets").ToList().Find(t => t.theme == data.theme);
 		var tanks = Resources.LoadAll<TankAsset>("Tanks").ToList();
-		gameCamera.SetOrthographicSize(GetOrthographicSize(CurrentLevel.gridSize));
 		float timePerBlock = loadDuration / data.blocks.Count;
 
 		foreach(var block in data.blocks) {
@@ -202,8 +194,12 @@ public class LevelManager : MonoBehaviour {
 			b.transform.SetParent(BlocksContainer);
 			b.Index = block.index;
 			b.meshRender.sharedMaterial = asset.material;
-			b.gameObject.isStatic = true;
-			b.GetComponent<LevelBlock>().SetPosition(block.pos);
+			if(asset.isDynamic == false) {
+				b.gameObject.isStatic = true;
+			} else {
+				b.gameObject.isStatic = false;
+			}
+			b.SetPosition(block.pos);
 			yield return new WaitForSeconds(timePerBlock);
 		}
 
@@ -220,38 +216,41 @@ public class LevelManager : MonoBehaviour {
 		HasLevelBeenBuild = true;
 	}
 
-	void SetLevelBoundaryWalls() {
-		GameObject.Find("WallRight").transform.position = new Vector3(GridBoundary.x * 2, 0, 0);
-		GameObject.Find("WallLeft").transform.position = new Vector3(GridBoundary.x * -2 - 2, 0, 0);
-		GameObject.Find("WallUp").transform.position = new Vector3(0, 0, GridBoundary.z * 2);
-		GameObject.Find("WallDown").transform.position = new Vector3(0, 0, GridBoundary.z * -2 - 2);
+	public static void SetLevelBoundaryWalls(Int3 boundary) {
+		GameObject.Find("WallRight").transform.position = new Vector3(boundary.x * 2, 0, 0);
+		GameObject.Find("WallLeft").transform.position = new Vector3(boundary.x * -2 - 2, 0, 0);
+		GameObject.Find("WallUp").transform.position = new Vector3(0, 0, boundary.z * 2);
+		GameObject.Find("WallDown").transform.position = new Vector3(0, 0, boundary.z * -2 - 2);
 	}
 
-	IEnumerator GenerateDynamicGrid() {
-		Grid.gridName = "temp";
-		Grid.ClearGrid();
-		int total = 0;
+	void GenerateDynamicGrid() {
+		/*StartCoroutine(IGenerate());
+		IEnumerator IGenerate() {
+			Grid.gridName = "temp";
+			Grid.ClearGrid();
+			int total = 0;
 
-		for(float x = -GridBoundary.x; x < GridBoundary.x; x++) {
-			for(float z = -GridBoundary.z; z < GridBoundary.z; z++) {
-				var ray = new Ray(new Vector3(gridDensity * x, transform.position.y + 20, gridDensity * z) + transform.position, Vector3.down);
-				if(Physics.SphereCast(ray.origin, gridPointOverlapRadius, ray.direction, out RaycastHit hit, Mathf.Infinity, baseLayer)) {
-					if(hit.transform.CompareTag("Ground")) {
-						Grid.AddNode(new Float3(hit.point), gridPointDistance, Node.NodeType.ground, true);
-						if(total % 5 == 0) {
-							yield return null;
+			for(float x = -GridBoundary.x; x < GridBoundary.x; x++) {
+				for(float z = -GridBoundary.z; z < GridBoundary.z; z++) {
+					var ray = new Ray(new Vector3(gridDensity * x, transform.position.y + 20, gridDensity * z) + transform.position, Vector3.down);
+					if(Physics.SphereCast(ray.origin, gridPointOverlapRadius, ray.direction, out RaycastHit hit, Mathf.Infinity, baseLayer)) {
+						if(hit.transform.CompareTag("Ground")) {
+							Grid.AddNode(new Float3(hit.point), gridPointDistance, Node.NodeType.ground, true);
+							if(total % 5 == 0) {
+								yield return null;
+							}
 						}
 					}
+					total++;
 				}
-				total++;
 			}
-		}
-		Grid.gridName = gameObject.scene.name;
-		Grid.Reload();
-		if(IsEditor) {
-			Editor.pathMeshGeneratorProgressBar.gameObject.SetActive(false);
-		}
-		IsPathMeshReady = true;
+			Grid.gridName = gameObject.scene.name;
+			Grid.Reload();
+			if(IsEditor) {
+				Editor.pathMeshGeneratorProgressBar.gameObject.SetActive(false);
+			}
+			IsPathMeshReady = true;
+		}*/
 	}
 
 	// Game Logic
@@ -262,7 +261,7 @@ public class LevelManager : MonoBehaviour {
 			yield return new WaitUntil(() => HasLevelBeenBuild);
 		}
 
-		SetLevelBoundaryWalls();
+		SetLevelBoundaryWalls(GridBoundary);
 		UI.gameplay.SetActive(true);
 		UI.levelStage.SetText($"Level {CurrentLevel.levelId}");
 		UI.counterBanner.SetActive(true);
@@ -280,21 +279,31 @@ public class LevelManager : MonoBehaviour {
 
 		Feedback.FadeInGameplayUI();
 		InitializeTanks();
-		player.SetupCross();
 		player.disableCrossHair = false;
-		StartCoroutine(GenerateDynamicGrid());
+		Game.CreateAIGrid(CurrentLevel.gridSize, baseLayer, GameObject.FindGameObjectWithTag("Ground"));
+		gameCamera.camSettings.orthograpicSize = GetOrthographicSize(CurrentLevel.gridSize);
+		gameCamera.ChangeState(GameCamera.GameCamState.Overview);
 		GameManager.HideCursor();
+		player.SetupCross();
 
 		if(IsBossLevel) {
-			UI.InitBossBar(bossTank.MaxHealth, 3);
+			UI.InitBossBar(bossTank.MaxHealthPoints, 3);
+		} else {
+			UI.bossBar.gameObject.SetActive(false);
 		}
 		yield return new WaitForSeconds(2.5f);
-		yield return new WaitUntil(() => IsPathMeshReady);
 		Feedback.PlayStartFadeText();
 		DOTween.To(x => UI.OutlinePass.threshold = x, UI.OutlinePass.threshold, 100, 2).SetEase(Ease.InCubic);
 		yield return new WaitForSeconds(1);
 		IsGameOver = false;
 		GameStarted = true;
+		GamePaused = false;
+		if(CurrentLevel.gridSize == GridSizes.Size_17x14) {
+			gameCamera.camSettings.orthograpicSize = gameCamera.minOrthographicSize;
+			gameCamera.ChangeState(GameCamera.GameCamState.Focus);
+		} else {
+			gameCamera.ChangeState(GameCamera.GameCamState.Overview);
+		}
 		UI.counterBanner.SetActive(false);
 		player.EnablePlayer();
 		EnableAllAIs();
@@ -388,9 +397,10 @@ public class LevelManager : MonoBehaviour {
 		StartGame();
 	}
 
-	IEnumerator GameOver() {
+	public IEnumerator GameOver() {
 		if(!IsDebug && IsGameOver == false) {
 			IsGameOver = true;
+			GameStarted = false;
 			player.DisablePlayer();
 			DisableAllAIs();
 
@@ -461,13 +471,6 @@ public class LevelManager : MonoBehaviour {
 		}
 	}
 
-	// Check and Helper
-	void CheckTankTracks() {
-		if(TrackContainer != null && TrackContainer.childCount > maxTracksOnStage) {
-			Destroy(TrackContainer.GetChild(0).gameObject);
-		}
-	}
-
 	static void DisableAllAIs() {
 		if(tankAIs != null) {
 			foreach(TankAI t in tankAIs) {
@@ -515,7 +518,7 @@ public class LevelManager : MonoBehaviour {
 	}
 
 #if UNITY_EDITOR
-	public void GenerateGrid() {
+	/*public void GenerateGrid() {
 		Grid.ClearGrid();
 		StopAllCoroutines();
 
@@ -536,16 +539,16 @@ public class LevelManager : MonoBehaviour {
 		Grid.gridName = gameObject.scene.name;
 		Grid.Reload();
 		Grid.SaveGrid();
-	}
+	}*/
 
-	void OnDrawGizmos() {
+	/*void OnDrawGizmos() {
 		if(showGrid) {
 			DrawGridLines();
 			DrawGridPoints();
 		}
-	}
+	}*/
 
-	public void DrawGridLines() {
+	/*public void DrawGridLines() {
 		if(Grid != null) {
 			foreach(Node n in Grid.Nodes) {
 				foreach(KeyValuePair<Node, float> neigh in n.Neighbours) {
@@ -565,7 +568,7 @@ public class LevelManager : MonoBehaviour {
 				}
 			}
 		}
-	}
+	}*/
 #endif
 }
 
@@ -577,9 +580,6 @@ public class LevelManagerEditor : Editor {
 		LevelManager builder = (LevelManager)target;
 		if(GUILayout.Button("Reset")) {
 			LevelManager.Respawn();
-		}
-		if(GUILayout.Button("Generate Grid")) {
-			builder.GenerateGrid();
 		}
 	}
 }

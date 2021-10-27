@@ -15,4 +15,8 @@ MonoBehaviour:
   tankType: 3
   prefab: {fileID: 2512425083838510290, guid: b824ce48e53dc7f44ab9bbb1f83821e9, type: 3}
   preview: {fileID: 21300000, guid: 49e4881411f29954dacc363b9a297f8d, type: 3}
+  health: 1
+  isStatic: 1
   isBoss: 0
+  hasFriendlyFireShield: 1
+  tankSpawnOffset: {x: 0, y: 0.4, z: 0}

@@ -379,6 +379,11 @@ public class GraphicSettings : MonoBehaviour {
         ApplySettings();
     }
 
+    public static void ResetSettings() {
+        File.Delete(GamePaths.UserGraphicSettings);
+        Initialize();
+	}
+
     public static void VerifyGraphicSettings() {
         if(GetValue(AudioSection, nameof(MainVolume)) is null) {
             MainVolume = 50;

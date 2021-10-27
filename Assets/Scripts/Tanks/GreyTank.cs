@@ -1,92 +1,57 @@
 using SimpleMan.Extensions;
 using Sperlich.Debug.Draw;
-using Sperlich.FSM;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GreyTank : TankAI {
 
-	public enum GreyState { Waiting, Attack, Retreat }
-	protected FSM<GreyState> stateMachine = new FSM<GreyState>();
-
-	byte pathUpdateInvervall = 1;
-	byte attackPathRefreshIntervall = 4;
-	float behaviourAttackTime;
-
-	protected override void GoToNextState(float delay = 0.0001f) {
-		if(IsPlayReady) {
-			this.Delay(delay, () => {
-				stateMachine.Push(GreyState.Waiting);
-				while(stateMachine == GreyState.Waiting) {
-					stateMachine.Push(stateMachine.GetRandom());
-				}
-				ProcessState();
-			});
-		}
-	}
-
 	public override void InitializeTank() {
 		base.InitializeTank();
 		StopAllCoroutines();
-		stateMachine.Push(GreyState.Attack);
-		ProcessState();
+		ProcessState(TankState.Attack);
 	}
 
-	protected override void ProcessState() {
-		if(HasBeenDestroyed == false && IsAIEnabled) {
-			switch(stateMachine.State) {
-				case GreyState.Attack:
-					StartCoroutine(Attack());
-					break;
-				case GreyState.Retreat:
-					StartCoroutine(Retreat());
-					break;
-			}
-		}
-	}
-
-	IEnumerator Attack() {
+	protected override IEnumerator IAttack() {
 		int bulletsShot = 0;
-		int requiredShots = Random(1, 4);
+		int requiredShots = Random(2, 4);
 		while(bulletsShot < requiredShots && IsPlayReady) {
-			if(CanShoot && HasSightContactToPlayer && IsAimingAtPlayer) {
+			if(CanShoot && HasSightContactToPlayer && IsAimingAtPlayer && WouldFriendlyFire == false) {
 				ShootBullet();
 				bulletsShot++;
 			} else {
-				if(HasSightContactToPlayer && IsPlayerInDetectRadius) {
-					Aim();
+				if(HasSightContactToPlayer) {
+					AimAtPlayer();
 				} else {
-					FetchPathToPlayer();
-					MoveAlongPath();
 					KeepHeadRot();
 				}
+				ChasePlayer();
 			}
 			yield return null;
-			while(LevelManager.GamePaused) yield return null;   // Pause AI
+			while(IsPaused) yield return null;   // Pause AI
 		}
-		stateMachine.Push(GreyState.Retreat);
-		ProcessState();
+		ProcessState(TankState.Retreat);
 	}
 
-	IEnumerator Retreat() {
+	protected override IEnumerator IRetreat() {
 		float time = 0;
+		FleeFrom(Pos, 30);
 		while(time < Random(3, 6) && IsPlayReady) {
-			RefreshRandomPath(Pos, 20, 4);
 			MoveAlongPath();
 			KeepHeadRot();
+			ConsumePath();
 			yield return null;
-			while(LevelManager.GamePaused) yield return null;   // Pause AI
+			while(IsPaused) yield return null;   // Pause AI
 			time += Time.deltaTime;
 		}
-		stateMachine.Push(GreyState.Attack);
-		ProcessState();
+
+		ProcessState(TankState.Attack);
 	}
 
-	public override void DrawDebug() {
-		Draw.Text(Pos + Vector3.up * 2, stateMachine.Text + " : " + healthPoints, 10, Color.black, false);
-		Draw.Ring(Pos, Vector3.up, playerLoseRadius, 1f, Color.white, true);
-		Draw.Ring(Pos, Vector3.up, playerDetectRadius, 1f, Color.black, true);
-		PathMesh.DrawPathLines(currentPath);
+	protected override void DrawDebug() {
+		if(showDebug) {
+			base.DrawDebug();
+			Draw.Cube(currentDestination, Color.yellow);
+			Draw.Cube(nextMoveTarget, Color.green);
+		}
 	}
 }

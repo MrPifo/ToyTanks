@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26e1b0ad0b67d114abb22aa1dcb2b38f, type: 3}
+  m_Name: YellowTank
+  m_EditorClassIdentifier: 
+  tankType: 6
+  prefab: {fileID: 4100581028196389887, guid: faebb1da346f5db41aaac1258c8d7c59, type: 3}
+  preview: {fileID: 21300000, guid: 7bc0c18acb554a54ea77bf0b9141a631, type: 3}
+  health: 2
+  isStatic: 0
+  isBoss: 0
+  hasFriendlyFireShield: 1
+  tankSpawnOffset: {x: 0, y: 0.4, z: 0}

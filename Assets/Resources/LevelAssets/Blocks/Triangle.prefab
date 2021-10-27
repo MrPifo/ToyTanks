@@ -13,12 +13,12 @@ GameObject:
   - component: {fileID: 4576517546389202980}
   - component: {fileID: 5569122797930139645}
   - component: {fileID: 4335446695192831020}
-  m_Layer: 8
+  m_Layer: 18
   m_Name: Triangle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &3443040031495754571
 Transform:

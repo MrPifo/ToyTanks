@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bb3e5f99ecc93f498412f7db16175d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
+  tankAsset: {fileID: 11400000, guid: f706788234040bf48b6cf887a3c34942, type: 2}
   moveSpeed: 0
   healthPoints: 1
   shootStunDuration: 0
@@ -24,13 +24,15 @@ MonoBehaviour:
   makeInvincible: 0
   playerDetectRadius: 231
   playerLoseRadius: 231
+  playerTooClose: 5
   showDebug: 0
   hitLayers:
     serializedVersion: 2
-    m_Bits: 33152
+    m_Bits: 296320
   levelPredictionMask:
     serializedVersion: 2
-    m_Bits: 33536
+    m_Bits: 296704
+  currentPath: []
 --- !u!1001 &4289082252601492543
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -68,6 +70,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[1]
       value: 
       objectReference: {fileID: 2100000, guid: 6aa7808562732d14a8551b880ae0195b, type: 2}
+    - target: {fileID: 4894505441959766752, guid: deb07d1d6146747469e15b61bffdc376,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 126
+      objectReference: {fileID: 0}
     - target: {fileID: 4894505442302991213, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: m_Layer
@@ -128,6 +135,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5705408810080229299, guid: deb07d1d6146747469e15b61bffdc376,
+        type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2800000, guid: 2c8aa3d1d4bec5c46bd9210a62dfe1c1, type: 3}
     - target: {fileID: 5705408810080229299, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: m_Name

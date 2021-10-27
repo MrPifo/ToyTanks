@@ -17,21 +17,27 @@ public class GameManager : MonoBehaviour {
 	[SerializeField] Texture2D pointerCursor;
 
 	// Game information
+	public static ulong _levelId;
 	public static ulong LevelId {
-		get => CurrentCampaign.levelId;
-		set => CurrentCampaign.levelId = value;
+		get => CurrentCampaign is null ? _levelId : CurrentCampaign.levelId;
+		set { if(CurrentCampaign is null) _levelId = value; else CurrentCampaign.levelId = value; }
 	}
+	public static byte _playerLives;
 	public static byte PlayerLives {
-		get => CurrentCampaign.lives;
-		set => CurrentCampaign.lives = value;
+		get => CurrentCampaign is null ? _playerLives : CurrentCampaign.lives;
+		set { if(CurrentCampaign is null) _playerLives = value; else CurrentCampaign.lives = value; }
 	}
+	public static short _score;
 	public static short Score {
-		get => CurrentCampaign.score;
-		set => CurrentCampaign.score = value;
+		get => CurrentCampaign is null ? _score : CurrentCampaign.score;
+		set { if(CurrentCampaign is null) _score = value; else CurrentCampaign.score = value; }
 	}
+	public static float _playTime;
 	public static float PlayTime {
-		get => CurrentCampaign.time;
-		set => CurrentCampaign.time = value;
+		get => CurrentCampaign is null ? _playTime : CurrentCampaign.time;
+		set {
+			if(CurrentCampaign is null) _playTime = value; else CurrentCampaign.time = value;
+		}
 	}
 	public static bool isLoading;
 	public static SaveGame.Campaign.Difficulty Difficulty => CurrentCampaign.difficulty;
@@ -88,8 +94,10 @@ public class GameManager : MonoBehaviour {
 
 	public static void StartLevel(ulong levelId) {
 		CurrentMode = GameMode.LevelOnly;
-		PlayerLives = 1;
 		LevelId = levelId;
+		PlayerLives = 0;
+		Score = 0;
+		PlayTime = 0;
 		Instance.LoadAllAvailableLevels();
 		Instance.LoadLevel("Level " + levelId);
 	}
@@ -102,14 +110,13 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void ResetGameStatus() {
-		Cursor.visible = true;
-		Cursor.lockState = CursorLockMode.Confined;
 		PlayTime = 0;
 		PlayerLives = 0;
 		Score = 0;
 		LevelId = 0;
 		isLoading = false;
 		CurrentMode = GameMode.None;
+		ShowCursor();
 		Destroy(gameObject);
 	}
 
@@ -138,7 +145,13 @@ public class GameManager : MonoBehaviour {
 	public static void UpdateCampaign() => SaveGame.UpdateCampaign(LevelId, PlayerLives, Score, PlayTime);
 
 	public void ReturnToMenu(string message) => StartCoroutine(TransitionToMenu(message));
-	public void LoadLevel(string message, bool displayCampaignInformation = false) => StartCoroutine(TransitionToLevel(message, displayCampaignInformation));
+	public void LoadLevel(string message, bool displayCampaignInformation = false) {
+		if(Levels.Find(l => l.levelId == LevelId) != null) {
+			StartCoroutine(TransitionToLevel(message, displayCampaignInformation));
+		} else {
+			ReturnToMenu("Campaign End");
+		}
+	}
 	IEnumerator TransitionToLevel(string message, bool displayCampaignInformation = false) {
 		Scene activeScene = SceneManager.GetActiveScene();
 

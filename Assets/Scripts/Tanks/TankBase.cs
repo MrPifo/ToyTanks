@@ -7,18 +7,20 @@ using System.Collections;
 using Shapes;
 using DG.Tweening;
 using System.Collections.Generic;
+using ToyTanks.LevelEditor;
+using EpPathFinding.cs;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(TankReferences))]
-public class TankBase : MonoBehaviour {
+public class TankBase : MonoBehaviour, IHittable, IForceShield {
 
-	public TankTypes type;
+	public TankAsset tankAsset;
 	[Header("VALUES")]
+	public short healthPoints;
 	public byte moveSpeed = 5;
-	public byte healthPoints = 2;
 	public float shootStunDuration = 0.2f;
 	[Range(0f, 4f)]
 	public float reloadDuration = 0.5f;
@@ -34,7 +36,6 @@ public class TankBase : MonoBehaviour {
 	bool isReloading;
 	bool isShootStunned;
 	protected bool canMove;
-	protected byte maxHealthPoints;
 	float angleDiff;
 	float aimRotSpeed = 600;
 	float angleDiffLock = 600;
@@ -53,6 +54,7 @@ public class TankBase : MonoBehaviour {
 	List<Quaternion> destroyRestRots;
 	Material[] bodyMats;
 	Material[] headMats;
+	List<GridPos> lastOccupied = new List<GridPos>();
 
 	// Propterties
 	public bool HasBeenInitialized { get; set; }
@@ -62,12 +64,13 @@ public class TankBase : MonoBehaviour {
 		get => isInvincible || makeInvincible;
 		set => isInvincible = value;
 	}// Game ivincibility
+	public bool IsFriendlyFireImmune => tankAsset.hasFriendlyFireShield;
 	public Vector3 Pos => tankBody.position;
 	public Vector3 MovingDir => moveDir;
 	public Sperlich.Types.Int3 PlacedIndex { get; set; }
 	public Sperlich.Types.Int3[] OccupiedIndexes { get; set; }
 	public Bullet Bullet { get; set; }
-	public int MaxHealth => maxHealthPoints;
+	public TankTypes TankType => tankAsset.tankType;
 	private TankReferences References { get; set; }
 	protected AudioManager Audio {
 		get {
@@ -78,6 +81,29 @@ public class TankBase : MonoBehaviour {
 			}
 		}
 	}
+	protected bool IsPaused => LevelManager.GamePaused || Game.IsTerminal;
+	public short MaxHealthPoints => tankAsset.health;
+	Transform _trackContainer;
+	protected Transform TrackContainer {
+		// Ensure there is always a TrackContainer
+		get {
+			if(_trackContainer != null) {
+				return _trackContainer;
+			} else {
+				GameObject container = GameObject.FindGameObjectWithTag("TrackContainer");
+				if(container != null) {
+					_trackContainer = container.transform;
+					return container.transform;
+				} else {
+					_trackContainer = new GameObject().transform;
+					_trackContainer.tag = "TrackContainer";
+					_trackContainer.name = "TrackContainer";
+					return _trackContainer;
+				}
+			}
+		}
+	}
+	protected bool IsStatic => tankAsset.isStatic;
 
 	// Tank References Shortcuts
 	public Disc shockwaveDisc => References.shockwaveDisc;
@@ -89,6 +115,7 @@ public class TankBase : MonoBehaviour {
 	public GameObject blobShadow => References.blobShadow;
 	public GameObject tankTrack => References.tankTrack;
 	public GameObject destroyFlash => References.destroyFlash;
+	public ForceShield shield => References.shield;
 	public List<Transform> destroyTransformPieces => References.destroyTransformPieces;
 	public ParticleSystem muzzleFlash => References.muzzleFlash;
 	public ParticleSystem sparkDestroyEffect => References.sparkDestroyEffect;
@@ -106,7 +133,7 @@ public class TankBase : MonoBehaviour {
 		headMats = tankHead.GetComponent<MeshRenderer>().sharedMaterials;
 		bodyMats = tankBody.GetComponent<MeshRenderer>().sharedMaterials;
 		healthBar.transform.parent.gameObject.SetActive(false);
-		maxHealthPoints = healthPoints;
+		healthPoints = tankAsset.health;
 	}
 
 	public virtual void InitializeTank() {
@@ -189,24 +216,29 @@ public class TankBase : MonoBehaviour {
 	}
 
 	Vector3 SpawnTrack() {
-		Transform track = Instantiate(tankTrack, LevelManager.TrackContainer == null ? null : LevelManager.TrackContainer).transform;
+		Transform track = Instantiate(tankTrack, TrackContainer).transform;
 		track.position = new Vector3(rig.position.x, 0.025f, rig.position.z);
 		track.rotation = rig.rotation * Quaternion.Euler(90, 0, 0);
 
 		Audio.Play("TankDrive", 0.5f, Random.Range(1f, 1.1f));
+		if(TrackContainer.childCount > 500) {
+			Destroy(TrackContainer.GetChild(0).gameObject);
+		}
 		return track.position;
 	}
 
-	public void ShootBullet() {
+	public virtual void ShootBullet() {
 		if(!isReloading) {
 			var bounceDir = -tankHead.right * 2f;
 			bounceDir.y = 0;
 			
 			muzzleFlash.Play();
-			var wiggleDir = tankHead.rotation * Vector3.forward * 0.25f;
-			tankHead.DOLocalMove(tankHead.localPosition + wiggleDir, 0.1f);
-			this.Delay(0.1f, () => tankHead.DOLocalMove(tankHead.localPosition - wiggleDir, 0.1f));
-			Instantiate(Bullet).SetupBullet(bulletOutput.forward, bulletOutput.position);
+			tankHead.DOScale(tankHead.localScale + Vector3.one / 7f, 0.2f).SetEase(new AnimationCurve(new Keyframe[] { new Keyframe(0, 0, 0.5f, 0.5f), new Keyframe(0.5f, 1, 0.5f, 0.5f), new Keyframe(1, 0, 0.5f, 0.5f) }));
+			if(this is PlayerInput) {
+				Instantiate(Bullet).SetupBullet(bulletOutput.forward, bulletOutput.position, true);
+			} else {
+				Instantiate(Bullet).SetupBullet(bulletOutput.forward, bulletOutput.position, false);
+			}
 			
 			if(reloadDuration > 0) {
 				isReloading = true;
@@ -219,20 +251,27 @@ public class TankBase : MonoBehaviour {
 		}
 	}
 
-	public virtual void GotHitByBullet() {
-		if(!IsInvincible) {
-			if(healthPoints - 1 <= 0) {
-				GotDestroyed();
+	public virtual void TakeDamage(IDamageEffector effector) {
+		if(IsInvincible == false) {
+			if(this is TankAI && effector.fireFromPlayer == false && IsFriendlyFireImmune) {
+				ShieldEffect(effector.damageOrigin);
+			} else {
+				if(healthPoints > 0) {
+					healthPoints--;
+				}
+				if(healthPoints == 0) {
+					GotDestroyed();
+				}
+				hitFlash.PlayFeedbacks();
+				int width = MaxHealthPoints == 0 ? 1 : healthPoints;
+				healthBar.Width = 2f / MaxHealthPoints * width;
 			}
-			healthPoints--;
-			hitFlash.PlayFeedbacks();
-			int width = maxHealthPoints == 0 ? 1 : healthPoints;
-			healthBar.Width = 2f / maxHealthPoints * width;
+		} else {
+			ShieldEffect(effector.damageOrigin);
 		}
 	}
 
 	public void GotDestroyed() {
-		healthPoints--;
 		HasBeenDestroyed = true;
 		foreach(Transform t in destroyTransformPieces) {
 			t.parent = null;
@@ -245,10 +284,13 @@ public class TankBase : MonoBehaviour {
 		blobShadow.SetActive(false);
 		healthBar.gameObject.SetActive(false);
 		PlayDestroyExplosion();
-		if(this is PlayerInput) {
-			LevelManager.PlayerDead();
-		} else {
-			LevelManager.TankDestroyedCheck();
+
+		if(FindObjectOfType<LevelManager>()) {
+			if(this is PlayerInput) {
+				LevelManager.PlayerDead();
+			} else {
+				LevelManager.TankDestroyedCheck();
+			}
 		}
 	}
 
@@ -266,6 +308,7 @@ public class TankBase : MonoBehaviour {
 		Camera.main.DOOrthoSize(Camera.main.orthographicSize + 1, 0.15f);
 		this.Delay(0.15f, () => Camera.main.DOOrthoSize(Camera.main.orthographicSize - 1, 0.15f));
 		LevelManager.Feedback?.TankExplode();
+		GameCamera.ShakeExplosion2D(12, 0.3f);
 		if(this is PlayerInput) {
 			LevelManager.Feedback?.PlayerDead();
 		}
@@ -274,12 +317,18 @@ public class TankBase : MonoBehaviour {
 		StartCoroutine(IDestroyAnimate());
 	}
 
+	public void ShieldEffect(Vector3 impactPos) {
+		shield.gameObject.SetActive(true);
+		shield.AddHit(impactPos);
+		this.Delay(1, () => shield.gameObject.SetActive(false));
+	}
+
 	public virtual void Revive() {
 		isShootStunned = false;
 		isReloading = false;
 		HasBeenDestroyed = false;
 		canMove = true;
-		healthPoints = maxHealthPoints;
+		healthPoints = MaxHealthPoints;
 		blobShadow.SetActive(true);
 		healthBar.gameObject.SetActive(true);
 		healthBar.transform.parent.gameObject.SetActive(false);
@@ -287,14 +336,17 @@ public class TankBase : MonoBehaviour {
 		transform.rotation = spawnRot;
 
 		int c = 0;
+		float respawnDuration = 1.5f;
+		DisableCollisions();
 		foreach(Transform t in destroyTransformPieces) {
-			t.DOLocalMove(destroyRestPoses[c], 1.5f).SetEase(Ease.OutCubic);
-			t.DOLocalRotate(destroyRestRots[c].eulerAngles, 1.5f).SetEase(Ease.OutCubic);
+			t.DOLocalMove(destroyRestPoses[c], respawnDuration).SetEase(Ease.OutCubic);
+			t.DOLocalRotate(destroyRestRots[c].eulerAngles, respawnDuration).SetEase(Ease.OutCubic);
 			t.gameObject.layer = initLayer;
 			t.parent = transform;
 			Destroy(t.gameObject.GetComponent<Rigidbody>());
 			c++;
 		}
+		this.Delay(respawnDuration, () => EnableCollisions());
 		
 		damageSmokeBody.Stop();
 		damageSmokeHead.Stop();
@@ -325,6 +377,63 @@ public class TankBase : MonoBehaviour {
 		shockwaveDisc.Thickness = thickness;
 		shockwaveDisc.Radius = 0f;
 		shockwaveDisc.gameObject.SetActive(false);
+	}
+
+	public void DisableCollisions() {
+		foreach(Transform t in destroyTransformPieces) {
+			if(t.TrySearchComponent(out Collider coll)) {
+				coll.enabled = false;
+			}
+		}
+	}
+	public void EnableCollisions() {
+		foreach(Transform t in destroyTransformPieces) {
+			if(t.TrySearchComponent(out Collider coll)) {
+				coll.enabled = true;
+			}
+		}
+	}
+
+	protected void AdjustOccupiedGridPos() {
+		FreeOccupiedGridPos();
+
+		if(tankAsset.isStatic == false) {
+			GridPos current = Game.ActiveGrid.Grid.GetGridPos(Pos);
+			if(Game.ActiveGrid.SetWalkable(current, false)) {
+				lastOccupied.Add(current);
+			}
+		} else {
+			GridPos one = Game.ActiveGrid.Grid.GetGridPos(Pos);
+			if(Mathf.RoundToInt(Mathf.Abs(Pos.x)) % 2 != 0) {
+				one.x -= 1;
+				Debug.Log(name + " UNEVEN X");
+			}
+			if(Mathf.RoundToInt(Mathf.Abs(Pos.z)) % 2 != 0) {
+				one.y -= 1;
+				Debug.Log(name + " UNEVEN Y");
+			}
+			GridPos second = new GridPos(one.x + 1, one.y);
+			GridPos third = new GridPos(one.x, one.y + 1);
+			GridPos fourth = new GridPos(one.x + 1, one.y + 1);
+			if(Game.ActiveGrid.SetWalkable(one, false)) {
+				lastOccupied.Add(one);
+			}
+			if(Game.ActiveGrid.SetWalkable(second, false)) {
+				lastOccupied.Add(second);
+			}
+			if(Game.ActiveGrid.SetWalkable(third, false)) {
+				lastOccupied.Add(third);
+			}
+			if(Game.ActiveGrid.SetWalkable(fourth, false)) {
+				lastOccupied.Add(fourth);
+			}
+		}
+	}
+	protected void FreeOccupiedGridPos() {
+		foreach(GridPos occ in lastOccupied) {
+			Game.ActiveGrid.SetWalkable(occ, true);
+		}
+		lastOccupied = new List<GridPos>();
 	}
 
 	// Only for Editor purposes

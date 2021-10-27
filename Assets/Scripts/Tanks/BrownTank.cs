@@ -6,48 +6,23 @@ using UnityEngine;
 
 public class BrownTank : TankAI {
 
-	public enum BrownState { Waiting, Attack }
-	protected FSM<BrownState> stateMachine = new FSM<BrownState>();
-
 	public override void InitializeTank() {
 		base.InitializeTank();
-		GoToNextState();
+		ProcessState(TankState.Attack);
 	}
 
-	IEnumerator Attack() {
+	protected override IEnumerator IAttack() {
 		while(IsPlayReady) {
 			if(HasSightContactToPlayer) {
-				Aim();
+				AimAtPlayer();
 				if(CanShoot) {
-					if(IsAimingOnTarget(Player.transform) && !WouldFriendlyFire) {
+					if(IsFacingTarget(Player.transform) && !WouldFriendlyFire) {
 						ShootBullet();
 					}
 				}
 			}
 			yield return null;
-			while(LevelManager.GamePaused) yield return null;   // Pause AI
-		}
-	}
-
-	protected override void ProcessState() {
-		if(IsPlayReady) {
-			switch(stateMachine.State) {
-				case BrownState.Attack:
-					StartCoroutine(Attack());
-					break;
-			}
-		}
-	}
-
-	protected override void GoToNextState(float delay = 0.0001f) {
-		if(IsPlayReady) {
-			this.Delay(delay, () => {
-				stateMachine.Push(BrownState.Waiting);
-				while(stateMachine == BrownState.Waiting) {
-					stateMachine.Push(stateMachine.GetRandom());
-				}
-				ProcessState();
-			});
+			while(IsPaused) yield return null;   // Pause AI
 		}
 	}
 }

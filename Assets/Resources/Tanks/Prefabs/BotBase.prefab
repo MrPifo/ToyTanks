@@ -78,6 +78,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2993034658818860547, guid: 9a1a86a39ef1e484ba355f2ddbe2a96a,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3405922942590291884, guid: 9a1a86a39ef1e484ba355f2ddbe2a96a,
         type: 3}
       propertyPath: m_Size.y
@@ -102,6 +107,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: Bot
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358325232938584964, guid: 9a1a86a39ef1e484ba355f2ddbe2a96a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8121191478931488368, guid: 9a1a86a39ef1e484ba355f2ddbe2a96a,
         type: 3}

@@ -14,7 +14,6 @@ public class LevelUI : MonoBehaviour {
 	public GameObject blurLayer;
 	public GameObject loadingScreen;
 	public GameObject gameplay;
-	public GameObject crossHair;
 	public GameObject bossUI;
 	public TextMeshProUGUI loadLevelName;
 	public TextMeshProUGUI playerScore;
@@ -32,7 +31,6 @@ public class LevelUI : MonoBehaviour {
 	void Awake() {
 		gameplay.SetActive(false);
 		bossUI.gameObject.SetActive(false);
-		crossHair.transform.position = new Vector3(999, crossHair.transform.position.y, 999);
 	}
 
 	public void ShowCounter() {

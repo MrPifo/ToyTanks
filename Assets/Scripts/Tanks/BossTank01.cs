@@ -7,7 +7,7 @@ using System.Collections;
 using UnityEngine;
 using MoreMountains.Feedbacks;
 
-public class BossTank01 : BossAI {
+public class BossTank01 : BossAI, IHittable {
 
 	public enum BossBehaviour { Waiting, Charge, Burst }
 	public enum AttackBehaviour { None, Bursting }
@@ -72,14 +72,16 @@ public class BossTank01 : BossAI {
 		}
 	}
 
-	protected override void ProcessState() {
-		switch(bossStates.State) {
-			case BossBehaviour.Charge:
-				StartCoroutine(ICharge());
-				break;
-			case BossBehaviour.Burst:
-				StartCoroutine(IBurst());
-				break;
+	protected void ProcessState() {
+		if(IsPlayReady) {
+			switch(bossStates.State) {
+				case BossBehaviour.Charge:
+					StartCoroutine(ICharge());
+					break;
+				case BossBehaviour.Burst:
+					StartCoroutine(IBurst());
+					break;
+			}
 		}
 	}
 
@@ -91,12 +93,12 @@ public class BossTank01 : BossAI {
 		float dotProd = 0;
 		canMove = false;
 
-		Debug.Log("<color=red>Charge</color>");
 		while(dotProd < 0.98f) {
 			Move(chargeDirection);
 			Vector3 dirFromAtoB = (Player.Pos - Pos).normalized;
 			dotProd = Vector3.Dot(dirFromAtoB, transform.forward);
 			yield return null;
+			while(IsPaused) yield return null;   // Pause AI
 		}
 		canMove = true;
 		yield return new WaitForSeconds(0.25f);
@@ -123,7 +125,7 @@ public class BossTank01 : BossAI {
 			chargeSmoke.Play();
 			Move(chargeDirection);
 			yield return null;
-			while(LevelManager.GamePaused) yield return null;   // Pause AI
+			while(IsPaused) yield return null;   // Pause AI
 		}
 		canMove = false;
 		moveSpeed = normalMoveSpeed;
@@ -140,7 +142,7 @@ public class BossTank01 : BossAI {
 			ShootBullet();
 			shot++;
 			yield return new WaitForSeconds(reloadDuration);
-			while(LevelManager.GamePaused) yield return null;   // Pause AI
+			while(IsPaused) yield return null;   // Pause AI
 		}
 		GoToNextState(waitDuration);
 	}
@@ -158,7 +160,6 @@ public class BossTank01 : BossAI {
 		chargeLineL.gameObject.SetActive(true);
 		chargeLineR.gameObject.SetActive(true);
 		chargeLineM.gameObject.SetActive(true);
-		Debug.Log(chargeHit.point);
 		chargeLineL.transform.localPosition = Vector3.zero;
 		chargeLineL.Start = chargeLineL.transform.InverseTransformPoint(Pos);
 		chargeLineL.End = chargeLineL.transform.InverseTransformPoint(chargeHit.point + chargeDirection);
@@ -180,28 +181,23 @@ public class BossTank01 : BossAI {
 		chargeDirection = (chargeHit.point - Pos).normalized;
 	}
 
-	public override void GotHitByBullet() {
-		base.GotHitByBullet();
+	public new void TakeDamage(IDamageEffector effector) {
+		base.TakeDamage(effector);
+
 		healthBar.gameObject.SetActive(false);
-		LevelManager.UI.SetBossBar(healthPoints, 0.25f);
+		if(FindObjectOfType<LevelManager>())
+			LevelManager.UI.SetBossBar(healthPoints, 0.25f);
 	}
 
-	public override void DrawDebug() {
+	protected override void DrawDebug() {
+		base.DrawDebug();
 		if(showDebug) {
 			Text(Pos + Vector3.up, bossStates.State.ToString());
 		}
 	}
 
-	public override void EnableAI() {
-		base.EnableAI();
-	}
-
-	public override void DisableAI() {
-		base.DisableAI();
-		StopAllCoroutines();
-	}
-
-	void Update() {
+	protected override void Update() {
+		base.Update();
 		if(IsAIEnabled) {
 			rollerTransform.Rotate(-Vector3.forward, rollerRotSpeed * distanceSinceLastFrame);
 		}

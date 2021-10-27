@@ -10,8 +10,6 @@ TagManager:
   - player
   - PatrolPoint
   - Bot
-  - Destroyable
-  - destroyable
   - Ground
   - LoadingScreenCamera
   - Level
@@ -26,6 +24,9 @@ TagManager:
   - OnText
   - MenuItem
   - TransitionFlashScreen
+  - Destructable
+  - TrackContainer
+  - Shield
   layers:
   - Default
   - TransparentFX
@@ -35,9 +36,9 @@ TagManager:
   - UI
   - Bullet
   - Player
-  - Level
+  - Ground
   - Bot
-  - Destroyable
+  - Destructable
   - DestructionPieces
   - Blur
   - LoadingScreen
@@ -45,8 +46,8 @@ TagManager:
   - LevelBoundary
   - BulletTraverse
   - IgnoreSeeThrough
-  - 
-  - 
+  - Block
+  - CrossHair
   - 
   - 
   - 

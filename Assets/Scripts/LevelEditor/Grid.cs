@@ -29,13 +29,10 @@ namespace ToyTanks.LevelEditor {
 
 		public Int3 WorldPosToIndex(Vector3 pos) => new Int3(Mathf.Round(pos.x / Size) * Size, Mathf.Round(pos.y / Size) * Size, Mathf.Round(pos.z / Size) * Size);
 		public Int3 ScaleIndex(Int3 index) => new Int3(index.x * Size, index.y * Size, index.z * Size);
-		public bool AddIndex(List<Int3> index, int height) {
+		public void AddIndex(List<Int3> index, int height) {
 			foreach(var i in index) {
-				if(AddIndex(i, height) == false) {
-					return false;
-				}
+				AddIndex(i, height);
 			}
-			return true;
 		}
 		public bool AddIndex(Int3 index, int height) {
 			if(IsIndexAvailable(index)) {
