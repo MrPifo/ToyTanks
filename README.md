@@ -38,6 +38,11 @@ Currently this is a basic feature which can be expanded in future.
 
 <img src="https://sperlich.at/assets/project_pictures/toytanks_2.png" style="width:25vw" />
 
+## Roadmap
+
+You can find my current Roadmap on [Trello](https://trello.com/b/6AdUI6QP/toytanks) and can get a look at what's coming next! <br><br>
+Link: https://trello.com/b/6AdUI6QP/toytanks
+
 ## Steam Release
 
 Aiming for my first ever Steam Release I need to make sure this game is as polished as possible. Also, I haven't included any Steam related features yet.
@@ -76,6 +81,8 @@ Here is a list of required packages to make the project work:
 * [IniFileParser](https://github.com/rickyah/ini-parser)
 * [Shapes](https://assetstore.unity.com/packages/tools/particles-effects/shapes-173167)
 * [Unity UI Extensions](https://github.com/JohannesDeml/unity-ui-extensions)
+* [GG Camera Shake](https://github.com/gasgiant/Camera-Shake)
+* [Unity Command Terminal](https://github.com/stillwwater/command_terminal)
 * TextMeshPro
 
 <img src="https://sperlich.at/assets/project_pictures/toytanks_extensions.png" style="width:25vw" />
