@@ -10,6 +10,7 @@ namespace ToyTanks.LevelEditor {
 		public LevelEditor.Themes theme;
 		public Material floorMaterial;
 		public bool SSR;
+		public bool isDark;
 		public BlockAsset[] assets;
 
 		[Serializable]

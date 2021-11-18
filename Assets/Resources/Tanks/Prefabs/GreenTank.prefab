@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tankAsset: {fileID: 11400000, guid: 9258b9f67fec476408ae65dbe71eb0d4, type: 2}
-  moveSpeed: 0
   healthPoints: 1
+  moveSpeed: 0
   shootStunDuration: 0
   reloadDuration: 1.5
   randomReloadDuration: 2
@@ -26,14 +26,11 @@ MonoBehaviour:
   playerLoseRadius: 24
   playerTooClose: 5
   showDebug: 0
-  hitLayers:
-    serializedVersion: 2
-    m_Bits: 296320
-  levelPredictionMask:
-    serializedVersion: 2
-    m_Bits: 296704
+  diagonalMethod: 0
+  maxPathfindingRefreshSpeed: 0.2
   currentPath: []
   predictionIterations: 12
+  advancedDebug: 0
 --- !u!1001 &7921904694191907681
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41,11 +38,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1263619811117213237, guid: deb07d1d6146747469e15b61bffdc376,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 4b61c2e1f36df0b4f9713ac4227cb815, type: 2}
     - target: {fileID: 1263619811117213237, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: m_Materials.Array.data[1]
@@ -131,7 +123,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: e026873dc84d3b443b7e5a81f295ecd2, type: 2}
+      objectReference: {fileID: 2100000, guid: ac3db2c31ce1af24a9a540ae3702f2ad, type: 2}
     - target: {fileID: 7186067371241428572, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: m_Materials.Array.data[1]

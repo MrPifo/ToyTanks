@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<StudioProjectMetaData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PresetVersion="1">
+  <StudioAssetMetas>
+    <StudioAssetMeta>
+      <Name>Standard_Model</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Tank\Standard_Model\Standard_Model.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-11-13T17:52:34.2371738+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>BossTank02</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Tank\BossTank02\BossTank02.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-11-18T15:37:37.133491+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>BossTank01</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Tank\BossTank01\BossTank01.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-11-18T14:52:15.0000298+01:00</SaveTime>
+    </StudioAssetMeta>
+  </StudioAssetMetas>
+</StudioProjectMetaData>

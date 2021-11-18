@@ -4,17 +4,20 @@ using CameraShake;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Camera))]
-public class GameCamera : MonoBehaviour {
+public class GameCamera : Singleton<GameCamera> {
 
 	public enum GameCamState { Free, Overview, Focus }
 	// Free - Camera is free to use
 	// Overview - Camera is static and views the whole playground
 	// Focus - Camera follows the player
 
-	public float followLeadAhead = 5;
-	public float minOrthographicSize;
-	public float maxOrthographicSize;
-	public float currentOrthographicSize;
+	private float preferredOrthographicSize;
+	public float focusOnPlayerStrength = 1f;
+	public float focusSmoothSpeed = 1;
+	public float focusZoomSmoothSpeed = 0.5f;
+	public float minOrthographicSize = 9;
+	public float maxOrthographicSize = 19;
+	public float MaxOrthoSize => preferredOrthographicSize < maxOrthographicSize ? preferredOrthographicSize : maxOrthographicSize;
 	public CameraShaker Shaker { get; set; }
 	public Camera Camera { get; set; }
 	public PlayerInput Player { get; set; }
@@ -28,9 +31,9 @@ public class GameCamera : MonoBehaviour {
 	public Vector3 offset;
 	public GameCamState cameraState = GameCamState.Free;
 
-	void Awake() {
+	protected override void Awake() {
+		base.Awake();
 		Camera = GetComponent<Camera>();
-		currentOrthographicSize = minOrthographicSize;
 		Shaker = new GameObject("Camera Holder").AddComponent<CameraShaker>();
 		Shaker.SetCameraTransform(Shaker.transform);
 		transform.SetParent(Shaker.transform);
@@ -40,7 +43,7 @@ public class GameCamera : MonoBehaviour {
 		ChangeState(GameCamState.Overview);
 	}
 
-	void Update() {
+	void LateUpdate() {
 		switch(cameraState) {
 			case GameCamState.Free:
 				return;
@@ -52,18 +55,40 @@ public class GameCamera : MonoBehaviour {
 
 	void FollowPlayer() {
 		if(Player != null) {
+			if(preferredOrthographicSize < maxOrthographicSize) {
+				
+			}
 			Vector3 current = Camera.main.transform.position;
-			Vector3 targetPos = new Vector3() {
-				x = Player.transform.position.x,
-				y = Camera.main.transform.position.y,
-				z = Player.transform.position.z,
-			};
-			targetPos += new Vector3(0, 0, -30) + offset + Player.MovingDir * followLeadAhead;
-			float dist = Vector2.Distance(new Vector2(current.x, current.z), new Vector2(targetPos.x, targetPos.z));
+			Vector3 avg = Vector3.zero;
+			Vector3 zoom = Vector3.zero;
+			float ortho = 0;
+			var tanks = FindObjectsOfType<TankAI>();
+			int active = 1;
+			foreach(TankAI t in tanks) {
+				if(t.HasBeenDestroyed == false) {
+					avg += new Vector3(t.Pos.x, 0, t.Pos.z);
+					zoom -= t.Pos;
+					ortho += Vector3.Distance(t.Pos, FindObjectOfType<PlayerInput>().Pos);
+					active++;
+				}
+			}
+			Vector3 playerPos = FindObjectOfType<PlayerInput>().Pos;
+			playerPos.y = 0;
+			avg += playerPos;
+			avg /= active;
+			avg += offset;
+			avg += new Vector3(0, 30, -30);
+			playerPos += new Vector3(0, 30, -30) + offset;
 
-			Camera.main.transform.position = Vector3.Lerp(current, targetPos, Time.deltaTime);
-
-			//if(Input.mouseScrollDelta > 0)
+			Camera.main.transform.position = Vector3.Lerp(current, avg, Time.deltaTime * focusSmoothSpeed);
+			Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, playerPos, Time.deltaTime * focusSmoothSpeed * focusOnPlayerStrength);
+			ortho /= active;
+			if(ortho < minOrthographicSize) {
+				ortho = minOrthographicSize;
+			} else if(ortho > MaxOrthoSize) {
+				ortho = MaxOrthoSize;
+			}
+			Camera.orthographicSize = Mathf.Lerp(Camera.orthographicSize, ortho, Time.deltaTime * focusZoomSmoothSpeed);
 		} else {
 			Player = FindObjectOfType<PlayerInput>();
 		}
@@ -104,7 +129,7 @@ public class GameCamera : MonoBehaviour {
 				Overview();
 				break;
 			case GameCamState.Focus:
-				Camera.DOOrthoSize(camSettings.orthograpicSize, 2);
+				preferredOrthographicSize = LevelManager.GetOrthographicSize(LevelManager.GridSize);
 				FollowPlayer();
 				break;
 		}

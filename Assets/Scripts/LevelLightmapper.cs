@@ -157,7 +157,7 @@ namespace ToyTanks.LevelEditor {
 				if(textAsset != null) {
 					var mapLight = JsonConvert.DeserializeObject<MapLightData>(textAsset.text);
 					foreach(var mesh in FindObjectsOfType<LevelBlock>()) {
-						if(mapLight.HasInfo(mesh.Index)) {
+						if(mapLight.HasInfo(mesh.Index) && mesh.type != LevelEditor.BlockTypes.Hole) {
 							var light = mapLight.GetInfo(mesh.Index);
 							mesh.meshRender.lightmapIndex = light.index;
 							mesh.meshRender.lightmapScaleOffset = new Vector4(light.scaleOffset[0], light.scaleOffset[1], light.scaleOffset[2], light.scaleOffset[3]);

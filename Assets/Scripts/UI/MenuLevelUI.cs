@@ -9,8 +9,11 @@ namespace ToyTanks.UI {
 	public class MenuLevelUI : MonoBehaviour {
 
 		Game.Level level;
+		[ColorUsage(true, true)]
 		public Color unlockColor;
+		[ColorUsage(true, true)]
 		public Color lockedColor;
+		[ColorUsage(true, true)]
 		public Color hoverColor;
 		public SpriteMask mask;
 		public TextMeshProUGUI levelNumber;
@@ -114,7 +117,7 @@ namespace ToyTanks.UI {
 				rect.Color = hoverColor;
 				isSelected = true;
 				Game.SetCursor("pointer");
-				transform.DOScale(1.25f, 0.2f).SetEase(Ease.OutBounce);
+				transform.DOScale(1.4f, 0.2f).SetEase(Ease.OutCubic);
 			}
 		}
 
@@ -123,7 +126,7 @@ namespace ToyTanks.UI {
 				Game.SetCursor("default");
 				rect.Color = unlockColor;
 				isSelected = false;
-				transform.DOScale(1f, 0.2f);
+				transform.DOScale(1.35f, 0.2f).SetEase(Ease.OutCubic);
 			}
 		}
 

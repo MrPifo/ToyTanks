@@ -18,7 +18,7 @@ using CameraShake;
 namespace ToyTanks.LevelEditor {
 	public class LevelEditor : MonoBehaviour {
 
-		public enum Themes { Light, Fir, Floor}
+		public enum Themes { Light, Fir, Basement}
 		public enum BlockTypes { Block, Block2, BlockHalf, Block2x2, Triangle, TriangleRoof, Cylinder, Hole, BoxDestructable  }
 
 		[Header("Configuration")]
@@ -282,7 +282,7 @@ namespace ToyTanks.LevelEditor {
 			playTestButton.interactable = false;
 			playTestButton.image.color = Color.green;
 			editGameUI.DOFade(1, 2);
-			LevelManager.UI.bossBar.gameObject.SetActive(false);
+			BossUI.ResetBossBar();
 			LevelManager.UI.gameplay.SetActive(false);
 			DOTween.ToAlpha(() => gridColor, x => gridColor = x, 1, fadeDurtaion);
 
@@ -405,6 +405,11 @@ namespace ToyTanks.LevelEditor {
 				} else {
 					o.isStatic = false;
 				}
+#if UNITY_EDITOR
+				if(asset.block == BlockTypes.Hole) {
+					GameObjectUtility.SetStaticEditorFlags(o, StaticEditorFlags.BatchingStatic);
+				}
+#endif
 				o.transform.SetParent(LevelManager.BlocksContainer);
 				var comp = o.GetComponent<LevelBlock>();
 				comp.SetData(block.index, indexes, block.type);
@@ -662,7 +667,7 @@ namespace ToyTanks.LevelEditor {
 
 		// Loading Assets
 		public void LoadThemeAssets() {
-			ThemeAssets = Resources.LoadAll<ThemeAsset>("LevelAssets").ToList();
+			ThemeAssets = Resources.LoadAll<ThemeAsset>(GamePaths.ThemesPath).ToList();
 			ThemeAssets = ThemeAssets.OrderBy(t => (int)t.theme).ToList();
 			SetThemesDropdown();
 		}
@@ -827,6 +832,8 @@ namespace ToyTanks.LevelEditor {
 			DeletePreview();
 			levelData.blocks = new List<LevelData.BlockData>();
 			levelData.tanks = new List<LevelData.TankData>();
+			levelData.sunLight = new LevelData.LightData(levelManager.sunLight);
+			levelData.spotLight = new LevelData.LightData(levelManager.spotLight);
 
 			foreach(var b in FindObjectsOfType<LevelBlock>()) {
 				var data = new LevelData.BlockData() {
@@ -908,6 +915,8 @@ namespace ToyTanks.LevelEditor {
 			levelData.tanks = new List<LevelData.TankData>();
 			levelData.gridSize = GridSize;
 			levelData.theme = (Themes)themesDropdown.value;
+			levelData.sunLight = new LevelData.LightData(levelManager.sunLight);
+			levelData.spotLight = new LevelData.LightData(levelManager.spotLight);
 
 			foreach(var b in FindObjectsOfType<LevelBlock>()) {
 				var data = new LevelData.BlockData() {
@@ -928,6 +937,7 @@ namespace ToyTanks.LevelEditor {
 				};
 				levelData.tanks.Add(data);
 			}
+
 			string json = JsonConvert.SerializeObject(levelData, Formatting.Indented);
 			File.WriteAllText(GamePaths.GetOfficialLevelPath(levelData), json);
 			GameManager.CurrentLevel = levelData;
@@ -961,6 +971,8 @@ namespace ToyTanks.LevelEditor {
 			}
 			
 			LevelLightmapper.SwitchLightmaps(levelData.levelId);
+			levelManager.ApplyLightData(levelData.sunLight, levelManager.sunLight);
+			levelManager.ApplyLightData(levelData.spotLight, levelManager.spotLight);
 			HasLevelBeenLoaded = true;
 		}
 
@@ -982,6 +994,9 @@ namespace ToyTanks.LevelEditor {
 			foreach(var tank in levelData.tanks) {
 				PlaceLoadedTank(tank);
 			}
+
+			levelManager.ApplyLightData(levelData.sunLight, levelManager.sunLight);
+			levelManager.ApplyLightData(levelData.spotLight, levelManager.spotLight);
 			themesDropdown.value = (int)levelData.theme;
 			RefreshUI();
 		}

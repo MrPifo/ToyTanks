@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26e1b0ad0b67d114abb22aa1dcb2b38f, type: 3}
+  m_Name: BossTank02
+  m_EditorClassIdentifier: 
+  tankType: 8
+  prefab: {fileID: 4141930881519427190, guid: 46c585840bb0f7b4e8771e26051e374e, type: 3}
+  preview: {fileID: 21300000, guid: cbf7b84a3fcc2ec4eb5b82050d7cac72, type: 3}
+  health: 40
+  isStatic: 0
+  isBoss: 1
+  hasFriendlyFireShield: 1
+  tankSpawnOffset: {x: 0, y: 0.5, z: 0}

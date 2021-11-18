@@ -21,4 +21,10 @@ public class DestructionTimer : MonoBehaviour {
 			Destroy(gameObject);
 		});
 	}
+
+	public void Destruct(float time) {
+		this.Delay(time, () => {
+			Destroy(gameObject);
+		});
+	}
 }

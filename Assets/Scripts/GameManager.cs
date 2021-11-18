@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System;
 using System.Collections;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : Singleton<GameManager> {
 
 	public enum GameMode { None, Campaign, LevelOnly, Editor }
 
@@ -43,7 +43,6 @@ public class GameManager : MonoBehaviour {
 	public static SaveGame.Campaign.Difficulty Difficulty => CurrentCampaign.difficulty;
 	public static GameMode CurrentMode;
 
-	public static GameManager Instance;
 	public static LoadingScreen screen;
 	public static bool GameBooted = false;
 	public static List<LevelData> Levels { get; set; }
@@ -63,22 +62,22 @@ public class GameManager : MonoBehaviour {
 	UnityAction<Scene, Scene> loadingScreenExitCallback;
 	private static readonly System.Random RandomGenerator = new System.Random();
 
-	void Awake() {
-		DontDestroyOnLoad(this);
+	protected override void Awake() {
+		base.Awake();
 		var menu = FindObjectOfType<ToyTanks.UI.MenuManager>();
 		menu.Initialize();
 		GraphicSettings.Initialize();
-		Instance = this;
 
 		if(GameBooted == false) {
 			Game.AddCursor("default", defaultCursor);
 			Game.AddCursor("pointer", pointerCursor);
-			SaveGame.GameStartUp();
 			Game.SetCursor("default");
+			SaveGame.GameStartUp();
 			menu.mainMenu.FadeIn();
 			menu.FadeOutBlur();
 			GameBooted = true;
 		}
+		ShowCursor();
 	}
 
 	public void CopyCamera() {
@@ -117,7 +116,6 @@ public class GameManager : MonoBehaviour {
 		isLoading = false;
 		CurrentMode = GameMode.None;
 		ShowCursor();
-		Destroy(gameObject);
 	}
 
 	public void LoadAllAvailableLevels() {
@@ -247,17 +245,16 @@ public class GameManager : MonoBehaviour {
 		yield return new WaitUntil(() => transitionScreen.onFadeOutFinished);
 		AsyncOperation loadingScreenUnload = SceneManager.UnloadSceneAsync("LoadingScreen");
 		yield return new WaitUntil(() => loadingScreenUnload.isDone);
-		Destroy(gameObject);
 	}
 
 	public static void ShowCursor() {
-		Cursor.visible = true;
 		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
 	}
 
 	public static void HideCursor() {
-		Cursor.visible = false;
 		Cursor.lockState = CursorLockMode.Confined;
+		Cursor.visible = false;
 	}
 
 	// Helpers

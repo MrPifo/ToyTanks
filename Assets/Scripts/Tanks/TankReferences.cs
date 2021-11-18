@@ -2,6 +2,7 @@
 using Shapes;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.HighDefinition;
 
 public class TankReferences : MonoBehaviour {
 
@@ -14,6 +15,9 @@ public class TankReferences : MonoBehaviour {
 	public Transform tankHead;
 	public Transform bulletOutput;
 	public Transform billboardHolder;
+	public Transform lightHolder;
+	public HDAdditionalLightData frontLight;
+	public HDAdditionalLightData backLight;
 	public GameObject blobShadow;
 	public GameObject tankTrack;
 	public GameObject destroyFlash; 
@@ -27,6 +31,8 @@ public class TankReferences : MonoBehaviour {
 	public ParticleSystem damageSmokeHead;
 	public ParticleSystem mudParticlesFront;
 	public ParticleSystem mudParticlesBack;
+	[Header("Animation Curves")]
+	public AnimationCurve lightsTurnOnAnim;
 	[Header("Feedbacks")]
 	public MMFeedbacks hitFlash;
 

@@ -13,10 +13,9 @@ using UnityEngine.Rendering;
 using UnityEngine.Events;
 using ToyTanks.UI;
 
-public class GraphicSettings : MonoBehaviour {
+public class GraphicSettings : Singleton<GraphicSettings> {
 
     public static Int2 nativeScreenResolution;
-    public static GraphicSettings Instance;
     public static UnityEvent OnGraphicSettingsOpen = new UnityEvent();
     public static UnityEvent OnGraphicSettingsClose = new UnityEvent();
     // User Interface
@@ -35,9 +34,14 @@ public class GraphicSettings : MonoBehaviour {
     public Toggle vsyncToggle;
     public Toggle softShadowsToggle;
 
-	void Awake() {
-        nativeScreenResolution = new Int2(Screen.currentResolution.width, Screen.currentResolution.height);
-        overrideVolume.profile.TryGet(out volumeSSR);
+	protected override void Awake() {
+        base.Awake();
+        try {
+            nativeScreenResolution = new Int2(Screen.currentResolution.width, Screen.currentResolution.height);
+            overrideVolume.profile.TryGet(out volumeSSR);
+        } catch {
+
+		}
     }
 
 	public static void RenderResolutionDropdown() {
@@ -269,8 +273,6 @@ public class GraphicSettings : MonoBehaviour {
 	}
 
     public static void Initialize() {
-        Instance = FindObjectOfType<GraphicSettings>();
-
         if(File.Exists(GamePaths.UserGraphicSettings) == false) {
             // Create new User-Settings
             LoadedSettings = new IniData();
@@ -279,12 +281,11 @@ public class GraphicSettings : MonoBehaviour {
             LoadSettings();
 		}
 
-        if(Instance == null) {
-            //throw new GraphicSettingsNotFound("There is no instance found of Graphic Settings!");
-        } else {
-            DontDestroyOnLoad(Instance);
+        try {
             Instance.menu.Initialize();
-        }
+        } catch {
+            Debug.Log("No Menu found.");
+		}
     }
 
     // Apply Settings
@@ -314,7 +315,7 @@ public class GraphicSettings : MonoBehaviour {
 	}
     static void SetSSR(bool state) {
         SSR = state;
-        if(Instance != null) {
+        if(Instance != null && Instance.volumeSSR != null) {
             Instance.volumeSSR.active = state;
         }
     }

@@ -1,28 +1,39 @@
 {
   "levelName": "",
   "levelId": 13,
+  "isNight": false,
   "gridSize": 1,
+  "indirectLightIntensity": 0.0,
+  "customCameraFocusIntensity": null,
+  "customMaxZoomOut": null,
   "theme": 1,
-  "blocks": [
-    {
-      "pos": {
-        "x": 14,
-        "y": 6,
-        "z": -20
-      },
-      "index": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 90,
-        "z": 0
-      },
-      "theme": 0,
-      "type": 0
+  "sunLight": {
+    "pos": {
+      "x": 0,
+      "y": 15,
+      "z": 0
     },
+    "rotation": {
+      "x": 50,
+      "y": 45,
+      "z": 0
+    },
+    "intensity": 6
+  },
+  "spotLight": {
+    "pos": {
+      "x": 0,
+      "y": 25,
+      "z": -10
+    },
+    "rotation": {
+      "x": 55,
+      "y": 0,
+      "z": 0
+    },
+    "intensity": 0
+  },
+  "blocks": [
     {
       "pos": {
         "x": -24,

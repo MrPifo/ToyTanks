@@ -1,6 +1,9 @@
 ﻿using EpPathFinding.cs;
 using System.Collections.Generic;
 using UnityEngine;
+using SimpleMan.Extensions;
+using UnityEngine.Rendering.HighDefinition;
+using System.Collections;
 
 public static class ExtensionMethods {
 
@@ -102,7 +105,63 @@ public static class ExtensionMethods {
 		}
         return true;
 	}
-    public static T RandomItem<T>(this List<T> list) {
+	public static GameObject FindChild(this MonoBehaviour mono, string name) => mono.gameObject.FindChild(name);
+	public static GameObject FindChild(this Transform transform, string name) => transform.gameObject.FindChild(name);
+	public static GameObject FindChild(this GameObject gameobject, string name) {
+		name = name.ToLower();
+		GameObject result = null;
+		foreach(Transform t in gameobject.transform) {
+			if(t.name.ToLower() == name) {
+				result = t.gameObject;
+			}
+		}
+		if(result == null) {
+			Debug.LogWarning($"Unable to find {name}");
+		}
+		return result;
+	}
+	public static T RandomItem<T>(this List<T> list) {
         return list[Randomizer.Range(0, list.Count - 1)];
     }
+	public static void FadeIntensity(this HDAdditionalLightData lightData, float startValue, float endValue, float duration) {
+		DestructionTimer destructor = new GameObject("lightFadeIntensity_" + lightData.name).AddComponent<DestructionTimer>();
+		destructor.Destruct(duration);
+		destructor.StartCoroutine(IFade());
+		IEnumerator IFade() {
+			float time = 0;
+			while(time < duration) {
+				lightData.SetIntensity(time.Remap(0f, 1f, startValue, endValue));
+				time += Time.deltaTime;
+				yield return null;
+			}
+		}
+	}
+	public static void Show(this MonoBehaviour mono) {
+		mono.gameObject.SetActive(true);
+	}
+	public static void Hide(this MonoBehaviour mono) {
+		mono.gameObject.SetActive(false);
+	}
+	public static void Show(this GameObject gameobject) {
+		gameobject.gameObject.SetActive(true);
+	}
+	public static void Hide(this GameObject gameobject) {
+		gameobject.gameObject.SetActive(false);
+	}
+	public static void Show(this Transform transform) {
+		transform.gameObject.SetActive(true);
+	}
+	public static void Hide(this Transform transform) {
+		transform.gameObject.SetActive(false);
+	}
+	/// <summary>
+	/// Destroys this GameObject
+	/// </summary>
+	/// <param name="gameObject"></param>
+	public static void Destroy(this GameObject gameObject) => Object.Destroy(gameObject);
+	/// <summary>
+	/// Destroy the holding GameObject
+	/// </summary>
+	/// <param name="transform"></param>
+	public static void Destroy(this Transform transform) => Object.Destroy(transform.gameObject);
 }

@@ -30,12 +30,15 @@ public class LevelManager : MonoBehaviour {
 	public bool IsPathMeshReady;
 	public bool HasBeenInitialized;
 	public bool HasLevelBeenBuild;
+	public bool isDarkLevel;
 	public static bool awardBonusLife;
 	public int scoreOnLevelEnter;
 	public CanvasGroup optionsMenu;
+	public HDAdditionalLightData spotLight;
 	public HDAdditionalLightData sunLight;
 	public LayerMask baseLayer;
 	public bool IsEditor => Mode == GameManager.GameMode.Editor;
+	public static GridSizes GridSize => CurrentLevel.gridSize;
 	public static LevelEditor Editor;
 	public static GameCamera gameCamera;
 	public static GameManager.GameMode Mode {
@@ -184,7 +187,7 @@ public class LevelManager : MonoBehaviour {
 
 	public IEnumerator LoadAndBuildMap(LevelData data, float loadDuration) {
 		ClearMap();
-		var blockAssets = Resources.LoadAll<ThemeAsset>("LevelAssets").ToList().Find(t => t.theme == data.theme);
+		var blockAssets = Resources.LoadAll<ThemeAsset>(GamePaths.ThemesPath).ToList().Find(t => t.theme == data.theme);
 		var tanks = Resources.LoadAll<TankAsset>("Tanks").ToList();
 		float timePerBlock = loadDuration / data.blocks.Count;
 
@@ -223,34 +226,12 @@ public class LevelManager : MonoBehaviour {
 		GameObject.Find("WallDown").transform.position = new Vector3(0, 0, boundary.z * -2 - 2);
 	}
 
-	void GenerateDynamicGrid() {
-		/*StartCoroutine(IGenerate());
-		IEnumerator IGenerate() {
-			Grid.gridName = "temp";
-			Grid.ClearGrid();
-			int total = 0;
-
-			for(float x = -GridBoundary.x; x < GridBoundary.x; x++) {
-				for(float z = -GridBoundary.z; z < GridBoundary.z; z++) {
-					var ray = new Ray(new Vector3(gridDensity * x, transform.position.y + 20, gridDensity * z) + transform.position, Vector3.down);
-					if(Physics.SphereCast(ray.origin, gridPointOverlapRadius, ray.direction, out RaycastHit hit, Mathf.Infinity, baseLayer)) {
-						if(hit.transform.CompareTag("Ground")) {
-							Grid.AddNode(new Float3(hit.point), gridPointDistance, Node.NodeType.ground, true);
-							if(total % 5 == 0) {
-								yield return null;
-							}
-						}
-					}
-					total++;
-				}
-			}
-			Grid.gridName = gameObject.scene.name;
-			Grid.Reload();
-			if(IsEditor) {
-				Editor.pathMeshGeneratorProgressBar.gameObject.SetActive(false);
-			}
-			IsPathMeshReady = true;
-		}*/
+	public void ApplyLightData(LevelData.LightData lightData, HDAdditionalLightData light) {
+		if(lightData != null && light != null) {
+			light.transform.position = lightData.pos;
+			light.transform.eulerAngles = lightData.rotation;
+			light.SetIntensity(lightData.intensity);
+		}
 	}
 
 	// Game Logic
@@ -261,10 +242,18 @@ public class LevelManager : MonoBehaviour {
 			yield return new WaitUntil(() => HasLevelBeenBuild);
 		}
 
+		var theme = Resources.LoadAll<ThemeAsset>(GamePaths.ThemesPath).ToList().Find(t => t.theme == CurrentLevel.theme);
+		isDarkLevel = theme.isDark;
+		ApplyLightData(CurrentLevel.sunLight, sunLight);
+		ApplyLightData(CurrentLevel.spotLight, spotLight);
+		if(isDarkLevel) {
+			spotLight.SetIntensity(0);
+		}
 		SetLevelBoundaryWalls(GridBoundary);
 		UI.gameplay.SetActive(true);
 		UI.levelStage.SetText($"Level {CurrentLevel.levelId}");
 		UI.counterBanner.SetActive(true);
+		
 
 		if(!IsDebug) {
 			scoreOnLevelEnter = GameManager.Score;
@@ -285,25 +274,40 @@ public class LevelManager : MonoBehaviour {
 		gameCamera.ChangeState(GameCamera.GameCamState.Overview);
 		GameManager.HideCursor();
 		player.SetupCross();
+		
 
 		if(IsBossLevel) {
-			UI.InitBossBar(bossTank.MaxHealthPoints, 3);
-		} else {
-			UI.bossBar.gameObject.SetActive(false);
+			foreach(BossAI boss in FindObjectsOfType<BossAI>()) {
+				BossUI.RegisterBoss(boss);
+			}
+			BossUI.InitAnimateBossBar();
 		}
-		yield return new WaitForSeconds(2.5f);
+		yield return new WaitForSeconds(1f);
+		foreach(var t in FindObjectsOfType<TankBase>()) {
+			if(isDarkLevel) {
+				t.TurnLightsOn();
+			} else {
+				t.TurnLightsOff();
+			}
+		}
+		if(isDarkLevel) {
+			
+			spotLight.FadeIntensity(0, CurrentLevel.spotLight.intensity, 1f);
+		}
+		yield return new WaitForSeconds(1.5f);
 		Feedback.PlayStartFadeText();
 		DOTween.To(x => UI.OutlinePass.threshold = x, UI.OutlinePass.threshold, 100, 2).SetEase(Ease.InCubic);
 		yield return new WaitForSeconds(1);
 		IsGameOver = false;
 		GameStarted = true;
 		GamePaused = false;
-		if(CurrentLevel.gridSize == GridSizes.Size_17x14) {
-			gameCamera.camSettings.orthograpicSize = gameCamera.minOrthographicSize;
+		if(GridSize == GridSizes.Size_17x14) {
 			gameCamera.ChangeState(GameCamera.GameCamState.Focus);
 		} else {
 			gameCamera.ChangeState(GameCamera.GameCamState.Overview);
 		}
+		gameCamera.focusOnPlayerStrength = CurrentLevel.customCameraFocusIntensity == null ? gameCamera.focusOnPlayerStrength : (float)CurrentLevel.customCameraFocusIntensity;
+		gameCamera.maxOrthographicSize = CurrentLevel.customMaxZoomOut == null ? gameCamera.maxOrthographicSize : (float)CurrentLevel.customMaxZoomOut;
 		UI.counterBanner.SetActive(false);
 		player.EnablePlayer();
 		EnableAllAIs();
@@ -437,6 +441,7 @@ public class LevelManager : MonoBehaviour {
 								}
 								Debug.Log("Returning to Checkpoint in Level: " + GameManager.LevelId);
 								yield return new WaitForSeconds(2);
+								player.HideCrosshair();
 								GameManager.LoadLevel("", true);
 								break;
 							case SaveGame.Campaign.Difficulty.Hard:
@@ -445,6 +450,7 @@ public class LevelManager : MonoBehaviour {
 								GameManager.LevelId = Game.GetWorld(GameManager.CurrentLevel.levelId).Levels[0].LevelId;
 								Debug.Log("Returning to Checkpoint in Level: " + GameManager.LevelId);
 								yield return new WaitForSeconds(2);
+								player.HideCrosshair();
 								GameManager.LoadLevel("Mission Failed");
 								break;
 							case SaveGame.Campaign.Difficulty.HardCore:
@@ -453,13 +459,15 @@ public class LevelManager : MonoBehaviour {
 								SaveGame.SaveInstance.WipeSlot(SaveGame.SaveInstance.currentSaveSlot);
 								SaveGame.Save();
 								yield return new WaitForSeconds(2);
-								//GameManager.ReturnToMenu("Mission Failed");
+								player.HideCrosshair();
+								GameManager.ReturnToMenu("Mission Failed");
 								break;
 						}
 					}
 					break;
 				case GameManager.GameMode.LevelOnly:
 					yield return new WaitForSeconds(2);
+					player.HideCrosshair();
 					Feedback.FadeOutGameplayUI();
 					GameManager.ReturnToMenu("Returning to Menu");
 					break;
@@ -494,7 +502,7 @@ public class LevelManager : MonoBehaviour {
 	public static float GetOrthographicSize(GridSizes size) {
 		switch(size) {
 			case GridSizes.Size_17x14:
-				return 19;
+				return 16;
 			case GridSizes.Size_14x11:
 				return 15;
 			case GridSizes.Size_11x8:

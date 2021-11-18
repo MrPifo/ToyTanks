@@ -9,6 +9,7 @@ using DG.Tweening;
 using System.Collections.Generic;
 using ToyTanks.LevelEditor;
 using EpPathFinding.cs;
+using UnityEngine.Rendering.HighDefinition;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -26,7 +27,6 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 	public float reloadDuration = 0.5f;
 	[Range(0f, 4f)]
 	public float randomReloadDuration = 1f;
-	[Range(0, 360f)]
 	public short bodyRotSpeed = 360;
 	public short destructionVelocity = 400;
 	public bool disable2DirectionMovement;
@@ -35,10 +35,13 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 	bool isInvincible;
 	bool isReloading;
 	bool isShootStunned;
+	bool isLightTurning;
 	protected bool canMove;
 	float angleDiff;
 	float aimRotSpeed = 600;
-	float angleDiffLock = 600;
+	float frontLightIntensity;
+	float backLightIntensity;
+	float lastTurnSign = 1;
 	protected float trackSpawnDistance = 0.75f;
 	protected float distanceSinceLastFrame;
 	int initLayer;
@@ -112,6 +115,9 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 	public Transform tankHead => References.tankHead;
 	public Transform bulletOutput => References.bulletOutput;
 	public Transform billboardHolder => References.billboardHolder;
+	public Transform lightHolder => References.lightHolder;
+	public HDAdditionalLightData frontLight => References.frontLight;
+	public HDAdditionalLightData backLight => References.backLight;
 	public GameObject blobShadow => References.blobShadow;
 	public GameObject tankTrack => References.tankTrack;
 	public GameObject destroyFlash => References.destroyFlash;
@@ -125,6 +131,7 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 	public ParticleSystem damageSmokeHead => References.damageSmokeHead;
 	public ParticleSystem mudParticlesFront => References.mudParticlesFront;
 	public ParticleSystem mudParticlesBack => References.mudParticlesBack;
+	public AnimationCurve turnLightsOnCurve => References.lightsTurnOnAnim;
 	public MMFeedbacks hitFlash => References.hitFlash;
 
 	protected virtual void Awake() {
@@ -134,6 +141,9 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 		bodyMats = tankBody.GetComponent<MeshRenderer>().sharedMaterials;
 		healthBar.transform.parent.gameObject.SetActive(false);
 		healthPoints = tankAsset.health;
+		frontLightIntensity = frontLight.intensity;
+		backLightIntensity = backLight.intensity;
+		TurnLightsOff();
 	}
 
 	public virtual void InitializeTank() {
@@ -162,6 +172,7 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 			billboardHolder.rotation = Quaternion.LookRotation((Pos - Camera.main.transform.position).normalized, Vector3.up);
 			lastPos = transform.position;
 			lastHeadRot = tankHead.rotation;
+			AdjustLightTurn();
 		}
 	}
 
@@ -252,7 +263,7 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 	}
 
 	public virtual void TakeDamage(IDamageEffector effector) {
-		if(IsInvincible == false) {
+		if(IsInvincible == false && HasBeenDestroyed == false) {
 			if(this is TankAI && effector.fireFromPlayer == false && IsFriendlyFireImmune) {
 				ShieldEffect(effector.damageOrigin);
 			} else {
@@ -271,19 +282,25 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 		}
 	}
 
-	public void GotDestroyed() {
+	public void Kill() {
+		if(HasBeenDestroyed == false) {
+			GotDestroyed();
+		}
+	}
+	protected virtual void GotDestroyed() {
 		HasBeenDestroyed = true;
 		foreach(Transform t in destroyTransformPieces) {
-			t.parent = null;
 			var rig = t.gameObject.AddComponent<Rigidbody>();
 			t.gameObject.layer = LayerMask.NameToLayer("DestructionPieces");
 			var vec = new Vector3(Random.Range(-destructionVelocity, destructionVelocity), destructionVelocity, Random.Range(-destructionVelocity, destructionVelocity));
 			rig.AddForce(vec);
 			rig.AddTorque(vec);
+			t.SetParent(null);
 		}
 		blobShadow.SetActive(false);
 		healthBar.gameObject.SetActive(false);
 		PlayDestroyExplosion();
+		TurnLightsOff();
 
 		if(FindObjectOfType<LevelManager>()) {
 			if(this is PlayerInput) {
@@ -338,6 +355,7 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 		int c = 0;
 		float respawnDuration = 1.5f;
 		DisableCollisions();
+		TurnLightsOff();
 		foreach(Transform t in destroyTransformPieces) {
 			t.DOLocalMove(destroyRestPoses[c], respawnDuration).SetEase(Ease.OutCubic);
 			t.DOLocalRotate(destroyRestRots[c].eulerAngles, respawnDuration).SetEase(Ease.OutCubic);
@@ -350,6 +368,43 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 		
 		damageSmokeBody.Stop();
 		damageSmokeHead.Stop();
+	}
+
+	public void TurnLightsOn() {
+		StartCoroutine(ITurnOn());
+		IEnumerator ITurnOn() {
+			float t = 0;
+			while(t < 1f) {
+				frontLight.SetIntensity(turnLightsOnCurve.Evaluate(t) * frontLightIntensity);
+				backLight.SetIntensity(turnLightsOnCurve.Evaluate(t) * backLightIntensity);
+				t += Time.deltaTime;
+				yield return null;
+			}
+		}
+	}
+
+	public void TurnLightsOff() {
+		frontLight.SetIntensity(0);
+		backLight.SetIntensity(0);
+	}
+
+	public void AdjustLightTurn() {
+		float turn = Mathf.Sign(Vector3.Dot(moveDir.normalized, rig.transform.forward));
+		if(turn != lastTurnSign && isLightTurning == false) {
+			isLightTurning = true;
+			TurnLightsOff();
+			this.Delay(0.2f, () => {
+				TurnLightsOn();
+				isLightTurning = false;
+			});
+
+			if(lastTurnSign < 0) {
+				lightHolder.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+			} else {
+				lightHolder.localRotation = Quaternion.Euler(new Vector3(0, 180, 0));
+			}
+			lastTurnSign = turn;
+		}
 	}
 
 	IEnumerator IDestroyAnimate() {
@@ -406,11 +461,9 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 			GridPos one = Game.ActiveGrid.Grid.GetGridPos(Pos);
 			if(Mathf.RoundToInt(Mathf.Abs(Pos.x)) % 2 != 0) {
 				one.x -= 1;
-				Debug.Log(name + " UNEVEN X");
 			}
 			if(Mathf.RoundToInt(Mathf.Abs(Pos.z)) % 2 != 0) {
 				one.y -= 1;
-				Debug.Log(name + " UNEVEN Y");
 			}
 			GridPos second = new GridPos(one.x + 1, one.y);
 			GridPos third = new GridPos(one.x, one.y + 1);

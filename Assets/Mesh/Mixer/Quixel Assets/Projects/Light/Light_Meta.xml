@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<StudioProjectMetaData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PresetVersion="1">
+  <StudioAssetMetas>
+    <StudioAssetMeta>
+      <Name>Block</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Light\Block\Block.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-11-13T20:02:09.0599684+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Cylinder</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Light\Cylinder\Cylinder.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-11-13T19:25:42.085831+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Ground</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Light\Ground\Ground.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-11-12T00:05:13.4345588+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Roof</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Light\Roof\Roof.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-11-13T19:51:32.8890331+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>TriangleUp</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Light\Triangle\Triangle.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-11-13T19:34:12.4405359+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Step</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Light\Step\Step.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-11-13T20:06:07.3533291+01:00</SaveTime>
+    </StudioAssetMeta>
+  </StudioAssetMetas>
+</StudioProjectMetaData>

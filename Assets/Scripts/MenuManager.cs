@@ -67,7 +67,7 @@ namespace ToyTanks.UI {
 					slotDifficulty[i].SetText(campaign.difficulty.ToString());
 					slotTime[i].SetText("Time: " + campaign.PrettyTime.ToString() + "s");
 					slotScore[i].SetText("Points: " + campaign.score.ToString());
-					slotCompletion[i].SetText("Level: " + campaign.levelId + " (" + ((float)campaign.levelId / Game.TotalLevels * 100f).ToString() + "%)");
+					slotCompletion[i].SetText("Level: " + campaign.levelId + " (" + Mathf.Round((float)campaign.levelId / Game.TotalLevels * 100f).ToString() + "%)");
 					switch(campaign.difficulty) {
 						case SaveGame.Campaign.Difficulty.Easy:
 							slotDifficulty[i].color = new Color(0.28f, 1, 0.58f);

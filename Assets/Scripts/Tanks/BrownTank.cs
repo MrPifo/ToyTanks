@@ -16,7 +16,7 @@ public class BrownTank : TankAI {
 			if(HasSightContactToPlayer) {
 				AimAtPlayer();
 				if(CanShoot) {
-					if(IsFacingTarget(Player.transform) && !WouldFriendlyFire) {
+					if(IsFacingTarget(Player.transform)) {
 						ShootBullet();
 					}
 				}

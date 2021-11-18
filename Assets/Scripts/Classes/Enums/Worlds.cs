@@ -1,1 +1,1 @@
-﻿public enum Worlds { WoodWorld, FloorWorld, MarmorWorld, CellarWorld }
+﻿public enum Worlds { WoodWorld, FloorWorld, Basement }

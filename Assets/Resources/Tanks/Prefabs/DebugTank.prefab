@@ -32,8 +32,9 @@ MonoBehaviour:
   levelPredictionMask:
     serializedVersion: 2
     m_Bits: 296704
-  currentPath: []
   diagonalMethod: 3
+  maxPathfindingRefreshSpeed: 0.2
+  currentPath: []
   moveTarget: {fileID: 0}
 --- !u!1001 &8098079575069511693
 PrefabInstance:
@@ -42,11 +43,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1263619811117213237, guid: deb07d1d6146747469e15b61bffdc376,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 6aa7808562732d14a8551b880ae0195b, type: 2}
     - target: {fileID: 1263619811117213237, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: m_Materials.Array.data[1]
@@ -121,7 +117,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 2100000, guid: 2aa720130f7b534418520d20a18cf074, type: 2}
+      objectReference: {fileID: 2100000, guid: ac3db2c31ce1af24a9a540ae3702f2ad, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: deb07d1d6146747469e15b61bffdc376, type: 3}
 --- !u!1 &4562013804101765054 stripped

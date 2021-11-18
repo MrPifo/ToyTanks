@@ -109,9 +109,7 @@ public class Bullet : MonoBehaviour, IHittable, IDamageEffector {
 	}
 
 	void Reflect(Vector3 inNormal) {
-		Vector3 dir = direction;
 		direction = Vector3.Reflect(direction, inNormal);
-		Debug.Log(inNormal + " : " + dir + " : " + direction);
 		impactSparks.Play();
 		AudioPlayer.Play("BulletReflect", 0.8f, 1.2f, 0.5f);
 	}

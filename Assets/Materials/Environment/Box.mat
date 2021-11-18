@@ -43,6 +43,14 @@ Material:
         m_Texture: {fileID: 2800000, guid: c07b6a446ec3cae4c9d99b661dbd03d8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - AO_Map_2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Metallness:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - NormalMap:
         m_Texture: {fileID: 2800000, guid: 0104e7f8939e6154f840949926d0eb8c, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -111,6 +119,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Specular:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecularColorMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -149,8 +161,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - AO_Strength: 1
+    - Brightness: 1
+    - Contrast: 1
+    - Hue: 0
     - Metallic: 0
     - Normal_Strength: 0.5
+    - Saturation: 1
     - Smoothness: 0.5
     - _AORemapMax: 1
     - _AORemapMin: 0

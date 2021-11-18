@@ -14,15 +14,11 @@ public class LevelUI : MonoBehaviour {
 	public GameObject blurLayer;
 	public GameObject loadingScreen;
 	public GameObject gameplay;
-	public GameObject bossUI;
 	public TextMeshProUGUI loadLevelName;
 	public TextMeshProUGUI playerScore;
 	public TextMeshProUGUI playerLives;
 	public TextMeshProUGUI levelStage;
 	public TextMeshProUGUI playTime;
-	public MMFeedbacks bossUIInitFeedback;
-	public MMFeedbacks bossUIHitFeedback;
-	public Slider bossBar;
 	public CanvasGroup loadingScreenCanvasGroup;
 	public Canvas canvas;
 	[SerializeField] CustomPassVolume outlinePass;
@@ -30,7 +26,6 @@ public class LevelUI : MonoBehaviour {
 
 	void Awake() {
 		gameplay.SetActive(false);
-		bossUI.gameObject.SetActive(false);
 	}
 
 	public void ShowCounter() {
@@ -39,18 +34,6 @@ public class LevelUI : MonoBehaviour {
 
 	public void HideCounter() {
 		counterBanner.SetActive(false);
-	}
-
-	public void InitBossBar(int maxHealth, float initSpeed) {
-		bossUI.gameObject.SetActive(true);
-		bossBar.maxValue = maxHealth;
-		bossBar.value = 0;
-		bossBar.DOValue(maxHealth, initSpeed).SetEase(Ease.Linear);
-		bossUIInitFeedback.PlayFeedbacks();
-	}
-	public void SetBossBar(int value, float speed = 1f) {
-		bossUIHitFeedback.PlayFeedbacks();
-		bossBar.DOValue(value, speed).SetEase(Ease.Linear);
 	}
 
 	public void EnableBlur() => blurLayer.SetActive(true);

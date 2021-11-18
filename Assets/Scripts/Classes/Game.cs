@@ -23,7 +23,7 @@ public static class Game {
 			new Level(8, 9),
 			new Level(9, 10, true),
 		}, new MenuCameraSettings() {
-			orthograpicSize = 28,
+			orthograpicSize = 22,
 			pos = new Vector3(80, 25, -14),
 			rot = new Vector3(60, 0, 0),
 		}),
@@ -40,10 +40,27 @@ public static class Game {
 			new Level(8, 19),
 			new Level(9, 20, true),
 		}, new MenuCameraSettings() {
-			orthograpicSize = 28,
+			orthograpicSize = 22,
 			pos = new Vector3(80, -75, -14),
 			rot = new Vector3(60, 0, 0),
-		})
+		}),
+
+		new World(global::Worlds.Basement, new Level[10] {
+			new Level(0, 21),
+			new Level(1, 22),
+			new Level(2, 23),
+			new Level(3, 24),
+			new Level(4, 25),
+			new Level(5, 26),
+			new Level(6, 27),
+			new Level(7, 28),
+			new Level(8, 29),
+			new Level(9, 30, true),
+		}, new MenuCameraSettings() {
+			orthograpicSize = 22,
+			pos = new Vector3(80, -175, -14),
+			rot = new Vector3(60, 0, 0),
+		}),
 	};
 	public static Dictionary<string, Texture2D> Cursors { get; set; } = new Dictionary<string, Texture2D>();
 	public static string LevelScreenshotPath => "Levels/Screenshots/Level_";
@@ -109,7 +126,7 @@ public static class Game {
 	public static void SetCursor(string cursor = "") {
 		if(Cursors.ContainsKey(cursor.ToLower())) {
 			try {
-				Cursor.SetCursor(Cursors[cursor.ToLower()], Vector2.zero, CursorMode.ForceSoftware);
+				Cursor.SetCursor(Cursors[cursor.ToLower()], Vector2.zero, CursorMode.Auto);
 			} catch {
 				Debug.LogError("Failed setting Cursor Texture!");
 			}

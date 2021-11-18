@@ -70,8 +70,9 @@ public static class GameCommands {
 			} else {
 				throw new System.Exception();
 			}
-		} catch {
+		} catch (System.Exception e) {
 			Terminal.Log(TerminalLogType.Error, "Failed to load level.");
+			Terminal.Log(TerminalLogType.Error, e.StackTrace);
 		}
 	}
 
@@ -161,7 +162,7 @@ public static class GameCommands {
 		var player = Object.FindObjectOfType<PlayerInput>();
 		try {
 			if(player != null) {
-				player.GotDestroyed();
+				player.Kill();
 			} else {
 				throw new System.Exception();
 			}

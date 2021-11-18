@@ -16,6 +16,7 @@ public class GreenTank : TankAI {
 	public override void InitializeTank() {
 		base.InitializeTank();
 		lastFoundRay = new Ray(Pos + Vector3.up / 2f, (Player.Pos - Pos));
+		lastFoundRay.origin = new Vector3(lastFoundRay.origin.x, 1, lastFoundRay.origin.z);
 		ProcessState(TankState.Attack);
 	}
 
@@ -43,7 +44,7 @@ public class GreenTank : TankAI {
 
 	public bool IsBouncePathValid() {
 		if(validPath.Count > 1) {
-			if(Physics.Raycast(validPath[1].Item1, out RaycastHit hit, Mathf.Infinity, hitLayers)) {
+			if(Physics.Raycast(validPath[1].Item1, out RaycastHit hit, Mathf.Infinity, HitLayers)) {
 				if(hit.transform.CompareTag("Player")) {
 					if(advancedDebug) {
 						Draw.Line(validPath[1].Item1.origin, hit.point, Color.yellow);
@@ -71,9 +72,9 @@ public class GreenTank : TankAI {
 		for(int x = -predictionIterations; x < predictionIterations && !pathFound; x++) {
 			for(int y = -predictionIterations; y < predictionIterations && !pathFound; y++) {
 				ray.direction = new Vector3((float)x/predictionIterations, 0, (float)y/predictionIterations);
-				var success1 = Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, hitLayers);
+				var success1 = Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, HitLayers);
 				var ray2 = new Ray(hit.point, Vector3.Reflect(ray.direction, hit.normal));
-				var sucess2 = Physics.Raycast(ray2, out RaycastHit hit2, Mathf.Infinity, hitLayers);
+				var sucess2 = Physics.Raycast(ray2, out RaycastHit hit2, Mathf.Infinity, HitLayers);
 				if(success1 && sucess2 && hit2.transform.CompareTag("Player")) {
 					validPath = new List<(Ray, RaycastHit)> {
 					(ray, hit),

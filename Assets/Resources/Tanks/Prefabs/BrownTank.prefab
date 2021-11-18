@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tankAsset: {fileID: 11400000, guid: f706788234040bf48b6cf887a3c34942, type: 2}
-  moveSpeed: 0
   healthPoints: 1
+  moveSpeed: 0
   shootStunDuration: 0
   reloadDuration: 1
   randomReloadDuration: 2
@@ -32,6 +32,8 @@ MonoBehaviour:
   levelPredictionMask:
     serializedVersion: 2
     m_Bits: 296704
+  diagonalMethod: 0
+  maxPathfindingRefreshSpeed: 0.2
   currentPath: []
 --- !u!1001 &4289082252601492543
 PrefabInstance:
@@ -60,11 +62,6 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[2]
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 1263619811117213237, guid: deb07d1d6146747469e15b61bffdc376,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 464e50abf829dce47b9cbaf13270146d, type: 2}
     - target: {fileID: 1263619811117213237, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: m_Materials.Array.data[1]
@@ -145,11 +142,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BrownTank
       objectReference: {fileID: 0}
-    - target: {fileID: 7186067371241428572, guid: deb07d1d6146747469e15b61bffdc376,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 464e50abf829dce47b9cbaf13270146d, type: 2}
     - target: {fileID: 7186067371241428572, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: m_Materials.Array.data[1]

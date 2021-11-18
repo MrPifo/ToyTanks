@@ -37,7 +37,7 @@ public class LevelSelector : MonoBehaviour {
 	void Update() {
 		if(enteredLevelSelector && !lockMouseSwipe) {
 			float moveMouse = 0;
-			if(Input.GetKey(KeyCode.Mouse0)) {
+			if(Input.GetKey(KeyCode.Mouse0) && Mathf.Abs(Input.GetAxis("Mouse X")) >= 0.2f) {
 				moveMouse = Input.GetAxis("Mouse X");
 				mouseXAcceleration = Mathf.Sign(moveMouse);
 			} else if(Mathf.Round(mouseXAcceleration) > 0.1f || Mathf.Round(mouseXAcceleration) < -0.1f) {
@@ -87,6 +87,9 @@ public class LevelSelector : MonoBehaviour {
 		var gameLevels = Game.GetLevels(world);
 		var worldMenu = WorldMenuUIs.Find(w => w.worldType == world);
 		enteredLevelSelector = true;
+		foreach(MenuWorldUI w in WorldMenuUIs) {
+			w.DisableWorld();
+		}
 		worldMenu.EnableWorld();
 		for(int i = 0; i < gameLevels.Length; i++) {
 			if(SaveGame.IsLevelUnlocked(world, gameLevels[i].LevelId)) {

@@ -18,8 +18,6 @@ public abstract class TankAI : TankBase, IHittable {
 	public byte playerLoseRadius = 25;
 	public byte playerTooClose = 5;
 	public bool showDebug;
-	public LayerMask hitLayers;
-	public LayerMask levelPredictionMask;
 	public DiagonalMovement diagonalMethod;
 	public float maxPathfindingRefreshSpeed = 0.2f;
 	float pathfindingRefreshTime;
@@ -29,6 +27,11 @@ public abstract class TankAI : TankBase, IHittable {
 	protected Vector3 currentDestination;
 	protected Vector3 nextMoveTarget => currentPath.Length <= 1 ? Vector3.zero : currentPath[0];
 	protected FSM<TankState> stateMachine = new FSM<TankState>();
+	/// <summary>
+	/// Default includes: Player, Ground, Destructable, LevelBoundary, Block
+	/// </summary>
+	private LayerMask _hitLayers = LayerMaskExtension.Create(GameMasks.Player, GameMasks.Ground, GameMasks.Destructable, GameMasks.LevelBoundary, GameMasks.Block);
+	public LayerMask HitLayers => _hitLayers;
 	// Properties
 	protected bool IsAIEnabled { get; set; }
 	protected bool IsPlayerInDetectRadius => distToPlayer < playerDetectRadius;
@@ -49,7 +52,7 @@ public abstract class TankAI : TankBase, IHittable {
 		}
 	}
 	protected bool HasReachedDestination => Vector3.Distance(Pos, currentDestination) < 1f;
-	public bool IsPlayReady => !HasBeenDestroyed && HasBeenInitialized && IsAIEnabled && Game.IsTerminal == false;
+	public bool IsPlayReady => !HasBeenDestroyed && HasBeenInitialized && IsAIEnabled;
 	protected int PathNodeCount => currentPath == null ? 0 : currentPath.Length;
 	protected bool WouldFriendlyFire {
 		get {
@@ -114,10 +117,11 @@ public abstract class TankAI : TankBase, IHittable {
 		}
 	}
 	protected virtual void GoToNextState() { }
-	protected virtual void GoToNextState(float delay = 0.0001f) {
+	protected virtual void GoToNextState(float delay = 0.0001f) { }
+	protected virtual void GoToNextState(TankState state, float delay = 0.0001f) {
 		if(IsPlayReady) {
 			this.Delay(delay, () => {
-				ProcessState(TankState.Waiting);
+				ProcessState(state);
 			});
 		}
 	}
@@ -256,6 +260,14 @@ public abstract class TankAI : TankBase, IHittable {
 		return false;
 	}
 
+	protected IEnumerator IPauseTank() {
+		if(IsPaused) {
+			while(IsPaused) yield return null;   // Pause AI
+		} else {
+			yield return null;
+		}
+	}
+
 	// TankAI Helper Methods
 	protected bool IsFacingTarget(Transform target) => IsFacingTarget(target.position);
 	protected bool IsFacingTarget(Vector3 target, float precision = 0f) {
@@ -299,10 +311,10 @@ public abstract class TankAI : TankBase, IHittable {
 	/// Needs to be called in Update as long as the tank is moving along a path.
 	/// This function reduces and updates the current active path without calculating a new path to save performance.
 	/// </summary>
-	protected void ConsumePath() {
+	protected void ConsumePath(float reachTreshold = 1) {
 		// Is required if path is not refreshed every frame
 		if(PathNodeCount > 0) {
-			if(Vector3.Distance(Pos, currentPath[0]) < 1f) {
+			if(Vector3.Distance(Pos, currentPath[0]) < reachTreshold) {
 				var list = currentPath.ToList();
 				list.RemoveAt(0);
 				currentPath = list.ToArray();
@@ -319,7 +331,7 @@ public abstract class TankAI : TankBase, IHittable {
 				ray = new Ray(lastHit.point, Vector3.Reflect(ray.direction, lastHit.normal));
 			}
 
-			if(Physics.BoxCast(ray.origin, Bullet.bulletSize, ray.direction, out lastHit, Quaternion.identity, Mathf.Infinity, levelPredictionMask)) {
+			if(Physics.BoxCast(ray.origin, Bullet.bulletSize, ray.direction, out lastHit, Quaternion.identity, Mathf.Infinity, HitLayers)) {
 				if(showDebug) Draw.Line(ray.origin, lastHit.point, Color.yellow);
 				hitList.Add(lastHit.transform);
 			}
