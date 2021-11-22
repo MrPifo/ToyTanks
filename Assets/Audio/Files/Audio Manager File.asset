@@ -47,3 +47,7 @@ MonoBehaviour:
     value: {fileID: 8300000, guid: 06199183f640c484ead3cc916d43d09e, type: 3}
   - key: BoxDestructable
     value: {fileID: 8300000, guid: 45e02ac1d7bd4ec43bc9a553d87a034d, type: 3}
+  - key: ConfettiGun
+    value: {fileID: 8300000, guid: b27d69750c8c9a24d9317bf5165d4f7b, type: 3}
+  - key: Clapping
+    value: {fileID: 8300000, guid: 7ea05ace3a2e32f4caef3953ccaa5a26, type: 3}

@@ -30,6 +30,8 @@ public class GameCamera : Singleton<GameCamera> {
 	public Vector3 initPos;
 	public Vector3 offset;
 	public GameCamState cameraState = GameCamState.Free;
+	public ParticleSystem confettiRight;
+	public ParticleSystem confettiLeft;
 
 	protected override void Awake() {
 		base.Awake();
@@ -141,5 +143,12 @@ public class GameCamera : Singleton<GameCamera> {
 
 	public static void ShakeExplosion3D(float strength, float duration) {
 		CameraShaker.Presets.Explosion3D(strength, duration);
+	}
+
+	public void PlayConfetti() {
+		confettiLeft.Play();
+		confettiRight.Play();
+		AudioPlayer.Play("ConfettiGun", AudioType.SoundEffect, 0.9f, 1.1f, 3f);
+		AudioPlayer.Play("Clapping", AudioType.SoundEffect, 0.9f, 1.1f, 3f);
 	}
 }

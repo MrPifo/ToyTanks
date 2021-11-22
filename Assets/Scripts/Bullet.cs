@@ -84,7 +84,7 @@ public class Bullet : MonoBehaviour, IHittable, IDamageEffector {
 		transform.position = startPos;
 		direction = dir;
 		isFromPlayer = firedFromPlayer;
-		AudioPlayer.Play("BulletShot", 0.8f, 1.2f);
+		AudioPlayer.Play("BulletShot", AudioType.SoundEffect, 0.8f, 1.2f);
 	}
 
 	void OnCollisionEnter(Collision coll) {
@@ -111,6 +111,6 @@ public class Bullet : MonoBehaviour, IHittable, IDamageEffector {
 	void Reflect(Vector3 inNormal) {
 		direction = Vector3.Reflect(direction, inNormal);
 		impactSparks.Play();
-		AudioPlayer.Play("BulletReflect", 0.8f, 1.2f, 0.5f);
+		AudioPlayer.Play("BulletReflect", AudioType.SoundEffect, 0.8f, 1.2f, 0.5f);
 	}
 }

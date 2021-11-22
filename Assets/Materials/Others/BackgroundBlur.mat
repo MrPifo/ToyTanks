@@ -138,6 +138,7 @@ Material:
     m_Ints: []
     m_Floats:
     - Blur: 0.147
+    - Brightness: 0
     - Radius: 1
     - _AORemapMax: 1
     - _AORemapMin: 0

@@ -24,6 +24,7 @@ public class TankReferences : MonoBehaviour {
 	public List<Transform> destroyTransformPieces;
 	[Header("Explosion Effects")]
 	public ParticleSystem muzzleFlash;
+	public ParticleSystem muzzleSmoke;
 	public ParticleSystem sparkDestroyEffect;
 	public ParticleSystem smokeDestroyEffect;
 	public ParticleSystem smokeFireDestroyEffect;

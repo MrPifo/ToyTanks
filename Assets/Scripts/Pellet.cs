@@ -73,7 +73,7 @@ public class Pellet : MonoBehaviour, IDamageEffector {
 			impactExplodeSphere.Radius = explodeRadius;
 
 			// Animate head
-			AudioPlayer.Play("PelletShot", 1f, 0.5f, 1.5f);
+			AudioPlayer.Play("PelletShot", AudioType.SoundEffect, 1f, 0.5f, 1.5f);
 
 			// Move pellet along flying path
 			float time = 0;
@@ -96,7 +96,7 @@ public class Pellet : MonoBehaviour, IDamageEffector {
 
 			// Impact
 			GameCamera.ShakeExplosion2D(explodeShakeStrength, 0.2f);
-			AudioPlayer.Play("SmallExplosion", 0.6f, 0.8f, 1f);
+			AudioPlayer.Play("SmallExplosion", AudioType.SoundEffect, 0.6f, 0.8f, 1f);
 			Color colorLerp = impactExplodeSphere.Color;
 			Color targetColor = colorLerp;
 			targetColor.a = 0;

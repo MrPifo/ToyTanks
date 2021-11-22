@@ -420,8 +420,9 @@ public class LevelManager : MonoBehaviour {
 							UI.playerLives.SetText(GameManager.PlayerLives.ToString());
 						}
 						GameManager.UpdateCampaign();
+						gameCamera.PlayConfetti();
 						Debug.Log("Continue to next Level: " + GameManager.LevelId);
-						yield return new WaitForSeconds(2);
+						yield return new WaitForSeconds(3);
 						// Reward Extra Lives
 						Feedback.FadeOutGameplayUI();
 						GameManager.LoadLevel("", true);
@@ -440,7 +441,7 @@ public class LevelManager : MonoBehaviour {
 									GameManager.LevelId = halfCheckpoint;
 								}
 								Debug.Log("Returning to Checkpoint in Level: " + GameManager.LevelId);
-								yield return new WaitForSeconds(2);
+								yield return new WaitForSeconds(3);
 								player.HideCrosshair();
 								GameManager.LoadLevel("", true);
 								break;
@@ -458,7 +459,7 @@ public class LevelManager : MonoBehaviour {
 								Debug.Log("Wiping SaveSlot " + SaveGame.SaveInstance.currentSaveSlot);
 								SaveGame.SaveInstance.WipeSlot(SaveGame.SaveInstance.currentSaveSlot);
 								SaveGame.Save();
-								yield return new WaitForSeconds(2);
+								yield return new WaitForSeconds(3);
 								player.HideCrosshair();
 								GameManager.ReturnToMenu("Mission Failed");
 								break;
@@ -466,7 +467,8 @@ public class LevelManager : MonoBehaviour {
 					}
 					break;
 				case GameManager.GameMode.LevelOnly:
-					yield return new WaitForSeconds(2);
+					gameCamera.PlayConfetti();
+					yield return new WaitForSeconds(3);
 					player.HideCrosshair();
 					Feedback.FadeOutGameplayUI();
 					GameManager.ReturnToMenu("Returning to Menu");

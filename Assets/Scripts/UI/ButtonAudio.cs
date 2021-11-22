@@ -14,11 +14,11 @@ namespace ToyTanks.UI {
 		public float randomPitchTreshold = 0.1f;
 
 		public void OnPointerClick(PointerEventData eventData) {
-			AudioPlayer.Play(clickAudio, pitch - randomPitchTreshold, pitch + randomPitchTreshold);
+			AudioPlayer.Play(clickAudio, AudioType.Default, pitch - randomPitchTreshold, pitch + randomPitchTreshold);
 		}
 
 		public void OnPointerEnter(PointerEventData eventData) {
-			AudioPlayer.Play(hoverAudio, pitch - randomPitchTreshold, pitch + randomPitchTreshold);
+			AudioPlayer.Play(hoverAudio, AudioType.Default, pitch - randomPitchTreshold, pitch + randomPitchTreshold);
 		}
 
 		public void OnPointerExit(PointerEventData eventData) {

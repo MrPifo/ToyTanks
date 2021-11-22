@@ -28,6 +28,7 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 	[Range(0f, 4f)]
 	public float randomReloadDuration = 1f;
 	public short bodyRotSpeed = 360;
+	public float aimRotSpeed = 600;
 	public short destructionVelocity = 400;
 	public bool disable2DirectionMovement;
 	public bool makeInvincible;     // Ivincibility for Debugging
@@ -38,7 +39,6 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 	bool isLightTurning;
 	protected bool canMove;
 	float angleDiff;
-	float aimRotSpeed = 600;
 	float frontLightIntensity;
 	float backLightIntensity;
 	float lastTurnSign = 1;
@@ -131,6 +131,7 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 	public ParticleSystem damageSmokeHead => References.damageSmokeHead;
 	public ParticleSystem mudParticlesFront => References.mudParticlesFront;
 	public ParticleSystem mudParticlesBack => References.mudParticlesBack;
+	public ParticleSystem muzzleSmoke => References.muzzleSmoke;
 	public AnimationCurve turnLightsOnCurve => References.lightsTurnOnAnim;
 	public MMFeedbacks hitFlash => References.hitFlash;
 
@@ -231,7 +232,7 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 		track.position = new Vector3(rig.position.x, 0.025f, rig.position.z);
 		track.rotation = rig.rotation * Quaternion.Euler(90, 0, 0);
 
-		Audio.Play("TankDrive", 0.5f, Random.Range(1f, 1.1f));
+		AudioPlayer.Play("TankDrive", AudioType.SoundEffect, 0.95f, 1.05f, 0.5f);
 		if(TrackContainer.childCount > 500) {
 			Destroy(TrackContainer.GetChild(0).gameObject);
 		}
@@ -244,6 +245,7 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 			bounceDir.y = 0;
 			
 			muzzleFlash.Play();
+			muzzleSmoke.Play();
 			tankHead.DOScale(tankHead.localScale + Vector3.one / 7f, 0.2f).SetEase(new AnimationCurve(new Keyframe[] { new Keyframe(0, 0, 0.5f, 0.5f), new Keyframe(0.5f, 1, 0.5f, 0.5f), new Keyframe(1, 0, 0.5f, 0.5f) }));
 			if(this is PlayerInput) {
 				Instantiate(Bullet).SetupBullet(bulletOutput.forward, bulletOutput.position, true);
@@ -317,10 +319,10 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 		damageSmokeBody.Play();
 		damageSmokeHead.Play();
 		smokeFireDestroyEffect.Play();
-		AudioPlayer.Play("TankExplode", 0.8f, 1.2f);
+		AudioPlayer.Play("TankExplode", AudioType.SoundEffect, 0.8f, 1.2f, 0.5f);
 
 		if(CompareTag("Player")) {
-			AudioPlayer.Play("PlayerTankExplode", 0.8f, 1.2f);
+			AudioPlayer.Play("PlayerTankExplode", AudioType.SoundEffect, 0.8f, 1.2f, 0.5f);
 		}
 		Camera.main.DOOrthoSize(Camera.main.orthographicSize + 1, 0.15f);
 		this.Delay(0.15f, () => Camera.main.DOOrthoSize(Camera.main.orthographicSize - 1, 0.15f));

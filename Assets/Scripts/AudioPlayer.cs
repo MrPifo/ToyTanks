@@ -5,9 +5,21 @@ using UnityEngine;
 
 public class AudioPlayer {
 
-	public static void Play(string track, float randomMinPitch = 1f, float randomMaxPitch = 1f, float volume = 1f) {
+	public static void Play(string track, AudioType audioType, float randomMinPitch = 1f, float randomMaxPitch = 1f, float sourceVolume = 1f) {
 		if(AudioManager.instance != null && AudioManager.instance.HasClip(track)) {
-			AudioManager.instance.Play(track, 0, GraphicSettings.MainVolume * GraphicSettings.SoundEffectVolume * volume, Random.Range(randomMinPitch, randomMaxPitch));
+			float globalVolume = GraphicSettings.MainVolume / 100f * sourceVolume;
+			switch(audioType) {
+				case AudioType.Default:
+					break;
+				case AudioType.SoundEffect:
+					globalVolume *= GraphicSettings.SoundEffectsVolume / 100f;
+					break;
+				case AudioType.Music:
+					break;
+				default:
+					break;
+			}
+			AudioManager.instance.Play(track, 0, globalVolume, Random.Range(randomMinPitch, randomMaxPitch));
 		}
 	}
 }
