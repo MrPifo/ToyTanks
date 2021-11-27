@@ -19,6 +19,7 @@ MonoBehaviour:
   reloadDuration: 1.5
   randomReloadDuration: 2
   bodyRotSpeed: 0
+  aimRotSpeed: 600
   destructionVelocity: 300
   disable2DirectionMovement: 0
   makeInvincible: 0
@@ -116,9 +117,8 @@ PrefabInstance:
     - target: {fileID: 7050499238146579050, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: bullet
-      value: 
-      objectReference: {fileID: 5620761198142219836, guid: 8f34fa7294e565d4f9ae3c5a7a9e74e8,
-        type: 3}
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7186067371241428572, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: m_Materials.Array.data[0]

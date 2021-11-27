@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace ToyTanks.LevelEditor {
-	public class LevelBlock : MonoBehaviour {
+	public class LevelBlock : GameEntity {
 
 		public MeshFilter meshFilter;
 		public MeshRenderer meshRender;

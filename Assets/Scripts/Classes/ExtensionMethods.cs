@@ -123,6 +123,9 @@ public static class ExtensionMethods {
 	public static T RandomItem<T>(this List<T> list) {
         return list[Randomizer.Range(0, list.Count - 1)];
     }
+	public static T RandomItem<T>(this List<T> list, int max) {
+		return list[Randomizer.Range(0, max - 1)];
+	}
 	public static void FadeIntensity(this HDAdditionalLightData lightData, float startValue, float endValue, float duration) {
 		DestructionTimer destructor = new GameObject("lightFadeIntensity_" + lightData.name).AddComponent<DestructionTimer>();
 		destructor.Destruct(duration);
@@ -158,10 +161,10 @@ public static class ExtensionMethods {
 	/// Destroys this GameObject
 	/// </summary>
 	/// <param name="gameObject"></param>
-	public static void Destroy(this GameObject gameObject) => Object.Destroy(gameObject);
+	//public static void Destroy(this GameObject gameObject) => Object.Destroy(gameObject);
 	/// <summary>
 	/// Destroy the holding GameObject
 	/// </summary>
 	/// <param name="transform"></param>
-	public static void Destroy(this Transform transform) => Object.Destroy(transform.gameObject);
+	//public static void Destroy(this Transform transform) => Object.Destroy(transform.gameObject);
 }

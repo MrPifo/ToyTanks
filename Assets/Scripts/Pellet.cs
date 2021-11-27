@@ -1,9 +1,10 @@
 using DG.Tweening;
+using Sperlich.PrefabManager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pellet : MonoBehaviour, IDamageEffector {
+public class Pellet : MonoBehaviour, IDamageEffector, IRecycle {
 
 	float flyTime = 2;
 	float explodeRadius = 4;
@@ -22,6 +23,8 @@ public class Pellet : MonoBehaviour, IDamageEffector {
 
 	public bool fireFromPlayer => false;
 	public Vector3 damageOrigin => transform.position;
+
+	public PoolData.PoolObject PoolObject { get; set; }
 
 	/// <summary>
 	/// Configure various pellet parameters.
@@ -105,7 +108,7 @@ public class Pellet : MonoBehaviour, IDamageEffector {
 			DOTween.To(() => colorLerp, a => impactExplodeSphere.Color = a, targetColor, explodeDuration);
 			impactExplosionContainer.Show();
 			impactExplodeFire.Play();
-			Instantiate(explosionCraterPrefab, impactPosition + Vector3.up, Quaternion.Euler(90, Random.Range(0, 360), 0));
+			PrefabManager.Spawn(PrefabTypes.ExplosionCrater, null, impactPosition + Vector3.up, Quaternion.Euler(90, Random.Range(0, 360), 0));
 
 			// Cleanup
 			pelletBlobShadow.Hide();
@@ -116,16 +119,22 @@ public class Pellet : MonoBehaviour, IDamageEffector {
 				if(onExplodeCallback != null) {
 					onExplodeCallback.Invoke();
 				}
-				Destroy(gameObject);
+				Recycle();
 			});
 		}
 	}
 
 	protected IEnumerator IPause() {
-		if(LevelManager.GamePaused || Game.IsTerminal) {
-			while(LevelManager.GamePaused || Game.IsTerminal) yield return null;   // Pause AI
+		if(Game.GamePaused || Game.IsTerminal) {
+			while(Game.GamePaused || Game.IsTerminal) yield return null;   // Pause AI
 		} else {
 			yield return null;
 		}
+	}
+
+	public void Recycle() {
+		pelletBlobShadow.Show();
+		mesh.Show();
+		PrefabManager.FreeGameObject(this);
 	}
 }

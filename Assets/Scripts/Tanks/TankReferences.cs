@@ -1,5 +1,6 @@
 ﻿using MoreMountains.Feedbacks;
 using Shapes;
+using Sperlich.PrefabManager;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
@@ -7,10 +8,10 @@ using UnityEngine.Rendering.HighDefinition;
 public class TankReferences : MonoBehaviour {
 
 	[Header("REFERENCES")]
-	public GameObject bullet;
+	public PrefabTypes bullet;
 	public ForceShield shield;
 	public Disc shockwaveDisc;
-	public Rectangle healthBar;
+	public GameObject healthBar;
 	public Transform tankBody;
 	public Transform tankHead;
 	public Transform bulletOutput;

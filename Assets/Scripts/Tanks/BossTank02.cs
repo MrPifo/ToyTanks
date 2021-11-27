@@ -37,6 +37,7 @@ public class BossTank02 : BossAI, IHittable, IDamageEffector {
 		BossUI.RegisterBoss(this);
 		bossStates.Push(BossBehaviour.Waiting);
 		GoToNextState(2);
+		healthBar.gameObject.SetActive(false);
 	}
 
 	// State Decision Maker
@@ -74,8 +75,6 @@ public class BossTank02 : BossAI, IHittable, IDamageEffector {
 
 	public new void TakeDamage(IDamageEffector effector) {
 		base.TakeDamage(effector);
-
-		healthBar.gameObject.SetActive(false);
 		BossUI.BossTakeDamage(this, 1);
 	}
 

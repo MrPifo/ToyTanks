@@ -144,7 +144,7 @@ Material:
     m_Floats:
     - Alpha_Clipping: 1
     - Border_Radius: 1
-    - NormalStrength: 0.4
+    - NormalStrength: 0.2
     - Wiggle: 1
     - _AORemapMax: 1
     - _AORemapMin: 0
@@ -178,7 +178,7 @@ Material:
     - _DoubleSidedEnable: 0
     - _DoubleSidedNormalMode: 1
     - _DstBlend: 0
-    - _Emission: 1
+    - _Emission: 2
     - _EmissiveColorMode: 1
     - _EmissiveExposureWeight: 1
     - _EmissiveIntensity: 1

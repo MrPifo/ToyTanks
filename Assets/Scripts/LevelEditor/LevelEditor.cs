@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using TMPro;
 using UnityEngine.SceneManagement;
 using CameraShake;
+using Sperlich.PrefabManager;
 
 namespace ToyTanks.LevelEditor {
 	public class LevelEditor : MonoBehaviour {
@@ -54,7 +55,7 @@ namespace ToyTanks.LevelEditor {
 
 		int rotateSelection;
 		bool IsDestroyMode => buildModeToggle.isOn;
-		bool isTestPlaying;
+		public static bool isTestPlaying;
 		GridSizes GridSize {
 			get => levelData.gridSize;
 			set => levelData.gridSize = value;
@@ -103,7 +104,6 @@ namespace ToyTanks.LevelEditor {
 			PreviewInstance = null;
 			editorUI.alpha = 0;
 			optionsMenu.SetActive(false);
-			ClearLevel();
 		}
 
 		void Update() {
@@ -147,7 +147,8 @@ namespace ToyTanks.LevelEditor {
 			SwitchToEditView(1);
 			RefreshUI();
 			GameManager.ShowCursor();
-			Debug.Log("<color=red>Level Editor has been started!</color>");
+			Game.IsGameRunningDebug = true;
+			Debug.Log("<color=red>Level Editor has been started.</color>");
 		}
 
 		void ComputeMouseSelection() {
@@ -253,6 +254,7 @@ namespace ToyTanks.LevelEditor {
 				SwitchToGameView(1);
 				DeletePreview();
 				DeselectEverything();
+				FindObjectOfType<PlayerInput>()?.EnableCrossHair();
 				pathMeshGeneratorProgressBar.gameObject.SetActive(true);
 				foreach(var t in FindObjectsOfType<TankBase>()) {
 					t.enabled = true;
@@ -264,6 +266,7 @@ namespace ToyTanks.LevelEditor {
 				playTestButton.image.color = Color.red;
 				editGameUI.DOFade(0, 2);
 				levelManager.StartGame();
+				Game.IsGameRunning = true;
 				DOTween.ToAlpha(() => gridColor, x => gridColor = x, 0, 2);
 				GameManager.HideCursor();
 			}
@@ -273,37 +276,27 @@ namespace ToyTanks.LevelEditor {
 			isTestPlaying = false;
 			int fadeDurtaion = 2;
 			pathMeshGeneratorProgressBar.gameObject.SetActive(false);
-			LevelManager.player.DisablePlayer();
+			LevelManager.player.DisableControls();
 			FadeInEditorUI();
 			SwitchToEditView(fadeDurtaion);
 			DeletePreview();
 			playTestButtonText.SetText("Play");
-			LevelManager.GameStarted = false;
+			Game.IsGamePlaying = false;
 			playTestButton.interactable = false;
 			playTestButton.image.color = Color.green;
+			levelManager.UI.gameplay.alpha = 0;
 			editGameUI.DOFade(1, 2);
+			Game.IsGameRunning = false;
 			BossUI.ResetBossBar();
-			LevelManager.UI.gameplay.SetActive(false);
 			DOTween.ToAlpha(() => gridColor, x => gridColor = x, 1, fadeDurtaion);
-
-			foreach(var t in FindObjectsOfType<TankBase>()) {
-				t.Revive();
-				if(t is TankAI) {
-					var ai = t as TankAI;
-					ai.DisableAI();
-				}
-			}
-			foreach(var b in FindObjectsOfType<Bullet>()) {
-				b.TakeDamage(null);
-			}
-			foreach(var d in FindObjectsOfType<Destructable>()) {
-				d.Reset();
-			}
+			
+			RefreshUI();
+			GameManager.ShowCursor();
+			levelManager.ResetLevel();
+			FindObjectOfType<PlayerInput>()?.DisableCrossHair();
 			this.Delay(3, () => {
 				playTestButton.interactable = true;
 			});
-			RefreshUI();
-			GameManager.ShowCursor();
 		}
 
 		bool AllowTestPlay() {
@@ -478,6 +471,9 @@ namespace ToyTanks.LevelEditor {
 				o.transform.SetParent(LevelManager.TanksContainer);
 				o.GetComponent<TankBase>().PlacedIndex = tank.index;
 				o.GetComponent<TankBase>().OccupiedIndexes = indexes.ToArray();
+				if(o.TryGetComponent(out PlayerInput player)) {
+					player.DisableCrossHair();
+				}
 				Grid.AddIndex(indexes, TankAsset.Size.y);
 			} else {
 				Debug.LogWarning("Some blocks couldn't be placed due to overlapping.");
@@ -902,6 +898,8 @@ namespace ToyTanks.LevelEditor {
 			CurrentAsset = null;
 			CurrentTank = null;
 			SelectItems = null;
+			PrefabManager.ResetPrefabManager();
+			PrefabManager.Initialize();
 		}
 
 		public void SaveAsOfficialLevel() {
@@ -918,24 +916,28 @@ namespace ToyTanks.LevelEditor {
 			levelData.sunLight = new LevelData.LightData(levelManager.sunLight);
 			levelData.spotLight = new LevelData.LightData(levelManager.spotLight);
 
-			foreach(var b in FindObjectsOfType<LevelBlock>()) {
-				var data = new LevelData.BlockData() {
-					pos = new Int3(b.transform.position - b.offset),
-					index = b.Index,
-					rotation = GetValidRotation(b.transform.rotation.eulerAngles),
-					theme = b.theme,
-					type = b.type
-				};
-				levelData.blocks.Add(data);
-			}
-			foreach(var t in FindObjectsOfType<TankBase>()) {
-				var data = new LevelData.TankData() {
-					pos = new Int3(t.transform.position),
-					index = t.PlacedIndex,
-					rotation = GetValidRotation(t.transform.rotation.eulerAngles),
-					tankType = t.TankType
-				};
-				levelData.tanks.Add(data);
+			foreach(GameEntity e in FindObjectsOfType<GameEntity>()) {
+				if(e is TankBase) {
+					TankBase t = e as TankBase;
+					var data = new LevelData.TankData() {
+						pos = new Int3(t.transform.position),
+						index = t.PlacedIndex,
+						rotation = GetValidRotation(t.transform.rotation.eulerAngles),
+						tankType = t.TankType
+					};
+					levelData.tanks.Add(data);
+				}
+				if(e is LevelBlock) {
+					LevelBlock b = e as LevelBlock;
+					var data = new LevelData.BlockData() {
+						pos = new Int3(b.transform.position - b.offset),
+						index = b.Index,
+						rotation = GetValidRotation(b.transform.rotation.eulerAngles),
+						theme = b.theme,
+						type = b.type
+					};
+					levelData.blocks.Add(data);
+				}
 			}
 
 			string json = JsonConvert.SerializeObject(levelData, Formatting.Indented);
@@ -969,10 +971,10 @@ namespace ToyTanks.LevelEditor {
 			if(Application.isPlaying && GameManager.CurrentMode == GameManager.GameMode.Editor) {
 				RefreshUI();
 			}
-			
-			LevelLightmapper.SwitchLightmaps(levelData.levelId);
+
 			levelManager.ApplyLightData(levelData.sunLight, levelManager.sunLight);
 			levelManager.ApplyLightData(levelData.spotLight, levelManager.spotLight);
+			LevelLightmapper.SwitchLightmaps(levelData.levelId);
 			HasLevelBeenLoaded = true;
 		}
 

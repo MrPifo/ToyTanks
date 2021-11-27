@@ -15,6 +15,7 @@ using UnityEditor.Callbacks;
 namespace ToyTanks.LevelEditor {
 	public class LevelLightmapper : MonoBehaviour {
 
+		public Mesh defaultPlaneMesh;
 		public ReflectionProbe reflectionProbe;
 		public HDAdditionalLightData hdLightData;
 		static LevelLightmapper Instance;
@@ -161,12 +162,18 @@ namespace ToyTanks.LevelEditor {
 							var light = mapLight.GetInfo(mesh.Index);
 							mesh.meshRender.lightmapIndex = light.index;
 							mesh.meshRender.lightmapScaleOffset = new Vector4(light.scaleOffset[0], light.scaleOffset[1], light.scaleOffset[2], light.scaleOffset[3]);
+							mesh.meshRender.realtimeLightmapScaleOffset = mesh.meshRender.lightmapScaleOffset;
+							mesh.meshRender.realtimeLightmapIndex = mesh.meshRender.lightmapIndex;
 							mesh.meshRender.UpdateGIMaterials();
 						}
 					}
 					var ground = GameObject.FindGameObjectWithTag("Ground").GetComponent<MeshRenderer>();
 					ground.lightmapIndex = mapLight.groundInfo.index;
 					ground.lightmapScaleOffset = new Vector4(mapLight.groundInfo.scaleOffset[0], mapLight.groundInfo.scaleOffset[1], mapLight.groundInfo.scaleOffset[2], mapLight.groundInfo.scaleOffset[3]);
+					ground.realtimeLightmapIndex = 0;
+					ground.realtimeLightmapScaleOffset = new Vector4(mapLight.groundInfo.scaleOffset[0], mapLight.groundInfo.scaleOffset[1], mapLight.groundInfo.scaleOffset[2], mapLight.groundInfo.scaleOffset[3]);
+					ground.GetComponent<MeshFilter>().sharedMesh = Instance.defaultPlaneMesh;
+					ground.UpdateGIMaterials();
 				}
 				Instance.Delay(0.5f, () => {
 					Instance.hdLightData.RequestShadowMapRendering();

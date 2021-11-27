@@ -326,7 +326,7 @@ public abstract class TankAI : TankBase, IHittable {
 		RaycastHit lastHit = new RaycastHit();
 		Ray ray = new Ray(bulletOutput.position, tankHead.forward);
 		var hitList = new List<Transform>();
-		for(int i = 0; i < Bullet.maxBounces + 1; i++) {
+		for(int i = 0; i < 2; i++) {
 			if(i > 0) {
 				ray = new Ray(lastHit.point, Vector3.Reflect(ray.direction, lastHit.normal));
 			}

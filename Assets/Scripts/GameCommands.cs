@@ -196,7 +196,7 @@ public static class GameCommands {
 		var editor = Object.FindObjectOfType<LevelEditor>();
 		try {
 			if(editor != null && editor.levelData != null) {
-				if(LevelManager.IsDebug) {
+				if(Game.IsGameRunningDebug) {
 					editor.SaveAsOfficialLevel();
 					Terminal.Log("Campaign level has been saved.");
 				} else {
@@ -231,8 +231,7 @@ public static class GameCommands {
 		try {
 			if(player != null) {
 				player.Revive();
-				player.disableControl = false;
-				player.disableCrossHair = false;
+				Object.FindObjectOfType<PlayerInput>().InitializeTank();
 			} else {
 				throw new System.Exception();
 			}
@@ -243,11 +242,11 @@ public static class GameCommands {
 
 	[RegisterCommand(Help = "Pauses the game")]
 	public static void Pause(CommandArg[] args) {
-		LevelManager.GamePaused = true;
+		Game.GamePaused = true;
 		var player = Object.FindObjectOfType<PlayerInput>();
 		try {
 			if(player != null) {
-				player.DisablePlayer();
+				player.DisableControls();
 			} else {
 				throw new System.Exception();
 			}
@@ -258,11 +257,11 @@ public static class GameCommands {
 
 	[RegisterCommand(Help = "Resumes the game")]
 	public static void Resume(CommandArg[] args) {
-		LevelManager.GamePaused = false;
+		Game.GamePaused = false;
 		var player = Object.FindObjectOfType<PlayerInput>();
 		try {
 			if(player != null) {
-				player.EnablePlayer();
+				player.EnableControls();
 			} else {
 				throw new System.Exception();
 			}

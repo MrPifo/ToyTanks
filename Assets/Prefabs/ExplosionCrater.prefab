@@ -10,13 +10,14 @@ GameObject:
   m_Component:
   - component: {fileID: 7611947152081074043}
   - component: {fileID: 7611947152081074040}
+  - component: {fileID: -8299647858471262560}
   m_Layer: 0
   m_Name: ExplosionCrater
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7611947152081074043
 Transform:
   m_ObjectHideFlags: 0
@@ -56,3 +57,15 @@ MonoBehaviour:
   m_Size: {x: 5, y: 5, z: 5}
   m_FadeFactor: 1
   m_Version: 2
+--- !u!114 &-8299647858471262560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7611947152081074041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e607334078befa64ba2e22b1748d0baa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

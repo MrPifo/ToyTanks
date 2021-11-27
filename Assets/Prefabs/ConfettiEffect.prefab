@@ -743,13 +743,13 @@ ParticleSystem:
     m_TextureColorAffectsParticles: 1
     m_TextureAlphaAffectsParticles: 1
     m_TextureBilinearFiltering: 0
-    randomDirectionAmount: 0
+    randomDirectionAmount: 0.25
     sphericalDirectionAmount: 0
-    randomPositionAmount: 0
+    randomPositionAmount: 0.25
     radius:
       value: 25
-      mode: 0
-      spread: 0
+      mode: 3
+      spread: 0.01
       speed:
         serializedVersion: 2
         minMaxState: 0
@@ -5581,13 +5581,13 @@ ParticleSystem:
     m_TextureColorAffectsParticles: 1
     m_TextureAlphaAffectsParticles: 1
     m_TextureBilinearFiltering: 0
-    randomDirectionAmount: 0
+    randomDirectionAmount: 0.25
     sphericalDirectionAmount: 0
-    randomPositionAmount: 0
+    randomPositionAmount: 0.25
     radius:
       value: 25
-      mode: 0
-      spread: 0
+      mode: 3
+      spread: 0.01
       speed:
         serializedVersion: 2
         minMaxState: 0

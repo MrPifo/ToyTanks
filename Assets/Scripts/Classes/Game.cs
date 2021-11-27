@@ -71,6 +71,22 @@ public static class Game {
 	public static bool showGrid;
 	public static bool showTankDebugs;
 	public static bool isPlayerGodMode;
+	/// <summary>
+	/// True when hit pause within a level.
+	/// </summary>
+	public static bool GamePaused { get; set; }
+	/// <summary>
+	/// True when a level has been started.
+	/// </summary>
+	public static bool IsGameRunning { get; set; }
+	/// <summary>
+	/// True when a level has been started manually within the Editor.
+	/// </summary>
+	public static bool IsGameRunningDebug { get; set; }
+	/// <summary>
+	/// True when a level has been started and the player is allowed to move.
+	/// </summary>
+	public static bool IsGamePlaying { get; set; }
 
 	public class World {
 		public World(Worlds worldType, Level[] levels, MenuCameraSettings menuCameraSettings) {

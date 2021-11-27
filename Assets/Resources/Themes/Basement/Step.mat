@@ -145,7 +145,7 @@ Material:
     m_Ints: []
     m_Floats:
     - AO_Strength: 1
-    - Brightness: 1.5
+    - Brightness: 1
     - Contrast: 1.4
     - Hue: 0
     - Metallic: 0

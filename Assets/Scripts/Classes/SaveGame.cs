@@ -176,6 +176,7 @@ public static class SaveGame {
 		public byte lives;
 		public short score;
 		public float time;
+		public float liveGainChance;
 
 		[JsonIgnore] public float PrettyTime => Mathf.Round(time * 100f) / 100f;
 	}

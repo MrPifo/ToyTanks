@@ -4,6 +4,7 @@ using Sperlich.FSM;
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
+using Sperlich.PrefabManager;
 
 public class MortarTank : TankAI, IHittable, IDamageEffector {
 	
@@ -12,12 +13,11 @@ public class MortarTank : TankAI, IHittable, IDamageEffector {
 	public float explodeDuration = 1f;
 	public float explodeShakeStrength = 8f;
 	[Header("Impact Explosion Parts")]
-	public GameObject pelletPrefab;
 	public GameObject mortar;
 	Vector3 pelletSpawnPos;
 
 	public bool fireFromPlayer => false;
-	public Vector3 damageOrigin => pelletPrefab.transform.position;
+	public Vector3 damageOrigin { get; set; }
 
 	protected override void Awake() {
 		base.Awake();
@@ -36,6 +36,7 @@ public class MortarTank : TankAI, IHittable, IDamageEffector {
 		// Setup bullet flying path
 		Vector3 impactPosition = Player.Pos;
 		Vector3 headLookRotation = (impactPosition - Pos).normalized;
+		damageOrigin = impactPosition;
 
 		// Fix head rotation and set impact indicator close to ground
 		headLookRotation.y = 0;
@@ -49,7 +50,7 @@ public class MortarTank : TankAI, IHittable, IDamageEffector {
 		mortar.transform.localScale = Vector3.one * 1.2f;
 		mortar.transform.DOScale(Vector3.one, 0.35f);
 
-		Pellet pellet = Instantiate(pelletPrefab).transform.SearchComponent<Pellet>();
+		Pellet pellet = PrefabManager.Spawn<Pellet>(PrefabTypes.MortarPellet);
 		pellet.SetupPellet(flyTime, explodeRadius, 8);
 		pellet.BlastOff(pelletSpawnPos, Player.Pos, () => GoToNextState(TankState.Attack));
 	}

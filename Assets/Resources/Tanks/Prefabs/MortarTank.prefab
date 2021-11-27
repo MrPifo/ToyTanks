@@ -129,6 +129,7 @@ MonoBehaviour:
   reloadDuration: 2
   randomReloadDuration: 3
   bodyRotSpeed: 360
+  aimRotSpeed: 600
   destructionVelocity: 400
   disable2DirectionMovement: 0
   makeInvincible: 0
@@ -9925,7 +9926,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1364355665654900041}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2642099026849890218
 PrefabInstance:
@@ -10082,6 +10083,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7050499238146579050, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
+      propertyPath: bullet
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7050499238146579050, guid: deb07d1d6146747469e15b61bffdc376,
+        type: 3}
       propertyPath: destroyTransformPieces.Array.data[1]
       value: 
       objectReference: {fileID: 2531065237935200321}
@@ -10103,7 +10109,7 @@ PrefabInstance:
     - target: {fileID: 8612803055044869607, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 8672883067841539481, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}

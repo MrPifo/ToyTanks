@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System;
 using System.Collections;
+using Sperlich.PrefabManager;
 
 public class GameManager : Singleton<GameManager> {
 
@@ -13,30 +14,35 @@ public class GameManager : Singleton<GameManager> {
 	public float loadingScreenFadeDuration = 2f;
 	public float bannerFadeDuration = 1f;
 	public float totalLoadingFadeDuration = 2f;
-	[SerializeField] Texture2D defaultCursor;
-	[SerializeField] Texture2D pointerCursor;
 
 	// Game information
-	public static ulong _levelId;
+	private static ulong _levelId;
 	public static ulong LevelId {
 		get => CurrentCampaign is null ? _levelId : CurrentCampaign.levelId;
 		set { if(CurrentCampaign is null) _levelId = value; else CurrentCampaign.levelId = value; }
 	}
-	public static byte _playerLives;
+	private static byte _playerLives;
 	public static byte PlayerLives {
 		get => CurrentCampaign is null ? _playerLives : CurrentCampaign.lives;
 		set { if(CurrentCampaign is null) _playerLives = value; else CurrentCampaign.lives = value; }
 	}
-	public static short _score;
+	private static short _score;
 	public static short Score {
 		get => CurrentCampaign is null ? _score : CurrentCampaign.score;
 		set { if(CurrentCampaign is null) _score = value; else CurrentCampaign.score = value; }
 	}
-	public static float _playTime;
+	private static float _playTime;
 	public static float PlayTime {
 		get => CurrentCampaign is null ? _playTime : CurrentCampaign.time;
 		set {
 			if(CurrentCampaign is null) _playTime = value; else CurrentCampaign.time = value;
+		}
+	}
+	private static float _liveGainChance;
+	public static float LiveGainChance {
+		get => CurrentCampaign is null ? _liveGainChance : CurrentCampaign.liveGainChance;
+		set {
+			if(CurrentCampaign is null) _liveGainChance = value; else CurrentCampaign.liveGainChance = value;
 		}
 	}
 	public static bool isLoading;
@@ -64,15 +70,12 @@ public class GameManager : Singleton<GameManager> {
 
 	protected override void Awake() {
 		base.Awake();
+		PrefabManager.ResetPrefabManager();
 		var menu = FindObjectOfType<ToyTanks.UI.MenuManager>();
 		menu.Initialize();
 		GraphicSettings.Initialize();
 
 		if(GameBooted == false) {
-			Game.AddCursor("default", defaultCursor);
-			Game.AddCursor("pointer", pointerCursor);
-			Game.SetCursor("default");
-			SaveGame.GameStartUp();
 			menu.mainMenu.FadeIn();
 			menu.FadeOutBlur();
 			GameBooted = true;
@@ -189,8 +192,8 @@ public class GameManager : Singleton<GameManager> {
 			transitionScreen.SetSingleMessage(message);
 		}
 		yield return new WaitUntil(() => transitionScreen.onBannerFadeInFinished);
-		StartCoroutine(levelManager.LoadAndBuildMap(CurrentLevel, totalLoadingFadeDuration));
-		yield return new WaitUntil(() => levelManager.HasLevelBeenBuild);
+		yield return levelManager.LoadAndBuildMap(CurrentLevel, totalLoadingFadeDuration);
+		PrefabManager.Initialize();
 
 		transitionScreen.FadeOutBanner(bannerFadeDuration);
 		yield return new WaitUntil(() => transitionScreen.onBannerFadeOutFinished);

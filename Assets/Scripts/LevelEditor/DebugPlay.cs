@@ -14,6 +14,9 @@ public class DebugPlay : MonoBehaviour {
 		GraphicSettings.Initialize();
 		GameManager.CurrentLevel = new LevelData() { gridSize = GridSizes.Size_17x14, isNight = false };
 		Game.showTankDebugs = showDebug;
+		Game.IsGameRunning = true;
+		Game.IsGameRunningDebug = true;
+		Game.IsGamePlaying = true;
 		Terminal.InitializeCommandConsole();
 
 		isDebug = true;

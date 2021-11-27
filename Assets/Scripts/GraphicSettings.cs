@@ -90,13 +90,13 @@ public class GraphicSettings : Singleton<GraphicSettings> {
                     text = "Fullscreen";
                     break;
                 case "fullscreenwindow":
-                    continue;
-                case "maximizedwindow":
-                    text = "Borderless";
-                    break;
-                case "Windowed":
-                    text = "Window";
-                    break;
+					text = "Borderless";
+					break;
+				case "Windowed":
+					text = "Window";
+					break;
+				case "maximizedwindow":
+					continue;
             }
             var item = new TMP_Dropdown.OptionData() {
                 text = text,
@@ -107,7 +107,23 @@ public class GraphicSettings : Singleton<GraphicSettings> {
         Instance.windowModeDropdown.value = (int)FullscreenMode;
         Instance.windowModeDropdown.RefreshShownValue();
         Instance.windowModeDropdown.onValueChanged.AddListener((int value) => {
-            SetGameWindowMode((FullScreenMode)(value));
+			switch(value) {
+				case 0:
+					// Fullscreen
+					Debug.Log("Game window set to: Exclusive Window");
+					SetGameWindowMode(FullScreenMode.ExclusiveFullScreen);
+					break;
+				case 1:
+					// Borderless
+					Debug.Log("Game window set to: Fullscreen Window");
+					SetGameWindowMode(FullScreenMode.FullScreenWindow);
+					break;
+				case 2:
+					Debug.Log("Game window set to: Windowed");
+					SetGameWindowMode(FullScreenMode.Windowed);
+					// Windowed
+					break;
+			}
             RefreshUI();
         });
     }
@@ -285,6 +301,11 @@ public class GraphicSettings : Singleton<GraphicSettings> {
     static void SetGameWindowMode(FullScreenMode mode) {
         FullscreenMode = mode;
         Screen.fullScreenMode = mode;
+		if(mode == FullScreenMode.FullScreenWindow || mode == FullScreenMode.ExclusiveFullScreen) {
+			Screen.fullScreen = true;
+		} else {
+			Screen.fullScreen = false;
+		}
 	}
     static void SetAntialiasing(bool? state) {
         Antialiasing = (bool)state;

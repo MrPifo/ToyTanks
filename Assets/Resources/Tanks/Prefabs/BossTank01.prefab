@@ -1,5 +1,47 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &8432486042793204235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264721789128545855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c28993904e72b42bb76d14d509fc83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tankAsset: {fileID: 11400000, guid: 2c11c8c4da33137449a9667e63be5743, type: 2}
+  healthPoints: 40
+  moveSpeed: 6
+  shootStunDuration: 0.3
+  reloadDuration: 0.2
+  randomReloadDuration: 0
+  bodyRotSpeed: 360
+  aimRotSpeed: 600
+  destructionVelocity: 500
+  disable2DirectionMovement: 1
+  makeInvincible: 0
+  playerDetectRadius: 99
+  playerLoseRadius: 99
+  playerTooClose: 5
+  showDebug: 0
+  diagonalMethod: 0
+  maxPathfindingRefreshSpeed: 0.2
+  currentPath: []
+  chargeSpeed: 20
+  waitDuration: 1
+  burstAmount: 6
+  chargeLineL: {fileID: 7723204310692415514}
+  chargeLineR: {fileID: 9045923375969336373}
+  chargeLineM: {fileID: 9174052762025913929}
+  rollerTransform: {fileID: 7417576934298790154}
+  chargePath: {fileID: 7049415272156707321}
+  rollerTrigger: {fileID: 1436174263658535205}
+  chargeVibration: {fileID: 5971461261830086749}
+  hitChargeFeedback: {fileID: 1563589871300565626}
+  chargeSmoke: {fileID: 4870579256896687335}
 --- !u!1 &896587763966237731
 GameObject:
   m_ObjectHideFlags: 0
@@ -235,7 +277,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 641670296266361989}
-  m_RootOrder: 16
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4845598189491195510
 MeshFilter:
@@ -962,7 +1004,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 641670296266361989}
-  m_RootOrder: 15
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2383702382368325492
 MeshFilter:
@@ -1015,47 +1057,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8432486042793204235
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 264721789128545855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8c28993904e72b42bb76d14d509fc83, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tankAsset: {fileID: 11400000, guid: 2c11c8c4da33137449a9667e63be5743, type: 2}
-  healthPoints: 40
-  moveSpeed: 6
-  shootStunDuration: 0.3
-  reloadDuration: 0.2
-  randomReloadDuration: 0
-  bodyRotSpeed: 360
-  destructionVelocity: 500
-  disable2DirectionMovement: 1
-  makeInvincible: 0
-  playerDetectRadius: 99
-  playerLoseRadius: 99
-  playerTooClose: 5
-  showDebug: 0
-  diagonalMethod: 0
-  maxPathfindingRefreshSpeed: 0.2
-  currentPath: []
-  chargeSpeed: 20
-  waitDuration: 1
-  burstAmount: 6
-  chargeLineL: {fileID: 7723204310692415514}
-  chargeLineR: {fileID: 9045923375969336373}
-  chargeLineM: {fileID: 9174052762025913929}
-  rollerTransform: {fileID: 7417576934298790154}
-  chargePath: {fileID: 7049415272156707321}
-  rollerTrigger: {fileID: 1436174263658535205}
-  chargeVibration: {fileID: 5971461261830086749}
-  hitChargeFeedback: {fileID: 1563589871300565626}
-  chargeSmoke: {fileID: 4870579256896687335}
 --- !u!1 &6421596810744439275
 GameObject:
   m_ObjectHideFlags: 0
@@ -6455,12 +6456,6 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
-    - target: {fileID: 7050499238146579050, guid: deb07d1d6146747469e15b61bffdc376,
-        type: 3}
-      propertyPath: bullet
-      value: 
-      objectReference: {fileID: 5620761198142219836, guid: 8f34fa7294e565d4f9ae3c5a7a9e74e8,
-        type: 3}
     - target: {fileID: 7050499238146579050, guid: deb07d1d6146747469e15b61bffdc376,
         type: 3}
       propertyPath: destroyTransformPieces.Array.size

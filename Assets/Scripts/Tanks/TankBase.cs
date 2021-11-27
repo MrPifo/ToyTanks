@@ -10,13 +10,14 @@ using System.Collections.Generic;
 using ToyTanks.LevelEditor;
 using EpPathFinding.cs;
 using UnityEngine.Rendering.HighDefinition;
+using Sperlich.PrefabManager;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(TankReferences))]
-public class TankBase : MonoBehaviour, IHittable, IForceShield {
+public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 
 	public TankAsset tankAsset;
 	[Header("VALUES")]
@@ -58,6 +59,7 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 	Material[] bodyMats;
 	Material[] headMats;
 	List<GridPos> lastOccupied = new List<GridPos>();
+	GameObject healthPointPrefab;
 
 	// Propterties
 	public bool HasBeenInitialized { get; set; }
@@ -68,23 +70,13 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 		set => isInvincible = value;
 	}// Game ivincibility
 	public bool IsFriendlyFireImmune => tankAsset.hasFriendlyFireShield;
-	public Vector3 Pos => tankBody.position;
+	public new Vector3 Pos => tankBody.position;
 	public Vector3 MovingDir => moveDir;
 	public Sperlich.Types.Int3 PlacedIndex { get; set; }
 	public Sperlich.Types.Int3[] OccupiedIndexes { get; set; }
-	public Bullet Bullet { get; set; }
 	public TankTypes TankType => tankAsset.tankType;
 	private TankReferences References { get; set; }
-	protected AudioManager Audio {
-		get {
-			if(LevelManager.audioManager == null) {
-				return GameObject.Find("AudioManager").GetComponent<AudioManager>();
-			} else {
-				return LevelManager.audioManager;
-			}
-		}
-	}
-	protected bool IsPaused => LevelManager.GamePaused || Game.IsTerminal;
+	protected bool IsPaused => Game.GamePaused || Game.IsTerminal;
 	public short MaxHealthPoints => tankAsset.health;
 	Transform _trackContainer;
 	protected Transform TrackContainer {
@@ -110,7 +102,7 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 
 	// Tank References Shortcuts
 	public Disc shockwaveDisc => References.shockwaveDisc;
-	public Rectangle healthBar => References.healthBar;
+	public GameObject healthBar => References.healthBar;
 	public Transform tankBody => References.tankBody;
 	public Transform tankHead => References.tankHead;
 	public Transform bulletOutput => References.bulletOutput;
@@ -134,29 +126,28 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 	public ParticleSystem muzzleSmoke => References.muzzleSmoke;
 	public AnimationCurve turnLightsOnCurve => References.lightsTurnOnAnim;
 	public MMFeedbacks hitFlash => References.hitFlash;
+	public PrefabTypes BulletType => References.bullet;
 
 	protected virtual void Awake() {
 		References = GetComponent<TankReferences>();
 		rig = GetComponent<Rigidbody>();
 		headMats = tankHead.GetComponent<MeshRenderer>().sharedMaterials;
 		bodyMats = tankBody.GetComponent<MeshRenderer>().sharedMaterials;
-		healthBar.transform.parent.gameObject.SetActive(false);
 		healthPoints = tankAsset.health;
 		frontLightIntensity = frontLight.intensity;
 		backLightIntensity = backLight.intensity;
+		healthPointPrefab = healthBar.transform.GetChild(0).gameObject;
+		healthPointPrefab.SetActive(false);
 		TurnLightsOff();
 	}
 
 	public virtual void InitializeTank() {
-		Bullet = References.bullet.GetComponent<Bullet>();
 		spawnPos = rig.position;
 		spawnRot = rig.rotation;
 		initLayer = gameObject.layer;
 		lastTrackPos = Pos;
-		healthBar.Width = 2f;
 		canMove = true;
 		HasBeenInitialized = true;
-		healthBar.transform.parent.gameObject.SetActive(false);
 		shockwaveDisc.gameObject.SetActive(false);
 		destroyRestPoses = new List<Vector3>();
 		destroyRestRots = new List<Quaternion>();
@@ -165,6 +156,11 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 			destroyRestPoses.Add(t.localPosition);
 			destroyRestRots.Add(t.localRotation);
 		}
+		healthPointPrefab.SetActive(true);
+		for(int i = 0; i < MaxHealthPoints - 1; i++) {
+			Instantiate(healthPointPrefab, healthBar.transform);
+		}
+		healthBar.SetActive(false);
 	}
 
 	protected virtual void LateUpdate() {
@@ -228,29 +224,34 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 	}
 
 	Vector3 SpawnTrack() {
-		Transform track = Instantiate(tankTrack, TrackContainer).transform;
+		Transform track = PrefabManager.Spawn(PrefabTypes.TankTrack).transform;
 		track.position = new Vector3(rig.position.x, 0.025f, rig.position.z);
 		track.rotation = rig.rotation * Quaternion.Euler(90, 0, 0);
 
 		AudioPlayer.Play("TankDrive", AudioType.SoundEffect, 0.95f, 1.05f, 0.5f);
-		if(TrackContainer.childCount > 500) {
-			Destroy(TrackContainer.GetChild(0).gameObject);
-		}
+		int despawnTime = 30;
+		track.GetComponent<PoolGameObject>().Recycle(despawnTime);
+		SpriteRenderer rend = track.GetComponent<SpriteRenderer>();
+		rend.DOFade(0.7f, 0.02f);
+		this.Delay(despawnTime - 2, () => {
+			rend.DOFade(0, 2);
+		});
 		return track.position;
 	}
 
-	public virtual void ShootBullet() {
+	public virtual Bullet ShootBullet() {
 		if(!isReloading) {
 			var bounceDir = -tankHead.right * 2f;
 			bounceDir.y = 0;
-			
+
+			Bullet bullet;
 			muzzleFlash.Play();
 			muzzleSmoke.Play();
 			tankHead.DOScale(tankHead.localScale + Vector3.one / 7f, 0.2f).SetEase(new AnimationCurve(new Keyframe[] { new Keyframe(0, 0, 0.5f, 0.5f), new Keyframe(0.5f, 1, 0.5f, 0.5f), new Keyframe(1, 0, 0.5f, 0.5f) }));
 			if(this is PlayerInput) {
-				Instantiate(Bullet).SetupBullet(bulletOutput.forward, bulletOutput.position, true);
+				bullet = PrefabManager.Spawn<Bullet>(BulletType).SetupBullet(bulletOutput.forward, bulletOutput.position, true);
 			} else {
-				Instantiate(Bullet).SetupBullet(bulletOutput.forward, bulletOutput.position, false);
+				bullet = PrefabManager.Spawn<Bullet>(BulletType).SetupBullet(bulletOutput.forward, bulletOutput.position, false);
 			}
 			
 			if(reloadDuration > 0) {
@@ -261,11 +262,13 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 				isShootStunned = true;
 				this.Delay(shootStunDuration, () => isShootStunned = false);
 			}
+			return bullet;
 		}
+		return null;
 	}
 
 	public virtual void TakeDamage(IDamageEffector effector) {
-		if(IsInvincible == false && HasBeenDestroyed == false) {
+		if(IsInvincible == false && HasBeenDestroyed == false && Game.IsGameRunning) {
 			if(this is TankAI && effector.fireFromPlayer == false && IsFriendlyFireImmune) {
 				ShieldEffect(effector.damageOrigin);
 			} else {
@@ -275,9 +278,13 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 				if(healthPoints == 0) {
 					GotDestroyed();
 				}
+
+				healthBar.transform.GetChild(healthPoints).GetComponent<CanvasGroup>().DOFade(0, 0.2f).SetEase(Ease.OutCubic);
+				healthBar.transform.GetChild(healthPoints).DOScale(2f, 0.2f).OnComplete(() => healthBar.transform.GetChild(healthPoints).gameObject.SetActive(false));
 				hitFlash.PlayFeedbacks();
-				int width = MaxHealthPoints == 0 ? 1 : healthPoints;
-				healthBar.Width = 2f / MaxHealthPoints * width;
+				if(this is BossAI == false) {
+					healthBar.SetActive(true);
+				}
 			}
 		} else {
 			ShieldEffect(effector.damageOrigin);
@@ -300,15 +307,14 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 			t.SetParent(null);
 		}
 		blobShadow.SetActive(false);
-		healthBar.gameObject.SetActive(false);
 		PlayDestroyExplosion();
 		TurnLightsOff();
 
 		if(FindObjectOfType<LevelManager>()) {
 			if(this is PlayerInput) {
-				LevelManager.PlayerDead();
+				LevelManager.Instance.PlayerDead();
 			} else {
-				LevelManager.TankDestroyedCheck();
+				LevelManager.Instance.TankDestroyedCheck();
 			}
 		}
 	}
@@ -326,10 +332,10 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 		}
 		Camera.main.DOOrthoSize(Camera.main.orthographicSize + 1, 0.15f);
 		this.Delay(0.15f, () => Camera.main.DOOrthoSize(Camera.main.orthographicSize - 1, 0.15f));
-		LevelManager.Feedback?.TankExplode();
+		LevelManager.Instance?.Feedback?.TankExplode();
 		GameCamera.ShakeExplosion2D(12, 0.3f);
 		if(this is PlayerInput) {
-			LevelManager.Feedback?.PlayerDead();
+			LevelManager.Instance?.Feedback?.PlayerDead();
 		}
 		shockwaveDisc.gameObject.SetActive(true);
 		
@@ -342,15 +348,16 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 		this.Delay(1, () => shield.gameObject.SetActive(false));
 	}
 
+	[System.Obsolete]
 	public virtual void Revive() {
+		ResetState();
+		return;
 		isShootStunned = false;
 		isReloading = false;
 		HasBeenDestroyed = false;
 		canMove = true;
 		healthPoints = MaxHealthPoints;
 		blobShadow.SetActive(true);
-		healthBar.gameObject.SetActive(true);
-		healthBar.transform.parent.gameObject.SetActive(false);
 		transform.position = spawnPos;
 		transform.rotation = spawnRot;
 
@@ -491,9 +498,25 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 		lastOccupied = new List<GridPos>();
 	}
 
+	public virtual void ResetState() {
+		TankBase newTank = Instantiate(tankAsset.prefab).GetComponent<TankBase>();
+		newTank.transform.position = spawnPos;
+		newTank.transform.rotation = spawnRot;
+		newTank.OccupiedIndexes = OccupiedIndexes;
+		newTank.PlacedIndex = PlacedIndex;
+
+		if(newTank is PlayerInput) {
+			PlayerInput input = (PlayerInput)newTank;
+			input.DisableCrossHair();
+		}
+		foreach(Transform piece in destroyTransformPieces) {
+			Destroy(piece.gameObject);
+		}
+		Destroy(gameObject);
+	}
+
 	// Only for Editor purposes
 	public void RestoreMaterials() {
-		Debug.Log(tankBody);
 		tankBody.GetComponent<MeshRenderer>().sharedMaterials = bodyMats;
 		tankHead.GetComponent<MeshRenderer>().sharedMaterials = headMats;
 	}
@@ -507,8 +530,8 @@ public class TankBase : MonoBehaviour, IHittable, IForceShield {
 		if(HasBeenDestroyed) {
 			Revive();
 		}
-		LevelManager.UI.playerLives.SetText(Random.Range(0, 5).ToString());
-		LevelManager.Feedback.PlayLives();
+		LevelManager.Instance.UI.playerLives.SetText(Random.Range(0, 5).ToString());
+		LevelManager.Instance.Feedback.PlayLives();
 		this.Delay(0.1f, () => GotDestroyed());
 	}
 #endif

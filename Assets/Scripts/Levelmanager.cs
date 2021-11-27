@@ -1,99 +1,100 @@
 ﻿using UnityEngine;
-using CarterGames.Assets.AudioManager;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using Sperlich.Pathfinding;
 using Sperlich.Types;
-using Sperlich.Debug.Draw;
 using System.Collections.Generic;
 using DG.Tweening;
 using System.Linq;
 using ToyTanks.LevelEditor;
 using UnityEngine.Rendering.HighDefinition;
 using CommandTerminal;
-using EpPathFinding.cs;
+using Sperlich.PrefabManager;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 public class LevelManager : MonoBehaviour {
 
-	public float gridDensity = 2;
-	public float gridPointDistance = 3f;
-	public float gridPointOverlapRadius = 1f;
-	public bool showGrid;
-	public bool IsGameOver;
-	public static bool IsDebug;
-	public bool IsBossLevel;
-	public static bool GameStarted;
-	public bool IsPathMeshReady;
-	public bool HasBeenInitialized;
-	public bool HasLevelBeenBuild;
-	public bool isDarkLevel;
-	public static bool awardBonusLife;
-	public int scoreOnLevelEnter;
-	public CanvasGroup optionsMenu;
+	[SerializeField] private float gridDensity = 2;
+	[SerializeField] private float gridPointDistance = 3f;
+	[SerializeField] private float gridPointOverlapRadius = 1f;
+	[SerializeField] private bool showGrid;
+	[SerializeField] private CanvasGroup optionsMenu;
+	[SerializeField] private LayerMask baseLayer;
+	private int scoreOnLevelEnter;
+	private List<TankAsset> tankPrefabs;
+	private GameCamera gameCamera;
+	public LevelFeedbacks Feedback { get; private set; }
 	public HDAdditionalLightData spotLight;
 	public HDAdditionalLightData sunLight;
-	public LayerMask baseLayer;
-	public bool IsEditor => Mode == GameManager.GameMode.Editor;
-	public static GridSizes GridSize => CurrentLevel.gridSize;
-	public static LevelEditor Editor;
-	public static GameCamera gameCamera;
-	public static GameManager.GameMode Mode {
+	bool isBossLevel;
+	bool levelManagerInitializedCampaignLevelOnly;
+
+	private GameManager.GameMode Mode {
 		get => GameManager.CurrentMode;
 		set => GameManager.CurrentMode = value;
 	}
-	public static bool GamePaused;
-	public static LevelUI UI;
-	public static LevelFeedbacks Feedback;
-	public static LevelData CurrentLevel => GameManager.CurrentLevel;
-	public static Int3 GridBoundary => GetGridBoundary(CurrentLevel.gridSize);
+	private LevelData CurrentLevel => GameManager.CurrentLevel;
+	private GameManager GameManager => FindObjectOfType<GameManager>();
+	public LevelUI UI => FindObjectOfType<LevelUI>();
+	private bool IsEditor => Mode == GameManager.GameMode.Editor;
+	public Int3 GridBoundary => GetGridBoundary(CurrentLevel.gridSize);
+	private Transform _trackContainer;
+	private Transform TrackContainer {
+		get {
+			if(_trackContainer == null) {
+				if(GameObject.Find("TrackContainer") == null) {
+					_trackContainer = new GameObject("TrackContainer").transform;
+				} else {
+					_trackContainer = GameObject.Find("TrackContainer").transform;
+				}
+			}
+			return _trackContainer;
+		}
+	}
+	public static LevelEditor Editor => FindObjectOfType<LevelEditor>();
 	public static Transform BlocksContainer => GameObject.FindGameObjectWithTag("LevelBlocks").transform;
 	public static Transform TanksContainer => GameObject.FindGameObjectWithTag("LevelTanks").transform;
 	public static SaveGame.Campaign.Difficulty Difficulty => SaveGame.GetCampaign(SaveGame.SaveInstance.currentSaveSlot).difficulty;
-	public static Transform TrackContainer;
-	public static LevelManager Instance;
-	GameManager GameManager;
-	BossAI bossTank;
+	private static LevelManager _instance;
+	public static LevelManager Instance {
+		get {
+			if(_instance == null) {
+				_instance = FindObjectOfType<LevelManager>();
+			}
+			return _instance;
+		}
+	}
+	public static GridSizes GridSize => GameManager.CurrentLevel.gridSize;
 
 	[HideInInspector] public static PlayerInput player;
-	[HideInInspector] public static AudioManager audioManager;
 	[HideInInspector] public static TankAI[] tankAIs;
 	public Scene Scene => gameObject.scene;
 
 	// Initialization
 	void Awake() {
-		Instance = this;
-		Editor = FindObjectOfType<LevelEditor>();
-		GameManager = FindObjectOfType<GameManager>();
-		UI = FindObjectOfType<LevelUI>();
-		audioManager = FindObjectOfType<AudioManager>();
 		Feedback = FindObjectOfType<LevelFeedbacks>();
 		gameCamera = FindObjectOfType<GameCamera>();
-		TrackContainer = new GameObject("TrackContainer").transform;
-		TrackContainer.SetParent(GameObject.FindGameObjectWithTag("Level").transform);
-		UI.gameplay.SetActive(false);
 		optionsMenu.alpha = 0;
 		optionsMenu.gameObject.SetActive(false);
+		tankPrefabs = Resources.LoadAll<TankAsset>("Tanks").ToList();
 		Terminal.InitializeCommandConsole();
-
+		
 		// Start Editor if no GameManager is present
 		if(GameManager == false) {
 			Mode = GameManager.GameMode.Editor;
-			IsDebug = true;
 			Editor.ClearLevel();
 			Editor.StartLevelEditor();
 			GraphicSettings.Initialize();
+			PrefabManager.Initialize();
 		}
 	}
 
 	public void Initialize() {
-		if(HasBeenInitialized == false) {
+		if(levelManagerInitializedCampaignLevelOnly == false) {
 			// Must be called before TankBase Script
 			if(GameManager.CurrentMode == GameManager.GameMode.Campaign || GameManager.CurrentMode == GameManager.GameMode.LevelOnly) {
-				HasBeenInitialized = true;
+				levelManagerInitializedCampaignLevelOnly = true;
 				Destroy(Editor.gameObject);
 			}
 		}
@@ -102,44 +103,31 @@ public class LevelManager : MonoBehaviour {
 	void InitializeTanks() {
 		player = FindObjectOfType<PlayerInput>();
 		tankAIs = FindObjectsOfType<TankAI>();
-
-		// Ensure debug is set off
-		IsBossLevel = false;
-		foreach(var t in FindObjectsOfType<TankBase>()) {
-			if(t as TankAI) {
-				var ai = t as TankAI;
-				if(t is BossAI) {
-					bossTank = t as BossAI;
-					IsBossLevel = true;
-				}
-			}
-		}
-		player.DisablePlayer();
+		player.SetupCross();
+		player.DisableControls();
 		DisableAllAIs();
 	}
 
 	void Update() {
-		if(IsGameOver == false && GameStarted && GamePaused == false) {
-			UpdateRunTime();
+		// Update and Add to time
+		if(Game.IsGamePlaying && Game.GamePaused == false && Game.IsGameRunningDebug == false) {
+			GameManager.PlayTime += Time.deltaTime;
+			UI.playTime.SetText(Mathf.Round(GameManager.PlayTime * 100f) / 100f + "s");
 		}
-		if(IsDebug == false && Input.GetKeyDown(KeyCode.Escape) && HasBeenInitialized && IsGameOver == false && GameStarted && (Time.timeScale == 1f || Time.timeScale == 0f)) {
-			if(GamePaused) {
+		if(Input.GetKeyDown(KeyCode.Escape) && Game.IsGamePlaying && (Time.timeScale == 1f || Time.timeScale == 0f)) {
+			if(Game.GamePaused) {
 				ResumeGame();
 			} else {
 				PauseGame();
 			}
 		}
-		if(GamePaused == false && IsDebug == false) {
-			GameManager.HideCursor();
-		}
 	}
 
 	public void PauseGame() {
-		GamePaused = true;
+		Game.GamePaused = true;
 		optionsMenu.gameObject.SetActive(true);
 		optionsMenu.DOFade(1, 0.15f);
-		player.DisablePlayer();
-		player.disableCrossHair = true;
+		player.DisableControls();
 		GameManager.ShowCursor();
 		Time.timeScale = 1f;
 		DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 0.1f, 0.1f).SetEase(Ease.Linear).OnComplete(() => {
@@ -148,11 +136,10 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void ResumeGame() {
-		GamePaused = false;
+		Game.GamePaused = false;
 		optionsMenu.DOFade(0, 0.3f);
-		player.EnablePlayer();
+		player.EnableControls();
 		GameManager.HideCursor();
-		player.disableCrossHair = false;
 		Time.timeScale = 0.2f;
 		DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1, 0.1f).SetEase(Ease.Linear).OnComplete(() => {
 			optionsMenu.gameObject.SetActive(false);
@@ -161,25 +148,17 @@ public class LevelManager : MonoBehaviour {
 
 	public void ReturnToMenu() {
 		Time.timeScale = 1f;
-		player.disableCrossHair = false;
+		Game.GamePaused = false;
 		GameManager.ShowCursor();
 		optionsMenu.DOFade(0, 0.5f);
+		player.DisableCrossHair();
 		GameManager.ReturnToMenu("Quitting");
 	}
 
-	void UpdateRunTime() {
-		if(!IsDebug) {
-			GameManager.PlayTime += Time.deltaTime;
-			UI.playTime.SetText(Mathf.Round(GameManager.PlayTime * 100f) / 100f + "s");
-		}
-	}
-
 	public void ClearMap() {
-		foreach(var b in FindObjectsOfType<LevelBlock>()) {
-			Destroy(b.gameObject);
-		}
-		foreach(var t in FindObjectsOfType<TankBase>()) {
-			Destroy(t.gameObject);
+		// Clear all GameEntities from level
+		foreach(GameEntity entity in FindObjectsOfType<GameEntity>()) {
+			Destroy(entity.gameObject);
 		}
 		var ground = GameObject.FindGameObjectWithTag("Ground").GetComponent<MeshRenderer>();
 		ground.lightmapScaleOffset = new Vector4(0, 0, 0, 0);
@@ -188,7 +167,6 @@ public class LevelManager : MonoBehaviour {
 	public IEnumerator LoadAndBuildMap(LevelData data, float loadDuration) {
 		ClearMap();
 		var blockAssets = Resources.LoadAll<ThemeAsset>(GamePaths.ThemesPath).ToList().Find(t => t.theme == data.theme);
-		var tanks = Resources.LoadAll<TankAsset>("Tanks").ToList();
 		float timePerBlock = loadDuration / data.blocks.Count;
 
 		foreach(var block in data.blocks) {
@@ -207,7 +185,7 @@ public class LevelManager : MonoBehaviour {
 		}
 
 		foreach(var tank in data.tanks) {
-			var asset = tanks.Find(t => t.tankType == tank.tankType);
+			var asset = GetTankAsset(tank.tankType);
 			var t = Instantiate(asset.prefab, tank.pos + asset.tankSpawnOffset, Quaternion.Euler(tank.rotation)).GetComponent<TankBase>();
 			t.transform.SetParent(TanksContainer);
 		}
@@ -216,7 +194,6 @@ public class LevelManager : MonoBehaviour {
 		LevelLightmapper.SwitchLightmaps(CurrentLevel.levelId);
 		sunLight.SetShadowResolutionOverride(true);
 		sunLight.SetShadowResolution(GraphicSettings.GetShadowResolution());
-		HasLevelBeenBuild = true;
 	}
 
 	public static void SetLevelBoundaryWalls(Int3 boundary) {
@@ -231,76 +208,61 @@ public class LevelManager : MonoBehaviour {
 			light.transform.position = lightData.pos;
 			light.transform.eulerAngles = lightData.rotation;
 			light.SetIntensity(lightData.intensity);
+			light.RequestShadowMapRendering();
+			light.UpdateAllLightValues();
 		}
 	}
 
 	// Game Logic
 	public void StartGame() => StartCoroutine(nameof(IStartGame));
 	IEnumerator IStartGame() {
-		if(Mode != GameManager.GameMode.Editor && HasLevelBeenBuild == false) {
-			StartCoroutine(LoadAndBuildMap(CurrentLevel, 0));
-			yield return new WaitUntil(() => HasLevelBeenBuild);
-		}
+		// Game Startup
+		UI.counterBanner.SetActive(true);
+		GameManager.HideCursor();
+		Game.IsGameRunning = true;
 
-		var theme = Resources.LoadAll<ThemeAsset>(GamePaths.ThemesPath).ToList().Find(t => t.theme == CurrentLevel.theme);
-		isDarkLevel = theme.isDark;
+		// Find theme
+		ThemeAsset theme = Resources.LoadAll<ThemeAsset>(GamePaths.ThemesPath).ToList().Find(t => t.theme == CurrentLevel.theme);
+		
+		// Set Level Boundaries and Lights
+		SetLevelBoundaryWalls(GridBoundary);
 		ApplyLightData(CurrentLevel.sunLight, sunLight);
 		ApplyLightData(CurrentLevel.spotLight, spotLight);
-		if(isDarkLevel) {
-			spotLight.SetIntensity(0);
-		}
-		SetLevelBoundaryWalls(GridBoundary);
-		UI.gameplay.SetActive(true);
-		UI.levelStage.SetText($"Level {CurrentLevel.levelId}");
-		UI.counterBanner.SetActive(true);
-		
 
-		if(!IsDebug) {
-			scoreOnLevelEnter = GameManager.Score;
-			UI.playerScore.SetText(GameManager.Score.ToString());
-			UI.playerLives.SetText(GameManager.PlayerLives.ToString());
-			UI.playTime.SetText(Mathf.Round(GameManager.PlayTime * 100f) / 100f + "s");
-		} else {
-			UI.playerScore.SetText("0");
-			UI.playerLives.SetText("0");
-			UI.playTime.SetText("0");
-		}
-
-		Feedback.FadeInGameplayUI();
-		InitializeTanks();
-		player.disableCrossHair = false;
-		Game.CreateAIGrid(CurrentLevel.gridSize, baseLayer, GameObject.FindGameObjectWithTag("Ground"));
+		// Set Camera to Overview
 		gameCamera.camSettings.orthograpicSize = GetOrthographicSize(CurrentLevel.gridSize);
 		gameCamera.ChangeState(GameCamera.GameCamState.Overview);
-		GameManager.HideCursor();
-		player.SetupCross();
-		
 
-		if(IsBossLevel) {
-			foreach(BossAI boss in FindObjectsOfType<BossAI>()) {
-				BossUI.RegisterBoss(boss);
-			}
-			BossUI.InitAnimateBossBar();
-		}
+		// Generate AI Grid
+		Game.CreateAIGrid(CurrentLevel.gridSize, baseLayer, GameObject.FindGameObjectWithTag("Ground"));
+		InitializeTanks();
+
+		// Turn On/Off tank lights
 		yield return new WaitForSeconds(1f);
 		foreach(var t in FindObjectsOfType<TankBase>()) {
-			if(isDarkLevel) {
+			if(theme.isDark) {
 				t.TurnLightsOn();
 			} else {
 				t.TurnLightsOff();
 			}
 		}
-		if(isDarkLevel) {
-			
-			spotLight.FadeIntensity(0, CurrentLevel.spotLight.intensity, 1f);
-		}
+
+		// Initialize Gameplay UI
 		yield return new WaitForSeconds(1.5f);
-		Feedback.PlayStartFadeText();
 		DOTween.To(x => UI.OutlinePass.threshold = x, UI.OutlinePass.threshold, 100, 2).SetEase(Ease.InCubic);
+		foreach(BossAI boss in FindObjectsOfType<BossAI>()) {
+			BossUI.RegisterBoss(boss);
+		}
+		BossUI.InitAnimateBossBar();
+		Feedback.PlayStartFadeText();
+		Feedback.FadeInGameplayUI();
+		UI.playerScore.SetText("0");
+		UI.playerLives.SetText("0");
+		UI.playTime.SetText("0");
+		UI.levelStage.SetText($"Level {CurrentLevel.levelId}");
+
+		// Start Game
 		yield return new WaitForSeconds(1);
-		IsGameOver = false;
-		GameStarted = true;
-		GamePaused = false;
 		if(GridSize == GridSizes.Size_17x14) {
 			gameCamera.ChangeState(GameCamera.GameCamState.Focus);
 		} else {
@@ -309,7 +271,7 @@ public class LevelManager : MonoBehaviour {
 		gameCamera.focusOnPlayerStrength = CurrentLevel.customCameraFocusIntensity == null ? gameCamera.focusOnPlayerStrength : (float)CurrentLevel.customCameraFocusIntensity;
 		gameCamera.maxOrthographicSize = CurrentLevel.customMaxZoomOut == null ? gameCamera.maxOrthographicSize : (float)CurrentLevel.customMaxZoomOut;
 		UI.counterBanner.SetActive(false);
-		player.EnablePlayer();
+		player.EnableControls();
 		EnableAllAIs();
 
 		foreach(var t in FindObjectsOfType<TankBase>()) {
@@ -319,9 +281,10 @@ public class LevelManager : MonoBehaviour {
 		if(IsEditor) {
 			Editor.playTestButton.interactable = true;
 		}
+		Game.IsGamePlaying = true;
 	}
 
-	public static void TankDestroyedCheck() {
+	public void TankDestroyedCheck() {
 		AddScore();
 		if(tankAIs != null) {
 			foreach(TankAI t in tankAIs) {
@@ -331,41 +294,28 @@ public class LevelManager : MonoBehaviour {
 				}
 			}
 		}
-		if(IsDebug == false) {
+		if(Game.IsGameRunningDebug == false) {
 			Instance.StartCoroutine(Instance.GameOver());
 		}
 	}
 
-	public static void AddScore() {
-		if(!IsDebug) {
+	public void AddScore() {
+		if(Game.IsGameRunningDebug == false) {
 			GameManager.Score++;
 			UI.playerScore.SetText(GameManager.Score.ToString());
 			Feedback.PlayScore();
-
-			switch(Difficulty) {
-				case SaveGame.Campaign.Difficulty.Medium:
-					if(GameManager.Score % 15 == 0) {
-						awardBonusLife = true;
-					}
-					break;
-				case SaveGame.Campaign.Difficulty.Hard:
-					if(GameManager.Score % 30 == 0) {
-						awardBonusLife = true;
-					}
-					break;
-			}
 		} else {
 			UI?.playerScore.SetText(Random.Range(0, 9).ToString());
 			Feedback?.PlayScore();
 		}
 	}
 
-	public static void PlayerDead() {
-		player.DisablePlayer();
+	public void PlayerDead() {
+		Game.IsGamePlaying = false;
+		player.DisableControls();
 		DisableAllAIs();
-		GameStarted = false;
 
-		if(!IsDebug) {
+		if(Game.IsGameRunningDebug == false) {
 			if(Difficulty != SaveGame.Campaign.Difficulty.Easy && Mode != GameManager.GameMode.LevelOnly && GameManager.PlayerLives > 0) {
 				GameManager.PlayerLives--;
 				UI.playerLives.SetText(GameManager.PlayerLives.ToString());
@@ -387,25 +337,17 @@ public class LevelManager : MonoBehaviour {
 	IEnumerator IRespawnAnimate() {
 		Feedback.PlayLives();
 		Debug.Log("Respawning");
-		yield return new WaitForSeconds(4f);
-		player.Revive();
-
-		foreach(TankAI t in FindObjectsOfType<TankAI>()) {
-			if(t.HasBeenDestroyed == false) {
-				t.Revive();
-			} else if(Difficulty == SaveGame.Campaign.Difficulty.Hard || Difficulty == SaveGame.Campaign.Difficulty.HardCore) {
-				t.Revive();
-			}
-		}
+		yield return new WaitForSeconds(3f);
+		ResetLevel();
 		yield return new WaitForSeconds(1f);
 		StartGame();
 	}
 
 	public IEnumerator GameOver() {
-		if(!IsDebug && IsGameOver == false) {
-			IsGameOver = true;
-			GameStarted = false;
-			player.DisablePlayer();
+		if(Game.IsGameRunningDebug == false) {
+			Game.IsGamePlaying = false;
+			player.DisableCrossHair();
+			player.DisableControls();
 			DisableAllAIs();
 
 			// Decide next GameOver step when player lives reach ZERO
@@ -415,10 +357,12 @@ public class LevelManager : MonoBehaviour {
 						// Continue when players live are sufficient OR playing in EASY
 						SaveGame.UnlockLevel(SaveGame.SaveInstance.currentSaveSlot, GameManager.LevelId);
 						GameManager.LevelId++;
-						if(awardBonusLife || IsBossLevel) {
+						if(Random.Range(0f, 1f) > GameManager.LiveGainChance) {
 							GameManager.PlayerLives++;
+							GameManager.LiveGainChance = 0;
 							UI.playerLives.SetText(GameManager.PlayerLives.ToString());
 						}
+						GameManager.LiveGainChance += 0.02f;
 						GameManager.UpdateCampaign();
 						gameCamera.PlayConfetti();
 						Debug.Log("Continue to next Level: " + GameManager.LevelId);
@@ -442,7 +386,6 @@ public class LevelManager : MonoBehaviour {
 								}
 								Debug.Log("Returning to Checkpoint in Level: " + GameManager.LevelId);
 								yield return new WaitForSeconds(3);
-								player.HideCrosshair();
 								GameManager.LoadLevel("", true);
 								break;
 							case SaveGame.Campaign.Difficulty.Hard:
@@ -451,7 +394,6 @@ public class LevelManager : MonoBehaviour {
 								GameManager.LevelId = Game.GetWorld(GameManager.CurrentLevel.levelId).Levels[0].LevelId;
 								Debug.Log("Returning to Checkpoint in Level: " + GameManager.LevelId);
 								yield return new WaitForSeconds(2);
-								player.HideCrosshair();
 								GameManager.LoadLevel("Mission Failed");
 								break;
 							case SaveGame.Campaign.Difficulty.HardCore:
@@ -460,16 +402,16 @@ public class LevelManager : MonoBehaviour {
 								SaveGame.SaveInstance.WipeSlot(SaveGame.SaveInstance.currentSaveSlot);
 								SaveGame.Save();
 								yield return new WaitForSeconds(3);
-								player.HideCrosshair();
 								GameManager.ReturnToMenu("Mission Failed");
 								break;
 						}
 					}
 					break;
 				case GameManager.GameMode.LevelOnly:
-					gameCamera.PlayConfetti();
+					if(player.HasBeenDestroyed == false) {
+						gameCamera.PlayConfetti();
+					}
 					yield return new WaitForSeconds(3);
-					player.HideCrosshair();
 					Feedback.FadeOutGameplayUI();
 					GameManager.ReturnToMenu("Returning to Menu");
 					break;
@@ -527,59 +469,16 @@ public class LevelManager : MonoBehaviour {
 		}
 	}
 
-#if UNITY_EDITOR
-	/*public void GenerateGrid() {
-		Grid.ClearGrid();
-		StopAllCoroutines();
-
-		for(float x = -GridBoundary.x; x <= GridBoundary.x; x++) {
-			for(float z = -GridBoundary.y; z <= GridBoundary.y; z++) {
-				var ray = new Ray(new Vector3(x * gridDensity, transform.position.y + 20, z * gridDensity) + transform.position, Vector3.down);
-				float dist = Grid.painter.paintRadius;
-				if(Grid.enableCrossConnections) {
-					dist *= Grid.crossDistance;
-				}
-				if(Physics.SphereCast(ray.origin, 0.25f, ray.direction, out RaycastHit hit, Mathf.Infinity, LayerMask.NameToLayer("Level"))) {
-					if(hit.transform.CompareTag("Ground")) {
-						Grid.AddNode(new Float3(hit.point), dist, Node.NodeType.ground);
-					}
-				}
-			}
-		}
-		Grid.gridName = gameObject.scene.name;
-		Grid.Reload();
-		Grid.SaveGrid();
-	}*/
-
-	/*void OnDrawGizmos() {
-		if(showGrid) {
-			DrawGridLines();
-			DrawGridPoints();
-		}
-	}*/
-
-	/*public void DrawGridLines() {
-		if(Grid != null) {
-			foreach(Node n in Grid.Nodes) {
-				foreach(KeyValuePair<Node, float> neigh in n.Neighbours) {
-					Draw.Line(n.pos, neigh.Key.pos, Color.white, true);
-				}
+	public void ResetLevel() {
+		foreach(GameEntity entity in FindObjectsOfType<GameEntity>()) {
+			if(entity is IResettable) {
+				IResettable r = entity as IResettable;
+				r.ResetState();
 			}
 		}
 	}
 
-	public void DrawGridPoints() {
-		if(Grid != null) {
-			foreach(Node n in Grid.Nodes) {
-				if(n.type == Node.NodeType.ground) {
-					Draw.Sphere(n.pos, 0.2f, Color.white, true);
-				} else {
-					Draw.Sphere(n.pos, 0.2f, Color.red, true);
-				}
-			}
-		}
-	}*/
-#endif
+	public TankAsset GetTankAsset(TankTypes type) => tankPrefabs.Find(t => t.tankType == type);
 }
 
 #if UNITY_EDITOR

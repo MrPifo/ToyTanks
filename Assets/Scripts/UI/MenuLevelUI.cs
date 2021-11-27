@@ -133,6 +133,7 @@ namespace ToyTanks.UI {
 		public void OnMouseDown() {
 			if(isUnlocked) {
 				isSelected = false;
+				MenuManager.Instance.worldOverviewMenu.FadeOut();
 				GameManager.StartLevel(level.LevelId);
 			}
 		}

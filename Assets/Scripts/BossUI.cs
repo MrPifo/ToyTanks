@@ -45,9 +45,11 @@ public class BossUI : MonoBehaviour {
 	}
 
 	public static void InitAnimateBossBar() {
-		Instance.bossBar.value = 0;
-		Instance.bossBar.DOValue(Instance.bossBar.maxValue, 3f).SetEase(Ease.Linear);
-		Instance.bossUIInitFeedback.PlayFeedbacks();
+		if(Instance.bosses.Count > 0) {
+			Instance.bossBar.value = 0;
+			Instance.bossBar.DOValue(Instance.bossBar.maxValue, 3f).SetEase(Ease.Linear);
+			Instance.bossUIInitFeedback.PlayFeedbacks();
+		}
 	}
 
 	public static void RemoveBoss(BossAI boss) {

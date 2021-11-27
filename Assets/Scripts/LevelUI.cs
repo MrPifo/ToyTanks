@@ -13,7 +13,7 @@ public class LevelUI : MonoBehaviour {
 	public GameObject counterBanner;
 	public GameObject blurLayer;
 	public GameObject loadingScreen;
-	public GameObject gameplay;
+	public CanvasGroup gameplay;
 	public TextMeshProUGUI loadLevelName;
 	public TextMeshProUGUI playerScore;
 	public TextMeshProUGUI playerLives;
@@ -25,7 +25,7 @@ public class LevelUI : MonoBehaviour {
 	public Outline OutlinePass => (Outline)outlinePass.customPasses[0];
 
 	void Awake() {
-		gameplay.SetActive(false);
+		gameplay.alpha = 0f;
 	}
 
 	public void ShowCounter() {

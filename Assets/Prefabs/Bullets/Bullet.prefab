@@ -4987,7 +4987,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4435059737398416186
 Transform:
   m_ObjectHideFlags: 0
@@ -5044,7 +5044,11 @@ MonoBehaviour:
   smokeTrail: {fileID: 6616851656275617257}
   smokeFireTrail: {fileID: 1242741625510394827}
   impactSparks: {fileID: 4028738353946369322}
-  showDebug: 1
+  hitBox: {fileID: 3707415398621484041}
+  rejectHitBox: {fileID: 4177244672543203571}
+  renderer: {fileID: 6675312344672702679}
+  BurstParticles: {fileID: 4028738353946369322}
+  showDebug: 0
   isFromPlayer: 0
 --- !u!33 &2897353841229488052
 MeshFilter:

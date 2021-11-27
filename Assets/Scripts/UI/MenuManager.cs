@@ -29,6 +29,7 @@ namespace ToyTanks.UI {
 		public TextMeshProUGUI levelTheme;
 		[Header("Save Slots")]
 		public MenuItem saveSlotMenu;
+		public MenuItem worldOverviewMenu;
 		public Button[] slotButton;
 		public Button[] saveSlotDeleteButton;
 		public TextMeshProUGUI[] slotDifficulty;
@@ -36,6 +37,15 @@ namespace ToyTanks.UI {
 		public TextMeshProUGUI[] slotScore;
 		public TextMeshProUGUI[] slotCompletion;
 		public TextMeshProUGUI[] slotLives;
+		private static MenuManager _instance;
+		public static MenuManager Instance {
+			get {
+				if(_instance == null) {
+					_instance = FindObjectOfType<MenuManager>();
+				}
+				return _instance;
+			}
+		}
 
 		GameObject customLevelButton;
 		bool isLoading;

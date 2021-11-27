@@ -51,3 +51,5 @@ MonoBehaviour:
     value: {fileID: 8300000, guid: b27d69750c8c9a24d9317bf5165d4f7b, type: 3}
   - key: Clapping
     value: {fileID: 8300000, guid: 7ea05ace3a2e32f4caef3953ccaa5a26, type: 3}
+  - key: TrackerBulletBurst
+    value: {fileID: 8300000, guid: db74b7856166c89438b1d883ec43df14, type: 3}

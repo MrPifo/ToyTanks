@@ -41,6 +41,12 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component {
 	/// Use this for initialization.
 	/// </summary>
 	protected virtual void Awake() {
+		if(instance != null && instance.gameObject == gameObject) {
+			instance = this as T;
+			DontDestroyOnLoad(gameObject);
+			Debug.Log("Created Singleton of " + typeof(T).Name);
+			return;
+		}
 		if(instance == null) {
 			instance = this as T;
 			DontDestroyOnLoad(gameObject);

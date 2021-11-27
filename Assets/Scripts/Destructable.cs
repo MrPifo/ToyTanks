@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class Destructable : MonoBehaviour, IHittable {
+public class Destructable : GameEntity, IHittable, IResettable {
 
 	public float explodeForce;
 	public MeshRenderer simpleMesh;
@@ -55,7 +55,7 @@ public class Destructable : MonoBehaviour, IHittable {
 		});
 	}
 
-	public void Reset() {
+	public void ResetState() {
 		GetComponent<Collider>().enabled = true;
 		simpleMesh.enabled = true;
 		AdjustGridSpace(true);

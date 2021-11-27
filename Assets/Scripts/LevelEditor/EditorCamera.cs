@@ -79,7 +79,7 @@ namespace ToyTanks.LevelEditor {
 			var newPos = Camera.transform.position + Offset + moveOffset * amount;
 
 			float newDistance = Vector3.Distance(Vector3.zero, new Vector3(newPos.x, 0, newPos.z));
-			float maxDistance = Vector2.Distance(Vector2.zero, new Vector2(LevelManager.GridBoundary.x * 2.2f, LevelManager.GridBoundary.z * 2.2f));
+			float maxDistance = Vector2.Distance(Vector2.zero, new Vector2(LevelManager.Instance.GridBoundary.x * 2.2f, LevelManager.Instance.GridBoundary.z * 2.2f));
 
 			if(newDistance > maxDistance) {
 				moveOffset -= (Camera.transform.position - Vector3.zero).normalized * Mathf.Clamp(newDistance - 50, 0f, 2f);
