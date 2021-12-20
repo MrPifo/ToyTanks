@@ -90,6 +90,7 @@ TextureImporter:
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -556,6 +557,25 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      muzzleSmoke_11: -3524008858288357991
+      muzzleSmoke_13: -8768926612531833752
+      muzzleSmoke_2: -4490422759789054484
+      muzzleSmoke_20: -1361540926272838148
+      muzzleSmoke_4: -8315603667064419326
+      muzzleSmoke_1: -4975152033842427633
+      muzzleSmoke_6: -8465088378764198195
+      muzzleSmoke_9: -2234253359042853526
+      muzzleSmoke_10: 9027222442012052615
+      muzzleSmoke_15: -7219237154033514545
+      muzzleSmoke_0: -5141215084443461709
+      muzzleSmoke_8: -5970839660849200044
+      muzzleSmoke_3: -26480160656133061
+      muzzleSmoke_7: 1613422550396941148
+      muzzleSmoke_5: -8413717648516236777
+      muzzleSmoke_21: 3344113482640079923
+      muzzleSmoke_14: -4092349318687559592
+      muzzleSmoke_12: -2104153623825449002
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

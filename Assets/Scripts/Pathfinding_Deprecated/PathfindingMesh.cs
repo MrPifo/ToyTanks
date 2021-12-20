@@ -174,7 +174,8 @@ namespace Sperlich.Pathfinding {
 				}
 			}
 		}
-
+		
+		[System.Obsolete]
 		public void SaveGrid() {
 			path = Application.dataPath + "/Resources/" + saveLocation + gridName + ".json";
 			pathMesh.name = gridName;

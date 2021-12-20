@@ -19,7 +19,12 @@ using Sperlich.PrefabManager;
 namespace ToyTanks.LevelEditor {
 	public class LevelEditor : MonoBehaviour {
 
-		public enum Themes { Light, Fir, Basement}
+		public enum Themes {
+			Light = 0,
+			Fir = 1,
+			Basement = 2,
+			Snow = 3,
+		}
 		public enum BlockTypes { Block, Block2, BlockHalf, Block2x2, Triangle, TriangleRoof, Cylinder, Hole, BoxDestructable  }
 
 		[Header("Configuration")]
@@ -148,7 +153,7 @@ namespace ToyTanks.LevelEditor {
 			RefreshUI();
 			GameManager.ShowCursor();
 			Game.IsGameRunningDebug = true;
-			Debug.Log("<color=red>Level Editor has been started.</color>");
+			Logger.Log(Channel.System, "Level Editor has been started.");
 		}
 
 		void ComputeMouseSelection() {
@@ -828,8 +833,8 @@ namespace ToyTanks.LevelEditor {
 			DeletePreview();
 			levelData.blocks = new List<LevelData.BlockData>();
 			levelData.tanks = new List<LevelData.TankData>();
-			levelData.sunLight = new LevelData.LightData(levelManager.sunLight);
-			levelData.spotLight = new LevelData.LightData(levelManager.spotLight);
+			// HDRP Relate: levelData.sunLight = new LevelData.LightData(levelManager.sunLight);
+			// HDRP Relate: levelData.spotLight = new LevelData.LightData(levelManager.spotLight);
 
 			foreach(var b in FindObjectsOfType<LevelBlock>()) {
 				var data = new LevelData.BlockData() {
@@ -913,8 +918,8 @@ namespace ToyTanks.LevelEditor {
 			levelData.tanks = new List<LevelData.TankData>();
 			levelData.gridSize = GridSize;
 			levelData.theme = (Themes)themesDropdown.value;
-			levelData.sunLight = new LevelData.LightData(levelManager.sunLight);
-			levelData.spotLight = new LevelData.LightData(levelManager.spotLight);
+			// HDRP Relate: levelData.sunLight = new LevelData.LightData(levelManager.sunLight);
+			// HDRP Relate: levelData.spotLight = new LevelData.LightData(levelManager.spotLight);
 
 			foreach(GameEntity e in FindObjectsOfType<GameEntity>()) {
 				if(e is TankBase) {
@@ -943,11 +948,11 @@ namespace ToyTanks.LevelEditor {
 			string json = JsonConvert.SerializeObject(levelData, Formatting.Indented);
 			File.WriteAllText(GamePaths.GetOfficialLevelPath(levelData), json);
 			GameManager.CurrentLevel = levelData;
-			Debug.Log("Saved to: " + GamePaths.GetOfficialLevelPath(levelData));
+			Logger.Log(Channel.SaveGame, "Official level saved to: " + GamePaths.GetOfficialLevelPath(levelData));
 		}
 
 		public void LoadOfficialLevel(ulong levelId) {
-			Debug.Log("Loading Level: " + levelId);
+			Logger.Log(Channel.Loading, "Loading official level: " + levelId);
 			ClearLevel();
 			LoadThemeAssets();
 			LoadTanks();
@@ -972,8 +977,8 @@ namespace ToyTanks.LevelEditor {
 				RefreshUI();
 			}
 
-			levelManager.ApplyLightData(levelData.sunLight, levelManager.sunLight);
-			levelManager.ApplyLightData(levelData.spotLight, levelManager.spotLight);
+			// HDRP Relate: levelManager.ApplyLightData(levelData.sunLight, levelManager.sunLight);
+			// HDRP Relate: levelManager.ApplyLightData(levelData.spotLight, levelManager.spotLight);
 			LevelLightmapper.SwitchLightmaps(levelData.levelId);
 			HasLevelBeenLoaded = true;
 		}
@@ -997,8 +1002,8 @@ namespace ToyTanks.LevelEditor {
 				PlaceLoadedTank(tank);
 			}
 
-			levelManager.ApplyLightData(levelData.sunLight, levelManager.sunLight);
-			levelManager.ApplyLightData(levelData.spotLight, levelManager.spotLight);
+			// HDRP Relate: levelManager.ApplyLightData(levelData.sunLight, levelManager.sunLight);
+			// HDRP Relate: levelManager.ApplyLightData(levelData.spotLight, levelManager.spotLight);
 			themesDropdown.value = (int)levelData.theme;
 			RefreshUI();
 		}

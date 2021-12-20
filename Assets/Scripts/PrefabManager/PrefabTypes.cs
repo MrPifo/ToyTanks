@@ -7,5 +7,7 @@ namespace Sperlich.PrefabManager {
 		MortarPellet,
 		TankTrack,
 		ExplosionCrater,
+		GraphicSettings,
+		InputManager
 	}
 }

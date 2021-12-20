@@ -6,7 +6,7 @@ using UnityEngine;
 public class AudioPlayer {
 
 	public static void Play(string track, AudioType audioType, float randomMinPitch = 1f, float randomMaxPitch = 1f, float sourceVolume = 1f) {
-		if(AudioManager.instance != null && AudioManager.instance.HasClip(track)) {
+		if(AudioManager.instance != null && track != "" && AudioManager.instance.HasClip(track)) {
 			float globalVolume = GraphicSettings.MainVolume / 100f * sourceVolume;
 			switch(audioType) {
 				case AudioType.Default:
@@ -23,3 +23,4 @@ public class AudioPlayer {
 		}
 	}
 }
+

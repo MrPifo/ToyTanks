@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db48f8a6d5cec4b459e281d13d07025f, type: 3}
+  m_Name: Snow
+  m_EditorClassIdentifier: 
+  theme: 3
+  floorMaterial: {fileID: 2100000, guid: e5c7225964265a943ba971264039beb8, type: 2}
+  SSR: 0
+  isDark: 0
+  assets:
+  - block: 0
+    prefab: {fileID: 1866698662109982046, guid: 5678ed85a6e1478468847d4824de0d90,
+      type: 3}
+    material: {fileID: 2100000, guid: 3e621d6719800ca48b269b0a1dcf6ffb, type: 2}
+    preview: {fileID: 21300000, guid: 21ca65544cae7334e9a4eb01d46ef79a, type: 3}
+  - block: 1
+    prefab: {fileID: 1866698662109982046, guid: 5678ed85a6e1478468847d4824de0d90,
+      type: 3}
+    material: {fileID: 2100000, guid: 1a7209f30d171ce45bda851b1dd7c8b6, type: 2}
+    preview: {fileID: 21300000, guid: 7f9be332e58936c4da96155f8eba392b, type: 3}
+  - block: 2
+    prefab: {fileID: 3320463251822578490, guid: be67c840f6bcf5a4a8d7cf0b542d2535,
+      type: 3}
+    material: {fileID: 2100000, guid: 55cb3ccba54d75047a976abf5d651bb1, type: 2}
+    preview: {fileID: 21300000, guid: cc576ba2e9cd699409e467ebe95f896f, type: 3}
+  - block: 3
+    prefab: {fileID: 7483744415211117840, guid: 949e6f151c2546f46ba22e56b2f363b5,
+      type: 3}
+    material: {fileID: 2100000, guid: a3f1173c5561d024e8af8217f4bffff1, type: 2}
+    preview: {fileID: 21300000, guid: 21ca65544cae7334e9a4eb01d46ef79a, type: 3}
+  - block: 4
+    prefab: {fileID: 2631212715744512497, guid: 33bdc8ab7bec3b046939a594d40ef708,
+      type: 3}
+    material: {fileID: 2100000, guid: 4bb8b84752e43634faed0906d30f5813, type: 2}
+    preview: {fileID: 21300000, guid: f389cfb8c9b728240801ced1c9311f83, type: 3}
+  - block: 5
+    prefab: {fileID: 1111320201805977157, guid: ce4099b341ce6f44eb5046d23ecbeae0,
+      type: 3}
+    material: {fileID: 2100000, guid: 93ff4e1d21c163f4c8fdaf83b14e77f0, type: 2}
+    preview: {fileID: 21300000, guid: da44c62d8e671bf448cb55f1a173debf, type: 3}
+  - block: 6
+    prefab: {fileID: 9191848112967696687, guid: 0ff7481d27b35464e86aee1e90836304,
+      type: 3}
+    material: {fileID: 2100000, guid: 5b423b66590b7ea4ca0c7ba0a00aa581, type: 2}
+    preview: {fileID: 21300000, guid: 088c9ea112317d743b2300084a20d1bd, type: 3}
+  - block: 7
+    prefab: {fileID: 196094488514183709, guid: 058e87819c871a74b914c712115d625c, type: 3}
+    material: {fileID: 2100000, guid: ac69a2dd09d29eb4b881ba91c528f734, type: 2}
+    preview: {fileID: 21300000, guid: a275a49ed19216c4cbe2f8f75c1953a8, type: 3}
+  - block: 8
+    prefab: {fileID: 5197318303877819354, guid: f4c41c67f36eb744ca654510f367c371,
+      type: 3}
+    material: {fileID: 2100000, guid: aef8da6f9104c924cafccb55a1818dd4, type: 2}
+    preview: {fileID: 21300000, guid: 10123b95f28344d44bca59780fe81521, type: 3}

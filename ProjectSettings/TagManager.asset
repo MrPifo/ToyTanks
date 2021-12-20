@@ -27,6 +27,23 @@ TagManager:
   - Destructable
   - TrackContainer
   - Shield
+  - ShadowQualityUI
+  - TextureQualityUI
+  - AntialisingQualityUI
+  - MainVolumeUI
+  - SoundEffectsVolumeUI
+  - AmbientOcclusionQualityUI
+  - PerformanceModeUI
+  - ShootTouchRegion
+  - MoveJoystick
+  - AimJoystick
+  - PlayerMouse
+  - TouchPad
+  - ControlScheme
+  - ControlSchemeUI
+  - WindowModeUI
+  - WindowResolutionUI
+  - VsyncUI
   layers:
   - Default
   - TransparentFX

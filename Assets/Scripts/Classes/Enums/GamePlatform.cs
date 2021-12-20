@@ -1,0 +1,1 @@
+﻿public enum GamePlatform { Desktop, Mobile }

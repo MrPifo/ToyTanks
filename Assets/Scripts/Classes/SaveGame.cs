@@ -5,19 +5,30 @@ using System;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
-
+using System.Runtime.InteropServices;
 
 public static class SaveGame {
 
 	public static SaveV1 SaveInstance { get; set; }
 	public static Formatting JsonFormatting => Formatting.Indented;
 
+	private static void WriteSaveGame(string json) {
+		using(StreamWriter sw = new StreamWriter(GamePaths.SaveGamePath, false, System.Text.Encoding.UTF8)) {
+			sw.Write(json);
+			sw.Flush();
+		}
+	}
+	private static string ReadSaveGame() {
+		using(StreamReader sr = new StreamReader(GamePaths.SaveGamePath, System.Text.Encoding.Unicode)) {
+			return sr.ReadToEnd();
+		}
+	}
 	public static void GameStartUp() {
-		if(File.Exists(GamePaths.SaveGamePath) == false) {
+		if (ValidateSaveGame() == false) {
 			SaveInstance = CreateFreshSaveGame();
-			var json = JsonConvert.SerializeObject(SaveInstance, JsonFormatting);
-			using(File.Create(GamePaths.SaveGamePath)) {}
-			File.WriteAllText(GamePaths.SaveGamePath, json);
+			WriteSaveGame(JsonConvert.SerializeObject(SaveInstance, JsonFormatting));
+
+			Logger.Log(Channel.SaveGame, "SaveGame file has been created.");
 		} else {
 			LoadGame();
 		}
@@ -47,7 +58,7 @@ public static class SaveGame {
 
 	public static void CreateFreshCampaign(Campaign.Difficulty difficulty, byte saveSlot) {
 		Campaign campaign;
-		Debug.Log("Creating new campaign with difficulty " + difficulty.ToString() + " on save slot " + saveSlot);
+		Logger.Log(Channel.SaveGame, "Creating new campaign with difficulty " + difficulty.ToString() + " on save slot " + saveSlot);
 		switch(difficulty) {
 			case Campaign.Difficulty.Easy:
 				campaign = new Campaign() {
@@ -106,33 +117,66 @@ public static class SaveGame {
 	}
 
 	public static void Save() {
-		if(File.Exists(GamePaths.SaveGamePath)) {
-			var json = JsonConvert.SerializeObject(SaveInstance, JsonFormatting);
-			File.WriteAllText(GamePaths.SaveGamePath, json);
-		}
+		if(ValidateSaveGame()) {
+			try {
+				var json = JsonConvert.SerializeObject(SaveInstance, JsonFormatting);
+				WriteSaveGame(json);
+
+				Logger.Log(Channel.SaveGame, "Game has been saved.");
+			} catch (Exception e) {
+				Logger.LogError(Channel.SaveGame, "Something went wrong saving to the SaveGame file.", e);
+			}
+		} else {
+			Logger.Log(Channel.SaveGame, "No Savegame file has been found.");
+        }
 	}
 
 	public static void LoadGame() {
-		if(File.Exists(GamePaths.SaveGamePath)) {
-			var txt = File.ReadAllText(GamePaths.SaveGamePath);
-			var json = JObject.Parse(txt);
-			var version = json[nameof(ISaveGame.SaveGameVersion)].Value<int>();
-			Debug.Log("Detected SaveGame version: " + version);
+		if(ValidateSaveGame()) {
+			try {
+				Logger.Log(Channel.SaveGame, "Loading SaveGame.");
+				JObject json = JObject.Parse(ReadSaveGame());
+				int version = json[nameof(ISaveGame.SaveGameVersion)].Value<int>();
+				Logger.Log(Channel.SaveGame, "Detected SaveGame version: " + version);
 
-			switch(version) {
-				case 1: {
-					SaveInstance = json.ToObject<SaveV1>();
-					SaveInstance.Worlds.AddRange(CheckAddWorlds());
-					Save();
+				switch (version) {
+					case 1: {
+							SaveInstance = json.ToObject<SaveV1>();
+							SaveInstance.Worlds.AddRange(CheckAddWorlds());
+							Save();
+						}
+						break;
+
+					default:
+						Logger.Log(Channel.SaveGame, Priority.Error, $"Current SaveGame: v{version} has no compatibility with the game!");
+						SaveInstance = CreateFreshSaveGame();
+						Save();
+						break;
 				}
-				break;
-
-				default:
-					Debug.LogError($"Current SaveGame: v{version} has no compatibility with the game!");
-					SaveInstance = CreateFreshSaveGame();
-					Save();
-					break;
+			} catch (Exception e) {
+				Logger.LogError(Channel.SaveGame, "Something went wrong loading the SaveGame file.", e);
 			}
+		} else {
+			Logger.Log(Channel.SaveGame, "No SaveGame file has been found.");
+        }
+	}
+
+	public static bool ValidateSaveGame() {
+		if(File.Exists(GamePaths.SaveGamePath) == false) {
+			Logger.Log(Channel.SaveGame, "No Savegame file has been found.");
+			return false;
+		}
+		FileInfo info = new FileInfo(GamePaths.SaveGamePath);
+		if (info.Length == 0) {
+			Logger.Log(Channel.SaveGame, "Savegame file is empty.");
+			return false;
+		}
+		try {
+			JObject json = JObject.Parse(ReadSaveGame());
+			return true;
+		} catch (Exception e) {
+			Logger.LogError(Channel.SaveGame, "Failed to parse Savegame file.", e);
+			return false;
 		}
 	}
 

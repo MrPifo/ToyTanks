@@ -3,37 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using SimpleMan.Extensions;
+using System;
 
 namespace Sperlich.PrefabManager {
 	public class PrefabManager : Singleton<PrefabManager> {
 
-		public enum InitializeMethod { Awake, Start, Script }
-
-		public InitializeMethod initalizeMethod;
 		[SerializeField] PrefabData prefabData;
 		List<PoolData> pools;
 		bool hasBeenInitialized = false;
 
 		protected override void Awake() {
 			base.Awake();
-			if(initalizeMethod == InitializeMethod.Awake && hasBeenInitialized == false) {
-				CreatePools();
-			}
+			Initialize();
 		}
 
-		private void Start() {
-			if(initalizeMethod == InitializeMethod.Start && hasBeenInitialized == false) {
-				CreatePools();
-			}
-		}
 
 		/// <summary>
 		/// Call this manually intialize the Prefab Pools
 		/// </summary>
 		public static void Initialize() {
-			if(Instance.initalizeMethod == InitializeMethod.Script && Instance.hasBeenInitialized == false) {
+			if (Instance.hasBeenInitialized == false) {
 				Instance.CreatePools();
-				UnityEngine.Debug.Log("Prefabmanager has been initialized.");
+				Logger.Log(Channel.System, "Prefabmanager intialized.");
 			}
 		}
 
@@ -69,7 +60,7 @@ namespace Sperlich.PrefabManager {
 				}
 			}
 			Instance.pools = new List<PoolData>();
-			UnityEngine.Debug.Log("Prefabmanager has been reset.");
+			Logger.Log(Channel.System, "Prefabmanager has been reset.");
 		}
 
 		/// <summary>
@@ -81,9 +72,14 @@ namespace Sperlich.PrefabManager {
 		/// <param name="rotation"></param>
 		/// <returns></returns>
 		public static GameObject Instantiate(PrefabTypes type, Transform parent, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion()) {
-			GameObject o = Instantiate(GetPrefabData(type).prefab, position, rotation, parent);
-			o.SetActive(true);
-			return o;
+			try {
+				GameObject o = Instantiate(GetPrefabData(type).prefab, position, rotation, parent);
+				o.SetActive(true);
+				return o;
+			} catch (Exception e) {
+				Logger.LogError(Channel.Loading, "PrefabManager failed to instantiate " + type.ToString(), e);
+				throw e;
+            }
 		}
 		/// <summary>
 		/// Instantiates and returns the GameObject.
@@ -124,14 +120,19 @@ namespace Sperlich.PrefabManager {
 		/// <param name="rotation"></param>
 		/// <returns></returns>
 		public static GameObject Spawn(PrefabTypes type, Transform parent, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion()) {
-			PoolData pool = GetPool(type);
-			PoolData.PoolObject poolObject = pool.FetchFreePoolObject();
-			if(parent != null) {
-				poolObject.storedObject.transform.SetParent(parent);
+			try {
+				PoolData pool = GetPool(type);
+				PoolData.PoolObject poolObject = pool.FetchFreePoolObject();
+				if (parent != null) {
+					poolObject.storedObject.transform.SetParent(parent);
+				}
+				poolObject.storedObject.transform.SetPositionAndRotation(position, rotation);
+				poolObject.storedObject.SetActive(true);
+				return poolObject.storedObject;
+			} catch(Exception e) {
+				Logger.LogError(Channel.Loading, "PrefabManager failed to spawn " + type.ToString(), e);
+				throw e;
 			}
-			poolObject.storedObject.transform.SetPositionAndRotation(position, rotation);
-			poolObject.storedObject.SetActive(true);
-			return poolObject.storedObject;
         }
 		/// <summary>
 		/// Returns the required GameObject without creating a new one. If no stored GameObject is available though, a new one will be generated and stored for reuse.
@@ -169,17 +170,30 @@ namespace Sperlich.PrefabManager {
 		/// <param name="gameobject"></param>
 		/// <param name="delay"></param>
 		public static void FreeGameObject(IRecycle gameobject, float delay = 0f) {
-			if(delay == 0) {
-				PoolData pool = GetPool(gameobject.PoolObject.type);
-				pool.FreeGameObject(gameobject.PoolObject);
-			} else {
-				Instance.Delay(delay, () => {
+			try {
+				if (delay == 0) {
 					PoolData pool = GetPool(gameobject.PoolObject.type);
 					pool.FreeGameObject(gameobject.PoolObject);
-				});
+				} else {
+					Instance.Delay(delay, () => {
+						PoolData pool = GetPool(gameobject.PoolObject.type);
+						pool.FreeGameObject(gameobject.PoolObject);
+					});
+				}
+			} catch(Exception e) {
+				Logger.LogError(Channel.Loading, "PrefabManager failed to free the GameObject " + gameobject.PoolObject.type.ToString(), e);
+				throw e;
 			}
 		}
 
+		public static bool ContainsPrefab(string name) {
+			foreach(var e in Enum.GetNames(typeof(PrefabTypes))) {
+				if(e.ToLower() == name) {
+					return true;
+				}
+			}
+			return false;
+		}
 		public static PrefabData.PrefabInfo GetPrefabData(PrefabTypes prefabType) => Instance.prefabData.GetPrefabInfo(prefabType);
 		public static PoolData GetPool(PrefabTypes prefabType) => Instance.pools.Find(p => p.prefabInfo.type == prefabType);
 	}

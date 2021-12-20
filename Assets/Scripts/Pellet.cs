@@ -135,6 +135,7 @@ public class Pellet : MonoBehaviour, IDamageEffector, IRecycle {
 	public void Recycle() {
 		pelletBlobShadow.Show();
 		mesh.Show();
+		transform.localScale = Vector3.one;
 		PrefabManager.FreeGameObject(this);
 	}
 }

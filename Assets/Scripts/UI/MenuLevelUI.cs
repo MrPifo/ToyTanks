@@ -116,17 +116,17 @@ namespace ToyTanks.UI {
 			if(isUnlocked) {
 				rect.Color = hoverColor;
 				isSelected = true;
-				Game.SetCursor("pointer");
 				transform.DOScale(1.4f, 0.2f).SetEase(Ease.OutCubic);
+				Game.SetCursor("pointer");
 			}
 		}
 
 		public void OnMouseExit() {
 			if(isUnlocked) {
-				Game.SetCursor("default");
 				rect.Color = unlockColor;
 				isSelected = false;
 				transform.DOScale(1.35f, 0.2f).SetEase(Ease.OutCubic);
+				Game.SetCursor("default");
 			}
 		}
 

@@ -18,7 +18,7 @@ public class BossUI : MonoBehaviour {
 			if(instance == null) {
 				instance = Instantiate(Resources.Load<GameObject>("BossCanvas")).GetComponent<BossUI>();
 				instance.name = "BossUI";
-				Debug.Log("Created Singleton of " + typeof(BossUI).Name);
+				Logger.Log(Channel.UI, "Created Singleton of " + typeof(BossUI).Name);
 			}
 			return instance;
 		}

@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using TMPro;
-
 using DG.Tweening;
 using MoreMountains.Feedbacks;
-using UnityEngine.Rendering.HighDefinition;
+// HDRP Related: using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
 
 public class LevelUI : MonoBehaviour {
@@ -21,8 +20,8 @@ public class LevelUI : MonoBehaviour {
 	public TextMeshProUGUI playTime;
 	public CanvasGroup loadingScreenCanvasGroup;
 	public Canvas canvas;
-	[SerializeField] CustomPassVolume outlinePass;
-	public Outline OutlinePass => (Outline)outlinePass.customPasses[0];
+	// HDRP Related: [SerializeField] CustomPassVolume outlinePass;
+	// HDRP Related: public Outline OutlinePass => (Outline)outlinePass.customPasses[0];
 
 	void Awake() {
 		gameplay.alpha = 0f;

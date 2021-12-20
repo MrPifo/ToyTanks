@@ -69,12 +69,11 @@ public class GameManager : Singleton<GameManager> {
 	private static readonly System.Random RandomGenerator = new System.Random();
 
 	protected override void Awake() {
+		Game.Initialize();
 		base.Awake();
 		PrefabManager.ResetPrefabManager();
 		var menu = FindObjectOfType<ToyTanks.UI.MenuManager>();
 		menu.Initialize();
-		GraphicSettings.Initialize();
-
 		if(GameBooted == false) {
 			menu.mainMenu.FadeIn();
 			menu.FadeOutBlur();
@@ -132,7 +131,7 @@ public class GameManager : Singleton<GameManager> {
 	public void StartCampaign(byte saveSlot) {
 		if(!isLoading) {
 			LoadAllAvailableLevels();
-			Debug.Log("Starting campaign on save slot " + saveSlot);
+			Logger.Log(Channel.SaveGame, "Starting campaign on save slot " + saveSlot);
 			var camp = SaveGame.GetCampaign(saveSlot);
 			CurrentMode = GameMode.Campaign;
 			LevelId = camp.levelId;
@@ -192,8 +191,8 @@ public class GameManager : Singleton<GameManager> {
 			transitionScreen.SetSingleMessage(message);
 		}
 		yield return new WaitUntil(() => transitionScreen.onBannerFadeInFinished);
-		yield return levelManager.LoadAndBuildMap(CurrentLevel, totalLoadingFadeDuration);
 		PrefabManager.Initialize();
+		yield return levelManager.LoadAndBuildMap(CurrentLevel, totalLoadingFadeDuration);
 
 		transitionScreen.FadeOutBanner(bannerFadeDuration);
 		yield return new WaitUntil(() => transitionScreen.onBannerFadeOutFinished);
@@ -251,13 +250,17 @@ public class GameManager : Singleton<GameManager> {
 	}
 
 	public static void ShowCursor() {
-		Cursor.lockState = CursorLockMode.None;
-		Cursor.visible = true;
+		if (Game.Platform == GamePlatform.Desktop) {
+			Cursor.lockState = CursorLockMode.None;
+			Cursor.visible = true;
+		}
 	}
 
 	public static void HideCursor() {
-		Cursor.lockState = CursorLockMode.Confined;
-		Cursor.visible = false;
+		if (Game.Platform == GamePlatform.Desktop) {
+			Cursor.lockState = CursorLockMode.Confined;
+			Cursor.visible = false;
+		}
 	}
 
 	// Helpers

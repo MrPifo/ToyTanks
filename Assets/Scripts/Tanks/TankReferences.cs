@@ -3,7 +3,7 @@ using Shapes;
 using Sperlich.PrefabManager;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
+// HDRP Relate: using UnityEngine.Rendering.HighDefinition;
 
 public class TankReferences : MonoBehaviour {
 
@@ -17,8 +17,8 @@ public class TankReferences : MonoBehaviour {
 	public Transform bulletOutput;
 	public Transform billboardHolder;
 	public Transform lightHolder;
-	public HDAdditionalLightData frontLight;
-	public HDAdditionalLightData backLight;
+	// HDRP Relate: public HDAdditionalLightData frontLight;
+	// HDRP Relate: public HDAdditionalLightData backLight;
 	public GameObject blobShadow;
 	public GameObject tankTrack;
 	public GameObject destroyFlash; 

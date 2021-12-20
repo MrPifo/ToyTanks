@@ -1,3 +1,4 @@
+using Sperlich.PrefabManager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,13 +45,13 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component {
 		if(instance != null && instance.gameObject == gameObject) {
 			instance = this as T;
 			DontDestroyOnLoad(gameObject);
-			Debug.Log("Created Singleton of " + typeof(T).Name);
+			Logger.Log(Channel.System, "Created Singleton of " + typeof(T).Name);
 			return;
 		}
 		if(instance == null) {
 			instance = this as T;
 			DontDestroyOnLoad(gameObject);
-			Debug.Log("Created Singleton of " + typeof(T).Name);
+			Logger.Log(Channel.System, "Created Singleton of " + typeof(T).Name);
 		} else {
 			Destroy(gameObject);
 		}

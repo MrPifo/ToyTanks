@@ -11,7 +11,7 @@ public class DebugPlay : MonoBehaviour {
 	public static bool isDebug;
 
 	private void Start() {
-		GraphicSettings.Initialize();
+		Game.Initialize();
 		GameManager.CurrentLevel = new LevelData() { gridSize = GridSizes.Size_17x14, isNight = false };
 		Game.showTankDebugs = showDebug;
 		Game.IsGameRunning = true;
@@ -21,6 +21,7 @@ public class DebugPlay : MonoBehaviour {
 
 		isDebug = true;
 		GameManager.HideCursor();
+		PlayerInputManager.ShowControls();
 		FindObjectOfType<GameCamera>().camSettings.orthograpicSize = 19;
 		FindObjectOfType<GameCamera>().ChangeState(GameCamera.GameCamState.Focus);
 		Game.CreateAIGrid(gridSize, mask, true);

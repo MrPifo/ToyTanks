@@ -21,9 +21,11 @@ public class LevelFeedbacks : MonoBehaviour {
 	public void PlayBulletReflect() => bulletReflect.PlayFeedbacks();
 	public void PlayBulletExplode() => bulletExplode.PlayFeedbacks();
 	public void TankExplode() {
-		tankExplode.PlayFeedbacks();
+		// TODO HDRP Relate: tankExplode.PlayFeedbacks();
 	}
-	public void PlayerDead() => playerExplode.PlayFeedbacks();
+	public void PlayerDead() {
+		// TODO HDRP Relate: playerExplode.PlayFeedbacks();
+	}
 	public void PlayScore() => playerScore.PlayFeedbacks();
 	public void PlayLives() => playerLives.PlayFeedbacks();
 	public void FadeInGameplayUI() => uiFadeIn.PlayFeedbacks();

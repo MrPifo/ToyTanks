@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
 using CommandTerminal;
+using Sperlich.PrefabManager;
 
 // This class holds all the Games information
 // - Existing Worlds
@@ -45,17 +46,20 @@ public static class Game {
 			rot = new Vector3(60, 0, 0),
 		}),
 
-		new World(global::Worlds.Basement, new Level[10] {
+		new World(global::Worlds.Basement, new Level[1] {
 			new Level(0, 21),
-			new Level(1, 22),
-			new Level(2, 23),
-			new Level(3, 24),
-			new Level(4, 25),
-			new Level(5, 26),
-			new Level(6, 27),
-			new Level(7, 28),
-			new Level(8, 29),
-			new Level(9, 30, true),
+		}, new MenuCameraSettings() {
+			orthograpicSize = 22,
+			pos = new Vector3(80, -175, -14),
+			rot = new Vector3(60, 0, 0),
+		}),
+
+		new World(global::Worlds.SnowyLands, new Level[5] {
+			new Level(0, 30),
+			new Level(0, 31),
+			new Level(0, 32),
+			new Level(0, 33),
+			new Level(0, 34),
 		}, new MenuCameraSettings() {
 			orthograpicSize = 22,
 			pos = new Vector3(80, -175, -14),
@@ -71,6 +75,7 @@ public static class Game {
 	public static bool showGrid;
 	public static bool showTankDebugs;
 	public static bool isPlayerGodMode;
+	public static bool ApplicationInitialized { get; set; }
 	/// <summary>
 	/// True when hit pause within a level.
 	/// </summary>
@@ -87,6 +92,8 @@ public static class Game {
 	/// True when a level has been started and the player is allowed to move.
 	/// </summary>
 	public static bool IsGamePlaying { get; set; }
+	public static GamePlatform Platform { get; set; }
+	public static PlayerControlSchemes PlayerControlScheme { get; set; } = PlayerControlSchemes.DoubleDPad;
 
 	public class World {
 		public World(Worlds worldType, Level[] levels, MenuCameraSettings menuCameraSettings) {
@@ -119,8 +126,52 @@ public static class Game {
 		public bool IsBoss => isBoss;
 	}
 
+	/// <summary>
+	/// Must be called whenever the game is started.
+	/// </summary>
+	public static void Initialize() {
+		if(ApplicationInitialized == false) {
+			Logger.FileLogPath = Application.persistentDataPath + "/log.txt";
+			Logger.ClearLogFile();
+			Logger.Log(Channel.Default, "### Begin of the logfile, continue starting the game. ###");
+
+			CheckPlatform();
+			PrefabManager.Instantiate(PrefabTypes.InputManager);
+			Logger.Log(Channel.System, "InputManager has been initialized.");
+
+			PrefabManager.Instantiate(PrefabTypes.GraphicSettings);
+			GraphicSettings.Initialize();
+			Logger.Log(Channel.System, "GraphicsManager has been initialized.");
+
+			SaveGame.GameStartUp();
+
+			PlayerInputManager.HideControls();
+			ApplicationInitialized = true;
+        }
+    }
+	public static void CheckPlatform() {
+#if UNITY_ANDROID
+		Platform = GamePlatform.Mobile;
+#endif
+#if UNITY_STANDALONE
+		Platform = GamePlatform.Desktop;
+#endif
+		Logger.Log(Channel.Platform, "Game has been started in " + Platform + " mode.");
+	}
+
+	/// <summary>
+	/// Change the player input control scheme. Only available for mobile platform.
+	/// </summary>
+	public static void ChangeControls(PlayerControlSchemes controlScheme) {
+		if(Platform == GamePlatform.Mobile) {
+			PlayerControlScheme = controlScheme;
+			Logger.Log(Channel.Gameplay, "Player control scheme has been switched to " + controlScheme.ToString());
+		}
+    }
+
 	// Generation Methods
 	public static void CreateAIGrid(GridSizes size, LayerMask mask, bool visualize = false) {
+		Logger.Log(Channel.System, $"Generating AI Pathfinding Grid ({size.ToString()})");
 		var existingGrid = UnityEngine.Object.FindObjectOfType<AIGrid>();
 		if(existingGrid != null) {
 			UnityEngine.Object.Destroy(existingGrid.gameObject);
@@ -144,13 +195,13 @@ public static class Game {
 			try {
 				Cursor.SetCursor(Cursors[cursor.ToLower()], Vector2.zero, CursorMode.Auto);
 			} catch {
-				Debug.LogError("Failed setting Cursor Texture!");
+				Logger.Log(Channel.Rendering, Priority.Error, "Failed setting Cursor Texture!");
 			}
 		} else {
 			try {
 				Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
 			} catch {
-				Debug.LogError("Failed setting Cursor Texture to null");
+				Logger.Log(Channel.Rendering, Priority.Error, "Failed setting Cursor Texture to null");
 			}
 		}
 	}

@@ -11,12 +11,22 @@ public class GameCamera : Singleton<GameCamera> {
 	// Overview - Camera is static and views the whole playground
 	// Focus - Camera follows the player
 
+	public float debugSpeed;
 	private float preferredOrthographicSize;
 	public float focusOnPlayerStrength = 1f;
 	public float focusSmoothSpeed = 1;
 	public float focusZoomSmoothSpeed = 0.5f;
 	public float minOrthographicSize = 9;
 	public float maxOrthographicSize = 19;
+
+	// Debug
+	bool moveUp;
+	bool moveRight;
+	bool moveLeft;
+	bool moveDown;
+	bool perspective;
+
+
 	public float MaxOrthoSize => preferredOrthographicSize < maxOrthographicSize ? preferredOrthographicSize : maxOrthographicSize;
 	public CameraShaker Shaker { get; set; }
 	public Camera Camera { get; set; }
@@ -53,7 +63,52 @@ public class GameCamera : Singleton<GameCamera> {
 				FollowPlayer();
 				break;
 		}
+
+
+		// Debug
+		if(moveLeft) {
+			transform.position += new Vector3(-1, 0, 0) * debugSpeed * Time.deltaTime;
+		}
+		if(moveRight) {
+			transform.position += new Vector3(1, 0, 0) * debugSpeed * Time.deltaTime;
+		}
+		if(moveDown) {
+			transform.position += new Vector3(0, 0, -1) * debugSpeed * Time.deltaTime;
+		}
+		if(moveUp) {
+			transform.position += new Vector3(0, 0, 1) * debugSpeed * Time.deltaTime;
+		}
 	}
+
+	#region Debug
+	public void MoveLeft() {
+		moveLeft = !moveLeft;
+	}
+	public void MoveRight() {
+		moveRight = !moveRight;
+	}
+	public void MoveForward() {
+		moveUp = !moveUp;
+	}
+	public void MoveBackward() {
+		moveDown = !moveDown;
+	}
+	public void ZoomIn() {
+		Camera.orthographicSize += 0.2f;
+	}
+	public void ZoomOut() {
+		Camera.orthographicSize -= 0.2f;
+	}
+	public void SwitchPerspective() {
+		if(perspective) {
+			Camera.orthographic = false;
+			perspective = false;
+		} else {
+			Camera.orthographic = true;
+			perspective = true;
+		}
+	}
+	#endregion
 
 	void FollowPlayer() {
 		if(Player != null) {

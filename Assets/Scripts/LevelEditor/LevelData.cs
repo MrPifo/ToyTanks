@@ -3,7 +3,7 @@ using Sperlich.Types;
 using System.Collections.Generic;
 using ToyTanks.LevelEditor;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
+// HDRP Related: using UnityEngine.Rendering.HighDefinition;
 
 [System.Serializable]
 public class LevelData {
@@ -40,13 +40,13 @@ public class LevelData {
 		public Int3 pos;
 		public Int3 rotation;
 		public int intensity;
-
+		/* HDRP Related: 
 		public LightData(HDAdditionalLightData light) {
 			if(light != null) {
 				pos = new Int3(light.transform.position);
 				rotation = new Int3(light.transform.eulerAngles);
 				intensity = (int)light.intensity;
 			}
-		}
+		}*/
 	}
 }

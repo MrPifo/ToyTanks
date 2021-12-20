@@ -9,7 +9,7 @@ using DG.Tweening;
 using System.Collections.Generic;
 using ToyTanks.LevelEditor;
 using EpPathFinding.cs;
-using UnityEngine.Rendering.HighDefinition;
+// HDRP Related: using UnityEngine.Rendering.HighDefinition;
 using Sperlich.PrefabManager;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -108,8 +108,8 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public Transform bulletOutput => References.bulletOutput;
 	public Transform billboardHolder => References.billboardHolder;
 	public Transform lightHolder => References.lightHolder;
-	public HDAdditionalLightData frontLight => References.frontLight;
-	public HDAdditionalLightData backLight => References.backLight;
+	// HDRP Relate: public HDAdditionalLightData frontLight => References.frontLight;
+	// HDRP Relate: public HDAdditionalLightData backLight => References.backLight;
 	public GameObject blobShadow => References.blobShadow;
 	public GameObject tankTrack => References.tankTrack;
 	public GameObject destroyFlash => References.destroyFlash;
@@ -134,8 +134,8 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 		headMats = tankHead.GetComponent<MeshRenderer>().sharedMaterials;
 		bodyMats = tankBody.GetComponent<MeshRenderer>().sharedMaterials;
 		healthPoints = tankAsset.health;
-		frontLightIntensity = frontLight.intensity;
-		backLightIntensity = backLight.intensity;
+		// HDRP Relate: frontLightIntensity = frontLight.intensity;
+		// HDRP Relate: backLightIntensity = backLight.intensity;
 		healthPointPrefab = healthBar.transform.GetChild(0).gameObject;
 		healthPointPrefab.SetActive(false);
 		TurnLightsOff();
@@ -178,18 +178,23 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public void Move(Vector2 inputDir) {
 		moveDir = new Vector3(inputDir.x, 0, inputDir.y);
 		rig.velocity = Vector3.zero;
-		float temp = Mathf.Sign(Vector3.Dot(moveDir.normalized, rig.transform.forward));
+		float dirFactor = Mathf.Sign(Vector3.Dot(moveDir.normalized, rig.transform.forward));
 		if(disable2DirectionMovement) {
-			temp = 1;
+			dirFactor = 1;
 		}
-		AdjustRotation(moveDir * temp);
+		AdjustRotation(moveDir * dirFactor);
 
-		var movePos = temp * moveSpeed * Time.deltaTime * rig.transform.forward;
+		float maxDir = Mathf.Max(Mathf.Abs(inputDir.x), Mathf.Abs(inputDir.y));
+		if(maxDir > 0.7f) {
+			maxDir = 1;
+		}
+		dirFactor *= maxDir;
+		var movePos = dirFactor * moveSpeed * Time.deltaTime * rig.transform.forward;
 		//bool moveBlocked = Physics.Raycast(rig.position, moveDir, out RaycastHit blockHit, 2, obstacleLayers);
 		if(!isShootStunned && canMove) {
 			rig.MovePosition(rig.position + movePos);
 		}
-		TrackTracer(temp);
+		TrackTracer(dirFactor);
 	}
 
 	public void AdjustRotation(Vector3 moveDir) {
@@ -202,11 +207,17 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 		}
 	}
 
-	public void MoveHead(Vector3 target) {
-		target.y = tankHead.position.y;
-		var rot = Quaternion.LookRotation((target - Pos).normalized, Vector3.up);
-		rot = Quaternion.RotateTowards(tankHead.rotation, rot, Time.deltaTime * aimRotSpeed);
-		tankHead.rotation = rot;
+	public void MoveHead(Vector3 target, bool ignoreLerp = false) {
+		if((target - Pos).normalized != Vector3.zero) {
+			target.y = tankHead.position.y;
+			var rot = Quaternion.LookRotation((target - Pos).normalized, Vector3.up);
+			if(Quaternion.identity == rot)
+				return;
+			if(ignoreLerp == false) {
+				rot = Quaternion.RotateTowards(tankHead.rotation, rot, Time.deltaTime * aimRotSpeed);
+			}
+			tankHead.rotation = rot;
+		}
 	}
 
 	public Vector3 GetLookDirection(Vector3 lookTarget) => (new Vector3(lookTarget.x, 0, lookTarget.z) - new Vector3(Pos.x, 0, Pos.z)).normalized;
@@ -249,9 +260,9 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 			muzzleSmoke.Play();
 			tankHead.DOScale(tankHead.localScale + Vector3.one / 7f, 0.2f).SetEase(new AnimationCurve(new Keyframe[] { new Keyframe(0, 0, 0.5f, 0.5f), new Keyframe(0.5f, 1, 0.5f, 0.5f), new Keyframe(1, 0, 0.5f, 0.5f) }));
 			if(this is PlayerInput) {
-				bullet = PrefabManager.Spawn<Bullet>(BulletType).SetupBullet(bulletOutput.forward, bulletOutput.position, true);
+				bullet = PrefabManager.Spawn<Bullet>(BulletType, null, bulletOutput.position).SetupBullet(bulletOutput.forward, bulletOutput.position, true);
 			} else {
-				bullet = PrefabManager.Spawn<Bullet>(BulletType).SetupBullet(bulletOutput.forward, bulletOutput.position, false);
+				bullet = PrefabManager.Spawn<Bullet>(BulletType, null, bulletOutput.position).SetupBullet(bulletOutput.forward, bulletOutput.position, false);
 			}
 			
 			if(reloadDuration > 0) {
@@ -384,8 +395,8 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 		IEnumerator ITurnOn() {
 			float t = 0;
 			while(t < 1f) {
-				frontLight.SetIntensity(turnLightsOnCurve.Evaluate(t) * frontLightIntensity);
-				backLight.SetIntensity(turnLightsOnCurve.Evaluate(t) * backLightIntensity);
+				// HDRP Relate: frontLight.SetIntensity(turnLightsOnCurve.Evaluate(t) * frontLightIntensity);
+				// HDRP Relate: .SetIntensity(turnLightsOnCurve.Evaluate(t) * backLightIntensity);
 				t += Time.deltaTime;
 				yield return null;
 			}
@@ -393,8 +404,8 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	}
 
 	public void TurnLightsOff() {
-		frontLight.SetIntensity(0);
-		backLight.SetIntensity(0);
+		// HDRP Relate: frontLight.SetIntensity(0);
+		// HDRP Relate: backLight.SetIntensity(0);
 	}
 
 	public void AdjustLightTurn() {

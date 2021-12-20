@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleMan.Extensions;
-using UnityEngine.Rendering.HighDefinition;
+// HDRP Related: using UnityEngine.Rendering.HighDefinition;
 using System.Collections;
+using DG.Tweening;
 
 public static class ExtensionMethods {
 
@@ -126,7 +127,8 @@ public static class ExtensionMethods {
 	public static T RandomItem<T>(this List<T> list, int max) {
 		return list[Randomizer.Range(0, max - 1)];
 	}
-	public static void FadeIntensity(this HDAdditionalLightData lightData, float startValue, float endValue, float duration) {
+    /* HDRP Related: 
+    public static void FadeIntensity(this HDAdditionalLightData lightData, float startValue, float endValue, float duration) {
 		DestructionTimer destructor = new GameObject("lightFadeIntensity_" + lightData.name).AddComponent<DestructionTimer>();
 		destructor.Destruct(duration);
 		destructor.StartCoroutine(IFade());
@@ -138,7 +140,7 @@ public static class ExtensionMethods {
 				yield return null;
 			}
 		}
-	}
+	}*/
 	public static void Show(this MonoBehaviour mono) {
 		mono.gameObject.SetActive(true);
 	}

@@ -6,9 +6,10 @@ using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using ToyTanks.LevelEditor;
-using UnityEngine.Rendering.HighDefinition;
+// HDRP Relate: using UnityEngine.Rendering.HighDefinition;
 using System.Text.RegularExpressions;
 using CommandTerminal;
+using LeTai.Asset.TranslucentImage;
 
 namespace ToyTanks.UI {
 	public class MenuManager : MonoBehaviour {
@@ -16,11 +17,14 @@ namespace ToyTanks.UI {
 		public MenuItem mainMenu;
 		LevelSelector levelSelector;
 		MenuCamera menuCamera;
+		public float fullBlurAmount = 25;
 		[Header("Others")]
 		public ScrollRect customLevelsScrollRect;
 		public CanvasGroup flashScreen;
-		[SerializeField] CustomPassVolume blurPass;
-		public ScreenSpaceCameraUIBlur BlurUIPass => (ScreenSpaceCameraUIBlur)blurPass.customPasses[0];
+		public Camera overlayCamera;
+		[SerializeField] TranslucentImageSource blurImageSource;
+		// HDRP Relate: [SerializeField] CustomPassVolume blurPass;
+		// HDRP Relate: public ScreenSpaceCameraUIBlur BlurUIPass => (ScreenSpaceCameraUIBlur)blurPass.customPasses[0];
 		public TextMeshProUGUI campaignWorldText;
 		public GameObject hardCoreDifficulty;
 		[Header("Custom Level Overview")]
@@ -37,6 +41,7 @@ namespace ToyTanks.UI {
 		public TextMeshProUGUI[] slotScore;
 		public TextMeshProUGUI[] slotCompletion;
 		public TextMeshProUGUI[] slotLives;
+		public ScalableBlurConfig fullBlur => ((ScalableBlurConfig)blurImageSource.BlurConfig);
 		private static MenuManager _instance;
 		public static MenuManager Instance {
 			get {
@@ -241,18 +246,27 @@ namespace ToyTanks.UI {
 		}
 
 		public void FadeInBlur() {
-			BlurUIPass.enabled = true;
-			DOTween.To(() => BlurUIPass.blurRadius, x => BlurUIPass.blurRadius = x, 25, fadeDuration).SetEase(Ease.Linear);
+			//overlayCamera.enabled = true;
+			DOTween.To(() => fullBlur.Strength, x => fullBlur.Strength = x, fullBlurAmount, fadeDuration);
+			// HDRP Relate: BlurUIPass.enabled = true;
+			// HDRP Relate: DOTween.To(() => BlurUIPass.blurRadius, x => BlurUIPass.blurRadius = x, 25, fadeDuration).SetEase(Ease.Linear);
 		}
 
 		public void FadeOutBlur() {
-			DOTween.To(() => BlurUIPass.blurRadius, x => BlurUIPass.blurRadius = x, 0, fadeDuration).SetEase(Ease.Linear).OnComplete(() => {
-				BlurUIPass.enabled = false;
+			DOTween.To(() => fullBlur.Strength, x => fullBlur.Strength = x, 0, fadeDuration).OnComplete(() => {
+				//overlayCamera.enabled = false;
 			});
+			/* HDRP Relate: DOTween.To(() => BlurUIPass.blurRadius, x => BlurUIPass.blurRadius = x, 0, fadeDuration).SetEase(Ease.Linear).OnComplete(() => {
+			BlurUIPass.enabled = false;
+			});*/
 		}
 
 		public void QuitGame() {
 			Application.Quit();
+		}
+
+		public void OpenGraphicSettings() {
+			GraphicSettings.OpenOptionsMenu(0.2f);
 		}
 	}
 }

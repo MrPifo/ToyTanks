@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1758648232496209134}
   - component: {fileID: 4576517546389202980}
   - component: {fileID: 5569122797930139645}
-  - component: {fileID: 4335446695192831020}
+  - component: {fileID: 4332103945133607169}
   m_Layer: 18
   m_Name: Triangle
   m_TagString: Untagged
@@ -30,6 +30,7 @@ Transform:
   m_LocalRotation: {x: 0.00000008146034, y: 0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -107,7 +108,7 @@ MonoBehaviour:
     y: 0
     z: 0
   allIndexes: []
---- !u!65 &4335446695192831020
+--- !u!65 &4332103945133607169
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,5 +119,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.9808106, y: 2.005811, z: 1.9808109}
-  m_Center: {x: 0.012499958, y: 1, z: 0.012499809}
+  m_Size: {x: 3.9337602, y: 3.9945722, z: 3.9337604}
+  m_Center: {x: -0.030881584, y: 2, z: -0.030881524}

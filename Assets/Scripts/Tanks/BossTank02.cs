@@ -2,10 +2,11 @@ using DG.Tweening;
 using SimpleMan.Extensions;
 using Sperlich.Debug.Draw;
 using Sperlich.FSM;
+using Sperlich.PrefabManager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
+// HDRP Related: using UnityEngine.Rendering.HighDefinition;
 
 public class BossTank02 : BossAI, IHittable, IDamageEffector {
 
@@ -49,7 +50,6 @@ public class BossTank02 : BossAI, IHittable, IDamageEffector {
 					bossStates.Push(bossStates.GetRandom());
 				}
 				ProcessState();
-				Debug.Log($"<color=red>Status: {bossStates}</color>");
 			});
 		}
 	}
@@ -105,10 +105,10 @@ public class BossTank02 : BossAI, IHittable, IDamageEffector {
 		tankBody.transform.localScale = Vector3.one * 1.2f;
 		tankBody.transform.DOScale(Vector3.one, 0.35f);
 
-		Pellet pellet = Instantiate(pelletPrefab).transform.SearchComponent<Pellet>();
+		Pellet pellet = PrefabManager.Spawn<Pellet>(PrefabTypes.MortarPellet);
 		pellet.SetupPellet(2f, bigBlastExplodeRadius, 25);
 		pellet.transform.localScale *= 1.5f;
-		pellet.pelletBlobShadow.GetComponent<DecalProjector>().size = new Vector3(1.5f, 1.5f, 20f);
+		// HDRP Related: pellet.pelletBlobShadow.GetComponent<DecalProjector>().size = new Vector3(1.5f, 1.5f, 20f);
 		pellet.AdjustPellet(pelletFlyingCurve);
 		pellet.BlastOff(pelletSpawnPos, Player.Pos, null);
 		blastFireParticles.Play();
@@ -127,7 +127,7 @@ public class BossTank02 : BossAI, IHittable, IDamageEffector {
 			tankBody.transform.localScale = Vector3.one * 1.3f;
 			tankBody.transform.DOScale(Vector3.one, 0.1f);
 
-			Pellet pellet = Instantiate(pelletPrefab).transform.SearchComponent<Pellet>();
+			Pellet pellet = PrefabManager.Spawn<Pellet>(PrefabTypes.MortarPellet);
 			pellet.SetupPellet(1.5f, 3, 3);
 			pellet.AdjustPellet(pelletFlyingCurve);
 			pellet.BlastOff(pelletSpawnPos, impactPosition);

@@ -8,214 +8,67 @@ using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
-using UnityEngine.Rendering.HighDefinition;
+// HDRP Related: using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Rendering;
 using UnityEngine.Events;
 using ToyTanks.UI;
 using SimpleMan.Extensions;
+using UnityEngine.Rendering.Universal;
+using Sperlich.PrefabManager;
+using DG.Tweening;
 
-public class GraphicSettings : Singleton<GraphicSettings> {
+public class GraphicSettings : MonoBehaviour {
 
+    private static GraphicSettings _instance;
+    public static GraphicSettings Instance {
+        get {
+            if (_instance == null) {
+                _instance = PrefabManager.Instantiate<GraphicSettings>(PrefabTypes.GraphicSettings);
+                _instance.name = "GraphicSettings";
+            }
+            return _instance;
+        }
+    }
     public static Int2 nativeScreenResolution;
-    public static UnityEvent OnGraphicSettingsOpen = new UnityEvent();
-    public static UnityEvent OnGraphicSettingsClose = new UnityEvent();
     // User Interface
-    public MenuItem menu;
-    public Volume overrideVolume;
-	public Volume overrideShadowsOffVolume;
-    public ScreenSpaceReflection volumeSSR;
-    public TMP_Dropdown resolutionDropdown;
-    public TMP_Dropdown windowModeDropdown;
-    public TMP_Dropdown textureResolutionDropdown;
-    public TMP_Dropdown shadowQualityDropdown;
-    public HorizontalChoose textureQualityChoose;
-    public HorizontalChoose shadowQualityChoose;
-    public SliderWithText uiScaleSlider;
-	public SliderWithText mainVolumeSlider;
-	public SliderWithText soundEffectsVolumeSlider;
-    public Toggle antialiasingToggle;
-    public Toggle ssrToggle;
-    public Toggle vsyncToggle;
-    public Toggle softShadowsToggle;
-	public AudioClip mainVolumePreview;
-	public AudioClip soundEffectsVolumePreview;
-	bool lockAudioPreview;
+    public GameObject desktopUI;
+    public GameObject mobileUI;
+    public CanvasGroup graphicsMenu;
+    public GameObject fpsCounter;
+    public UniversalRendererData rendererData;
+    public UniversalRenderPipelineAsset pipeline;
+    // Audio Preview
+    public AudioClip mainVolumePreview;
+    public AudioClip soundEffectsVolumePreview;
+    bool lockAudioPreview;
 
-	protected override void Awake() {
-        base.Awake();
-        try {
-            nativeScreenResolution = new Int2(Screen.currentResolution.width, Screen.currentResolution.height);
-            overrideVolume.profile.TryGet(out volumeSSR);
-        } catch {
+    // UI Interface
+    public HorizontalChoose controlScheme => GameObject.FindGameObjectWithTag("ControlSchemeUI").transform.SearchComponent<HorizontalChoose>();
+    public HorizontalChoose textureQualityChoose => GameObject.FindGameObjectWithTag("TextureQualityUI").transform.SearchComponent<HorizontalChoose>();
+    public HorizontalChoose shadowQualityChoose => GameObject.FindGameObjectWithTag("ShadowQualityUI").transform.SearchComponent<HorizontalChoose>();
+    public HorizontalChoose windowModeDropdown => GameObject.FindGameObjectWithTag("WindowModeUI").transform.SearchComponent<HorizontalChoose>();
+    public TMP_Dropdown windowResolutionDropdown => GameObject.FindGameObjectWithTag("WindowResolutionUI").transform.SearchComponent<TMP_Dropdown>();
+    public SliderWithText mainVolumeSlider => GameObject.FindGameObjectWithTag("MainVolumeUI").transform.SearchComponent<SliderWithText>();
+    public SliderWithText soundEffectsVolumeSlider => GameObject.FindGameObjectWithTag("SoundEffectsVolumeUI").transform.SearchComponent<SliderWithText>();
+    public Toggle antialiasingToggle => GameObject.FindGameObjectWithTag("AntialisingQualityUI").transform.SearchComponent<Toggle>();
+    public Toggle ambientOcclusionToggle => GameObject.FindGameObjectWithTag("AmbientOcclusionQualityUI").transform.SearchComponent<Toggle>();
+    public Toggle performanceModeToggle => GameObject.FindGameObjectWithTag("PerformanceModeUI").transform.SearchComponent<Toggle>();
+    public Toggle vsyncToggle => GameObject.FindGameObjectWithTag("VsyncUI").transform.SearchComponent<Toggle>();
 
-		}
-    }
-
-	public static void RenderResolutionDropdown() {
-        Instance.resolutionDropdown.ClearOptions();
-        Instance.resolutionDropdown.onValueChanged.RemoveAllListeners();
-        var options = new List<TMP_Dropdown.OptionData>();
-
-        foreach(var size in Enum.GetValues(typeof(SupportedScreenSizes))) {
-            string s = size.ToString().Replace("Size_", "");
-            int width = ParseInt(s.Split('x')[0]);
-            int height = ParseInt(s.Split('x')[1]);
-
-            if(width > nativeScreenResolution.x || height > nativeScreenResolution.y) {
-                continue;
-			}
-            var item = new TMP_Dropdown.OptionData() {
-                text = size.ToString().Replace("Size_", ""),
-            };
-            options.Add(item);
-        }
-        options.Reverse();
-        Instance.resolutionDropdown.AddOptions(options);
-        Instance.resolutionDropdown.value = options.Count - (int)WindowGameSize - 1;
-        Instance.resolutionDropdown.RefreshShownValue();
-        Instance.resolutionDropdown.onValueChanged.AddListener((int value) => {
-            SetGameWindowSize((SupportedScreenSizes)(Instance.resolutionDropdown.options.Count - value - 1), FullscreenMode);
-            RefreshUI();
-        });
-    }
-    public static void RenderWindowModeDropdown() {
-        Instance.windowModeDropdown.ClearOptions();
-        Instance.windowModeDropdown.onValueChanged.RemoveAllListeners();
-        var options = new List<TMP_Dropdown.OptionData>();
-
-        foreach(var size in Enum.GetValues(typeof(FullScreenMode))) {
-            string text = size.ToString().ToLower();
-            switch(text) {
-                case "exclusivefullscreen":
-                    text = "Fullscreen";
-                    break;
-                case "fullscreenwindow":
-					text = "Borderless";
-					break;
-				case "Windowed":
-					text = "Window";
-					break;
-				case "maximizedwindow":
-					continue;
-            }
-            var item = new TMP_Dropdown.OptionData() {
-                text = text,
-            };
-            options.Add(item);
-        }
-        Instance.windowModeDropdown.AddOptions(options);
-        Instance.windowModeDropdown.value = (int)FullscreenMode;
-        Instance.windowModeDropdown.RefreshShownValue();
-        Instance.windowModeDropdown.onValueChanged.AddListener((int value) => {
-			switch(value) {
-				case 0:
-					// Fullscreen
-					Debug.Log("Game window set to: Exclusive Window");
-					SetGameWindowMode(FullScreenMode.ExclusiveFullScreen);
-					break;
-				case 1:
-					// Borderless
-					Debug.Log("Game window set to: Fullscreen Window");
-					SetGameWindowMode(FullScreenMode.FullScreenWindow);
-					break;
-				case 2:
-					Debug.Log("Game window set to: Windowed");
-					SetGameWindowMode(FullScreenMode.Windowed);
-					// Windowed
-					break;
-			}
-            RefreshUI();
-        });
-    }
-    public static void RenderTextureResolutionsDropdown() {
-        Instance.textureQualityChoose.objs = new List<string>() { "Ultra", "High", "Medium", "Low" };
-        Instance.textureQualityChoose.index = TextureQuality;
-        /*Instance.textureResolutionDropdown.ClearOptions();
-        Instance.textureResolutionDropdown.onValueChanged.RemoveAllListeners();
-        var options = new List<TMP_Dropdown.OptionData>();
-
-        for(int i = 0; i < 4; i++) {
-            string text = "";
-            switch(i) {
-                case 0:
-                    text = "Ultra";
-                    break;
-                case 1:
-                    text = "High";
-                    break;
-                case 2:
-                    text = "Medium";
-                    break;
-                case 3:
-                    text = "Low";
-                    break;
-            }
-            var item = new TMP_Dropdown.OptionData() {
-                text = text,
-            };
-            options.Add(item);
-            Instance.textureQualityChoose.objs.Add(text);
-        }*/
-        /*Instance.textureResolutionDropdown.AddOptions(options);
-        Instance.textureResolutionDropdown.value = (int)TextureQuality;
-        Instance.textureResolutionDropdown.RefreshShownValue();
-        Instance.textureResolutionDropdown.onValueChanged.AddListener((int value) => {
-            SetTextureResolution(value);
-            RefreshUI();
-        });*/
-    }
-    public static void RenderShadowResolutionDropdown() {
-        Instance.shadowQualityChoose.objs = new List<string>() { "Ultra", "High", "Medium", "Low", "Off" };
-        Instance.shadowQualityChoose.index = ShadowQuality;
-    }
-
-    public static void OpenOptionsMenu() {
-		Instance.LockAudioPreview(1f);
-        RefreshUI();
-        OnGraphicSettingsOpen.Invoke();
-	}
-    public static void CloseOptionsMenu() {
-        Instance.menu.TransitionMenu(1);
-    }
-    public static void RefreshUI() {
-        RenderResolutionDropdown();
-        RenderWindowModeDropdown();
-        RenderTextureResolutionsDropdown();
-        RenderShadowResolutionDropdown();
-        
-        Instance.antialiasingToggle.isOn = Antialiasing;
-        Instance.ssrToggle.isOn = SSR;
-        Instance.vsyncToggle.isOn = VSYNC;
-        Instance.uiScaleSlider.SetValue(UIScale);
-        Instance.shadowQualityChoose.index = ShadowQuality;
-        Instance.textureQualityChoose.index = TextureQuality;
-		Instance.mainVolumeSlider.SetValue(MainVolume);
-		Instance.soundEffectsVolumeSlider.SetValue(SoundEffectsVolume);
-    }
-    public static void ApplySettings() {
-        SetGameWindowSize(GetScreenResolution(WindowGameSize), FullscreenMode);
-        SetAntialiasing(Antialiasing);
-        SetSSR(SSR);
-        SetVsync(VSYNC);
-        SetTextureResolution(TextureQuality);
-        SetShadowResolution(ShadowQuality);
-        SetUIScale(UIScale);
-		SetMainVolume(MainVolume);
-		SetSoundEffectsVolume(SoundEffectsVolume);
-	}
     // Logics
     static IniData LoadedSettings;
     static string AudioSettings => "Audio";
     static string WindowSettings => "WindowSettings";
     static string Graphics => "Graphics";
+    static string Controls => "Controls";
     public static int MainVolume {
         get => ParseInt(GetValue(AudioSettings, nameof(MainVolume)));
         set => SetValue(AudioSettings, nameof(MainVolume), value);
 	}
-    /*public static int MusicVolume {
+    public static int MusicVolume {
         get => ParseInt(GetValue(AudioSettings, nameof(MusicVolume)));
         set => SetValue(AudioSettings, nameof(MusicVolume), value);
-    }*/
+    }
     public static int SoundEffectsVolume {
         get => ParseInt(GetValue(AudioSettings, nameof(SoundEffectsVolume)));
         set => SetValue(AudioSettings, nameof(SoundEffectsVolume), value);
@@ -224,6 +77,14 @@ public class GraphicSettings : Singleton<GraphicSettings> {
         get => ParseBool(GetValue(Graphics, nameof(Antialiasing)));
         set => SetValue(Graphics, nameof(Antialiasing), value);
 	}
+    static bool AmbientOcclusion {
+        get => ParseBool(GetValue(Graphics, nameof(AmbientOcclusion)));
+        set => SetValue(Graphics, nameof(AmbientOcclusion), value);
+    }
+    static bool PerformanceMode {
+        get => ParseBool(GetValue(Graphics, nameof(PerformanceMode)));
+        set => SetValue(Graphics, nameof(PerformanceMode), value);
+    }
     static bool SSR {
         get => ParseBool(GetValue(Graphics, nameof(SSR)));
         set => SetValue(Graphics, nameof(SSR), value);
@@ -265,31 +126,161 @@ public class GraphicSettings : Singleton<GraphicSettings> {
             SetValue(WindowSettings, nameof(FullscreenMode), (int)value);
         }
 	}
+    static PlayerControlSchemes ControlScheme {
+        get => (PlayerControlSchemes)ParseInt(GetValue(Controls, nameof(ControlScheme)));
+        set {
+            SetValue(Controls, nameof(ControlScheme), (int)value);
+        }
+    }
 
+    protected void Awake() {
+        _instance = this;
+        transform.SetParent(null);
+        nativeScreenResolution = new Int2(Screen.currentResolution.width, Screen.currentResolution.height);
+        graphicsMenu.alpha = 0;
+        graphicsMenu.gameObject.SetActive(false);
+    }
+    /// <summary>
+    /// Initialized the Graphic Settings
+    /// </summary>
     public static void Initialize() {
+        DontDestroyOnLoad(Instance.gameObject);
+        Instance.AdjustToPlatform();
         if(File.Exists(GamePaths.UserGraphicSettings) == false) {
             // Create new User-Settings
             LoadedSettings = new IniData();
             VerifyGraphicSettings();
+            Logger.Log(Channel.Graphics, "No graphics.ini file found. Creating new one.");
         } else {
             LoadSettings();
 		}
+        ApplySettings();
+    }
+    private void AdjustToPlatform() {
+        if(Game.Platform == GamePlatform.Desktop) {
+            desktopUI.SetActive(true);
+            mobileUI.SetActive(false);
+        } else if(Game.Platform == GamePlatform.Mobile) {
+            desktopUI.SetActive(false);
+            mobileUI.SetActive(true);
+        }
+	}
 
-        try {
-            Instance.menu.Initialize();
-        } catch {
-            Debug.Log("No Menu found.");
-		}
+    // UI-Interface Methods
+    public static void RenderResolutionDropdown() {
+        var options = new List<TMP_Dropdown.OptionData>();
+
+        foreach (var size in Enum.GetValues(typeof(SupportedScreenSizes))) {
+            string s = size.ToString().Replace("Size_", "");
+            int width = ParseInt(s.Split('x')[0]);
+            int height = ParseInt(s.Split('x')[1]);
+
+            if (width > nativeScreenResolution.x || height > nativeScreenResolution.y) {
+                continue;
+            }
+            var item = new TMP_Dropdown.OptionData() {
+                text = size.ToString().Replace("Size_", ""),
+            };
+            options.Add(item);
+        }
+        options.Reverse();
+        Instance.windowResolutionDropdown.options = options;
+        Instance.windowResolutionDropdown.RefreshShownValue();
+    }
+    public static void RenderWindowModeDropdown() {
+        Instance.windowModeDropdown.objs = new List<string>() { "Fullscreen", "Borderless", "Window" };
+        Instance.windowModeDropdown.index = TextureQuality;
+    }
+    public static void RenderTextureResolutionsDropdown() {
+        Instance.textureQualityChoose.objs = new List<string>() { "High", "Medium", "Low" };
+        Instance.textureQualityChoose.index = TextureQuality;
+    }
+    public static void RenderShadowResolutionDropdown() {
+        Instance.shadowQualityChoose.objs = new List<string>() { "High", "Low", "Off" };
+        Instance.shadowQualityChoose.index = ShadowQuality;
+    }
+    public static void RenderControlSchemes() {
+        Instance.controlScheme.objs = new List<string>() { "Double DPad", "DPad and Tap" };
+        Instance.controlScheme.index = (int)ControlScheme;
+    }
+    public static void OpenOptionsMenu(float duration = 0.002f) {
+        Instance.graphicsMenu.gameObject.SetActive(true);
+        Instance.LockAudioPreview(1f);
+        LoadSettings();
+        DOTween.To(() => Instance.graphicsMenu.alpha, x => Instance.graphicsMenu.alpha = x, 1, duration).OnComplete(() => {
+            RefreshUI();
+            Logger.Log(Channel.Graphics, "Displaying Graphics menu.");
+        });
+    }
+    public static void CloseOptionsMenu(float duration = 0f) {
+        if (duration == 0) {
+            duration = 0.002f;
+        }
+        DOTween.To(() => Instance.graphicsMenu.alpha, x => Instance.graphicsMenu.alpha = x, 0, duration).OnComplete(() => {
+            if (GameObject.Find("MainMenu")) {
+                GameObject.Find("MainMenu").GetComponent<MenuItem>().FadeIn();
+            }
+            Instance.graphicsMenu.gameObject.SetActive(false);
+        });
+        Logger.Log(Channel.Graphics, "Closing Graphics menu.");
+    }
+    public static void RefreshUI() {
+        if (Game.Platform == GamePlatform.Desktop) {
+            Instance.antialiasingToggle.isOn = Antialiasing;
+            Instance.shadowQualityChoose.index = ShadowQuality;
+            Instance.textureQualityChoose.index = TextureQuality;
+            Instance.mainVolumeSlider.SetValue(MainVolume);
+            Instance.soundEffectsVolumeSlider.SetValue(SoundEffectsVolume);
+
+            RenderResolutionDropdown();
+            RenderWindowModeDropdown();
+            RenderTextureResolutionsDropdown();
+            RenderShadowResolutionDropdown();
+        } else if (Game.Platform == GamePlatform.Mobile) {
+            Instance.antialiasingToggle.isOn = Antialiasing;
+            Instance.shadowQualityChoose.index = ShadowQuality;
+            Instance.textureQualityChoose.index = TextureQuality;
+            Instance.mainVolumeSlider.SetValue(MainVolume);
+            Instance.soundEffectsVolumeSlider.SetValue(SoundEffectsVolume);
+
+            RenderTextureResolutionsDropdown();
+            RenderShadowResolutionDropdown();
+            RenderControlSchemes();
+        }
+    }
+    public static void ApplySettings() {
+        if (Game.Platform == GamePlatform.Desktop) {
+            SetTextureResolution(TextureQuality);
+            SetShadowResolution(ShadowQuality);
+            SetAntialiasing(Antialiasing);
+            SetMainVolume(MainVolume);
+            SetSoundEffectsVolume(SoundEffectsVolume);
+            SetAmbientOcclusion(AmbientOcclusion);
+
+            SetGameWindowSize(GetScreenResolution(WindowGameSize), FullscreenMode);
+            SetVsync(VSYNC);
+            SetControlScheme(PlayerControlSchemes.Desktop);
+        } else if (Game.Platform == GamePlatform.Mobile) {
+            SetTextureResolution(TextureQuality);
+            SetShadowResolution(ShadowQuality);
+            SetAntialiasing(Antialiasing);
+            SetMainVolume(MainVolume);
+            SetSoundEffectsVolume(SoundEffectsVolume);
+            SetAmbientOcclusion(AmbientOcclusion);
+            SetPerformanceMode(PerformanceMode);
+            SetControlScheme(ControlScheme);
+            Application.targetFrameRate = Screen.currentResolution.refreshRate;
+        }
     }
 
-    // Apply Settings
+    // Graphic Settings
     static void SetMainVolume(int volume) {
         MainVolume = volume;
 		AudioListener.volume = volume / 100f;
 	}
-    /*static void SetMusicVolume(int volume) {
+    static void SetMusicVolume(int volume) {
         MusicVolume = volume;
-	}*/
+	}
 	static void SetSoundEffectsVolume(int volume) {
 		SoundEffectsVolume = volume;
 	}
@@ -307,21 +298,36 @@ public class GraphicSettings : Singleton<GraphicSettings> {
 			Screen.fullScreen = false;
 		}
 	}
-    static void SetAntialiasing(bool? state) {
-        Antialiasing = (bool)state;
-        if((bool)state) {
-            Camera.main.GetComponent<HDAdditionalCameraData>().antialiasing = HDAdditionalCameraData.AntialiasingMode.FastApproximateAntialiasing;
-        } else {
-            Camera.main.GetComponent<HDAdditionalCameraData>().antialiasing = HDAdditionalCameraData.AntialiasingMode.None;
-
-        }
-	}
-    static void SetSSR(bool state) {
-        SSR = state;
-        if(Instance != null && Instance.volumeSSR != null) {
-            Instance.volumeSSR.active = state;
-        }
+    static void SetControlScheme(PlayerControlSchemes scheme) {
+        ControlScheme = scheme;
+        Game.PlayerControlScheme = scheme;
     }
+    static void SetAntialiasing(bool state) {
+        foreach(var caminfo in FindObjectsOfType<UniversalAdditionalCameraData>()) {
+            if(state) {
+                caminfo.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+            } else {
+                caminfo.antialiasing = AntialiasingMode.None;
+            }
+        }
+        Antialiasing = state;
+    }
+    static void SetAmbientOcclusion(bool state) {
+        for(int x = 0; x < Instance.rendererData.rendererFeatures.Count; x++) {
+            if(Instance.rendererData.rendererFeatures[x].name == "Ambient Occlusion") {
+                Instance.rendererData.rendererFeatures[x].SetActive(state);
+            }
+        }
+        AmbientOcclusion = state;
+	}
+    static void SetPerformanceMode(bool state) {
+        if(state) {
+            Instance.pipeline.renderScale = 0.5f;
+		} else {
+            Instance.pipeline.renderScale = 1f;
+        }
+        PerformanceMode = state;
+	}
     static void SetVsync(bool state) {
         VSYNC = state;
         if(state) {
@@ -335,49 +341,36 @@ public class GraphicSettings : Singleton<GraphicSettings> {
         QualitySettings.masterTextureLimit = resolution;
     }
     static void SetShadowResolution(int level) {
-        ShadowQuality = level;
-
         // Apply Shadow Resolution to all light sources
-        foreach(var light in FindObjectsOfType<Light>()) {
-            if(light.TryGetComponent(out HDAdditionalLightData lightdata)) {
-                lightdata.SetShadowResolutionOverride(true);
-				if(GetShadowResolution(level) == 0) {
-					lightdata.SetShadowUpdateMode(ShadowUpdateMode.OnEnable);
-					lightdata.SetShadowResolution(2);
-					try {
-						Instance.overrideShadowsOffVolume.enabled = true;
-					} catch {
-						Debug.LogWarning("Graphics OverrideShadowsOffVolume was not found!");
-					}
-				} else {
-					lightdata.SetShadowUpdateMode(ShadowUpdateMode.EveryFrame);
-					lightdata.SetShadowResolution(GetShadowResolution(level));
-					try {
-						Instance.overrideShadowsOffVolume.enabled = false;
-					} catch {
-						Debug.LogWarning("Graphics OverrideShadowsOffVolume was not found!");
-					}
-				}
-			}
-		}
-	}
-    static void SetUIScale(float scale) {
-        UIScale = scale;
-
-        foreach(var scaler in FindObjectsOfType<CanvasScaler>()) {
-            if(scaler.uiScaleMode == CanvasScaler.ScaleMode.ConstantPixelSize) {
-                scaler.scaleFactor = scale;
-			}
-		}
-	}
+        switch(level) {
+            case 0:
+                ExtraGraphics.MainLightCastShadows = true;
+                ExtraGraphics.AdditionalLightCastShadows = true;
+                ExtraGraphics.SoftShadowsEnabled = true;
+                ExtraGraphics.MainLightShadowResolution = UnityEngine.Rendering.Universal.ShadowResolution._2048;
+                ExtraGraphics.AdditionalLightShadowResolution = UnityEngine.Rendering.Universal.ShadowResolution._1024;
+                break;
+            case 1:
+                ExtraGraphics.MainLightCastShadows = true;
+                ExtraGraphics.AdditionalLightCastShadows = false;
+                ExtraGraphics.SoftShadowsEnabled = false;
+                ExtraGraphics.MainLightShadowResolution = UnityEngine.Rendering.Universal.ShadowResolution._1024;
+                ExtraGraphics.AdditionalLightShadowResolution = UnityEngine.Rendering.Universal.ShadowResolution._256;
+                break;
+            case 2:
+                ExtraGraphics.MainLightCastShadows = false;
+                ExtraGraphics.AdditionalLightCastShadows = false;
+                ExtraGraphics.SoftShadowsEnabled = false;
+                ExtraGraphics.MainLightShadowResolution = UnityEngine.Rendering.Universal.ShadowResolution._256;
+                ExtraGraphics.AdditionalLightShadowResolution = UnityEngine.Rendering.Universal.ShadowResolution._256;
+                break;
+        }
+        ShadowQuality = level;
+    }
 
     // User interface functions
+    public void SetAmbientOcclusionUI() => SetAmbientOcclusion(ambientOcclusionToggle.isOn);
     public void SetAntialiasingUI() => SetAntialiasing(antialiasingToggle.isOn);
-    public void SetSSRUI() => SetSSR(ssrToggle.isOn);
-    public void SetVsyncUI() => SetVsync(vsyncToggle.isOn);
-    public void SetUIScaleUI() {
-        SetUIScale(uiScaleSlider.Value);
-    }
     public void SetTextureQualityUI() {
         SetTextureResolution(textureQualityChoose.index);
 	}
@@ -390,6 +383,11 @@ public class GraphicSettings : Singleton<GraphicSettings> {
 	public void SetSoundEffectsVolumeUI() {
 		SetSoundEffectsVolume((int)soundEffectsVolumeSlider.Value);
 	}
+    public void SetPerformanceModeUI() => SetPerformanceMode(performanceModeToggle.isOn);
+    public void SetControlSchemeUI() => SetControlScheme((PlayerControlSchemes)controlScheme.index);
+    public void SetWindowModeUI() => SetGameWindowMode((FullScreenMode)windowModeDropdown.index);
+    public void SetWindowResolutionUI() => SetGameWindowSize((SupportedScreenSizes)windowResolutionDropdown.value, FullscreenMode);
+    public void SetVsync() => SetVsync(vsyncToggle.isOn);
 
 	// Show-Off Test functions
 	public void PlayMainVolume() {
@@ -431,34 +429,51 @@ public class GraphicSettings : Singleton<GraphicSettings> {
     public static void VerifyGraphicSettings() {
         if(GetValue(AudioSettings, nameof(MainVolume)) is null) {
             MainVolume = 60;
+            Logger.Log(Channel.Graphics, "No MainVolume setting found. Restoring to default.");
         }
-        /*if(GetValue(AudioSettings, nameof(MusicVolume)) is null) {
-            MusicVolume = 100;
-		}*/
         if(GetValue(AudioSettings, nameof(SoundEffectsVolume)) is null) {
             SoundEffectsVolume = 40;
+            Logger.Log(Channel.Graphics, "No SoundEffectsVolume setting found. Restoring to default.");
         }
         if(GetValue(WindowSettings, nameof(WindowGameSize)) is null) {
             WindowGameSize = GetSupportedScreenSize(new Int2(Screen.currentResolution.width, Screen.currentResolution.height));
+            Logger.Log(Channel.Graphics, "No WindowGameSize setting found. Restoring to default.");
         }
         if(GetValue(WindowSettings, nameof(FullscreenMode)) is null) {
             FullscreenMode = FullScreenMode.FullScreenWindow;
-		}
+            Logger.Log(Channel.Graphics, "No WindowSettings setting found. Restoring to default.");
+        }
         if(GetValue(Graphics, nameof(Antialiasing)) is null) {
-            Antialiasing = true;
-		}
+            Antialiasing = false;
+            Logger.Log(Channel.Graphics, "No Antialising setting found. Restoring to default.");
+        }
         if(GetValue(Graphics, nameof(SSR)) is null) {
-            SSR = true;
+            SSR = false;
 		}
         if(GetValue(Graphics, nameof(VSYNC)) is null) {
-            VSYNC = true;
-		}
+            VSYNC = false;
+            Logger.Log(Channel.Graphics, "No VSYNC setting found. Restoring to default.");
+        }
         if(GetValue(Graphics, nameof(ShadowQuality)) is null) {
             ShadowQuality = 2;
-		}
+            Logger.Log(Channel.Graphics, "No ShadowQuality setting found. Restoring to default.");
+        }
         if(GetValue(Graphics, nameof(UIScale)) is null) {
             UIScale = 1;
-		}
+            Logger.Log(Channel.Graphics, "No UIScale setting found. Restoring to default.");
+        }
+        if(GetValue(Graphics, nameof(AmbientOcclusion)) is null) {
+            AmbientOcclusion = false;
+            Logger.Log(Channel.Graphics, "No AmbientOcclusion setting found. Restoring to default.");
+        }
+        if(GetValue(Graphics, nameof(PerformanceMode)) is null) {
+            PerformanceMode = false;
+            Logger.Log(Channel.Graphics, "No PerformanceMode setting found. Restoring to default.");
+        }
+        if(GetValue(Controls, nameof(ControlScheme)) is null) {
+            ControlScheme = PlayerControlSchemes.DpadAndTap;
+            Logger.Log(Channel.Graphics, "No ControlScheme setting found. Restoring to default.");
+        }
     }
 
     // Helpers
@@ -470,6 +485,7 @@ public class GraphicSettings : Singleton<GraphicSettings> {
                 return int.Parse(value);
             }
 		} catch {
+            Logger.Log(Channel.Graphics, Priority.Error, "Failed to read INT value " + value);
             throw new GraphicSettingsNotFound("Failed to read INT value: " + value);
 		}
 	}
@@ -481,7 +497,8 @@ public class GraphicSettings : Singleton<GraphicSettings> {
                 return float.Parse(value);
             }
         } catch {
-            throw new GraphicSettingsNotFound("Failed to read INT value: " + value);
+            Logger.Log(Channel.Graphics, Priority.Error, "Failed to read FLOAT value " + value);
+            throw new GraphicSettingsNotFound("Failed to read FLOAT value: " + value);
         }
     }
     static bool ParseBool(string value) {
@@ -492,6 +509,7 @@ public class GraphicSettings : Singleton<GraphicSettings> {
                 return bool.Parse(value);
             }
         } catch {
+            Logger.Log(Channel.Graphics, Priority.Error, "Failed to read BOOLEAN value " + value);
             throw new GraphicSettingsNotFound("Failed to read BOOLEAN value: " + value);
         }
     }
@@ -500,6 +518,7 @@ public class GraphicSettings : Singleton<GraphicSettings> {
             LoadedSettings[section][parameter] = value.ToString();
             SaveSettings();
 		} catch {
+            Logger.Log(Channel.Graphics, Priority.Error, "Failed to set parameter " + parameter + " value.");
             throw new GraphicSettingsNotFound("Failed Setting parameter: " + parameter + " to " + value.ToString());
 		}
 	}
@@ -523,7 +542,7 @@ public class GraphicSettings : Singleton<GraphicSettings> {
 			}
             count++;
 		}
-        Debug.Log("No supported resolution has been found. Returning default resolution FullHD");
+        Logger.Log(Channel.Graphics, "No supported resolution has been found. Returning default resolution FullHD");
         return SupportedScreenSizes.Size_1920x1080;
 	}
     static int GetShadowResolution(int level) {

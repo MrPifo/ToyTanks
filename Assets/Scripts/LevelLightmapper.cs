@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Collections.Generic;
-using UnityEngine.Rendering.HighDefinition;
+// HDRP Related: using UnityEngine.Rendering.HighDefinition;
 using Sperlich.Types;
 using Newtonsoft.Json;
 using UnityEngine.Events;
@@ -17,7 +17,7 @@ namespace ToyTanks.LevelEditor {
 
 		public Mesh defaultPlaneMesh;
 		public ReflectionProbe reflectionProbe;
-		public HDAdditionalLightData hdLightData;
+		// HDRP Related: public HDAdditionalLightData hdLightData;
 		static LevelLightmapper Instance;
 		static LevelData level;
 #if UNITY_EDITOR
@@ -43,7 +43,7 @@ namespace ToyTanks.LevelEditor {
 				level = data;
 				if(Game.LevelExists(level.levelId)) {
 					Lightmapping.bakeCompleted += finishedAction;
-					Instance.hdLightData.RequestShadowMapRendering();
+					// HDRP Related: Instance.hdLightData.RequestShadowMapRendering();
 					Lightmapping.BakeAsync();
 				}
 			}
@@ -176,7 +176,7 @@ namespace ToyTanks.LevelEditor {
 					ground.UpdateGIMaterials();
 				}
 				Instance.Delay(0.5f, () => {
-					Instance.hdLightData.RequestShadowMapRendering();
+					// HDRP Related: Instance.hdLightData.RequestShadowMapRendering();
 				});
 			}
 		}

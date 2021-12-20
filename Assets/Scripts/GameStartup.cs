@@ -5,10 +5,15 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+#if PLATFORM_ANDROID
+using UnityEngine.Android;
+#endif
 
 public class GameStartup : MonoBehaviour {
 
+	[SerializeField] Canvas backgroundCanvas;
 	[SerializeField] CanvasGroup canvasGroup;
+	[SerializeField] CanvasGroup backgroundGroup;
 	[SerializeField] TextMeshProUGUI loadingText;
 	[SerializeField] Texture2D defaultCursor;
 	[SerializeField] Texture2D pointerCursor;
@@ -20,30 +25,47 @@ public class GameStartup : MonoBehaviour {
 	private void Start() => StartCoroutine(ILoadGame());
 
 	public IEnumerator ILoadGame() {
-		loadingText.SetText("Loading Assets");
-		Game.AddCursor("default", defaultCursor);
-		Game.AddCursor("pointer", pointerCursor);
-		Game.SetCursor("default");
-		NextLoadingStep();
+		if(Game.ApplicationInitialized == false) {
+			// Checking permissions
+#if PLATFORM_ANDROID
+			if(Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead) == false) {
+				Permission.RequestUserPermission(Permission.ExternalStorageRead);
+			}
+			if (Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite) == false) {
+				Permission.RequestUserPermission(Permission.ExternalStorageWrite);
+			}
+#endif
 
-		yield return new WaitForSeconds(0.5f);
-		loadingText.SetText("Loading Savegame");
-		SaveGame.GameStartUp();
-		NextLoadingStep();
+			loadingText.SetText("Loading Assets");
+			Logger.Log(Channel.Loading, "Loading Assets.");
+			Game.AddCursor("default", defaultCursor);
+			Game.AddCursor("pointer", pointerCursor);
+			Game.SetCursor("default");
+			NextLoadingStep();
 
-		yield return new WaitForSeconds(0.5f);
-		loadingText.SetText("Preparing Game");
-		AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Menu", LoadSceneMode.Additive);
-		asyncLoad.allowSceneActivation = false;
-		NextLoadingStep();
+			yield return new WaitForSeconds(0.5f);
+			loadingText.SetText("Initializing Game.");
+			Logger.Log(Channel.Loading, "Initializing Game");
+			Game.Initialize();
+			NextLoadingStep();
 
-		yield return new WaitUntil(() => asyncLoad.progress >= 0.9f);
-		asyncLoad.allowSceneActivation = true;
-		yield return new WaitForSeconds(0.5f);
-		NextLoadingStep();
-		canvasGroup.DOFade(0, 1).OnComplete(() => {
-			SceneManager.UnloadSceneAsync(0);
-		});
+			yield return new WaitForSeconds(0.5f);
+			loadingText.SetText("Preparing Game");
+			Logger.Log(Channel.Loading, "Preparing Game.");
+			AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Menu", LoadSceneMode.Additive);
+			asyncLoad.allowSceneActivation = false;
+			NextLoadingStep();
+
+			yield return new WaitUntil(() => asyncLoad.progress >= 0.9f);
+			asyncLoad.allowSceneActivation = true;
+			yield return new WaitForSeconds(0.5f);
+			NextLoadingStep();
+
+			backgroundGroup.DOFade(0, 1);
+			canvasGroup.DOFade(0, 1).OnComplete(() => {
+				SceneManager.UnloadSceneAsync(0);
+			});
+		}
 	}
 
 	private void Update() {
