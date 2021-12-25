@@ -42,62 +42,61 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 	public float crossHairRotSpeed;
 	public Vector2 mouseLocation;
 	Vector3 oldAimVector;
-	PlayerControlSchemes previousControlScheme;
 
 	protected override void Awake() {
 		base.Awake();
+		player = ReInput.players.GetPlayer(0);
 		mobileAimLine.gameObject.SetActive(false);
 	}
 
 	public override void InitializeTank() {
 		base.InitializeTank();
-		player = ReInput.players.GetPlayer(0);
 		playerControlScheme = Game.PlayerControlScheme;
-		previousControlScheme = playerControlScheme;
 		makeInvincible = Game.isPlayerGodMode;
 		SetupControls();
 		SetupCross();
 	}
 
 	public void SetupControls() {
-		touchRegion = GameObject.FindGameObjectWithTag("ShootTouchRegion")?.GetComponent<TouchRegion>();
-		aimJoystick = GameObject.FindGameObjectWithTag("AimJoystick")?.GetComponent<TouchJoystick>();
-		touchPad = GameObject.FindGameObjectWithTag("TouchPad")?.GetComponent<TouchPad>();
-		PlayerInputManager.SetPlayerControlScheme(playerControlScheme);
-		previousControlScheme = playerControlScheme;
+		if(Game.Platform == GamePlatform.Mobile) {
+			touchRegion = GameObject.FindGameObjectWithTag("ShootTouchRegion")?.GetComponent<TouchRegion>();
+			aimJoystick = GameObject.FindGameObjectWithTag("AimJoystick")?.GetComponent<TouchJoystick>();
+			touchPad = GameObject.FindGameObjectWithTag("TouchPad")?.GetComponent<TouchPad>();
+			PlayerInputManager.SetPlayerControlScheme(playerControlScheme);
 
-        switch (playerControlScheme) {
-			case PlayerControlSchemes.Desktop:
-				PlayerInputManager.Instance.touchController.Hide();
-				mobileAimLine.gameObject.SetActive(false);
-				EnableCrossHair();
+			switch(playerControlScheme) {
+				case PlayerControlSchemes.Desktop:
+					PlayerInputManager.Instance.touchController.Hide();
+					mobileAimLine.gameObject.SetActive(false);
+					EnableCrossHair();
 
-				break;
-			case PlayerControlSchemes.DoubleDPad:
-				PlayerInputManager.Instance.DoubleDPadUI.gameObject.Show();
-				PlayerInputManager.Instance.touchController.Show();
-				mobileAimLine.gameObject.SetActive(true);
-				DisableCrossHair();
-				touchRegion.InteractionStateChangedToPressed += Shoot;
-				aimJoystick.TapEvent += Shoot;
+					break;
+				case PlayerControlSchemes.DoubleDPad:
+					PlayerInputManager.Instance.DoubleDPadUI.gameObject.Show();
+					PlayerInputManager.Instance.touchController.Show();
+					mobileAimLine.gameObject.SetActive(true);
+					DisableCrossHair();
+					touchRegion.InteractionStateChangedToPressed += Shoot;
+					aimJoystick.TapEvent += Shoot;
 
-				break;
-            case PlayerControlSchemes.DpadAndTap:
-				PlayerInputManager.Instance.DPadTapUI.gameObject.Show();
-				PlayerInputManager.Instance.touchController.Show();
-				mobileAimLine.gameObject.SetActive(false);
-				EnableCrossHair();
-				touchPad.TapEvent += MobileInputDPadAndTapUpdate;
+					break;
+				case PlayerControlSchemes.DpadAndTap:
+					PlayerInputManager.Instance.DPadTapUI.gameObject.Show();
+					PlayerInputManager.Instance.touchController.Show();
+					mobileAimLine.gameObject.SetActive(false);
+					EnableCrossHair();
+					touchPad.TapEvent += MobileInputDPadAndTapUpdate;
 
-				break;
-            case PlayerControlSchemes.DoubleDPadAimAssistant:
-				PlayerInputManager.Instance.touchController.Show();
-				mobileAimLine.gameObject.SetActive(true);
-				DisableCrossHair();
-				aimJoystick.TapEvent += Shoot;
+					break;
+				case PlayerControlSchemes.DoubleDPadAimAssistant:
+					PlayerInputManager.Instance.touchController.Show();
+					mobileAimLine.gameObject.SetActive(true);
+					DisableCrossHair();
+					aimJoystick.TapEvent += Shoot;
 
-				break;
-        }
+					break;
+			}
+		}
 	}
 
 	public void SetupCross() {
@@ -108,28 +107,36 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 		Crosshair.transform.rotation = Quaternion.identity;
 	}
 
-	void Update() {
+	protected void Update() {
 		if(HasBeenInitialized && IsPaused == false || IgnoreDisables) {
 			if(!disableControl && Crosshair != null || IgnoreDisables) {
 				PlayerControl();
 			}
 		}
-
-		if(Camera.main != null && Crosshair != null && Game.GamePaused == false && HasBeenDestroyed == false && Crosshair.activeSelf || DebugPlay.isDebug) {
-			//UpdateCrosshair();
-			//MoveHead(new Vector3(Crosshair.transform.position.x, 0, Crosshair.transform.position.z));
-		}
 	}
 
-    protected override void LateUpdate() {
-		base.LateUpdate();
-		if (previousControlScheme != playerControlScheme) {
-			previousControlScheme = playerControlScheme;
-			SetupControls();
+	public override void Move(Vector2 inputDir) {
+		moveDir = new Vector3(inputDir.x, 0, inputDir.y);
+		rig.velocity = Vector3.zero;
+		float dirFactor = Mathf.Sign(Vector3.Dot(moveDir.normalized, rig.transform.forward));
+		if(disable2DirectionMovement) {
+			dirFactor = 1;
 		}
-    }
+		RotateTank(moveDir * dirFactor);
 
-    void PlayerControl() {
+		float maxDir = Mathf.Max(Mathf.Abs(inputDir.x), Mathf.Abs(inputDir.y));
+		if(maxDir > 0.7f) {
+			maxDir = 1;
+		}
+		dirFactor *= maxDir;
+		var movePos = dirFactor * moveSpeed * Time.deltaTime * rig.transform.forward;
+		if(!isShootStunned && canMove) {
+			rig.MovePosition(rig.position + movePos);
+		}
+		TrackTracer(dirFactor);
+	}
+
+	void PlayerControl() {
 		switch(playerControlScheme) {
 			case PlayerControlSchemes.Desktop:
 				DesktopInput();
@@ -150,7 +157,7 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 		Vector2 moveVector = new Vector2(player.GetAxis("MoveX"), player.GetAxis("MoveY"));
 		UpdateCrosshair();
 
-		if(player.GetButton("Shoot")) {
+		if(player.GetButton("Shoot") && CanShoot) {
 			ShootBullet();
 		}
 		if(moveVector.x != 0f || moveVector.y != 0f) {
@@ -209,7 +216,7 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 	void MobileInputDPadAndTapUpdate() {
 		mouseLocation = new Vector2(player.GetAxis("TouchX") * Screen.width, player.GetAxis("TouchY") * Screen.height);
 		UpdateCrosshair();
-		Shoot();
+		ShootBullet();
     }
 	void UpdateCrosshair() {
 		if(Game.Platform == GamePlatform.Mobile) {
@@ -241,10 +248,22 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 		MoveHead(Crosshair.transform.position, true);
 	}
 
+	public override void Kill() {
+		base.Kill();
+		if(HasBeenDestroyed) {
+			DisableControls();
+			GameFeedbacks.PlayerDeath.PlayFeedbacks();
+			GameCamera.ShortShake2D(0.5f, 40, 40);
+		}
+	}
+
 	public new void TakeDamage(IDamageEffector effector) {
 		base.TakeDamage(effector);
-		if(HasBeenDestroyed && IsInvincible == false) {
+
+		if(HasBeenDestroyed) {
 			DisableControls();
+			GameFeedbacks.PlayerDeath.PlayFeedbacks();
+			GameCamera.ShortShake2D(0.5f, 40, 40);
 		}
 	}
 

@@ -29,7 +29,7 @@ public class Destructable : GameEntity, IHittable, IResettable {
 
 	public void TakeDamage(IDamageEffector effector) {
 		GetComponent<Collider>().enabled = false;
-		AudioPlayer.Play("BoxDestructable", AudioType.SoundEffect, 0.8f, 1f, 1f);
+		AudioPlayer.Play("BoxDestructable", AudioType.SoundEffect, 0.8f, 1f, 0.3f);
 		AdjustGridSpace(false);
 		simpleMesh.enabled = false;
 

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 
@@ -92,6 +93,7 @@ public class SaveV1 : ISaveGame {
 
 	[Serializable]
 	public class World {
+		[JsonConverter(typeof(StringEnumConverter))]
 		public Worlds world;
 		public Level[] levels;
 	}

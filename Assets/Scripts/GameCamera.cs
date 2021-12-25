@@ -197,7 +197,15 @@ public class GameCamera : Singleton<GameCamera> {
 	}
 
 	public static void ShakeExplosion3D(float strength, float duration) {
-		CameraShaker.Presets.Explosion3D(strength, duration);
+		CameraShaker.Presets.Explosion2D(strength, duration);
+	}
+
+	public static void ShortShake3D(float strength, float frequency = 25, int numBounces = 5) {
+		CameraShaker.Presets.ShortShake3D(strength, frequency, numBounces);
+	}
+
+	public static void ShortShake2D(float strength, float frequency = 25, int numBounces = 5) {
+		CameraShaker.Presets.ShortShake2D(strength, strength, frequency, numBounces);
 	}
 
 	public void PlayConfetti() {

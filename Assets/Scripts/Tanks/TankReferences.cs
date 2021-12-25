@@ -3,7 +3,6 @@ using Shapes;
 using Sperlich.PrefabManager;
 using System.Collections.Generic;
 using UnityEngine;
-// HDRP Relate: using UnityEngine.Rendering.HighDefinition;
 
 public class TankReferences : MonoBehaviour {
 
@@ -16,23 +15,17 @@ public class TankReferences : MonoBehaviour {
 	public Transform tankHead;
 	public Transform bulletOutput;
 	public Transform billboardHolder;
-	public Transform lightHolder;
-	// HDRP Relate: public HDAdditionalLightData frontLight;
-	// HDRP Relate: public HDAdditionalLightData backLight;
 	public GameObject blobShadow;
 	public GameObject tankTrack;
-	public GameObject destroyFlash; 
+	public Transform directionLeader;
 	public List<Transform> destroyTransformPieces;
 	[Header("Explosion Effects")]
 	public ParticleSystem muzzleFlash;
-	public ParticleSystem muzzleSmoke;
 	public ParticleSystem sparkDestroyEffect;
 	public ParticleSystem smokeDestroyEffect;
 	public ParticleSystem smokeFireDestroyEffect;
 	public ParticleSystem damageSmokeBody;
 	public ParticleSystem damageSmokeHead;
-	public ParticleSystem mudParticlesFront;
-	public ParticleSystem mudParticlesBack;
 	[Header("Animation Curves")]
 	public AnimationCurve lightsTurnOnAnim;
 	[Header("Feedbacks")]

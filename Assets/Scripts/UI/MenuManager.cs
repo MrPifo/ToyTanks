@@ -236,13 +236,12 @@ namespace ToyTanks.UI {
 
 		public void EnterWorldOverview() {
 			menuCamera.WiggleActive = false;
-			levelSelector.RenderWorldOverview(Worlds.WoodWorld);
-			levelSelector.CheckNextPreviousButtons();
+			levelSelector.SwitchToWorld(Worlds.WoodWorld);
 		}
 
 		public void ExitWorldOverview() {
 			menuCamera.WiggleActive = true;
-			levelSelector.ExitWorldOverview();
+			levelSelector.ExitWorldView();
 		}
 
 		public void FadeInBlur() {

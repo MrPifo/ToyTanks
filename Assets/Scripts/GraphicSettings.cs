@@ -140,10 +140,15 @@ public class GraphicSettings : MonoBehaviour {
         graphicsMenu.alpha = 0;
         graphicsMenu.gameObject.SetActive(false);
     }
-    /// <summary>
-    /// Initialized the Graphic Settings
-    /// </summary>
-    public static void Initialize() {
+	private void Update() {
+        if(Instance != null && Instance.graphicsMenu.gameObject.activeSelf && Input.GetKeyDown(KeyCode.Escape)) {
+            CloseOptionsMenu();
+		}
+    }
+	/// <summary>
+	/// Initialized the Graphic Settings
+	/// </summary>
+	public static void Initialize() {
         DontDestroyOnLoad(Instance.gameObject);
         Instance.AdjustToPlatform();
         if(File.Exists(GamePaths.UserGraphicSettings) == false) {
@@ -203,7 +208,10 @@ public class GraphicSettings : MonoBehaviour {
         Instance.controlScheme.objs = new List<string>() { "Double DPad", "DPad and Tap" };
         Instance.controlScheme.index = (int)ControlScheme;
     }
-    public static void OpenOptionsMenu(float duration = 0.002f) {
+    public static void OpenOptionsMenu(float duration = 0.1f) {
+        if(Instance == null) {
+            _instance = FindObjectOfType<GraphicSettings>();
+        }
         Instance.graphicsMenu.gameObject.SetActive(true);
         Instance.LockAudioPreview(1f);
         LoadSettings();

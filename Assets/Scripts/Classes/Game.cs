@@ -24,7 +24,7 @@ public static class Game {
 			new Level(8, 9),
 			new Level(9, 10, true),
 		}, new MenuCameraSettings() {
-			orthograpicSize = 22,
+			orthograpicSize = 24,
 			pos = new Vector3(80, 25, -14),
 			rot = new Vector3(60, 0, 0),
 		}),
@@ -41,27 +41,41 @@ public static class Game {
 			new Level(8, 19),
 			new Level(9, 20, true),
 		}, new MenuCameraSettings() {
-			orthograpicSize = 22,
+			orthograpicSize = 24,
 			pos = new Vector3(80, -75, -14),
 			rot = new Vector3(60, 0, 0),
 		}),
 
-		new World(global::Worlds.Basement, new Level[1] {
-			new Level(0, 21),
-		}, new MenuCameraSettings() {
-			orthograpicSize = 22,
-			pos = new Vector3(80, -175, -14),
-			rot = new Vector3(60, 0, 0),
-		}),
-
-		new World(global::Worlds.SnowyLands, new Level[5] {
-			new Level(0, 30),
+		/*new World(global::Worlds.Basement, new Level[10] {
 			new Level(0, 31),
 			new Level(0, 32),
 			new Level(0, 33),
 			new Level(0, 34),
+			new Level(0, 35),
+			new Level(0, 36),
+			new Level(0, 37),
+			new Level(0, 38),
+			new Level(0, 39),
+			new Level(0, 40),
 		}, new MenuCameraSettings() {
-			orthograpicSize = 22,
+			orthograpicSize = 24,
+			pos = new Vector3(80, -275, -14),
+			rot = new Vector3(60, 0, 0),
+		}),*/
+
+		new World(global::Worlds.SnowyLands, new Level[10] {
+			new Level(0, 21),
+			new Level(1, 22),
+			new Level(2, 23),
+			new Level(3, 24),
+			new Level(4, 25),
+			new Level(5, 26),
+			new Level(6, 27),
+			new Level(7, 28),
+			new Level(8, 29),
+			new Level(9, 30),
+		}, new MenuCameraSettings() {
+			orthograpicSize = 24,
 			pos = new Vector3(80, -175, -14),
 			rot = new Vector3(60, 0, 0),
 		}),
@@ -187,7 +201,7 @@ public static class Game {
 	public static World GetWorld(ulong levelId) => Worlds.Find(w => w.Levels.Any(l => l.LevelId == levelId));
 	public static Level[] GetLevels(Worlds worldType) => GetWorld(worldType).Levels;
 	public static Level GetLevelByOrder(Worlds worldType, int order) => GetWorld(worldType).Levels.Where(l => l.Order == order).First();
-	public static Level GetLevelById(Worlds worldType, ulong levelId) => GetWorld(worldType).Levels.Where(l => l.LevelId == levelId).First();
+	public static Level GetLevelById(ulong levelId) => Levels.Where(l => l.LevelId == levelId).First();
 	public static bool LevelExists(ulong levelId) => Levels.Any(l => l.LevelId == levelId);
 	public static int LevelCount(Worlds worldType) => GetWorld(worldType).Levels.Length;
 	public static void SetCursor(string cursor = "") {

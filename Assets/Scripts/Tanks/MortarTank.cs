@@ -21,7 +21,6 @@ public class MortarTank : TankAI, IHittable, IDamageEffector {
 
 	protected override void Awake() {
 		base.Awake();
-		pelletSpawnPos = this.FindChild("pelletspawn").transform.position;
 	}
 
 	public override void InitializeTank() {
@@ -32,6 +31,7 @@ public class MortarTank : TankAI, IHittable, IDamageEffector {
 	protected override IEnumerator IAttack() {
 		yield return new WaitForSeconds(reloadDuration + Random(0, randomReloadDuration));
 		yield return new WaitUntil(() => IsPlayerInShootRadius && IsPlayReady);
+		pelletSpawnPos = this.FindChild("pelletspawn").transform.position;
 
 		// Setup bullet flying path
 		Vector3 impactPosition = Player.Pos;
@@ -53,6 +53,7 @@ public class MortarTank : TankAI, IHittable, IDamageEffector {
 		Pellet pellet = PrefabManager.Spawn<Pellet>(PrefabTypes.MortarPellet);
 		pellet.SetupPellet(flyTime, explodeRadius, 8);
 		pellet.BlastOff(pelletSpawnPos, Player.Pos, () => GoToNextState(TankState.Attack));
+		muzzleFlash.Play();
 	}
 
 	public new void TakeDamage(IDamageEffector effector) {

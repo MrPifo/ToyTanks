@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <MixerProject xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PresetVersion="15">
   <MixerVersion>2021.1.2</MixerVersion>
-  <SaveTime>2021-11-13T23:29:10.2531912+01:00</SaveTime>
+  <SaveTime>2021-12-24T23:56:52.8826204+01:00</SaveTime>
   <AutoSave>false</AutoSave>
   <ExportResolution>2</ExportResolution>
   <ExportPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Block</ExportPath>
@@ -43,7 +43,7 @@
               <Source>
                 <ContentID>Albedo</ContentID>
                 <AssetPackID>ub5kefzew</AssetPackID>
-                <SubID>s3qB2OCJQUGAsP037les1w</SubID>
+                <SubID>mMtjkWoQG0KgyWM72ze2qw</SubID>
                 <OriginalName>ub5kefzew_4k_albedo</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wall_ub5kefzew\ub5kefzew_4k_albedo.jpg</CurrentFilePath>
                 <AssetID>ub5kefzew</AssetID>
@@ -90,7 +90,7 @@
               <Source>
                 <ContentID>Metalness</ContentID>
                 <AssetPackID>ub5kefzew</AssetPackID>
-                <SubID>PGJtdueORkm3FaB_eul1yg</SubID>
+                <SubID>VOxlO8hTV0uBHYgYxShRIg</SubID>
                 <AssetID>ub5kefzew</AssetID>
                 <LoadedFromLibrary>true</LoadedFromLibrary>
                 <InvertedPostLoading>false</InvertedPostLoading>
@@ -134,7 +134,7 @@
               <Source>
                 <ContentID>Roughness</ContentID>
                 <AssetPackID>ub5kefzew</AssetPackID>
-                <SubID>gptp3ix3Vkmn47dqQzOckg</SubID>
+                <SubID>V8aX3IQMk0SDUHVT6Q3FnQ</SubID>
                 <OriginalName>ub5kefzew_4k_roughness</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wall_ub5kefzew\ub5kefzew_4k_roughness.jpg</CurrentFilePath>
                 <AssetID>ub5kefzew</AssetID>
@@ -181,7 +181,7 @@
               <Source>
                 <ContentID>AO</ContentID>
                 <AssetPackID>ub5kefzew</AssetPackID>
-                <SubID>8gZ1xBf7v0GIBjcJq53RMw</SubID>
+                <SubID>mugH-37YSkqXFi3BPOE5Mg</SubID>
                 <OriginalName>ub5kefzew_4k_ao</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wall_ub5kefzew\ub5kefzew_4k_ao.jpg</CurrentFilePath>
                 <AssetID>ub5kefzew</AssetID>
@@ -228,7 +228,7 @@
               <Source>
                 <ContentID>Displacement</ContentID>
                 <AssetPackID>ub5kefzew</AssetPackID>
-                <SubID>rgh_3K5JwE-dXerx4xWdvQ</SubID>
+                <SubID>DqKV1v5NWUyM56mUYvHtuQ</SubID>
                 <OriginalName>ub5kefzew_4k_displacement</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wall_ub5kefzew\ub5kefzew_4k_displacement.exr</CurrentFilePath>
                 <AssetID>ub5kefzew</AssetID>
@@ -236,7 +236,7 @@
                 <InvertedPostLoading>false</InvertedPostLoading>
                 <PremultipliedAlpha>false</PremultipliedAlpha>
                 <IsGenerated>false</IsGenerated>
-                <LastAttemptedLoadResolution>2048</LastAttemptedLoadResolution>
+                <LastAttemptedLoadResolution>512</LastAttemptedLoadResolution>
                 <TexContent>Displacement</TexContent>
                 <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wall_ub5kefzew\ub5kefzew_4k_displacement.exr</FilePath>
               </Source>
@@ -255,7 +255,7 @@
               </UnderlayingAverageColor>
               <Name>DISPLACEMENT</Name>
               <Opacity>1</Opacity>
-              <Visible>true</Visible>
+              <Visible>false</Visible>
               <RenderInverted>false</RenderInverted>
               <MatchToBase>0</MatchToBase>
               <FoldOutOpen>false</FoldOutOpen>
@@ -275,7 +275,7 @@
               <Source>
                 <ContentID>Normal</ContentID>
                 <AssetPackID>ub5kefzew</AssetPackID>
-                <SubID>MGnZIqg7lkuUxRsG6FV8XQ</SubID>
+                <SubID>MLDNVW5vIkKVUc80LrnxtA</SubID>
                 <OriginalName>ub5kefzew_4k_normal</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wall_ub5kefzew\ub5kefzew_4k_normal.jpg</CurrentFilePath>
                 <AssetID>ub5kefzew</AssetID>
@@ -372,7 +372,7 @@
               <PlacementMethod>Hexaplanar</PlacementMethod>
               <Hexaplanar>
                 <RelativeBounds>Full</RelativeBounds>
-                <Scale>5</Scale>
+                <Scale>1.30313432</Scale>
                 <Radius>0.5472637</Radius>
                 <Angles>
                   <float>0</float>
@@ -390,8 +390,8 @@
                 <OffsetU>0</OffsetU>
                 <OffsetV>0</OffsetV>
                 <RotateUV>0</RotateUV>
-                <RepetitionsX>2</RepetitionsX>
-                <RepetitionsY>2</RepetitionsY>
+                <RepetitionsX>5</RepetitionsX>
+                <RepetitionsY>5</RepetitionsY>
               </UVTiling>
               <UVFreeForm>
                 <RepetitionsStretchValue>
@@ -3317,7 +3317,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>AO</ContentID>
       <AssetPackID>ub5kefzew</AssetPackID>
-      <SubID>8gZ1xBf7v0GIBjcJq53RMw</SubID>
+      <SubID>mugH-37YSkqXFi3BPOE5Mg</SubID>
       <OriginalName>ub5kefzew_4k_ao</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wall_ub5kefzew\ub5kefzew_4k_ao.jpg</CurrentFilePath>
       <AssetID>ub5kefzew</AssetID>
@@ -3332,7 +3332,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Normal</ContentID>
       <AssetPackID>ub5kefzew</AssetPackID>
-      <SubID>MGnZIqg7lkuUxRsG6FV8XQ</SubID>
+      <SubID>MLDNVW5vIkKVUc80LrnxtA</SubID>
       <OriginalName>ub5kefzew_4k_normal</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wall_ub5kefzew\ub5kefzew_4k_normal.jpg</CurrentFilePath>
       <AssetID>ub5kefzew</AssetID>
@@ -3347,7 +3347,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Displacement</ContentID>
       <AssetPackID>ub5kefzew</AssetPackID>
-      <SubID>rgh_3K5JwE-dXerx4xWdvQ</SubID>
+      <SubID>DqKV1v5NWUyM56mUYvHtuQ</SubID>
       <OriginalName>ub5kefzew_4k_displacement</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wall_ub5kefzew\ub5kefzew_4k_displacement.exr</CurrentFilePath>
       <AssetID>ub5kefzew</AssetID>
@@ -3355,14 +3355,14 @@
       <InvertedPostLoading>false</InvertedPostLoading>
       <PremultipliedAlpha>false</PremultipliedAlpha>
       <IsGenerated>false</IsGenerated>
-      <LastAttemptedLoadResolution>2048</LastAttemptedLoadResolution>
+      <LastAttemptedLoadResolution>512</LastAttemptedLoadResolution>
       <TexContent>Displacement</TexContent>
       <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wall_ub5kefzew\ub5kefzew_4k_displacement.exr</FilePath>
     </SourceAsset>
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Preview</ContentID>
       <AssetPackID>ub5kefzew</AssetPackID>
-      <SubID>1VLOVpAA_Ea10DxYU80s6g</SubID>
+      <SubID>v9Mqkbn0mUWT2q8Xb2AUKA</SubID>
       <OriginalName>Wall_ub5kefzew_surface_Preview</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wall_ub5kefzew\Wall_ub5kefzew_surface_Preview.png</CurrentFilePath>
       <AssetID>ub5kefzew</AssetID>
@@ -3377,7 +3377,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Roughness</ContentID>
       <AssetPackID>ub5kefzew</AssetPackID>
-      <SubID>gptp3ix3Vkmn47dqQzOckg</SubID>
+      <SubID>V8aX3IQMk0SDUHVT6Q3FnQ</SubID>
       <OriginalName>ub5kefzew_4k_roughness</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wall_ub5kefzew\ub5kefzew_4k_roughness.jpg</CurrentFilePath>
       <AssetID>ub5kefzew</AssetID>
@@ -3392,7 +3392,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Metalness</ContentID>
       <AssetPackID>ub5kefzew</AssetPackID>
-      <SubID>PGJtdueORkm3FaB_eul1yg</SubID>
+      <SubID>VOxlO8hTV0uBHYgYxShRIg</SubID>
       <AssetID>ub5kefzew</AssetID>
       <LoadedFromLibrary>true</LoadedFromLibrary>
       <InvertedPostLoading>false</InvertedPostLoading>
@@ -3404,7 +3404,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Albedo</ContentID>
       <AssetPackID>ub5kefzew</AssetPackID>
-      <SubID>s3qB2OCJQUGAsP037les1w</SubID>
+      <SubID>mMtjkWoQG0KgyWM72ze2qw</SubID>
       <OriginalName>ub5kefzew_4k_albedo</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wall_ub5kefzew\ub5kefzew_4k_albedo.jpg</CurrentFilePath>
       <AssetID>ub5kefzew</AssetID>
@@ -3634,7 +3634,7 @@
       <ConstrainScaleAspect>true</ConstrainScaleAspect>
       <IsAssetMissing>false</IsAssetMissing>
       <CustomMeshPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Basement\Block_1\Custom Sources\Quixel_Mesh.fbx</CustomMeshPath>
-      <ScaleFactor>4.50501251</ScaleFactor>
+      <ScaleFactor>1</ScaleFactor>
       <CustomMeshScaleX>1.99777472</CustomMeshScaleX>
       <CustomMeshScaleY>1.99888742</CustomMeshScaleY>
       <CustomMeshScaleZ>1.9977746</CustomMeshScaleZ>

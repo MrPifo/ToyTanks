@@ -8,6 +8,7 @@ namespace Sperlich.PrefabManager {
 		TankTrack,
 		ExplosionCrater,
 		GraphicSettings,
-		InputManager
+		InputManager,
+		GameFeedbacks
 	}
 }

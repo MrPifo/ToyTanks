@@ -18,6 +18,7 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 	public ParticleSystem smokeTrail;
 	public ParticleSystem smokeFireTrail;
 	public ParticleSystem impactSparks;
+	public GameObject fakeShadow;
 	public Collider hitBox;
 	public Collider rejectHitBox;
 	public new MeshRenderer renderer;
@@ -85,9 +86,11 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 		impactSparks.Play();
 		smokeTrail.Stop(false, ParticleSystemStopBehavior.StopEmitting);
 		smokeFireTrail.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+		fakeShadow.Hide();
 		hitBox.enabled = false;
 		rejectHitBox.enabled = false;
 		renderer.enabled = false;
+		
 
 		//new GameObject().AddComponent<DestructionTimer>().Destruct(5, new GameObject[] { explodeSmoke.gameObject, explodeSmokeFire.gameObject, explodePieces.gameObject, smokeTrail.gameObject, smokeFireTrail.gameObject });
 		OnBulletDestroyed.Invoke();
@@ -145,6 +148,7 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 		hitBox.enabled = true;
 		rejectHitBox.enabled = true;
 		renderer.enabled = true;
+		fakeShadow.Show();
 		PrefabManager.FreeGameObject(this);
 	}
 }

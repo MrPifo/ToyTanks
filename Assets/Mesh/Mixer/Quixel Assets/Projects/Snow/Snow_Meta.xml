@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<StudioProjectMetaData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PresetVersion="1">
+  <StudioAssetMetas>
+    <StudioAssetMeta>
+      <Name>Block</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Snow\Block\Block.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-12-24T23:49:54.8904546+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Block_1</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Snow\Block_1\Block_1.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-12-24T23:50:41.6584448+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Block2x2</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Snow\Block2x2\Block2x2.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-12-24T23:52:07.068011+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Cylinder</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Snow\Cylinder\Cylinder.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-12-20T21:01:53.4155584+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Triangle</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Snow\Triangle\Triangle.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-12-20T20:35:09.8179003+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Roof</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Snow\Roof\Roof.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-12-20T21:01:06.8432255+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Ground</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Snow\Ground\Ground.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-12-25T23:06:10.1320573+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Step</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Snow\Step\Step.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-12-20T21:44:42.9838062+01:00</SaveTime>
+    </StudioAssetMeta>
+  </StudioAssetMetas>
+</StudioProjectMetaData>

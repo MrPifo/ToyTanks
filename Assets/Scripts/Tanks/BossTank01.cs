@@ -96,14 +96,14 @@ public class BossTank01 : BossAI, IHittable {
 
 	// State Execution
 
-	IEnumerator ICharge() {
+	protected override IEnumerator ICharge() {
 		CalculateCharge();
 		float isAlignedToPlayer = 0;
 		canMove = false;
 		moveSpeed = chargeSpeed;
 
 		while(isAlignedToPlayer < 0.98f && IsPlayReady) {
-			Move(chargeDirection);
+			RotateTank(chargeDirection);
 			KeepHeadRot();
 			isAlignedToPlayer = Vector3.Dot((Player.Pos - Pos).normalized, transform.forward);
 			yield return IPauseTank();
@@ -112,6 +112,7 @@ public class BossTank01 : BossAI, IHittable {
 
 		canMove = true;
 		rollerTrigger.TriggerHit.AddListener(action);
+		disableAvoidanceSystem = true;
 
 		while(bossStates == BossBehaviour.Charge && IsPlayReady) {
 			yield return IPauseTank();
@@ -119,10 +120,12 @@ public class BossTank01 : BossAI, IHittable {
 			chargeVibration.PlayFeedbacks();
 			chargeSmoke.Play();
 			Move(chargeDirection);
+			GameCamera.ShortShake2D(0.02f, 25, 25);
 		}
 
 		canMove = false;
 		moveSpeed = normalMoveSpeed;
+		disableAvoidanceSystem = false;
 		rollerTrigger.TriggerHit.RemoveListener(action);
 		HideChargeLine();
 		GoToNextState(waitDuration);

@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
-using CarterGames.Assets.AudioManager;
 using SimpleMan.Extensions;
-using MoreMountains.Feedbacks;
-using MoreMountains.Tools;
 using System.Collections;
 using Shapes;
 using DG.Tweening;
@@ -23,6 +20,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	[Header("VALUES")]
 	public short healthPoints;
 	public byte moveSpeed = 5;
+	public float turnSpeed = 5;
 	public float shootStunDuration = 0.2f;
 	[Range(0f, 4f)]
 	public float reloadDuration = 0.5f;
@@ -36,7 +34,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 
 	bool isInvincible;
 	bool isReloading;
-	bool isShootStunned;
+	protected bool isShootStunned;
 	bool isLightTurning;
 	protected bool canMove;
 	float angleDiff;
@@ -50,10 +48,11 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	Vector3 lastPos;
 	Vector3 spawnPos;
 	Quaternion spawnRot;
-	Vector3 moveDir;
+	protected Vector3 moveDir;
+	Vector3 directionLeaderRestPos;
+	public Vector3 evadeDir;
 	protected Quaternion lastHeadRot;
-	Rigidbody rig;
-	MMFeedbacks headShotFeedback;
+	protected Rigidbody rig;
 	List<Vector3> destroyRestPoses;
 	List<Quaternion> destroyRestRots;
 	Material[] bodyMats;
@@ -65,6 +64,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public bool HasBeenInitialized { get; set; }
 	protected bool CanShoot => !isReloading;
 	public bool HasBeenDestroyed { get; set; }
+	public bool MuteTrackSound { get; set; }
 	public bool IsInvincible {
 		get => isInvincible || makeInvincible;
 		set => isInvincible = value;
@@ -77,6 +77,10 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public TankTypes TankType => tankAsset.tankType;
 	private TankReferences References { get; set; }
 	protected bool IsPaused => Game.GamePaused || Game.IsTerminal;
+	/// <summary>
+	/// Makes moving in opposite direction without rotating possible
+	/// </summary>
+	protected float currentDirFactor;
 	public short MaxHealthPoints => tankAsset.health;
 	Transform _trackContainer;
 	protected Transform TrackContainer {
@@ -107,12 +111,9 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public Transform tankHead => References.tankHead;
 	public Transform bulletOutput => References.bulletOutput;
 	public Transform billboardHolder => References.billboardHolder;
-	public Transform lightHolder => References.lightHolder;
-	// HDRP Relate: public HDAdditionalLightData frontLight => References.frontLight;
-	// HDRP Relate: public HDAdditionalLightData backLight => References.backLight;
+	public Transform DirectionLeader => References.directionLeader;
 	public GameObject blobShadow => References.blobShadow;
 	public GameObject tankTrack => References.tankTrack;
-	public GameObject destroyFlash => References.destroyFlash;
 	public ForceShield shield => References.shield;
 	public List<Transform> destroyTransformPieces => References.destroyTransformPieces;
 	public ParticleSystem muzzleFlash => References.muzzleFlash;
@@ -121,11 +122,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public ParticleSystem smokeFireDestroyEffect => References.smokeFireDestroyEffect;
 	public ParticleSystem damageSmokeBody => References.damageSmokeBody;
 	public ParticleSystem damageSmokeHead => References.damageSmokeHead;
-	public ParticleSystem mudParticlesFront => References.mudParticlesFront;
-	public ParticleSystem mudParticlesBack => References.mudParticlesBack;
-	public ParticleSystem muzzleSmoke => References.muzzleSmoke;
 	public AnimationCurve turnLightsOnCurve => References.lightsTurnOnAnim;
-	public MMFeedbacks hitFlash => References.hitFlash;
 	public PrefabTypes BulletType => References.bullet;
 
 	protected virtual void Awake() {
@@ -134,8 +131,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 		headMats = tankHead.GetComponent<MeshRenderer>().sharedMaterials;
 		bodyMats = tankBody.GetComponent<MeshRenderer>().sharedMaterials;
 		healthPoints = tankAsset.health;
-		// HDRP Relate: frontLightIntensity = frontLight.intensity;
-		// HDRP Relate: backLightIntensity = backLight.intensity;
+		directionLeaderRestPos = DirectionLeader.position;
 		healthPointPrefab = healthBar.transform.GetChild(0).gameObject;
 		healthPointPrefab.SetActive(false);
 		TurnLightsOff();
@@ -175,31 +171,15 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 
 	public void Move() => Move(new Vector3(transform.forward.x, 0, transform.forward.z));
 	public void Move(Vector3 moveDir) => Move(new Vector2(moveDir.x, moveDir.z));
-	public void Move(Vector2 inputDir) {
-		moveDir = new Vector3(inputDir.x, 0, inputDir.y);
-		rig.velocity = Vector3.zero;
-		float dirFactor = Mathf.Sign(Vector3.Dot(moveDir.normalized, rig.transform.forward));
-		if(disable2DirectionMovement) {
-			dirFactor = 1;
-		}
-		AdjustRotation(moveDir * dirFactor);
+	public virtual void Move(Vector2 inputDir) { }
 
-		float maxDir = Mathf.Max(Mathf.Abs(inputDir.x), Mathf.Abs(inputDir.y));
-		if(maxDir > 0.7f) {
-			maxDir = 1;
-		}
-		dirFactor *= maxDir;
-		var movePos = dirFactor * moveSpeed * Time.deltaTime * rig.transform.forward;
-		//bool moveBlocked = Physics.Raycast(rig.position, moveDir, out RaycastHit blockHit, 2, obstacleLayers);
-		if(!isShootStunned && canMove) {
-			rig.MovePosition(rig.position + movePos);
-		}
-		TrackTracer(dirFactor);
-	}
-
-	public void AdjustRotation(Vector3 moveDir) {
+	public void RotateTank(Vector3 moveDir) {
 		if(moveDir == Vector3.zero) return;
-		var rot = Quaternion.LookRotation(moveDir, Vector3.up);
+		Quaternion rot = Quaternion.LookRotation(moveDir, Vector3.up);
+		if(Mathf.Abs(evadeDir.x) > 0.2f && Mathf.Abs(evadeDir.z) > 0.2f) {
+			rot = Quaternion.LookRotation(evadeDir, Vector3.up);
+		}
+
 		angleDiff = Quaternion.Angle(rig.rotation, rot);
 		if(angleDiff > 0) {
 			rot = Quaternion.RotateTowards(rig.rotation, rot, bodyRotSpeed * Time.deltaTime);
@@ -222,13 +202,14 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 
 	public Vector3 GetLookDirection(Vector3 lookTarget) => (new Vector3(lookTarget.x, 0, lookTarget.z) - new Vector3(Pos.x, 0, Pos.z)).normalized;
 
-	void TrackTracer(float temp = 0) {
+	protected void TrackTracer(float temp = 0) {
 		float distToLastTrack = Vector2.Distance(new Vector2(lastTrackPos.x, lastTrackPos.z), new Vector2(rig.position.x, rig.position.z));
 		if(distToLastTrack > trackSpawnDistance) {
+			// TODO: May be replaced or removed
 			if(temp == 1) {
-				mudParticlesBack.Emit(2);
+				//mudParticlesBack.Emit(2);
 			} else {
-				mudParticlesFront.Emit(2);
+				//mudParticlesFront.Emit(2);
 			}
 			lastTrackPos = SpawnTrack();
 		}
@@ -239,7 +220,9 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 		track.position = new Vector3(rig.position.x, 0.025f, rig.position.z);
 		track.rotation = rig.rotation * Quaternion.Euler(90, 0, 0);
 
-		AudioPlayer.Play("TankDrive", AudioType.SoundEffect, 0.95f, 1.05f, 0.5f);
+		if(MuteTrackSound == false) {
+			AudioPlayer.Play("TankDrive", AudioType.SoundEffect, 0.95f, 1.05f, 0.4f);
+		}
 		int despawnTime = 30;
 		track.GetComponent<PoolGameObject>().Recycle(despawnTime);
 		SpriteRenderer rend = track.GetComponent<SpriteRenderer>();
@@ -257,7 +240,6 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 
 			Bullet bullet;
 			muzzleFlash.Play();
-			muzzleSmoke.Play();
 			tankHead.DOScale(tankHead.localScale + Vector3.one / 7f, 0.2f).SetEase(new AnimationCurve(new Keyframe[] { new Keyframe(0, 0, 0.5f, 0.5f), new Keyframe(0.5f, 1, 0.5f, 0.5f), new Keyframe(1, 0, 0.5f, 0.5f) }));
 			if(this is PlayerInput) {
 				bullet = PrefabManager.Spawn<Bullet>(BulletType, null, bulletOutput.position).SetupBullet(bulletOutput.forward, bulletOutput.position, true);
@@ -285,14 +267,21 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 			} else {
 				if(healthPoints > 0) {
 					healthPoints--;
+					foreach(var t in destroyTransformPieces) {
+						foreach(var mat in t.GetComponent<MeshRenderer>().materials) {
+							mat.SetFloat("HitEffect", 1);
+							DOTween.To(() => mat.GetFloat("HitEffect"), x => mat.SetFloat("HitEffect", x), 1, 0.05f).OnComplete(() => {
+								DOTween.To(() => mat.GetFloat("HitEffect"), x => mat.SetFloat("HitEffect", x), 0, 0.05f);
+							});
+						}
+					}
 				}
 				if(healthPoints == 0) {
 					GotDestroyed();
 				}
 
 				healthBar.transform.GetChild(healthPoints).GetComponent<CanvasGroup>().DOFade(0, 0.2f).SetEase(Ease.OutCubic);
-				healthBar.transform.GetChild(healthPoints).DOScale(2f, 0.2f).OnComplete(() => healthBar.transform.GetChild(healthPoints).gameObject.SetActive(false));
-				hitFlash.PlayFeedbacks();
+				healthBar.transform.GetChild(healthPoints).DOScale(0f, 0.2f).OnComplete(() => healthBar.transform.GetChild(healthPoints).gameObject.SetActive(false));
 				if(this is BossAI == false) {
 					healthBar.SetActive(true);
 				}
@@ -302,7 +291,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 		}
 	}
 
-	public void Kill() {
+	public virtual void Kill() {
 		if(HasBeenDestroyed == false) {
 			GotDestroyed();
 		}
@@ -343,14 +332,13 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 		}
 		Camera.main.DOOrthoSize(Camera.main.orthographicSize + 1, 0.15f);
 		this.Delay(0.15f, () => Camera.main.DOOrthoSize(Camera.main.orthographicSize - 1, 0.15f));
-		LevelManager.Instance?.Feedback?.TankExplode();
 		GameCamera.ShakeExplosion2D(12, 0.3f);
-		if(this is PlayerInput) {
-			LevelManager.Instance?.Feedback?.PlayerDead();
-		}
 		shockwaveDisc.gameObject.SetActive(true);
-		
-		StartCoroutine(IDestroyAnimate());
+		shockwaveDisc.Radius = 0;
+
+		float thickness = shockwaveDisc.Thickness;
+		DOTween.To(() => shockwaveDisc.Radius, x => shockwaveDisc.Radius = x, thickness, 1);
+		DOTween.To(() => shockwaveDisc.Thickness, x => shockwaveDisc.Thickness = x, 0, 1);
 	}
 
 	public void ShieldEffect(Vector3 impactPos) {
@@ -418,40 +406,8 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 				isLightTurning = false;
 			});
 
-			if(lastTurnSign < 0) {
-				lightHolder.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
-			} else {
-				lightHolder.localRotation = Quaternion.Euler(new Vector3(0, 180, 0));
-			}
 			lastTurnSign = turn;
 		}
-	}
-
-	IEnumerator IDestroyAnimate() {
-		float time = 0f;
-		float thickness = shockwaveDisc.Thickness;
-		destroyFlash.SetActive(true);
-		var rend = destroyFlash.GetComponent<MeshRenderer>();
-		var flashMat = new Material(rend.sharedMaterial);
-		rend.sharedMaterial = flashMat;
-		flashMat.SetColor("_BaseColor", Color.white);
-		while(time < 1f) {
-			shockwaveDisc.Radius = MMTween.Tween(time, 0, 1f, 0, 10, MMTween.MMTweenCurve.EaseOutCubic);
-			shockwaveDisc.Thickness = MMTween.Tween(time, 0, 1f, thickness, 0, MMTween.MMTweenCurve.EaseOutCubic);
-			float flashScale = MMTween.Tween(time, 0f, 0.3f, 0f, 1f, MMTween.MMTweenCurve.EaseOutCubic);
-			float flashAlpha = MMTween.Tween(time, 0f, 0.3f, 1f, 0f, MMTween.MMTweenCurve.EaseOutCubic);
-			flashMat.SetColor("_BaseColor", new Color(1f, 1f, 1f, flashAlpha));
-			if(time >= 0.3f) {
-				destroyFlash.SetActive(false);
-			} else {
-				destroyFlash.transform.localScale = new Vector3(flashScale, flashScale, flashScale);
-			}
-			time += Time.deltaTime;
-			yield return null;
-		}
-		shockwaveDisc.Thickness = thickness;
-		shockwaveDisc.Radius = 0f;
-		shockwaveDisc.gameObject.SetActive(false);
 	}
 
 	public void DisableCollisions() {
@@ -542,7 +498,6 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 			Revive();
 		}
 		LevelManager.Instance.UI.playerLives.SetText(Random.Range(0, 5).ToString());
-		LevelManager.Instance.Feedback.PlayLives();
 		this.Delay(0.1f, () => GotDestroyed());
 	}
 #endif
@@ -556,6 +511,9 @@ public class TankBaseDebugEditor : Editor {
 		PlayerInput builder = (PlayerInput)target;
 		if(GUILayout.Button("Destroy")) {
 			builder.DebugDestroy();
+		}
+		if(GUILayout.Button("Play Destroy Effect")) {
+			builder.PlayDestroyExplosion();
 		}
 		if(GUILayout.Button("Revive")) {
 			builder.disableControl = false;

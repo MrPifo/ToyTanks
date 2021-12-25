@@ -20,13 +20,11 @@ public class LevelManager : MonoBehaviour {
 	[SerializeField] private float gridPointOverlapRadius = 1f;
 	[SerializeField] private bool showGrid;
 	[SerializeField] private CanvasGroup optionsMenu;
+	[SerializeField] private Transform themePresets;
 	[SerializeField] private LayerMask baseLayer;
 	private int scoreOnLevelEnter;
 	private List<TankAsset> tankPrefabs;
 	private GameCamera gameCamera;
-	public LevelFeedbacks Feedback { get; private set; }
-	// HDRP Related: public HDAdditionalLightData spotLight;
-	// HDRP Related: public HDAdditionalLightData sunLight;
 	bool isBossLevel;
 	bool levelManagerInitializedCampaignLevelOnly;
 
@@ -73,7 +71,6 @@ public class LevelManager : MonoBehaviour {
 
 	// Initialization
 	void Awake() {
-		Feedback = FindObjectOfType<LevelFeedbacks>();
 		gameCamera = FindObjectOfType<GameCamera>();
 		optionsMenu.alpha = 0;
 		optionsMenu.gameObject.SetActive(false);
@@ -156,7 +153,7 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void OpenGraphicsMenu() {
-		GraphicSettings.OpenOptionsMenu();
+		GraphicSettings.OpenOptionsMenu(0.2f);
     }
 
 	public void ClearMap() {
@@ -193,6 +190,10 @@ public class LevelManager : MonoBehaviour {
 			var t = Instantiate(asset.prefab, tank.pos + asset.tankSpawnOffset, Quaternion.Euler(tank.rotation)).GetComponent<TankBase>();
 			t.transform.SetParent(TanksContainer);
 		}
+		foreach(Transform t in themePresets) {
+			t.gameObject.SetActive(false);
+		}
+		themePresets.Find(data.theme.ToString()).gameObject.SetActive(true);
 		var floor = GameObject.FindGameObjectWithTag("Ground").GetComponent<MeshRenderer>();
 		floor.sharedMaterial = blockAssets.floorMaterial;
 		LevelLightmapper.SwitchLightmaps(CurrentLevel.levelId);
@@ -259,8 +260,6 @@ public class LevelManager : MonoBehaviour {
 			BossUI.RegisterBoss(boss);
 		}
 		BossUI.InitAnimateBossBar();
-		Feedback.PlayStartFadeText();
-		Feedback.FadeInGameplayUI();
 		UI.playerScore.SetText("0");
 		UI.playerLives.SetText("0");
 		UI.playTime.SetText("0");
@@ -308,10 +307,8 @@ public class LevelManager : MonoBehaviour {
 		if(Game.IsGameRunningDebug == false) {
 			GameManager.Score++;
 			UI.playerScore.SetText(GameManager.Score.ToString());
-			Feedback.PlayScore();
 		} else {
 			UI?.playerScore.SetText(Random.Range(0, 9).ToString());
-			Feedback?.PlayScore();
 		}
 	}
 
@@ -340,7 +337,6 @@ public class LevelManager : MonoBehaviour {
 
 	public static void Respawn() => Instance.StartCoroutine(Instance.IRespawnAnimate());
 	IEnumerator IRespawnAnimate() {
-		Feedback.PlayLives();
 		Logger.Log(Channel.Gameplay, "Respawning player.");
 		yield return new WaitForSeconds(3f);
 		ResetLevel();
@@ -373,7 +369,6 @@ public class LevelManager : MonoBehaviour {
 						Logger.Log(Channel.Gameplay, "Continue to next level: " + GameManager.LevelId);
 						yield return new WaitForSeconds(3);
 						// Reward Extra Lives
-						Feedback.FadeOutGameplayUI();
 						GameManager.LoadLevel("", true);
 					} else {
 						// Reset Player to CheckPoint
@@ -417,7 +412,6 @@ public class LevelManager : MonoBehaviour {
 						gameCamera.PlayConfetti();
 					}
 					yield return new WaitForSeconds(3);
-					Feedback.FadeOutGameplayUI();
 					GameManager.ReturnToMenu("Returning to Menu");
 					break;
 				case GameManager.GameMode.Editor:

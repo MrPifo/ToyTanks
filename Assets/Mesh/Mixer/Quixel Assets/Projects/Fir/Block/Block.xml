@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <MixerProject xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PresetVersion="15">
   <MixerVersion>2021.1.2</MixerVersion>
-  <SaveTime>2021-11-13T20:12:15.3203461+01:00</SaveTime>
+  <SaveTime>2021-12-24T23:30:26.1622295+01:00</SaveTime>
   <AutoSave>false</AutoSave>
   <ExportResolution>2</ExportResolution>
   <ExportPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Block</ExportPath>
@@ -43,7 +43,7 @@
               <Source>
                 <ContentID>Albedo</ContentID>
                 <AssetPackID>udrmdjmdy</AssetPackID>
-                <SubID>2ySpDybofEOhsA5Ec9QIIQ</SubID>
+                <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
                 <OriginalName>udrmdjmdy_4k_albedo</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_albedo.jpg</CurrentFilePath>
                 <AssetID>udrmdjmdy</AssetID>
@@ -90,7 +90,7 @@
               <Source>
                 <ContentID>Metalness</ContentID>
                 <AssetPackID>udrmdjmdy</AssetPackID>
-                <SubID>C2FPa_pOCkyGNjWVdf8NHg</SubID>
+                <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
                 <AssetID>udrmdjmdy</AssetID>
                 <LoadedFromLibrary>true</LoadedFromLibrary>
                 <InvertedPostLoading>false</InvertedPostLoading>
@@ -134,7 +134,7 @@
               <Source>
                 <ContentID>Roughness</ContentID>
                 <AssetPackID>udrmdjmdy</AssetPackID>
-                <SubID>aiBFZUCxhUq7lhDzr9_Ppg</SubID>
+                <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
                 <OriginalName>udrmdjmdy_4k_roughness</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_roughness.jpg</CurrentFilePath>
                 <AssetID>udrmdjmdy</AssetID>
@@ -181,7 +181,7 @@
               <Source>
                 <ContentID>AO</ContentID>
                 <AssetPackID>udrmdjmdy</AssetPackID>
-                <SubID>j_1PTCnrzkm3btbvpa7WYw</SubID>
+                <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
                 <OriginalName>udrmdjmdy_4k_ao</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_ao.jpg</CurrentFilePath>
                 <AssetID>udrmdjmdy</AssetID>
@@ -228,7 +228,7 @@
               <Source>
                 <ContentID>Displacement</ContentID>
                 <AssetPackID>udrmdjmdy</AssetPackID>
-                <SubID>uN9ZlFdpcECYfnLlXJrAww</SubID>
+                <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
                 <OriginalName>udrmdjmdy_4k_displacement</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_displacement.exr</CurrentFilePath>
                 <AssetID>udrmdjmdy</AssetID>
@@ -255,7 +255,7 @@
               </UnderlayingAverageColor>
               <Name>DISPLACEMENT</Name>
               <Opacity>1</Opacity>
-              <Visible>true</Visible>
+              <Visible>false</Visible>
               <RenderInverted>false</RenderInverted>
               <MatchToBase>0</MatchToBase>
               <FoldOutOpen>false</FoldOutOpen>
@@ -275,7 +275,7 @@
               <Source>
                 <ContentID>Normal</ContentID>
                 <AssetPackID>udrmdjmdy</AssetPackID>
-                <SubID>agzkXwBP0UaDDC5Wf_qjEw</SubID>
+                <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
                 <OriginalName>udrmdjmdy_4k_normal</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_normal.jpg</CurrentFilePath>
                 <AssetID>udrmdjmdy</AssetID>
@@ -320,7 +320,7 @@
             <OpacityChannel>
               <Source>
                 <ContentID>Opacity</ContentID>
-                <AssetID>u0dvfyfqaukopj8kgfczng</AssetID>
+                <AssetID>nqekzt0yauqs7dk7w7yrgw</AssetID>
                 <LoadedFromLibrary>false</LoadedFromLibrary>
                 <InvertedPostLoading>false</InvertedPostLoading>
                 <PremultipliedAlpha>false</PremultipliedAlpha>
@@ -372,8 +372,8 @@
               <PlacementMethod>Hexaplanar</PlacementMethod>
               <Hexaplanar>
                 <RelativeBounds>Target</RelativeBounds>
-                <Scale>8</Scale>
-                <Radius>0.2</Radius>
+                <Scale>3</Scale>
+                <Radius>0.935323358</Radius>
                 <Angles>
                   <float>0</float>
                   <float>1</float>
@@ -1030,7 +1030,7 @@
     <ExportResolutionIndex>2</ExportResolutionIndex>
     <TextureSetList>
       <TextureSetExportContext>
-        <Detail>4 Maps, 1024px</Detail>
+        <Detail>6 Maps, 1024px</Detail>
         <ID>0</ID>
         <Visible>true</Visible>
         <ResolutionIndex>2</ResolutionIndex>
@@ -1330,7 +1330,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>false</Visible>
+            <Visible>true</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Specular</MapName>
@@ -1475,7 +1475,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>false</Visible>
+            <Visible>true</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Displacement</MapName>
@@ -1570,7 +1570,7 @@
     <ExportButtonLabel>EXPORT TO DISK</ExportButtonLabel>
     <ActiveTextureSetsForExport>
       <TextureSetExportContext>
-        <Detail>4 Maps, 1024px</Detail>
+        <Detail>6 Maps, 1024px</Detail>
         <ID>0</ID>
         <Visible>true</Visible>
         <ResolutionIndex>2</ResolutionIndex>
@@ -1870,7 +1870,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>false</Visible>
+            <Visible>true</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Specular</MapName>
@@ -2015,7 +2015,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>false</Visible>
+            <Visible>true</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Displacement</MapName>
@@ -2231,7 +2231,7 @@
   <AdvanceExportConfigSettings>
     <TargetTextureSets>
       <TextureSetExportContext>
-        <Detail>4 Maps, 1024px</Detail>
+        <Detail>6 Maps, 1024px</Detail>
         <ID>0</ID>
         <Visible>true</Visible>
         <ResolutionIndex>2</ResolutionIndex>
@@ -2531,7 +2531,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>false</Visible>
+            <Visible>true</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Specular</MapName>
@@ -2676,7 +2676,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>false</Visible>
+            <Visible>true</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Displacement</MapName>
@@ -2762,7 +2762,7 @@
       </TextureSetExportContext>
     </TargetTextureSets>
     <CurrentTarget>
-      <Detail>4 Maps, 1024px</Detail>
+      <Detail>6 Maps, 1024px</Detail>
       <ID>0</ID>
       <Visible>true</Visible>
       <ResolutionIndex>2</ResolutionIndex>
@@ -3062,7 +3062,7 @@
           <Detail>PNG, 8-bit</Detail>
         </PerTextureSetMapVisibilityContext>
         <PerTextureSetMapVisibilityContext>
-          <Visible>false</Visible>
+          <Visible>true</Visible>
           <IsSingleTextureSet>true</IsSingleTextureSet>
           <Map>
             <MapName>Specular</MapName>
@@ -3207,7 +3207,7 @@
           <Detail>PNG, 8-bit</Detail>
         </PerTextureSetMapVisibilityContext>
         <PerTextureSetMapVisibilityContext>
-          <Visible>false</Visible>
+          <Visible>true</Visible>
           <IsSingleTextureSet>true</IsSingleTextureSet>
           <Map>
             <MapName>Displacement</MapName>
@@ -3315,69 +3315,9 @@
   </AdvanceExportConfigSettings>
   <Assets>
     <SourceAsset xsi:type="SourceTexture">
-      <ContentID>AO</ContentID>
-      <AssetPackID>udrmdjmdy</AssetPackID>
-      <SubID>j_1PTCnrzkm3btbvpa7WYw</SubID>
-      <OriginalName>udrmdjmdy_4k_ao</OriginalName>
-      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_ao.jpg</CurrentFilePath>
-      <AssetID>udrmdjmdy</AssetID>
-      <LoadedFromLibrary>true</LoadedFromLibrary>
-      <InvertedPostLoading>false</InvertedPostLoading>
-      <PremultipliedAlpha>false</PremultipliedAlpha>
-      <IsGenerated>false</IsGenerated>
-      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
-      <TexContent>AO</TexContent>
-      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_ao.jpg</FilePath>
-    </SourceAsset>
-    <SourceAsset xsi:type="SourceTexture">
-      <ContentID>Normal</ContentID>
-      <AssetPackID>udrmdjmdy</AssetPackID>
-      <SubID>agzkXwBP0UaDDC5Wf_qjEw</SubID>
-      <OriginalName>udrmdjmdy_4k_normal</OriginalName>
-      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_normal.jpg</CurrentFilePath>
-      <AssetID>udrmdjmdy</AssetID>
-      <LoadedFromLibrary>true</LoadedFromLibrary>
-      <InvertedPostLoading>false</InvertedPostLoading>
-      <PremultipliedAlpha>false</PremultipliedAlpha>
-      <IsGenerated>false</IsGenerated>
-      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
-      <TexContent>Normal</TexContent>
-      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_normal.jpg</FilePath>
-    </SourceAsset>
-    <SourceAsset xsi:type="SourceTexture">
-      <ContentID>Displacement</ContentID>
-      <AssetPackID>udrmdjmdy</AssetPackID>
-      <SubID>uN9ZlFdpcECYfnLlXJrAww</SubID>
-      <OriginalName>udrmdjmdy_4k_displacement</OriginalName>
-      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_displacement.exr</CurrentFilePath>
-      <AssetID>udrmdjmdy</AssetID>
-      <LoadedFromLibrary>true</LoadedFromLibrary>
-      <InvertedPostLoading>false</InvertedPostLoading>
-      <PremultipliedAlpha>false</PremultipliedAlpha>
-      <IsGenerated>false</IsGenerated>
-      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
-      <TexContent>Displacement</TexContent>
-      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_displacement.exr</FilePath>
-    </SourceAsset>
-    <SourceAsset xsi:type="SourceTexture">
-      <ContentID>Preview</ContentID>
-      <AssetPackID>udrmdjmdy</AssetPackID>
-      <SubID>8cQgPuvAg0i1x2xP9T0x9A</SubID>
-      <OriginalName>Wood_Plank_udrmdjmdy_surface_Preview</OriginalName>
-      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\Wood_Plank_udrmdjmdy_surface_Preview.png</CurrentFilePath>
-      <AssetID>udrmdjmdy</AssetID>
-      <LoadedFromLibrary>true</LoadedFromLibrary>
-      <InvertedPostLoading>false</InvertedPostLoading>
-      <PremultipliedAlpha>false</PremultipliedAlpha>
-      <IsGenerated>false</IsGenerated>
-      <LastAttemptedLoadResolution>64</LastAttemptedLoadResolution>
-      <TexContent>Preview</TexContent>
-      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\Wood_Plank_udrmdjmdy_surface_Preview.png</FilePath>
-    </SourceAsset>
-    <SourceAsset xsi:type="SourceTexture">
       <ContentID>Roughness</ContentID>
       <AssetPackID>udrmdjmdy</AssetPackID>
-      <SubID>aiBFZUCxhUq7lhDzr9_Ppg</SubID>
+      <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
       <OriginalName>udrmdjmdy_4k_roughness</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_roughness.jpg</CurrentFilePath>
       <AssetID>udrmdjmdy</AssetID>
@@ -3390,9 +3330,54 @@
       <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_roughness.jpg</FilePath>
     </SourceAsset>
     <SourceAsset xsi:type="SourceTexture">
+      <ContentID>AO</ContentID>
+      <AssetPackID>udrmdjmdy</AssetPackID>
+      <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
+      <OriginalName>udrmdjmdy_4k_ao</OriginalName>
+      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_ao.jpg</CurrentFilePath>
+      <AssetID>udrmdjmdy</AssetID>
+      <LoadedFromLibrary>true</LoadedFromLibrary>
+      <InvertedPostLoading>false</InvertedPostLoading>
+      <PremultipliedAlpha>false</PremultipliedAlpha>
+      <IsGenerated>false</IsGenerated>
+      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+      <TexContent>AO</TexContent>
+      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_ao.jpg</FilePath>
+    </SourceAsset>
+    <SourceAsset xsi:type="SourceTexture">
+      <ContentID>Displacement</ContentID>
+      <AssetPackID>udrmdjmdy</AssetPackID>
+      <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
+      <OriginalName>udrmdjmdy_4k_displacement</OriginalName>
+      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_displacement.exr</CurrentFilePath>
+      <AssetID>udrmdjmdy</AssetID>
+      <LoadedFromLibrary>true</LoadedFromLibrary>
+      <InvertedPostLoading>false</InvertedPostLoading>
+      <PremultipliedAlpha>false</PremultipliedAlpha>
+      <IsGenerated>false</IsGenerated>
+      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+      <TexContent>Displacement</TexContent>
+      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_displacement.exr</FilePath>
+    </SourceAsset>
+    <SourceAsset xsi:type="SourceTexture">
+      <ContentID>Normal</ContentID>
+      <AssetPackID>udrmdjmdy</AssetPackID>
+      <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
+      <OriginalName>udrmdjmdy_4k_normal</OriginalName>
+      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_normal.jpg</CurrentFilePath>
+      <AssetID>udrmdjmdy</AssetID>
+      <LoadedFromLibrary>true</LoadedFromLibrary>
+      <InvertedPostLoading>false</InvertedPostLoading>
+      <PremultipliedAlpha>false</PremultipliedAlpha>
+      <IsGenerated>false</IsGenerated>
+      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+      <TexContent>Normal</TexContent>
+      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_normal.jpg</FilePath>
+    </SourceAsset>
+    <SourceAsset xsi:type="SourceTexture">
       <ContentID>Metalness</ContentID>
       <AssetPackID>udrmdjmdy</AssetPackID>
-      <SubID>C2FPa_pOCkyGNjWVdf8NHg</SubID>
+      <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
       <AssetID>udrmdjmdy</AssetID>
       <LoadedFromLibrary>true</LoadedFromLibrary>
       <InvertedPostLoading>false</InvertedPostLoading>
@@ -3404,7 +3389,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Albedo</ContentID>
       <AssetPackID>udrmdjmdy</AssetPackID>
-      <SubID>2ySpDybofEOhsA5Ec9QIIQ</SubID>
+      <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
       <OriginalName>udrmdjmdy_4k_albedo</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_albedo.jpg</CurrentFilePath>
       <AssetID>udrmdjmdy</AssetID>
@@ -3627,14 +3612,14 @@
     </MaterialIDMap>
     <MeshUIContext>
       <CurrentSplitType>1</CurrentSplitType>
-      <lastLoadedPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Fir\Block\Custom Sources\Quixel_Mesh.fbx</lastLoadedPath>
+      <lastLoadedPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Block\Quixel_Mesh.fbx</lastLoadedPath>
       <MeshSplitType>1</MeshSplitType>
       <LoadTextureMaps>false</LoadTextureMaps>
       <IsSingleTextureSet>true</IsSingleTextureSet>
       <ConstrainScaleAspect>true</ConstrainScaleAspect>
       <IsAssetMissing>false</IsAssetMissing>
-      <CustomMeshPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Block\Quixel_Mesh.fbx</CustomMeshPath>
-      <ScaleFactor>4.50501251</ScaleFactor>
+      <CustomMeshPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Fir\Block\Custom Sources\Quixel_Mesh.fbx</CustomMeshPath>
+      <ScaleFactor>1</ScaleFactor>
       <CustomMeshScaleX>1.99777472</CustomMeshScaleX>
       <CustomMeshScaleY>1.99888742</CustomMeshScaleY>
       <CustomMeshScaleZ>1.9977746</CustomMeshScaleZ>

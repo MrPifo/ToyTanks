@@ -206,7 +206,7 @@ public static class SaveGame {
 	// Version dependent Helper functions
 	public static bool HasGameBeenCompletedOnce => SaveInstance.GameCompletedOnce;
 	public static SaveV1.World GetWorld(Worlds world) => SaveInstance.Worlds.Find(w => w.world == world);
-	public static SaveV1.Level GetLevel(Worlds world, ulong levelId) => GetWorld(world).levels.Where(l => l.LevelId == levelId).First();
+	public static SaveV1.Level GetLevel(Worlds world, ulong levelId) => GetWorld(world).levels.Where(l => l.LevelId == levelId).FirstOrDefault();
 	public static int UnlockedLevelCount(Worlds world) => GetWorld(world).levels.Count(l => l.IsUnlocked == true);
 	public static bool IsLevelUnlocked(Worlds world, ulong levelId) => GetLevel(world, levelId).IsUnlocked;
 

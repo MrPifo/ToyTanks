@@ -22,5 +22,12 @@
       <MixPresetVersion>15</MixPresetVersion>
       <SaveTime>2021-11-18T14:52:15.0000298+01:00</SaveTime>
     </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Snowplower</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Tank\Snowplower\Snowplower.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-12-23T00:06:06.2343697+01:00</SaveTime>
+    </StudioAssetMeta>
   </StudioAssetMetas>
 </StudioProjectMetaData>

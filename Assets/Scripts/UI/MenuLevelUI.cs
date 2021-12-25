@@ -23,7 +23,6 @@ namespace ToyTanks.UI {
 		public int elements => shapes.Count;
 		float originalThickness;
 		bool isUnlocked;
-		bool isSelected;
 
 		void Awake() {
 			originalThickness = rect.Thickness;
@@ -34,16 +33,17 @@ namespace ToyTanks.UI {
 		public void LockLevel() {
 			rect.Color = lockedColor;
 			rect.Thickness = 1;
+			isUnlocked = false;
 		}
 
 		public void UnlockLevel() {
 			rect.Color = unlockColor;
 			rect.Thickness = originalThickness;
+			isUnlocked = true;
 		}
 
-		public void Initialize(Game.Level level, bool isUnlocked) {
+		public void Initialize(Game.Level level) {
 			this.level = level;
-			this.isUnlocked = isUnlocked;
 			try {
 				var sprite = Resources.Load<Sprite>(Game.LevelScreenshotPath + level.LevelId);
 				preview.sprite = sprite;
@@ -115,7 +115,6 @@ namespace ToyTanks.UI {
 		public void OnMouseEnter() {
 			if(isUnlocked) {
 				rect.Color = hoverColor;
-				isSelected = true;
 				transform.DOScale(1.4f, 0.2f).SetEase(Ease.OutCubic);
 				Game.SetCursor("pointer");
 			}
@@ -124,7 +123,6 @@ namespace ToyTanks.UI {
 		public void OnMouseExit() {
 			if(isUnlocked) {
 				rect.Color = unlockColor;
-				isSelected = false;
 				transform.DOScale(1.35f, 0.2f).SetEase(Ease.OutCubic);
 				Game.SetCursor("default");
 			}
@@ -132,7 +130,6 @@ namespace ToyTanks.UI {
 
 		public void OnMouseDown() {
 			if(isUnlocked) {
-				isSelected = false;
 				MenuManager.Instance.worldOverviewMenu.FadeOut();
 				GameManager.StartLevel(level.LevelId);
 			}
@@ -147,7 +144,7 @@ namespace ToyTanks.UI {
 			var builder = (MenuLevelUI)target;
 			if(GUILayout.Button("Animate")) {
 				builder.ResetShapes();
-				builder.Initialize(null, false);
+				builder.Initialize(null);
 				builder.FillTransition(0f, 1);
 			}
 		}

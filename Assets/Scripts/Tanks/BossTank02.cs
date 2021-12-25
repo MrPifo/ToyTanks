@@ -112,6 +112,7 @@ public class BossTank02 : BossAI, IHittable, IDamageEffector {
 		pellet.AdjustPellet(pelletFlyingCurve);
 		pellet.BlastOff(pelletSpawnPos, Player.Pos, null);
 		blastFireParticles.Play();
+		yield return new WaitForSeconds(1.5f);
 		bossStates.Push(BossBehaviour.QuickMove);
 		ProcessState();
 	}

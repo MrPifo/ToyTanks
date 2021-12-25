@@ -57,6 +57,7 @@ namespace ToyTanks.LevelEditor {
 		public SegmentedControl cameraViews;
 		public Material removeMaterial;
 		public Material previewMaterial;
+		public Transform themePresets;
 
 		int rotateSelection;
 		bool IsDestroyMode => buildModeToggle.isOn;
@@ -750,6 +751,11 @@ namespace ToyTanks.LevelEditor {
 			}
 			floor.GetComponent<MeshRenderer>().sharedMaterial = CurrentTheme.floorMaterial;
 			ReflectionProbe.RenderProbe();
+
+			foreach(Transform t in themePresets) {
+				t.gameObject.SetActive(false);
+			}
+			themePresets.Find(newTheme.ToString()).gameObject.SetActive(true);
 		}
 
 		public void SwitchGridSizeDropdown() => SwitchGridSize((GridSizes)gridSizeDropdown.value);
