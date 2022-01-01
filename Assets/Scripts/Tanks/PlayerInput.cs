@@ -107,7 +107,7 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 		Crosshair.transform.rotation = Quaternion.identity;
 	}
 
-	protected void Update() {
+	protected void FixedUpdate() {
 		if(HasBeenInitialized && IsPaused == false || IgnoreDisables) {
 			if(!disableControl && Crosshair != null || IgnoreDisables) {
 				PlayerControl();
@@ -129,7 +129,7 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 			maxDir = 1;
 		}
 		dirFactor *= maxDir;
-		var movePos = dirFactor * moveSpeed * Time.deltaTime * rig.transform.forward;
+		var movePos = dirFactor * moveSpeed * Time.fixedDeltaTime * rig.transform.forward;
 		if(!isShootStunned && canMove) {
 			rig.MovePosition(rig.position + movePos);
 		}
@@ -264,6 +264,9 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 			DisableControls();
 			GameFeedbacks.PlayerDeath.PlayFeedbacks();
 			GameCamera.ShortShake2D(0.5f, 40, 40);
+		} else {
+			GameFeedbacks.PlayerHit.PlayFeedbacks();
+			GameCamera.ShortShake2D(0.5f, 5, 5);
 		}
 	}
 

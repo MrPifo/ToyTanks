@@ -1,45 +1,49 @@
 using DG.Tweening;
 using Shapes;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using TMPro;
+using SimpleMan.Extensions;
 
 namespace ToyTanks.UI {
 	public class MenuLevelUI : MonoBehaviour {
 
-		Game.Level level;
+		public Game.Level level;
 		[ColorUsage(true, true)]
 		public Color unlockColor;
 		[ColorUsage(true, true)]
 		public Color lockedColor;
 		[ColorUsage(true, true)]
 		public Color hoverColor;
+		public float fillSpeed;
 		public SpriteMask mask;
 		public TextMeshProUGUI levelNumber;
 		public Rectangle rect;
+		public Line connectLine;
 		public SpriteRenderer preview;
-		List<(ShapeRenderer shape, Vector3 lineEnd, float angleStart, float angleEnd)> shapes;
-		public int elements => shapes.Count;
-		float originalThickness;
+		public GameObject lockIcon;
+		public ButtonAudio.ButtonAudios hoverAudio;
+		public ButtonAudio.ButtonAudios clickAudio;
 		bool isUnlocked;
+		Vector3 lineEndPos;
 
 		void Awake() {
-			originalThickness = rect.Thickness;
 			mask.alphaCutoff = Random.Range(0.05f, 0.001f);
 			mask.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, Random.Range(0, 360)));
+			lineEndPos = connectLine.End;
+			connectLine.End = Vector3.zero;
 		}
 
 		public void LockLevel() {
 			rect.Color = lockedColor;
-			rect.Thickness = 1;
 			isUnlocked = false;
+			connectLine.End = Vector3.zero;
+			lockIcon.Show();
 		}
 
 		public void UnlockLevel() {
 			rect.Color = unlockColor;
-			rect.Thickness = originalThickness;
 			isUnlocked = true;
+			lockIcon.Hide();
 		}
 
 		public void Initialize(Game.Level level) {
@@ -47,69 +51,16 @@ namespace ToyTanks.UI {
 			try {
 				var sprite = Resources.Load<Sprite>(Game.LevelScreenshotPath + level.LevelId);
 				preview.sprite = sprite;
-			} catch { }
+			} catch {
+			}
+
 			levelNumber.text = level == null ? "" : level.LevelId.ToString();
-			shapes = new List<(ShapeRenderer shape, Vector3 lineEnd, float angleStart, float angleEnd)>();
-
-			int count = 0;
-			for(int i = transform.GetSiblingIndex(); i < transform.parent.childCount; i++) {
-				if(i + 1 < transform.parent.childCount) {
-					var next = transform.parent.GetChild(i + 1);
-					if(next.TryGetComponent(out MenuLevelUI _) == false) {
-						if(next.TryGetComponent(out Line l)) {
-							shapes.Add((l, l.End, 0, 0));
-							l.End = Vector3.zero;
-						} else if(next.TryGetComponent(out Disc d)) {
-							shapes.Add((d, Vector3.zero, d.AngRadiansStart, d.AngRadiansEnd));
-							if((int)(d.AngRadiansEnd * Mathf.Rad2Deg) == 90) {
-								d.AngRadiansStart = 90 * Mathf.Deg2Rad;
-							} else {
-								d.AngRadiansStart = 0;
-								d.AngRadiansEnd = 0;
-							}
-						}
-						count++;
-					} else {
-						break;
-					}
-				}
+			if(level != null && isUnlocked) {
+				float speed = (1 + level.Order) * fillSpeed;
+				this.Delay(speed, () => {
+					DOTween.To(() => connectLine.End, x => connectLine.End = x, lineEndPos, fillSpeed).SetEase(Ease.Linear);
+				});
 			}
-		}
-
-		public void ResetShapes() {
-			foreach(var shape in shapes) {
-				if(shape.shape is Line) {
-					var line = shape.shape as Line;
-					line.End = shape.lineEnd;
-				} else if(shape.shape is Disc) {
-					var ring = shape.shape as Disc;
-					ring.AngRadiansStart = shape.angleStart;
-					ring.AngRadiansEnd = shape.angleEnd;
-				}
-			}
-		}
-
-		public void FillTransition(float delay, float duration) {
-			DOTween.defaultAutoPlay = AutoPlay.AutoPlayTweeners;
-			var seq = DOTween.Sequence();
-			seq.AppendInterval(delay);
-			for(int i = 0; i < shapes.Count; i++) {
-				var shape = shapes[i];
-				if(shape.shape is Line) {
-					var line = shapes[i].shape as Line;
-					seq.Append(DOTween.To(() => line.End = Vector3.zero, x => line.End = x, shape.lineEnd, duration).SetEase(Ease.Linear));
-				} else if(shape.shape is Disc) {
-					var ring = shapes[i].shape as Disc;
-					if((int)(shape.angleEnd * Mathf.Rad2Deg) == 90) {
-						// Case if Ring is quarter circle
-						seq.Append(DOTween.To(x => ring.AngRadiansStart = x, ring.AngRadiansStart, shape.angleStart, duration).SetEase(Ease.Linear));
-					} else {
-						// Case if Ring is half circle
-						seq.Append(DOTween.To(x => ring.AngRadiansEnd = x, ring.AngRadiansEnd, shape.angleEnd, duration).SetEase(Ease.Linear));
-					}
-				}
-			}
-			seq.SetEase(Ease.Linear).Play();
 		}
 
 		public void OnMouseEnter() {
@@ -117,6 +68,7 @@ namespace ToyTanks.UI {
 				rect.Color = hoverColor;
 				transform.DOScale(1.4f, 0.2f).SetEase(Ease.OutCubic);
 				Game.SetCursor("pointer");
+				AudioPlayer.Play(hoverAudio.ToString(), AudioType.UI);
 			}
 		}
 
@@ -132,22 +84,8 @@ namespace ToyTanks.UI {
 			if(isUnlocked) {
 				MenuManager.Instance.worldOverviewMenu.FadeOut();
 				GameManager.StartLevel(level.LevelId);
+				AudioPlayer.Play(clickAudio.ToString(), AudioType.UI);
 			}
 		}
 	}
-
-#if UNITY_EDITOR
-	[CustomEditor(typeof(MenuLevelUI))]
-	public class MenuLevelUIEditor : Editor {
-		public override void OnInspectorGUI() {
-			DrawDefaultInspector();
-			var builder = (MenuLevelUI)target;
-			if(GUILayout.Button("Animate")) {
-				builder.ResetShapes();
-				builder.Initialize(null);
-				builder.FillTransition(0f, 1);
-			}
-		}
-	}
-#endif
 }

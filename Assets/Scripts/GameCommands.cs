@@ -20,7 +20,7 @@ public static class GameCommands {
 							levelId = (ulong)args[0].Int,
 							levelName = "",
 							blocks = new System.Collections.Generic.List<LevelData.BlockData>(),
-							gridSize = GridSizes.Size_14x11,
+							gridSize = GridSizes.Size_12x9,
 							tanks = new System.Collections.Generic.List<LevelData.TankData>(),
 							theme = LevelEditor.Themes.Light
 						};

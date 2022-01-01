@@ -112,6 +112,7 @@ public class GraphicSettings : MonoBehaviour {
     static SupportedScreenSizes WindowGameSize {
         get {
             Int2 screenSize = new Int2(ParseInt(GetValue(WindowSettings, nameof(WindowGameSize) + "X")), ParseInt(GetValue(WindowSettings, nameof(WindowGameSize) + "Y")));
+            Debug.Log(screenSize);
             return GetSupportedScreenSize(screenSize);
 		}
         set {
@@ -394,7 +395,7 @@ public class GraphicSettings : MonoBehaviour {
     public void SetPerformanceModeUI() => SetPerformanceMode(performanceModeToggle.isOn);
     public void SetControlSchemeUI() => SetControlScheme((PlayerControlSchemes)controlScheme.index);
     public void SetWindowModeUI() => SetGameWindowMode((FullScreenMode)windowModeDropdown.index);
-    public void SetWindowResolutionUI() => SetGameWindowSize((SupportedScreenSizes)windowResolutionDropdown.value, FullscreenMode);
+    public void SetWindowResolutionUI() => SetGameWindowSize((SupportedScreenSizes)(windowResolutionDropdown.options.Count - 1 - windowResolutionDropdown.value), FullscreenMode);
     public void SetVsync() => SetVsync(vsyncToggle.isOn);
 
 	// Show-Off Test functions
@@ -443,6 +444,7 @@ public class GraphicSettings : MonoBehaviour {
             SoundEffectsVolume = 40;
             Logger.Log(Channel.Graphics, "No SoundEffectsVolume setting found. Restoring to default.");
         }
+        Debug.Log(GetValue(WindowSettings, nameof(WindowGameSize)));
         if(GetValue(WindowSettings, nameof(WindowGameSize)) is null) {
             WindowGameSize = GetSupportedScreenSize(new Int2(Screen.currentResolution.width, Screen.currentResolution.height));
             Logger.Log(Channel.Graphics, "No WindowGameSize setting found. Restoring to default.");

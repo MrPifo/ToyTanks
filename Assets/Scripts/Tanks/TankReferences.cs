@@ -3,6 +3,7 @@ using Shapes;
 using Sperlich.PrefabManager;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class TankReferences : MonoBehaviour {
 
@@ -18,6 +19,7 @@ public class TankReferences : MonoBehaviour {
 	public GameObject blobShadow;
 	public GameObject tankTrack;
 	public Transform directionLeader;
+	public DecalProjector fakeShadow;
 	public List<Transform> destroyTransformPieces;
 	[Header("Explosion Effects")]
 	public ParticleSystem muzzleFlash;

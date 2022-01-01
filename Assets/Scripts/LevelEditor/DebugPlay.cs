@@ -12,7 +12,7 @@ public class DebugPlay : MonoBehaviour {
 
 	private void Start() {
 		Game.Initialize();
-		GameManager.CurrentLevel = new LevelData() { gridSize = GridSizes.Size_17x14, isNight = false };
+		GameManager.CurrentLevel = new LevelData() { gridSize = GridSizes.Size_15x12, isNight = false };
 		Game.showTankDebugs = showDebug;
 		Game.IsGameRunning = true;
 		Game.IsGameRunningDebug = true;
@@ -25,7 +25,7 @@ public class DebugPlay : MonoBehaviour {
 		FindObjectOfType<GameCamera>().camSettings.orthograpicSize = 19;
 		FindObjectOfType<GameCamera>().ChangeState(GameCamera.GameCamState.Focus);
 		Game.CreateAIGrid(gridSize, mask, true);
-		LevelManager.SetLevelBoundaryWalls(LevelManager.GetGridBoundary(Game.ActiveGrid.gridSize));
+		//LevelManager.SetLevelBoundaryWalls(LevelManager.GetGridBoundary(Game.ActiveGrid.gridSize));
 
 		foreach(var t in FindObjectsOfType<TankBase>()) {
 

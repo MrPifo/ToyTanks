@@ -32,7 +32,7 @@ public class YellowTank : TankAI {
 				ShootBullet();
 				shots++;
 				yield return new WaitForSeconds(reloadDuration);
-				while(IsPaused) yield return null;   // Pause AI
+				yield return IPauseTank();
 			}
 
 		}
@@ -41,26 +41,16 @@ public class YellowTank : TankAI {
 
 	protected override IEnumerator IMove() {
 		if(RandomPath(Pos, playerDetectRadius, playerDetectRadius * 0.75f)) {
+			MoveMode.Push(MovementType.MoveSmart);
+			HeadMode.Push(TankHeadMode.AimAtPlayerOnSight);
 			while(IsPlayReady) {
-				MoveSmart();
-				KeepHeadRot();
-				ConsumePath();
-
-				/*if(distToPlayer < 6) {
-					// TODO: Make fleeing as standalone state
-					FleeFrom(Player.Pos, playerDetectRadius);
-				}*/
-				if(HasSightContactToPlayer) {
-					AimAtPlayer();
-				}
 				if(HasReachedDestination) {
 					break;
 				}
-				yield return null;
-				while(IsPaused) yield return null;   // Pause AI
+				yield return IPauseTank();
 			}
 		}
-		yield return null;
+		yield return IPauseTank();
 
 		if(HasSightContactToPlayer) {
 			ProcessState(TankState.Attack);

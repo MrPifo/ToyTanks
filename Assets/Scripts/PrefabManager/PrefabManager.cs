@@ -8,9 +8,20 @@ using System;
 namespace Sperlich.PrefabManager {
 	public class PrefabManager : Singleton<PrefabManager> {
 
-		[SerializeField] PrefabData prefabData;
-		List<PoolData> pools;
-		bool hasBeenInitialized = false;
+		private static bool HasBeenInitialized = false;
+		private static List<PoolData> Pools;
+		private static PrefabData _data;
+		public static PrefabData Data {
+			get {
+				if(_data == null) {
+					_data = Resources.Load<PrefabData>("PrefabData");
+					if(_data == null) {
+						throw new NullReferenceException("PrefabData could not be found!");
+					}
+				}
+				return _data;
+			}
+		}
 
 		protected override void Awake() {
 			base.Awake();
@@ -22,25 +33,25 @@ namespace Sperlich.PrefabManager {
 		/// Call this manually intialize the Prefab Pools
 		/// </summary>
 		public static void Initialize() {
-			if (Instance.hasBeenInitialized == false) {
+			if (HasBeenInitialized == false) {
 				Instance.CreatePools();
 				Logger.Log(Channel.System, "Prefabmanager intialized.");
 			}
 		}
 
 		private void CreatePools() {
-			if(hasBeenInitialized == false && prefabData != null) {
-				pools = new List<PoolData>();
-				foreach(PrefabData.PrefabInfo info in prefabData.prefabs) {
+			if(HasBeenInitialized == false && Data != null) {
+				Pools = new List<PoolData>();
+				foreach(PrefabData.PrefabInfo info in Data.prefabs) {
 					GameObject p = new GameObject {
 						name = info.type.ToString()
 					};
 					p.transform.SetParent(transform);
 					PoolData pool = p.AddComponent<PoolData>();
 					pool.Initialize(info);
-					pools.Add(pool);
+					Pools.Add(pool);
 				}
-				hasBeenInitialized = true;
+				HasBeenInitialized = true;
 			}
 		}
 
@@ -48,18 +59,20 @@ namespace Sperlich.PrefabManager {
 		/// Call this to reset and delete all gameobjects that have been spawned with the manager.
 		/// </summary>
 		public static void ResetPrefabManager() {
-			Instance.hasBeenInitialized = false;
-			if(Instance.pools != null) {
-				foreach(PoolData pool in Instance.pools) {
+			HasBeenInitialized = false;
+			if(Pools != null) {
+				foreach(PoolData pool in Pools) {
 					foreach(PoolData.PoolObject op in pool.pooledObjects) {
 						Destroy(op.storedObject);
 					}
 				}
-				for(int i = 0; i < Instance.pools.Count; i++) {
-					Destroy(Instance.pools[i].gameObject);
+				for(int i = 0; i < Pools.Count; i++) {
+					Destroy(Pools[i].gameObject);
 				}
 			}
-			Instance.pools = new List<PoolData>();
+
+			Pools = new List<PoolData>();
+			HasBeenInitialized = false;
 			Logger.Log(Channel.System, "Prefabmanager has been reset.");
 		}
 
@@ -194,7 +207,7 @@ namespace Sperlich.PrefabManager {
 			}
 			return false;
 		}
-		public static PrefabData.PrefabInfo GetPrefabData(PrefabTypes prefabType) => Instance.prefabData.GetPrefabInfo(prefabType);
-		public static PoolData GetPool(PrefabTypes prefabType) => Instance.pools.Find(p => p.prefabInfo.type == prefabType);
+		public static PrefabData.PrefabInfo GetPrefabData(PrefabTypes prefabType) => Data.GetPrefabInfo(prefabType);
+		public static PoolData GetPool(PrefabTypes prefabType) => Pools.Find(p => p.prefabInfo.type == prefabType);
 	}
 }

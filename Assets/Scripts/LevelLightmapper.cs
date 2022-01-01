@@ -43,7 +43,6 @@ namespace ToyTanks.LevelEditor {
 				level = data;
 				if(Game.LevelExists(level.levelId)) {
 					Lightmapping.bakeCompleted += finishedAction;
-					// HDRP Related: Instance.hdLightData.RequestShadowMapRendering();
 					Lightmapping.BakeAsync();
 				}
 			}
@@ -68,9 +67,9 @@ namespace ToyTanks.LevelEditor {
 
 			var mapLight = new MapLightData();
 			foreach(var mesh in FindObjectsOfType<LevelBlock>()) {
-				Vector4 scaleOffset = mesh.meshRender.lightmapScaleOffset;
+				Vector4 scaleOffset = mesh.MeshRender.lightmapScaleOffset;
 				mapLight.lightInfo.Add(new MapLightData.LightInfo() {
-					index = mesh.meshRender.lightmapIndex,
+					index = mesh.MeshRender.lightmapIndex,
 					scaleOffset = new float[4] { scaleOffset.x, scaleOffset.y, scaleOffset.z, scaleOffset.w },
 					gridIndex = mesh.Index
 				});
@@ -160,20 +159,23 @@ namespace ToyTanks.LevelEditor {
 					foreach(var mesh in FindObjectsOfType<LevelBlock>()) {
 						if(mapLight.HasInfo(mesh.Index) && mesh.type != LevelEditor.BlockTypes.Hole) {
 							var light = mapLight.GetInfo(mesh.Index);
-							mesh.meshRender.lightmapIndex = light.index;
-							mesh.meshRender.lightmapScaleOffset = new Vector4(light.scaleOffset[0], light.scaleOffset[1], light.scaleOffset[2], light.scaleOffset[3]);
-							mesh.meshRender.realtimeLightmapScaleOffset = mesh.meshRender.lightmapScaleOffset;
-							mesh.meshRender.realtimeLightmapIndex = mesh.meshRender.lightmapIndex;
-							mesh.meshRender.UpdateGIMaterials();
+							mesh.MeshRender.lightmapIndex = light.index;
+							mesh.MeshRender.lightmapScaleOffset = new Vector4(light.scaleOffset[0], light.scaleOffset[1], light.scaleOffset[2], light.scaleOffset[3]);
+							mesh.MeshRender.realtimeLightmapScaleOffset = mesh.MeshRender.lightmapScaleOffset;
+							mesh.MeshRender.realtimeLightmapIndex = mesh.MeshRender.lightmapIndex;
+							mesh.MeshRender.UpdateGIMaterials();
 						}
 					}
-					var ground = GameObject.FindGameObjectWithTag("Ground").GetComponent<MeshRenderer>();
-					ground.lightmapIndex = mapLight.groundInfo.index;
-					ground.lightmapScaleOffset = new Vector4(mapLight.groundInfo.scaleOffset[0], mapLight.groundInfo.scaleOffset[1], mapLight.groundInfo.scaleOffset[2], mapLight.groundInfo.scaleOffset[3]);
-					ground.realtimeLightmapIndex = 0;
-					ground.realtimeLightmapScaleOffset = new Vector4(mapLight.groundInfo.scaleOffset[0], mapLight.groundInfo.scaleOffset[1], mapLight.groundInfo.scaleOffset[2], mapLight.groundInfo.scaleOffset[3]);
-					ground.GetComponent<MeshFilter>().sharedMesh = Instance.defaultPlaneMesh;
-					ground.UpdateGIMaterials();
+
+					var ground = GameObject.FindGameObjectWithTag("Ground")?.GetComponent<MeshRenderer>();
+					if(ground != null) {
+						ground.lightmapIndex = mapLight.groundInfo.index;
+						ground.lightmapScaleOffset = new Vector4(mapLight.groundInfo.scaleOffset[0], mapLight.groundInfo.scaleOffset[1], mapLight.groundInfo.scaleOffset[2], mapLight.groundInfo.scaleOffset[3]);
+						ground.realtimeLightmapIndex = 0;
+						ground.realtimeLightmapScaleOffset = new Vector4(mapLight.groundInfo.scaleOffset[0], mapLight.groundInfo.scaleOffset[1], mapLight.groundInfo.scaleOffset[2], mapLight.groundInfo.scaleOffset[3]);
+						ground.GetComponent<MeshFilter>().sharedMesh = Instance.defaultPlaneMesh;
+						ground.UpdateGIMaterials();
+					}
 				}
 				Instance.Delay(0.5f, () => {
 					// HDRP Related: Instance.hdLightData.RequestShadowMapRendering();

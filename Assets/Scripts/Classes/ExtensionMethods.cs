@@ -5,6 +5,7 @@ using SimpleMan.Extensions;
 // HDRP Related: using UnityEngine.Rendering.HighDefinition;
 using System.Collections;
 using DG.Tweening;
+using TMPro;
 
 public static class ExtensionMethods {
 
@@ -159,6 +160,20 @@ public static class ExtensionMethods {
 	public static void Hide(this Transform transform) {
 		transform.gameObject.SetActive(false);
 	}
+    public static void Stretch(this MonoBehaviour t, float factor, float duration) {
+        float original = t.transform.localScale.x * t.transform.localScale.y * t.transform.localScale.z;
+        t.transform.DOScale(factor, duration / 2f).OnComplete(() => {
+            t.transform.DOScale(original, duration / 2f);
+		});
+	}
+    public static void Copy(this Camera cam, Camera target) {
+        cam.orthographicSize = target.orthographicSize;
+        cam.transform.position = target.transform.position;
+        cam.transform.rotation = target.transform.rotation;
+        cam.nearClipPlane = target.nearClipPlane;
+        cam.farClipPlane = target.farClipPlane;
+        cam.fieldOfView = target.fieldOfView;
+    }
 	/// <summary>
 	/// Destroys this GameObject
 	/// </summary>

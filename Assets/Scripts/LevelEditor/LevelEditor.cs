@@ -17,6 +17,7 @@ using CameraShake;
 using Sperlich.PrefabManager;
 
 namespace ToyTanks.LevelEditor {
+	[ExecuteInEditMode]
 	public class LevelEditor : MonoBehaviour {
 
 		public enum Themes {
@@ -79,6 +80,7 @@ namespace ToyTanks.LevelEditor {
 		static List<Int3> hoverSpaceIndexes = new List<Int3>();
 		static List<LevelBlock> History = new List<LevelBlock>();
 		public Int3 CurrentHoverIndex;
+		public GridSizes debugDisplaySize;
 		public Int3 GridBoundary => LevelManager.GetGridBoundary(levelData.gridSize);
 		static ThemeAsset CurrentTheme { get; set; }
 		static GameObject PreviewInstance { get; set; }
@@ -122,7 +124,7 @@ namespace ToyTanks.LevelEditor {
 						gameCamera.SetOrthographicSize(Remap(editorCamera.distanceSlider.value, 0f, 1f, gameCamera.minOrthographicSize, gameCamera.maxOrthographicSize));
 					}
 				}
-				PaintGridLines(gridColor);
+				PaintGridLines(GridBoundary, gridColor, Grid.Size);
 				PaintSelection();
 			}
 			hovers = hoverSpaceIndexes;
@@ -180,7 +182,7 @@ namespace ToyTanks.LevelEditor {
 						altBlock.SetTheme(Theme);
 					}
 					if(IsDestroyMode) {
-						selectedBlock.meshRender.sharedMaterial = removeMaterial;
+						selectedBlock.MeshRender.sharedMaterial = removeMaterial;
 					}
 				} else {
 					if(altBlock != null) {
@@ -290,7 +292,7 @@ namespace ToyTanks.LevelEditor {
 			Game.IsGamePlaying = false;
 			playTestButton.interactable = false;
 			playTestButton.image.color = Color.green;
-			levelManager.UI.gameplay.alpha = 0;
+			levelManager.UI.HideGameplayUI();
 			editGameUI.DOFade(1, 2);
 			Game.IsGameRunning = false;
 			BossUI.ResetBossBar();
@@ -496,15 +498,15 @@ namespace ToyTanks.LevelEditor {
 			}
 		}
 
-		void PaintGridLines(Color color) {
-			int diff = Mathf.Abs(GridBoundary.x - GridBoundary.z) * Grid.Size;
+		public static void PaintGridLines(Int3 GridBoundary, Color color, int size) {
+			int diff = Mathf.Abs(GridBoundary.x - GridBoundary.z) * size;
 			Int2 xBoundary = new Int2(-GridBoundary.x * 2 + diff, GridBoundary.x * 2 - diff);
 			Int2 zBoundary = new Int2(-GridBoundary.z * 2 - diff, GridBoundary.z * 2 + diff);
-			for(int x = xBoundary.x; x <= xBoundary.y; x += Grid.Size) {
-				Draw.Line(new Vector3(-GridBoundary.x * Grid.Size, 0, x) - new Vector3(1, 0, 1), new Vector3(GridBoundary.x * Grid.Size, 0, x) - new Vector3(1, 0, 1), 4f, color, Shapes.LineGeometry.Volumetric3D, true);
+			for(int x = xBoundary.x; x <= xBoundary.y; x += size) {
+				Draw.Line(new Vector3(-GridBoundary.x * size, 0, x) - new Vector3(1, 0, 1), new Vector3(GridBoundary.x * size, 0, x) - new Vector3(1, 0, 1), 4f, color, Shapes.LineGeometry.Volumetric3D, true);
 			}
-			for(int z = zBoundary.x; z <= zBoundary.y; z += Grid.Size) {
-				Draw.Line(new Vector3(z, 0, -GridBoundary.z * Grid.Size) - new Vector3(1, 0, 1), new Vector3(z, 0, GridBoundary.z * Grid.Size) - new Vector3(1, 0, 1), 4f, color, Shapes.LineGeometry.Volumetric3D, true);
+			for(int z = zBoundary.x; z <= zBoundary.y; z += size) {
+				Draw.Line(new Vector3(z, 0, -GridBoundary.z * size) - new Vector3(1, 0, 1), new Vector3(z, 0, GridBoundary.z * size) - new Vector3(1, 0, 1), 4f, color, Shapes.LineGeometry.Volumetric3D, true);
 			}
 		}
 
@@ -746,7 +748,7 @@ namespace ToyTanks.LevelEditor {
 			Theme = newTheme;
 			CurrentTheme = ThemeAssets.Find(t => t.theme == Theme);
 
-			foreach(var block in FindObjectsOfType<LevelBlock>()) {
+			foreach(var block in FindObjectsOfType<LevelBlock>().Where(b => b.isLevelPreset == false)) {
 				block.SetTheme(Theme);
 			}
 			floor.GetComponent<MeshRenderer>().sharedMaterial = CurrentTheme.floorMaterial;
@@ -765,7 +767,7 @@ namespace ToyTanks.LevelEditor {
 				Grid = new LevelGrid(GridBoundary, 2);
 
 				// Rescaling Grid
-				foreach(var block in FindObjectsOfType<LevelBlock>()) {
+				foreach(var block in FindObjectsOfType<LevelBlock>().Where(b => b.isLevelPreset == false)) {
 					if(Grid.AreAllIndexesAvailable(block.allIndexes)) {
 						Grid.AddIndex(block.allIndexes, (int)block.Size.y);
 					} else {
@@ -779,6 +781,9 @@ namespace ToyTanks.LevelEditor {
 						Destroy(tank.gameObject);
 					}
 				}
+
+				LevelManager.Instance.presets.ForEach(preset => preset.gameobject.Hide());
+				LevelManager.GetPreset(levelData.gridSize, levelData.theme).gameobject.Show();
 			}
 
 			
@@ -842,7 +847,7 @@ namespace ToyTanks.LevelEditor {
 			// HDRP Relate: levelData.sunLight = new LevelData.LightData(levelManager.sunLight);
 			// HDRP Relate: levelData.spotLight = new LevelData.LightData(levelManager.spotLight);
 
-			foreach(var b in FindObjectsOfType<LevelBlock>()) {
+			foreach(var b in FindObjectsOfType<LevelBlock>().Where(b => b.isLevelPreset == false)) {
 				var data = new LevelData.BlockData() {
 					pos = new Int3(b.transform.position),
 					index = b.Index,
@@ -877,16 +882,14 @@ namespace ToyTanks.LevelEditor {
 
 		public void ClearLevel() {
 			HasLevelBeenLoaded = false;
-			var loadedBlocks = FindObjectsOfType<LevelBlock>();
-			var loadedTanks = FindObjectsOfType<TankBase>();
-			foreach(var b in loadedBlocks) {
+			foreach(var b in FindObjectsOfType<LevelBlock>().Where(b => b.isLevelPreset == false)) {
 				if(Application.isPlaying) {
 					Destroy(b.gameObject);
 				} else {
 					DestroyImmediate(b.gameObject);
 				}
 			}
-			foreach(var t in loadedTanks) {
+			foreach(var t in FindObjectsOfType<TankBase>()) {
 				if(Application.isPlaying) {
 					Destroy(t.gameObject);
 				} else {
@@ -895,8 +898,6 @@ namespace ToyTanks.LevelEditor {
 				
 			}
 
-			var ground = GameObject.FindGameObjectWithTag("Ground").GetComponent<MeshRenderer>();
-			ground.lightmapScaleOffset = new Vector4(0, 0, 0, 0);
 			hoverSpaceIndexes = null;
 			CurrentHoverIndex = new Int3(0, -2, 0);
 			if(selectedTank != null) {
@@ -909,6 +910,7 @@ namespace ToyTanks.LevelEditor {
 			CurrentAsset = null;
 			CurrentTank = null;
 			SelectItems = null;
+			LevelManager.Instance.presets.ForEach(preset => preset.gameobject.Hide());
 			PrefabManager.ResetPrefabManager();
 			PrefabManager.Initialize();
 		}
@@ -927,7 +929,7 @@ namespace ToyTanks.LevelEditor {
 			// HDRP Relate: levelData.sunLight = new LevelData.LightData(levelManager.sunLight);
 			// HDRP Relate: levelData.spotLight = new LevelData.LightData(levelManager.spotLight);
 
-			foreach(GameEntity e in FindObjectsOfType<GameEntity>()) {
+			foreach(GameEntity e in FindObjectsOfType<GameEntity>().Where(g => g.CompareTag("LevelPreset") == false)) {
 				if(e is TankBase) {
 					TankBase t = e as TankBase;
 					var data = new LevelData.TankData() {
@@ -983,8 +985,8 @@ namespace ToyTanks.LevelEditor {
 				RefreshUI();
 			}
 
-			// HDRP Relate: levelManager.ApplyLightData(levelData.sunLight, levelManager.sunLight);
-			// HDRP Relate: levelManager.ApplyLightData(levelData.spotLight, levelManager.spotLight);
+			LevelManager.Instance.presets.ForEach(preset => preset.gameobject.Hide());
+			LevelManager.GetPreset(levelData.gridSize, levelData.theme).gameobject.Show();
 			LevelLightmapper.SwitchLightmaps(levelData.levelId);
 			HasLevelBeenLoaded = true;
 		}
@@ -1037,6 +1039,12 @@ namespace ToyTanks.LevelEditor {
 			rotation.x = 0;
 			rotation.z = 0;
 			return new Int3(rotation.x, rotation.y, rotation.z);
+		}
+
+		private void OnDrawGizmos() {
+			if(Application.isPlaying == false) {
+				PaintGridLines(LevelManager.GetGridBoundary(debugDisplaySize), Color.black, 2);
+			}
 		}
 	}
 

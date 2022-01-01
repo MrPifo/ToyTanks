@@ -14,20 +14,21 @@ public class GreyTank : TankAI {
 	protected override IEnumerator IAttack() {
 		int bulletsShot = 0;
 		int requiredShots = Random(2, 4);
+
 		while(bulletsShot < requiredShots && IsPlayReady) {
 			if(CanShoot && HasSightContactToPlayer && IsAimingAtPlayer && WouldFriendlyFire == false) {
+				MoveMode.Push(MovementType.None);
 				ShootBullet();
 				bulletsShot++;
 			} else {
 				if(HasSightContactToPlayer) {
-					AimAtPlayer();
+					HeadMode.Push(TankHeadMode.AimAtPlayer);
 				} else {
-					KeepHeadRot();
+					HeadMode.Push(TankHeadMode.RotateWithBody);
 				}
-				ChasePlayer();
+				MoveMode.Push(MovementType.Chase);
 			}
-			yield return null;
-			while(IsPaused) yield return null;   // Pause AI
+			yield return IPauseTank();
 		}
 		ProcessState(TankState.Retreat);
 	}
@@ -35,13 +36,12 @@ public class GreyTank : TankAI {
 	protected override IEnumerator IRetreat() {
 		float time = 0;
 		FleeFrom(Pos, 30);
+
+		MoveMode.Push(MovementType.MoveSmart);
+		HeadMode.Push(TankHeadMode.KeepRotation);
 		while(time < Random(3, 6) && IsPlayReady) {
-			MoveAlongPath();
-			KeepHeadRot();
-			ConsumePath();
-			yield return null;
-			while(IsPaused) yield return null;   // Pause AI
-			time += Time.deltaTime;
+			yield return IPauseTank();
+			time += GetTime;
 		}
 
 		ProcessState(TankState.Attack);

@@ -48,6 +48,7 @@ public class LevelSelector : MonoBehaviour {
 		activeWorld.RenderWorld();
 		ApplyCameraSettings(Game.GetWorld(activeWorld.world).MenuCameraSettings, 0.5f);
 		CheckNextPreviousButton();
+		MenuManager.lastVisitedWorld = worldType;
 	}
 
 	public void ExitWorldView() {

@@ -46,6 +46,7 @@ public class GameManager : Singleton<GameManager> {
 		}
 	}
 	public static bool isLoading;
+	public static bool rewardLive;
 	public static SaveGame.Campaign.Difficulty Difficulty => CurrentCampaign.difficulty;
 	public static GameMode CurrentMode;
 
@@ -72,7 +73,7 @@ public class GameManager : Singleton<GameManager> {
 		Game.Initialize();
 		base.Awake();
 		PrefabManager.ResetPrefabManager();
-		var menu = FindObjectOfType<ToyTanks.UI.MenuManager>();
+		var menu = FindObjectOfType<MenuManager>();
 		menu.Initialize();
 		if(GameBooted == false) {
 			menu.mainMenu.FadeIn();
@@ -147,7 +148,11 @@ public class GameManager : Singleton<GameManager> {
 	public void ReturnToMenu(string message) => StartCoroutine(TransitionToMenu(message));
 	public void LoadLevel(string message, bool displayCampaignInformation = false) {
 		if(Levels.Find(l => l.levelId == LevelId) != null) {
-			StartCoroutine(TransitionToLevel(message, displayCampaignInformation));
+			if(SceneManager.GetSceneByName("Level").IsValid() == false && SceneManager.GetSceneByName("Level").isLoaded == false) {
+				StartCoroutine(TransitionToLevel(message, displayCampaignInformation));
+			} else {
+				StartCoroutine(TransitionToNextLevel());
+			}
 		} else {
 			ReturnToMenu("Campaign End");
 		}
@@ -155,6 +160,7 @@ public class GameManager : Singleton<GameManager> {
 	IEnumerator TransitionToLevel(string message, bool displayCampaignInformation = false) {
 		Scene activeScene = SceneManager.GetActiveScene();
 
+		#region Loading LoadingScreen
 		// Load LoadingScreen
 		AsyncOperation loadingScreen = SceneManager.LoadSceneAsync("LoadingScreen", LoadSceneMode.Additive);
 		loadingScreen.allowSceneActivation = true;
@@ -164,35 +170,50 @@ public class GameManager : Singleton<GameManager> {
 		transitionScreen.FadeIn(loadingScreenFadeDuration);
 
 		yield return new WaitUntil(() => transitionScreen.onFadeInFinished);
-		if(activeScene.name == "Menu") {
-			AsyncOperation unloadLevel = SceneManager.UnloadSceneAsync("Menu");
-			unloadLevel.allowSceneActivation = true;
-			yield return new WaitUntil(() => unloadLevel.isDone);
-		}
-		if(activeScene.name == "Level") {
-			AsyncOperation unloadLevel = SceneManager.UnloadSceneAsync("Level");
-			yield return new WaitUntil(() => unloadLevel.isDone);
-		}
+		#endregion
+
+		#region LoadingLevel
 		AsyncOperation level = SceneManager.LoadSceneAsync("Level", LoadSceneMode.Additive);
 		level.allowSceneActivation = true;
 		yield return new WaitUntil(() => level.isDone);
 		LevelManager levelManager = FindObjectOfType<LevelManager>();
-		levelManager.Initialize();
-		yield return new WaitForSeconds(1f);
+		yield return new WaitForSeconds(0.25f);
+		#endregion
 
+		#region Unloading Menu/Level
+		if(activeScene.name == "Menu") {
+			AsyncOperation unloadLevel = SceneManager.UnloadSceneAsync("Menu");
+			unloadLevel.allowSceneActivation = true;
+			yield return new WaitUntil(() => unloadLevel.isDone);
+		} else if(activeScene.name == "Level") {
+			AsyncOperation unloadLevel = SceneManager.UnloadSceneAsync("Level");
+			yield return new WaitUntil(() => unloadLevel.isDone);
+		}
+		#endregion
+
+		#region BannerInformation
 		transitionScreen.FadeInBanner(bannerFadeDuration);
 		if(displayCampaignInformation) {
 			if(Difficulty == SaveGame.Campaign.Difficulty.Easy) {
 				transitionScreen.SetSingleMessage("Mission " + LevelId);
 			} else {
-				transitionScreen.SetInfo("Mission " + LevelId, PlayerLives.ToString());
+				transitionScreen.SetInfo("Mission " + LevelId, PlayerLives);
 			}
 		} else {
 			transitionScreen.SetSingleMessage(message);
 		}
 		yield return new WaitUntil(() => transitionScreen.onBannerFadeInFinished);
+		#endregion
+
+		#region Initializing and Building Level
+		PrefabManager.ResetPrefabManager();
+		yield return new WaitForSeconds(0.15f);
 		PrefabManager.Initialize();
+		yield return new WaitForSeconds(0.15f);
+		levelManager.Initialize();
+		yield return new WaitForSeconds(0.15f);
 		yield return levelManager.LoadAndBuildMap(CurrentLevel, totalLoadingFadeDuration);
+		#endregion
 
 		transitionScreen.FadeOutBanner(bannerFadeDuration);
 		yield return new WaitUntil(() => transitionScreen.onBannerFadeOutFinished);
@@ -242,11 +263,67 @@ public class GameManager : Singleton<GameManager> {
 		yield return new WaitUntil(() => transitionScreen.onBannerFadeOutFinished);
 
 		transitionScreen.FadeOut(loadingScreenFadeDuration);
-		FindObjectOfType<ToyTanks.UI.MenuManager>().mainMenu.FadeIn();
-		FindObjectOfType<ToyTanks.UI.MenuManager>().FadeOutBlur();
+		FindObjectOfType<MenuManager>().mainMenu.FadeIn();
+		FindObjectOfType<MenuManager>().FadeOutBlur();
 		yield return new WaitUntil(() => transitionScreen.onFadeOutFinished);
 		AsyncOperation loadingScreenUnload = SceneManager.UnloadSceneAsync("LoadingScreen");
 		yield return new WaitUntil(() => loadingScreenUnload.isDone);
+	}
+	IEnumerator TransitionToNextLevel() {
+		LevelManager levelManager = FindObjectOfType<LevelManager>();
+
+		#region Loading LoadingScreen
+		// Load LoadingScreen
+		AsyncOperation loadingScreen = SceneManager.LoadSceneAsync("LoadingScreen", LoadSceneMode.Additive);
+		loadingScreen.allowSceneActivation = true;
+
+		yield return new WaitUntil(() => loadingScreen.isDone);
+		LoadingScreen transitionScreen = FindObjectOfType<LoadingScreen>();
+		transitionScreen.FadeIn(loadingScreenFadeDuration);
+
+		yield return new WaitUntil(() => transitionScreen.onFadeInFinished);
+		#endregion
+
+		#region BannerInformation
+		transitionScreen.FadeInBanner(bannerFadeDuration);
+		if(Difficulty == SaveGame.Campaign.Difficulty.Easy) {
+			transitionScreen.SetSingleMessage("Mission " + LevelId);
+		} else {
+			transitionScreen.SetInfo("Mission " + LevelId, PlayerLives);
+		}
+		yield return new WaitUntil(() => transitionScreen.onBannerFadeInFinished);
+		#endregion
+
+		#region Initializing and Building Level
+		levelManager.ClearMap();
+		PrefabManager.ResetPrefabManager();
+		yield return new WaitForSeconds(0.15f);
+		PrefabManager.Initialize();
+		yield return new WaitForSeconds(0.15f);
+		levelManager.Initialize();
+		yield return new WaitForSeconds(0.15f);
+		yield return levelManager.LoadAndBuildMap(CurrentLevel, totalLoadingFadeDuration);
+		#endregion
+
+		transitionScreen.FadeOutBanner(bannerFadeDuration);
+		yield return new WaitUntil(() => transitionScreen.onBannerFadeOutFinished);
+
+		transitionScreen.FadeOut(loadingScreenFadeDuration);
+		yield return new WaitUntil(() => transitionScreen.onFadeOutFinished);
+		AsyncOperation loadingScreenUnload = SceneManager.UnloadSceneAsync("LoadingScreen");
+		yield return new WaitUntil(() => loadingScreenUnload.isDone);
+		switch(CurrentMode) {
+			case GameMode.Campaign:
+				levelManager.StartGame();
+				break;
+			case GameMode.LevelOnly:
+				levelManager.StartGame();
+				break;
+			case GameMode.Editor:
+				LevelManager.Editor.StartLevelEditor();
+				LevelManager.Editor.LoadUserLevel(CurrentLevel);
+				break;
+		}
 	}
 
 	public static void ShowCursor() {

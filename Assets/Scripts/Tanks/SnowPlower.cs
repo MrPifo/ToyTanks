@@ -29,7 +29,7 @@ public class SnowPlower : TankAI, IHittable, IDamageEffector {
 		base.InitializeTank();
 		normalMoveSpeed = moveSpeed;
 		plowTrigger.triggerLayer = chargePathMask;
-		ProcessState(TankState.Charge);
+		ProcessState(TankState.Move);
 	}
 
 	protected override IEnumerator ICharge() {
@@ -37,9 +37,9 @@ public class SnowPlower : TankAI, IHittable, IDamageEffector {
 		canMove = false;
 		moveSpeed = chargeSpeed;
 
-		while(isAlignedToPlayer < 0.98f && IsPlayReady) {
+		HeadMode.Push(TankHeadMode.RotateWithBody);
+		while(isAlignedToPlayer < 0.99f && IsPlayReady) {
 			RotateTank((Player.Pos - Pos).normalized);
-			KeepHeadRot();
 			isAlignedToPlayer = Vector3.Dot((Player.Pos - Pos).normalized, transform.forward);
 			yield return IPauseTank();
 		}
@@ -69,10 +69,12 @@ public class SnowPlower : TankAI, IHittable, IDamageEffector {
 		snowParticles2.Play();
 		float time = 0;
 
+		// Movement is managed manually
+		MoveMode.Push(MovementType.None);
 		while(isCharging && IsPlayReady) {
 			yield return IPauseTank();
 			Move(chargeDirection);
-			time += Time.deltaTime;
+			time += GetTime;
 			if(time > snowChargeSoundSpeed) {
 				AudioPlayer.Play("SnowRowl", AudioType.SoundEffect, 0.8f, 1.2f, 0.5f);
 				time = 0;
@@ -112,17 +114,15 @@ public class SnowPlower : TankAI, IHittable, IDamageEffector {
 		snowParticles.Play();
 		snowParticles2.Play();
 
+		HeadMode.Push(TankHeadMode.AimAtPlayerOnSight);
+		MoveMode.Push(MovementType.MoveSmart);
 		if(RandomPath(Pos, playerDetectRadius, playerDetectRadius * 0.75f)) {
 			while(IsPlayReady) {
-				MoveSmart();
-				KeepHeadRot();
-				ConsumePath();
 				if(soundTime > snowChargeSoundSpeed) {
 					AudioPlayer.Play("SnowRowl", AudioType.SoundEffect, 0.8f, 1.2f, 0.05f);
 				}
 
 				if(HasSightContactToPlayer) {
-					AimAtPlayer();
 					if(time > minMoveDuration) {
 						break;
 					}

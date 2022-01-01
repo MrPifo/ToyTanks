@@ -8,6 +8,7 @@ using ToyTanks.LevelEditor;
 using EpPathFinding.cs;
 // HDRP Related: using UnityEngine.Rendering.HighDefinition;
 using Sperlich.PrefabManager;
+using UnityEngine.Rendering.Universal;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -15,6 +16,8 @@ using UnityEditor;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(TankReferences))]
 public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
+
+	public enum TimeMode { DeltaTime, FixedUpdate }
 
 	public TankAsset tankAsset;
 	[Header("VALUES")]
@@ -30,8 +33,22 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public float aimRotSpeed = 600;
 	public short destructionVelocity = 400;
 	public bool disable2DirectionMovement;
+	public bool disableTracks;
 	public bool makeInvincible;     // Ivincibility for Debugging
-
+	[SerializeField]
+	protected TimeMode APITimeMode = TimeMode.FixedUpdate;
+	protected float GetTime {
+		get {
+			switch(APITimeMode) {
+				case TimeMode.DeltaTime:
+					return Time.deltaTime;
+				case TimeMode.FixedUpdate:
+					return Time.fixedDeltaTime;
+				default:
+					return Time.deltaTime;
+			}
+		}
+	}
 	bool isInvincible;
 	bool isReloading;
 	protected bool isShootStunned;
@@ -41,7 +58,8 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	float frontLightIntensity;
 	float backLightIntensity;
 	float lastTurnSign = 1;
-	protected float trackSpawnDistance = 0.75f;
+	[Min(0.1f)]
+	public float trackSpawnDistance = 0.75f;
 	protected float distanceSinceLastFrame;
 	int initLayer;
 	Vector3 lastTrackPos;
@@ -53,6 +71,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public Vector3 evadeDir;
 	protected Quaternion lastHeadRot;
 	protected Rigidbody rig;
+	protected GroundPainter groundPainter;
 	List<Vector3> destroyRestPoses;
 	List<Quaternion> destroyRestRots;
 	Material[] bodyMats;
@@ -61,6 +80,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	GameObject healthPointPrefab;
 
 	// Propterties
+	
 	public bool HasBeenInitialized { get; set; }
 	protected bool CanShoot => !isReloading;
 	public bool HasBeenDestroyed { get; set; }
@@ -123,6 +143,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public ParticleSystem damageSmokeBody => References.damageSmokeBody;
 	public ParticleSystem damageSmokeHead => References.damageSmokeHead;
 	public AnimationCurve turnLightsOnCurve => References.lightsTurnOnAnim;
+	public DecalProjector FakeShadow => References.fakeShadow;
 	public PrefabTypes BulletType => References.bullet;
 
 	protected virtual void Awake() {
@@ -147,6 +168,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 		shockwaveDisc.gameObject.SetActive(false);
 		destroyRestPoses = new List<Vector3>();
 		destroyRestRots = new List<Quaternion>();
+		groundPainter = FindObjectOfType<GroundPainter>();
 
 		foreach(Transform t in destroyTransformPieces) {
 			destroyRestPoses.Add(t.localPosition);
@@ -182,7 +204,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 
 		angleDiff = Quaternion.Angle(rig.rotation, rot);
 		if(angleDiff > 0) {
-			rot = Quaternion.RotateTowards(rig.rotation, rot, bodyRotSpeed * Time.deltaTime);
+			rot = Quaternion.RotateTowards(rig.rotation, rot, bodyRotSpeed * GetTime);
 			rig.MoveRotation(rot);
 		}
 	}
@@ -194,7 +216,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 			if(Quaternion.identity == rot)
 				return;
 			if(ignoreLerp == false) {
-				rot = Quaternion.RotateTowards(tankHead.rotation, rot, Time.deltaTime * aimRotSpeed);
+				rot = Quaternion.RotateTowards(tankHead.rotation, rot, GetTime * aimRotSpeed);
 			}
 			tankHead.rotation = rot;
 		}
@@ -204,7 +226,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 
 	protected void TrackTracer(float temp = 0) {
 		float distToLastTrack = Vector2.Distance(new Vector2(lastTrackPos.x, lastTrackPos.z), new Vector2(rig.position.x, rig.position.z));
-		if(distToLastTrack > trackSpawnDistance) {
+		if(distToLastTrack > trackSpawnDistance && disableTracks == false) {
 			// TODO: May be replaced or removed
 			if(temp == 1) {
 				//mudParticlesBack.Emit(2);
@@ -216,13 +238,16 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	}
 
 	Vector3 SpawnTrack() {
+		//groundPainter.PaintTrack(new Vector2(Pos.x, Pos.z), transform.forward);
+		if(MuteTrackSound == false) {
+			AudioPlayer.Play("TankDrive", AudioType.SoundEffect, 0.95f, 1.05f, 0.4f);
+		}
+		//return rig.position;
 		Transform track = PrefabManager.Spawn(PrefabTypes.TankTrack).transform;
 		track.position = new Vector3(rig.position.x, 0.025f, rig.position.z);
 		track.rotation = rig.rotation * Quaternion.Euler(90, 0, 0);
 
-		if(MuteTrackSound == false) {
-			AudioPlayer.Play("TankDrive", AudioType.SoundEffect, 0.95f, 1.05f, 0.4f);
-		}
+		
 		int despawnTime = 30;
 		track.GetComponent<PoolGameObject>().Recycle(despawnTime);
 		SpriteRenderer rend = track.GetComponent<SpriteRenderer>();
@@ -383,8 +408,6 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 		IEnumerator ITurnOn() {
 			float t = 0;
 			while(t < 1f) {
-				// HDRP Relate: frontLight.SetIntensity(turnLightsOnCurve.Evaluate(t) * frontLightIntensity);
-				// HDRP Relate: .SetIntensity(turnLightsOnCurve.Evaluate(t) * backLightIntensity);
 				t += Time.deltaTime;
 				yield return null;
 			}
@@ -476,10 +499,13 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 			PlayerInput input = (PlayerInput)newTank;
 			input.DisableCrossHair();
 		}
+		CleanUpDestroyedPieces();
+		Destroy(gameObject);
+	}
+	public void CleanUpDestroyedPieces() {
 		foreach(Transform piece in destroyTransformPieces) {
 			Destroy(piece.gameObject);
 		}
-		Destroy(gameObject);
 	}
 
 	// Only for Editor purposes

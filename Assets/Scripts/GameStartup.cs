@@ -21,6 +21,7 @@ public class GameStartup : MonoBehaviour {
 	private float currentProgress;
 	private int loadingSteps = 5;
 	private int currentLoadingStep = 1;
+	float waitTime = 0.5f;
 
 	private void Start() => StartCoroutine(ILoadGame());
 
@@ -37,30 +38,45 @@ public class GameStartup : MonoBehaviour {
 #endif
 
 			loadingText.SetText("Loading Assets");
-			Logger.Log(Channel.Loading, "Loading Assets.");
-			Game.AddCursor("default", defaultCursor);
-			Game.AddCursor("pointer", pointerCursor);
-			Game.SetCursor("default");
+			try {
+				Logger.Log(Channel.Loading, "Loading Assets.");
+				Game.AddCursor("default", defaultCursor);
+				Game.AddCursor("pointer", pointerCursor);
+				Game.SetCursor("default");
+			} catch {
+				loadingText.SetText("Failed loading cursor textures.");
+				yield break;
+			}
 			NextLoadingStep();
-
-			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(waitTime);
 			loadingText.SetText("Initializing Game.");
 			Logger.Log(Channel.Loading, "Initializing Game");
-			Game.Initialize();
+			string error = string.Empty;
+			try {
+				error = Game.Initialize();
+				if(error != string.Empty) {
+					throw new System.Exception("Failed to initialize Game.");
+				}
+			} catch {
+				loadingText.SetText(error);
+				yield break;
+			}
 			NextLoadingStep();
 
-			yield return new WaitForSeconds(0.5f);
-			loadingText.SetText("Preparing Game");
-			Logger.Log(Channel.Loading, "Preparing Game.");
+			yield return new WaitForSeconds(waitTime);
+			loadingText.SetText("Loading Menu");
+			Logger.Log(Channel.Loading, "Loading Menu.");
 			AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Menu", LoadSceneMode.Additive);
 			asyncLoad.allowSceneActivation = false;
 			NextLoadingStep();
 
 			yield return new WaitUntil(() => asyncLoad.progress >= 0.9f);
 			asyncLoad.allowSceneActivation = true;
-			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(waitTime);
+			loadingText.SetText("Loading complete");
 			NextLoadingStep();
 
+			yield return new WaitForSeconds(1.5f);
 			backgroundGroup.DOFade(0, 1);
 			canvasGroup.DOFade(0, 1).OnComplete(() => {
 				SceneManager.UnloadSceneAsync(0);

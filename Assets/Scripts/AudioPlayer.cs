@@ -16,6 +16,9 @@ public class AudioPlayer {
 					break;
 				case AudioType.Music:
 					break;
+				case AudioType.UI:
+					globalVolume *= GraphicSettings.SoundEffectsVolume / 100f;
+					break;
 				default:
 					break;
 			}

@@ -9,6 +9,7 @@ using ToyTanks.LevelEditor;
 // HDRP Related: using UnityEngine.Rendering.HighDefinition;
 using CommandTerminal;
 using Sperlich.PrefabManager;
+using SimpleMan.Extensions;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -22,6 +23,11 @@ public class LevelManager : MonoBehaviour {
 	[SerializeField] private CanvasGroup optionsMenu;
 	[SerializeField] private Transform themePresets;
 	[SerializeField] private LayerMask baseLayer;
+	[SerializeField] public List<LevelPreset> presets;
+	[SerializeField] private Camera mainCamera;
+	[SerializeField] private Camera pauseBlurCamera;
+	[SerializeField] private Camera pausePanelBlurCamera;
+	[SerializeField] private Camera bannerBlurCamera;
 	private int scoreOnLevelEnter;
 	private List<TankAsset> tankPrefabs;
 	private GameCamera gameCamera;
@@ -80,10 +86,9 @@ public class LevelManager : MonoBehaviour {
 		// Start Editor if no GameManager is present
 		if(GameManager == false) {
 			Mode = GameManager.GameMode.Editor;
+			Game.Initialize();
 			Editor.ClearLevel();
 			Editor.StartLevelEditor();
-			GraphicSettings.Initialize();
-			PrefabManager.Initialize();
 		}
 	}
 
@@ -125,6 +130,9 @@ public class LevelManager : MonoBehaviour {
 		optionsMenu.gameObject.SetActive(true);
 		optionsMenu.DOFade(1, 0.15f);
 		player.DisableControls();
+		UI.pauseBlur.Show();
+		pauseBlurCamera.Copy(mainCamera);
+		pausePanelBlurCamera.Copy(mainCamera);
 		GameManager.ShowCursor();
 		Time.timeScale = 1f;
 		DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 0.1f, 0.1f).SetEase(Ease.Linear).OnComplete(() => {
@@ -136,6 +144,7 @@ public class LevelManager : MonoBehaviour {
 		Game.GamePaused = false;
 		optionsMenu.DOFade(0, 0.3f);
 		player.EnableControls();
+		UI.pauseBlur.Hide();
 		GameManager.HideCursor();
 		Time.timeScale = 0.2f;
 		DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1, 0.1f).SetEase(Ease.Linear).OnComplete(() => {
@@ -158,24 +167,28 @@ public class LevelManager : MonoBehaviour {
 
 	public void ClearMap() {
 		// Clear all GameEntities from level
-		foreach(GameEntity entity in FindObjectsOfType<GameEntity>()) {
+		foreach(GameEntity entity in FindObjectsOfType<GameEntity>().Where(g => g.CompareTag("LevelPreset") == false)) {
+			if(entity is TankBase) {
+				(entity as TankBase).CleanUpDestroyedPieces();
+			}
 			Destroy(entity.gameObject);
 		}
-		var ground = GameObject.FindGameObjectWithTag("Ground").GetComponent<MeshRenderer>();
-		ground.lightmapScaleOffset = new Vector4(0, 0, 0, 0);
+		presets.ForEach(preset => preset.gameobject.Hide());
 	}
 
 	public IEnumerator LoadAndBuildMap(LevelData data, float loadDuration) {
 		ClearMap();
 		var blockAssets = Resources.LoadAll<ThemeAsset>(GamePaths.ThemesPath).ToList().Find(t => t.theme == data.theme);
 		float timePerBlock = loadDuration / data.blocks.Count;
+		presets.ForEach(preset => preset.gameobject.Hide());
+		GetPreset(data.gridSize, data.theme).gameobject.Show();
 
 		foreach(var block in data.blocks) {
 			ThemeAsset.BlockAsset asset = blockAssets.GetAsset(block.type);
 			var b = Instantiate(asset.prefab, block.pos, Quaternion.Euler(block.rotation)).GetComponent<LevelBlock>();
 			b.transform.SetParent(BlocksContainer);
 			b.Index = block.index;
-			b.meshRender.sharedMaterial = asset.material;
+			b.MeshRender.sharedMaterial = asset.material;
 			if(asset.isDynamic == false) {
 				b.gameObject.isStatic = true;
 			} else {
@@ -197,8 +210,6 @@ public class LevelManager : MonoBehaviour {
 		var floor = GameObject.FindGameObjectWithTag("Ground").GetComponent<MeshRenderer>();
 		floor.sharedMaterial = blockAssets.floorMaterial;
 		LevelLightmapper.SwitchLightmaps(CurrentLevel.levelId);
-		// HDRP Relate: sunLight.SetShadowResolutionOverride(true);
-		// HDRP Relate: sunLight.SetShadowResolution(GraphicSettings.GetShadowResolution());
 	}
 
 	public static void SetLevelBoundaryWalls(Int3 boundary) {
@@ -223,9 +234,10 @@ public class LevelManager : MonoBehaviour {
 	public void StartGame() => StartCoroutine(nameof(IStartGame));
 	IEnumerator IStartGame() {
 		// Game Startup
-		UI.counterBanner.SetActive(true);
+		UI.PlayBannerAnimation();
 		GameManager.HideCursor();
 		Game.IsGameRunning = true;
+		this.RepeatUntil(() => Game.IsGamePlaying == false, () => bannerBlurCamera.Copy(mainCamera), () => { });
 
 		// Find theme
 		ThemeAsset theme = Resources.LoadAll<ThemeAsset>(GamePaths.ThemesPath).ToList().Find(t => t.theme == CurrentLevel.theme);
@@ -264,17 +276,17 @@ public class LevelManager : MonoBehaviour {
 		UI.playerLives.SetText("0");
 		UI.playTime.SetText("0");
 		UI.levelStage.SetText($"Level {CurrentLevel.levelId}");
+		UI.ShowGameplayUI(1);
 
 		// Start Game
 		yield return new WaitForSeconds(1);
-		if(GridSize == GridSizes.Size_17x14) {
+		if(GridSize == GridSizes.Size_15x12) {
 			gameCamera.ChangeState(GameCamera.GameCamState.Focus);
 		} else {
 			gameCamera.ChangeState(GameCamera.GameCamState.Overview);
 		}
 		gameCamera.focusOnPlayerStrength = CurrentLevel.customCameraFocusIntensity == null ? gameCamera.focusOnPlayerStrength : (float)CurrentLevel.customCameraFocusIntensity;
 		gameCamera.maxOrthographicSize = CurrentLevel.customMaxZoomOut == null ? gameCamera.maxOrthographicSize : (float)CurrentLevel.customMaxZoomOut;
-		UI.counterBanner.SetActive(false);
 		player.EnableControls();
 		EnableAllAIs();
 
@@ -358,12 +370,8 @@ public class LevelManager : MonoBehaviour {
 						// Continue when players live are sufficient OR playing in EASY
 						SaveGame.UnlockLevel(SaveGame.SaveInstance.currentSaveSlot, GameManager.LevelId);
 						GameManager.LevelId++;
-						if(Random.Range(0f, 1f) > GameManager.LiveGainChance) {
-							GameManager.PlayerLives++;
-							GameManager.LiveGainChance = 0;
-							UI.playerLives.SetText(GameManager.PlayerLives.ToString());
-						}
-						GameManager.LiveGainChance += 0.02f;
+
+						CheckRewardLive();
 						GameManager.UpdateCampaign();
 						gameCamera.PlayConfetti();
 						Logger.Log(Channel.Gameplay, "Continue to next level: " + GameManager.LevelId);
@@ -377,7 +385,7 @@ public class LevelManager : MonoBehaviour {
 								// Medium Mode resets to the currents world most middle Level (Typicially Level 5 of a World)
 								GameManager.PlayerLives = 4;
 								ulong halfCheckpoint = Game.GetWorld(GameManager.CurrentLevel.levelId).Levels[Game.GetWorld(GameManager.CurrentLevel.levelId).Levels.Length / 2].LevelId;
-								
+
 								// Dont reset to Half-Checkpoint if the players hasn't been there yet
 								if(halfCheckpoint > GameManager.LevelId) {
 									GameManager.LevelId = Game.GetWorld(GameManager.CurrentLevel.levelId).Levels[0].LevelId;
@@ -422,6 +430,29 @@ public class LevelManager : MonoBehaviour {
 		}
 	}
 
+	static void CheckRewardLive() {
+		float addPercentage = 0;
+		switch(GameManager.Difficulty) {
+			case SaveGame.Campaign.Difficulty.Easy:
+				break;
+			case SaveGame.Campaign.Difficulty.Medium:
+				addPercentage = 0.05f;
+				break;
+			case SaveGame.Campaign.Difficulty.Hard:
+				addPercentage = 0.035f;
+				break;
+			case SaveGame.Campaign.Difficulty.HardCore:
+				break;
+		}
+		GameManager.LiveGainChance += addPercentage;
+		if(Random.Range(0f, 1f) < GameManager.LiveGainChance) {
+			GameManager.PlayerLives++;
+			GameManager.LiveGainChance = 0;
+			GameManager.rewardLive = true;
+		}
+		GameManager.UpdateCampaign();
+	}
+
 	static void DisableAllAIs() {
 		if(tankAIs != null) {
 			foreach(TankAI t in tankAIs) {
@@ -444,11 +475,11 @@ public class LevelManager : MonoBehaviour {
 
 	public static float GetOrthographicSize(GridSizes size) {
 		switch(size) {
-			case GridSizes.Size_17x14:
+			case GridSizes.Size_15x12:
 				return 16;
-			case GridSizes.Size_14x11:
+			case GridSizes.Size_12x9:
 				return 15;
-			case GridSizes.Size_11x8:
+			case GridSizes.Size_9x6:
 				return 12;
 			default:
 				return 15;
@@ -457,19 +488,19 @@ public class LevelManager : MonoBehaviour {
 
 	public static Int3 GetGridBoundary(GridSizes size) {
 		switch(size) {
-			case GridSizes.Size_17x14:
-				return new Int3(17, 4, 14);
-			case GridSizes.Size_14x11:
-				return new Int3(14, 4, 11);
-			case GridSizes.Size_11x8:
-				return new Int3(11, 4, 9);
-			default:
+			case GridSizes.Size_15x12:
 				return new Int3(15, 4, 12);
+			case GridSizes.Size_12x9:
+				return new Int3(12, 4, 9);
+			case GridSizes.Size_9x6:
+				return new Int3(9, 4, 7);
+			default:
+				return new Int3(9, 4, 11);
 		}
 	}
 
 	public void ResetLevel() {
-		foreach(GameEntity entity in FindObjectsOfType<GameEntity>()) {
+		foreach(GameEntity entity in FindObjectsOfType<GameEntity>().Where(g => g.CompareTag("LevelPreset") == false)) {
 			if(entity is IResettable) {
 				IResettable r = entity as IResettable;
 				r.ResetState();
@@ -478,6 +509,15 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public TankAsset GetTankAsset(TankTypes type) => tankPrefabs.Find(t => t.tankType == type);
+
+	public static LevelPreset GetPreset(GridSizes size, LevelEditor.Themes theme) => Instance.presets.Where(p => p.gridSize == size && p.theme == theme).FirstOrDefault();
+
+	[System.Serializable]
+	public class LevelPreset {
+		public LevelEditor.Themes theme;
+		public GridSizes gridSize;
+		public GameObject gameobject;
+	}
 }
 
 #if UNITY_EDITOR

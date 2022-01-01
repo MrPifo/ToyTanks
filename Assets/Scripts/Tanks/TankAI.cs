@@ -6,6 +6,7 @@ using Sperlich.FSM;
 using EpPathFinding.cs;
 using System.Collections;
 using SimpleMan.Extensions;
+using DG.Tweening;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,6 +14,31 @@ using UnityEditor;
 public abstract class TankAI : TankBase, IHittable {
 
 	public enum TankState { Waiting, Move, Attack, Retreat, Charge }
+	public enum MovementType {
+		/// <summary>
+		/// Use this if movement gets an Input Direction.
+		/// </summary>
+		None,
+		/// <summary>
+		/// Moves the Tank in Forward direction.
+		/// </summary>
+		Move,
+		/// <summary>
+		/// Moves the Tank along a path and ignores unncessery path point if possible.
+		/// Note: A path must be calculated for this method.
+		/// </summary>
+		MoveSmart,
+		/// <summary>
+		/// Moves the Tank exactly along the path.
+		/// Note: A path must be calculated for this method.
+		/// </summary>
+		MovePath,
+		/// <summary>
+		/// Let the tank chase the player.
+		/// </summary>
+		Chase,
+	}
+	public enum TankHeadMode { None, RotateWithBody, KeepRotation, AimAtPlayer, AimAtPlayerOnSight }
 
 	public byte playerDetectRadius = 25;
 	public byte playerLoseRadius = 25;
@@ -23,6 +49,8 @@ public abstract class TankAI : TankBase, IHittable {
 	public bool disableAvoidanceSystem;
 	public bool disableSmartMove;
 	public DiagonalMovement diagonalMethod;
+	public FSM<MovementType> MoveMode = new FSM<MovementType>();
+	public FSM<TankHeadMode> HeadMode = new FSM<TankHeadMode>();
 	public float maxPathfindingRefreshSpeed = 0.2f;
 	float pathfindingRefreshTime;
 	protected float distToPlayer;
@@ -34,11 +62,12 @@ public abstract class TankAI : TankBase, IHittable {
 	/// <summary>
 	/// Default includes: Player, Ground, Destructable, LevelBoundary, Block
 	/// </summary>
-	protected LayerMask HitLayers = LayerMaskExtension.Create(GameMasks.Player, GameMasks.Destructable, GameMasks.BulletTraverse, GameMasks.Ground, GameMasks.Destructable, GameMasks.LevelBoundary, GameMasks.Block);
+	protected static LayerMask HitLayers = LayerMaskExtension.Create(GameMasks.Player, GameMasks.Ground, GameMasks.Destructable, GameMasks.LevelBoundary, GameMasks.Block);
 	/// <summary>
 	/// Layermask used for the avoidance system to prevent AI from being stuck
 	/// </summary>
-	protected LayerMask AvoidcanceLayers = LayerMaskExtension.Create(GameMasks.Block, GameMasks.Destructable, GameMasks.Player);
+	protected static LayerMask AvoidcanceLayers = LayerMaskExtension.Create(GameMasks.Block, GameMasks.Destructable, GameMasks.Player);
+	protected static LayerMask MapLayers = LayerMaskExtension.Create(GameMasks.Block, GameMasks.Destructable, GameMasks.BulletTraverse, GameMasks.LevelBoundary);
 	// Properties
 	protected bool IsAIEnabled { get; set; }
 	protected bool IsPlayerInDetectRadius => distToPlayer < playerDetectRadius;
@@ -75,15 +104,67 @@ public abstract class TankAI : TankBase, IHittable {
 
 	protected virtual void Update() {
 		if(IsPlayReady) {
-			distToPlayer = Vector3.Distance(Pos, Player.Pos);
+			if(APITimeMode == TimeMode.DeltaTime) {
+				ComputeAI();
+			}
 			AdjustOccupiedGridPos();
 			DrawDebug();
-			AvoidanceSystem();
-
-			pathfindingRefreshTime += Time.deltaTime;
+			
 			if(showDebug) {
 				Draw.Sphere(DirectionLeader.position, 0.5f, Color.green);
 				Draw.Line(rig.position, DirectionLeader.position, 3, Color.blue);
+			}
+		}
+	}
+
+	private void FixedUpdate() {
+		if(APITimeMode == TimeMode.FixedUpdate) {
+			ComputeAI();
+		}
+	}
+
+	private void ComputeAI() {
+		if(IsPlayReady && IsPaused == false) {
+			AvoidanceSystem();
+			distToPlayer = Vector3.Distance(Pos, Player.Pos);
+			pathfindingRefreshTime += GetTime;
+			switch(MoveMode.State) {
+				case MovementType.None:
+					break;
+				case MovementType.Move:
+					Move();
+					break;
+				case MovementType.MovePath:
+					MoveAlongPath();
+					ConsumePath();
+					break;
+				case MovementType.MoveSmart:
+					MoveSmart();
+					ConsumePath();
+					break;
+				case MovementType.Chase:
+					ChasePlayer();
+					break;
+			}
+
+			switch(HeadMode.State) {
+				case TankHeadMode.None:
+					break;
+				case TankHeadMode.RotateWithBody:
+					break;
+				case TankHeadMode.KeepRotation:
+					KeepHeadRot();
+					break;
+				case TankHeadMode.AimAtPlayer:
+					AimAtPlayer();
+					break;
+				case TankHeadMode.AimAtPlayerOnSight:
+					if(HasSightContactToPlayer) {
+						AimAtPlayer();
+					} else {
+						KeepHeadRot();
+					}
+					break;
 			}
 		}
 	}
@@ -133,9 +214,9 @@ public abstract class TankAI : TankBase, IHittable {
 	}
 	protected virtual void GoToNextState() { }
 	protected virtual void GoToNextState(float delay = 0.0001f) { }
-	protected virtual void GoToNextState(TankState state, float delay = 0.0001f) {
+	protected virtual void GoToNextState(TankState state, float delay = 0) {
 		if(IsPlayReady) {
-			this.Delay(delay, () => {
+			this.Delay(delay < 0.05f ? Time.deltaTime : delay, () => {
 				ProcessState(state);
 			});
 		}
@@ -190,9 +271,9 @@ public abstract class TankAI : TankBase, IHittable {
 	/// </summary>
 	/// <param name="inputDir"></param>
 	public override void Move(Vector2 inputDir) {
-		DirectionLeader.position = Vector3.Lerp(DirectionLeader.position, rig.position + new Vector3(inputDir.x, 0, inputDir.y) * 2, Time.deltaTime * turnSpeed);
-		if(evadeDir != Vector3.zero && this is TankAI) {
-			DirectionLeader.position = Vector3.Lerp(DirectionLeader.position, DirectionLeader.position + evadeDir, Time.deltaTime * turnSpeed);
+		DirectionLeader.position = Vector3.Lerp(DirectionLeader.position, rig.position + new Vector3(inputDir.x, 0, inputDir.y) * 2, GetTime * turnSpeed);
+		if(evadeDir != Vector3.zero) {
+			DirectionLeader.position = Vector3.Lerp(DirectionLeader.position, DirectionLeader.position + evadeDir, GetTime * turnSpeed);
 		}
 		moveDir = (DirectionLeader.position - rig.position).normalized;
 
@@ -201,18 +282,18 @@ public abstract class TankAI : TankBase, IHittable {
 			currentDirFactor = 1;
 		}
 
-		float maxDir = Mathf.Max(Mathf.Abs(inputDir.x), Mathf.Abs(inputDir.y));
+		/*float maxDir = Mathf.Max(Mathf.Abs(inputDir.x), Mathf.Abs(inputDir.y));
 		if(maxDir > 0.7f) {
 			maxDir = 1;
 		}
-		float factor = currentDirFactor * maxDir;
-		Vector3 movePos = factor * moveSpeed * Time.deltaTime * rig.transform.forward;
+		float factor = currentDirFactor * maxDir;*/
+		Vector3 movePos = currentDirFactor * moveSpeed * GetTime * rig.transform.forward;
 
 		if(!isShootStunned && canMove) {
 			rig.MovePosition(rig.position + movePos);
-			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(moveDir, Vector3.up), Time.deltaTime * turnSpeed);
+			rig.MoveRotation(Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(moveDir * currentDirFactor, Vector3.up), GetTime * turnSpeed));
 		}
-		TrackTracer(factor);
+		TrackTracer(currentDirFactor);
 		rig.velocity = Vector3.zero;
 	}
 	/// <summary>
@@ -291,18 +372,23 @@ public abstract class TankAI : TankBase, IHittable {
 	/// <param name="target"></param>
 	/// <param name="fleeRadius"></param>
 	/// <param name="performanceMode"></param>
-	protected void FleeFrom(Vector3 target, float fleeRadius) {
-		var points = Game.ActiveGrid.GetPointsWithinRadius(Pos, fleeRadius);
-		float fleeRadiusSqr = fleeRadius * fleeRadius;
+	protected bool FleeFrom(Vector3 target, float fleeRadius, float? minRadius = null) {
+		var points = Game.ActiveGrid.GetPointsWithinRadius(Pos, fleeRadius, minRadius);
 		List<(Vector3 point, float distance)> distPoints = new List<(Vector3, float)>();
 
 		foreach(Vector3 p in points) {
 			var diff = target - p;
 			distPoints.Add((p, diff.x * diff.x + diff.z * diff.z));
 		}
-
-		currentDestination = distPoints.OrderByDescending(p => p.distance).First().point;
-		FindPath(currentDestination);
+		
+		distPoints = distPoints.Where(p => Physics.Linecast(p.point, Player.Pos, MapLayers)).OrderByDescending(p => p.distance).ToList();
+		//Game.ActiveGrid.PaintCells(distPoints.Select(p => p.point).ToArray(), Color.blue, 3);
+		if(distPoints.Count > 0) {
+			currentDestination = distPoints.RandomItem().point;
+			return FindPath(currentDestination);
+		} else {
+			return false;
+		}
 	}
 	/// <summary>
 	/// Calculates a path to the given target.
@@ -332,9 +418,25 @@ public abstract class TankAI : TankBase, IHittable {
 
 	protected IEnumerator IPauseTank() {
 		if(IsPaused) {
-			while(IsPaused) yield return null;   // Pause AI
+			switch(APITimeMode) {
+				case TimeMode.DeltaTime:
+					while(IsPaused)
+						yield return null;   // Pause AI
+					break;
+				case TimeMode.FixedUpdate:
+					while(IsPaused)
+						yield return new WaitForFixedUpdate();   // Pause AI
+					break;
+			}
 		} else {
-			yield return null;
+			switch(APITimeMode) {
+				case TimeMode.DeltaTime:
+					yield return null;   // Pause AI
+					break;
+				case TimeMode.FixedUpdate:
+					yield return new WaitForFixedUpdate();   // Pause AI
+					break;
+			}
 		}
 	}
 
@@ -409,15 +511,17 @@ public abstract class TankAI : TankBase, IHittable {
 		return hitList;
 	}
 
-	public bool RandomPath(Vector3 origin, float radius, float? minRadius = null) {
+	public bool RandomPath(Vector3 origin, float radius, float? minRadius = null, bool requireSightContact = false) {
 		var points = Game.ActiveGrid.GetPointsWithinRadius(Pos, radius, minRadius).ToList();
 
 		points = points.Where(p => PathExists(Pos, p)).ToList();
 		points = points.OrderByDescending(v => Vector3.Distance(origin, v)).ToList();
+		if(requireSightContact) {
+			points = points.Where(p => Physics.Linecast(p, Pos, MapLayers) == false).ToList();
+		}
 		if(points.Count > 0) {
 			currentDestination = points.RandomItem();
 			//Game.ActiveGrid.PaintCells(points.ToArray(), Color.blue, 3);
-			//Game.ActiveGrid.PaintCellAt(currentDestination, Color.blue);
 			return FindPath(currentDestination);
 		}
 		return false;

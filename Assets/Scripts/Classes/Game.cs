@@ -141,27 +141,45 @@ public static class Game {
 	}
 
 	/// <summary>
-	/// Must be called whenever the game is started.
+	/// Must be called whenever the game is started. Returns an error string if something went wrong.
 	/// </summary>
-	public static void Initialize() {
+	public static string Initialize() {
 		if(ApplicationInitialized == false) {
 			Logger.FileLogPath = Application.persistentDataPath + "/log.txt";
 			Logger.ClearLogFile();
 			Logger.Log(Channel.Default, "### Begin of the logfile, continue starting the game. ###");
 
 			CheckPlatform();
-			PrefabManager.Instantiate(PrefabTypes.InputManager);
+			if(PrefabManager.Instance == null) {
+				return "No Prefabmanager Instance exists.";
+			}
+			if(PrefabManager.Data == null) {
+				return "Prefabmanager is missing data.";
+			}
+			try {
+				PrefabManager.Instantiate(PrefabTypes.InputManager);
+			} catch {
+				return "Failed to load System-Input module.";
+			}
 			Logger.Log(Channel.System, "InputManager has been initialized.");
 
-			PrefabManager.Instantiate(PrefabTypes.GraphicSettings);
-			GraphicSettings.Initialize();
-			Logger.Log(Channel.System, "GraphicsManager has been initialized.");
+			try {
+				PrefabManager.Instantiate(PrefabTypes.GraphicSettings);
+				GraphicSettings.Initialize();
+				Logger.Log(Channel.System, "GraphicsManager has been initialized.");
+			} catch {
+				return "Failed to load GraphicSettings module.";
+			}
 
-			SaveGame.GameStartUp();
-
+			try {
+				SaveGame.GameStartUp();
+			} catch {
+				return "Failed to load player Save-Game.";
+			}
 			PlayerInputManager.HideControls();
 			ApplicationInitialized = true;
         }
+		return string.Empty;
     }
 	public static void CheckPlatform() {
 #if UNITY_ANDROID

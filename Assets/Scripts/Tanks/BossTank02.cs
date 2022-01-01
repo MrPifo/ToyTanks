@@ -142,19 +142,17 @@ public class BossTank02 : BossAI, IHittable, IDamageEffector {
 	protected IEnumerator IQuickMove() {
 		float time = 0;
 		if(RandomPath(Pos, playerDetectRadius, playerDetectRadius * 0.75f)) {
+			MoveMode.Push(MovementType.MovePath);
+			HeadMode.Push(TankHeadMode.KeepRotation);
 			while(IsPlayReady) {
-				MoveAlongPath();
-				KeepHeadRot();
-				ConsumePath();
-
 				if(HasReachedDestination || time > 3f) {
 					break;
 				}
-				time += Time.deltaTime;
-				yield return null;
+				time += GetTime;
 				yield return IPauseTank();   // Pause AI
 			}
 		}
+		MoveMode.Push(MovementType.None);
 		if(Random(0, 1) == 0) {
 			bossStates.Push(BossBehaviour.BigBlast);
 		} else {

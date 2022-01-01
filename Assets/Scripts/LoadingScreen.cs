@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using ToyTanks.UI;
+using SimpleMan.Extensions;
 
 public class LoadingScreen : MonoBehaviour {
 
@@ -10,7 +11,7 @@ public class LoadingScreen : MonoBehaviour {
 	public CanvasGroup banner;
 	public Transform background;
 	public Image liveIcon;
-	public Text level;
+	public TMP_Text level;
 	public Text lives;
 	public Text singleMessage;
 	public Slider progressBar;
@@ -62,13 +63,22 @@ public class LoadingScreen : MonoBehaviour {
 		progressBar.value = value;
 	}
 
-	public void SetInfo(string level, string lives) {
+	public void SetInfo(string level, byte lives) {
 		this.level.gameObject.SetActive(true);
 		this.lives.gameObject.SetActive(true);
 		liveIcon.gameObject.SetActive(true);
 		singleMessage.gameObject.SetActive(false);
 		this.level.text = level;
-		this.lives.text = lives;
+		if(GameManager.rewardLive == false) {
+			this.lives.text = (lives) + "";
+		} else {
+			GameManager.rewardLive = false;
+			this.lives.text = (lives - 1) + "";
+			this.Delay(2, () => {
+				this.lives.text = (lives) + "";
+				this.lives.Stretch(1.2f, 0.5f);
+			});
+		}
 	}
 
 	public void SetSingleMessage(string message) {
