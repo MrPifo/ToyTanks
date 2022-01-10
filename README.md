@@ -29,7 +29,7 @@ The last one "Original" can be unlocked after completing the campaign once.
 The artstyle is a mix of cartoonish and realistic graphics. It is supposed to look like little toys, but mixed with bits of violence to express more power.
 
 
-<img src="https://sperlich.at/assets/project_pictures/toytanks_4.png?" style="width:25vw" />
+<img src="https://sperlich.at/assets/project_pictures/toytanks_3.png?" style="width:25vw" />
 
 #### Lightmapping
 
