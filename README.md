@@ -20,6 +20,7 @@ Each world also brings new tank variants with it and a unique theme.
 
 There are also 4 difficulties available for more challening gameplay.
 The last one "Original" can be unlocked after completing the campaign once.
+
 <img src="https://sperlich.at/assets/project_pictures/toytanks_0.png?" style="width:25vw" />
 
 
