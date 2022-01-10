@@ -8,7 +8,7 @@ The inspiration for my game comes from the original [WiiTanks](https://nintendo.
 My idea is to expand on this fun minigame. That's why I decided to redo this game in Unity in my own personal way and bring in my own ideas.
 Currently the project is named **ToyTanks**, but this name doesn't make too 100% happy, so I may change it later.
 
-<img src="https://sperlich.at/assets/project_pictures/toytanks_preview2.png" style="width:25vw" />
+<img src="https://sperlich.at/assets/project_pictures/toytanks_preview.png" style="width:25vw" />
 
 ## Gameplay
 
