@@ -15,12 +15,12 @@ Currently the project is named **ToyTanks**, but this name doesn't make too 100%
 The player controls the blue tank and needs to clear multiple levels in multiple worlds. Each world currently contains up to 10 levels, each with a boss level at the end.
 Each world also brings new tank variants with it and a unique theme.
 
-<img src="https://sperlich.at/assets/project_pictures/toytanks_1.png" style="width:25vw" />
+<img src="https://sperlich.at/assets/project_pictures/toytanks_1.png?" style="width:25vw" />
 
 
 There are also 4 difficulties available for more challening gameplay.
 
-<img src="https://sperlich.at/assets/project_pictures/toytanks_0.png" style="width:25vw" />
+<img src="https://sperlich.at/assets/project_pictures/toytanks_0.png?" style="width:25vw" />
 
 
 ## Graphics
@@ -36,7 +36,7 @@ Campaign levels include baked Lightmaps, which are swapped out and applied if a 
 The editor is a tool to build your own levels and make usage of already prexisting level elements. With the same tool I also create the campaign levels.
 Currently this is a basic feature which can be expanded in future.
 
-<img src="https://sperlich.at/assets/project_pictures/toytanks_2.png" style="width:25vw" />
+<img src="https://sperlich.at/assets/project_pictures/toytanks_2.png?" style="width:25vw" />
 
 ## Roadmap
 
@@ -85,4 +85,4 @@ Here is a list of required packages to make the project work:
 * [Unity Command Terminal](https://github.com/stillwwater/command_terminal)
 * TextMeshPro
 
-<img src="https://sperlich.at/assets/project_pictures/toytanks_extensions.png" style="width:25vw" />
+<img src="https://sperlich.at/assets/project_pictures/toytanks_extensions.png?" style="width:25vw" />
