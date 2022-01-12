@@ -8,24 +8,28 @@ The inspiration for my game comes from the original [WiiTanks](https://nintendo.
 My idea is to expand on this fun minigame. That's why I decided to redo this game in Unity in my own personal way and bring in my own ideas.
 Currently the project is named **ToyTanks**, but this name doesn't make too 100% happy, so I may change it later.
 
-<img src="https://sperlich.at/assets/project_pictures/toytanks_preview.png" style="width:25vw" />
+<img src="https://sperlich.at/assets/project_pictures/toytanks_preview.png?" style="width:25vw" />
 
 ## Gameplay
 
 The player controls the blue tank and needs to clear multiple levels in multiple worlds. Each world currently contains up to 10 levels, each with a boss level at the end.
 Each world also brings new tank variants with it and a unique theme.
 
-<img src="https://sperlich.at/assets/project_pictures/toytanks_1.png" style="width:25vw" />
+<img src="https://sperlich.at/assets/project_pictures/toytanks_1.png?" style="width:25vw" />
 
 
-There are also 4 difficulties available for more challening gameplay.
+There are also 4 difficulties available for more challening gameplay.<br>
+The last one "Original" can be unlocked after completing the campaign once.
 
-<img src="https://sperlich.at/assets/project_pictures/toytanks_0.png" style="width:25vw" />
+<img src="https://sperlich.at/assets/project_pictures/toytanks_0.png?" style="width:25vw" />
 
 
 ## Graphics
 
 The artstyle is a mix of cartoonish and realistic graphics. It is supposed to look like little toys, but mixed with bits of violence to express more power.
+
+
+<img src="https://sperlich.at/assets/project_pictures/toytanks_3.png?" style="width:25vw" />
 
 #### Lightmapping
 
@@ -34,31 +38,30 @@ Campaign levels include baked Lightmaps, which are swapped out and applied if a 
 ## Editor
 
 The editor is a tool to build your own levels and make usage of already prexisting level elements. With the same tool I also create the campaign levels.
-Currently this is a basic feature which can be expanded in future.
+Currently this tool is disabled for users, but it is planned as ingame level editor to upload custom made user levels. It just needs more love and polish.
 
-<img src="https://sperlich.at/assets/project_pictures/toytanks_2.png" style="width:25vw" />
+<img src="https://sperlich.at/assets/project_pictures/toytanks_2.png?" style="width:25vw" />
 
 ## Roadmap
 
 You can find my current Roadmap on [Trello](https://trello.com/b/6AdUI6QP/toytanks) and can get a look at what's coming next! <br><br>
 Link: https://trello.com/b/6AdUI6QP/toytanks
+Ps: I dont update this very often.
 
 ## Steam Release
 
 Aiming for my first ever Steam Release I need to make sure this game is as polished as possible. Also, I haven't included any Steam related features yet.
+My anticipated release plan would be somewhere late 2022, but I am not sure yet.
 
 ## Roadmap
-* Create worlds and levels (There is barely anything to play at the moment)
+* Create worlds and levels.
   * Create more world themes
   * Create more Tank variants and bosses
-* Polish and refine UI even more
-* Audio (One of my weakest abilities, there is still a lot of missing Audio)
-  * Music as well
-* Overhaul at some point Pathfinding algorithm (Selfwritten and is very inefficient, but easy to use)
+* Audio (Bought a sound effect pack, hope this helps)
 * Better lighting (I have already messed so much with it, but I'm still not 100% happy with it)
 * Include Steam features (Cloud saving, Achievements, Workshop at a later point maybey)
   * Online Levels (Upload your levels for other players)
-  * Eventually Multiplayer (Low priority)
+  * Eventually Multiplayer/Coop (Low priority)
 
 # Licesning
 
@@ -85,4 +88,4 @@ Here is a list of required packages to make the project work:
 * [Unity Command Terminal](https://github.com/stillwwater/command_terminal)
 * TextMeshPro
 
-<img src="https://sperlich.at/assets/project_pictures/toytanks_extensions.png" style="width:25vw" />
+<img src="https://sperlich.at/assets/project_pictures/toytanks_extensions.png?" style="width:25vw" />
