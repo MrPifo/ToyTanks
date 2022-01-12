@@ -38,10 +38,12 @@ public class SnowPlower : TankAI, IHittable, IDamageEffector {
 		moveSpeed = chargeSpeed;
 
 		HeadMode.Push(TankHeadMode.RotateWithBody);
-		while(isAlignedToPlayer < 0.99f && IsPlayReady) {
+		float maxTime = 0;
+		while(isAlignedToPlayer < 0.99f && IsPlayReady && maxTime < 2) {
 			RotateTank((Player.Pos - Pos).normalized);
 			isAlignedToPlayer = Vector3.Dot((Player.Pos - Pos).normalized, transform.forward);
 			yield return IPauseTank();
+			maxTime += GetTime;
 		}
 		AudioPlayer.Play("SnowChargeStart", AudioType.SoundEffect, 0.8f, 1.2f, 0.4f);
 		yield return new WaitForSeconds(0.2f);

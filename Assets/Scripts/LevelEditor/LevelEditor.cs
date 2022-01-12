@@ -912,7 +912,7 @@ namespace ToyTanks.LevelEditor {
 			SelectItems = null;
 			LevelManager.Instance.presets.ForEach(preset => preset.gameobject.Hide());
 			PrefabManager.ResetPrefabManager();
-			PrefabManager.Initialize();
+			PrefabManager.Initialize("Level");
 		}
 
 		public void SaveAsOfficialLevel() {

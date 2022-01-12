@@ -17,6 +17,7 @@ namespace Sperlich.PrefabManager {
 			public GameObject prefab;
 			[Range(0, 1000)]
 			public int preloadAmount;
+			public bool loadAsSingleton;
 		}
 	}
 }

@@ -7,44 +7,29 @@ public class GreyTank : TankAI {
 
 	public override void InitializeTank() {
 		base.InitializeTank();
-		StopAllCoroutines();
+		ProcessState(TankState.Move);
+	}
+
+	protected override IEnumerator IMove() {
+		MoveMode.Push(MovementType.Chase);
+		HeadMode.Push(TankHeadMode.KeepRotation);
+		while(IsPlayReady && HasSightContactToPlayer == false) {
+			yield return IPauseTank();
+		}
 		ProcessState(TankState.Attack);
 	}
 
 	protected override IEnumerator IAttack() {
-		int bulletsShot = 0;
-		int requiredShots = Random(2, 4);
-
-		while(bulletsShot < requiredShots && IsPlayReady) {
-			if(CanShoot && HasSightContactToPlayer && IsAimingAtPlayer && WouldFriendlyFire == false) {
-				MoveMode.Push(MovementType.None);
+		RandomPath(Player.Pos, playerDetectRadius, playerDetectRadius * 0.75f, true);
+		MoveMode.Push(MovementType.MovePath);
+		HeadMode.Push(TankHeadMode.AimAtPlayerOnSight);
+		while(IsPlayReady && HasReachedDestination == false && HasSightContactToPlayer) {
+			if(CanShoot && HasSightContactToPlayer && IsAimingAtPlayer && WouldFriendlyFire == false && RandomShootChance()) {
 				ShootBullet();
-				bulletsShot++;
-			} else {
-				if(HasSightContactToPlayer) {
-					HeadMode.Push(TankHeadMode.AimAtPlayer);
-				} else {
-					HeadMode.Push(TankHeadMode.RotateWithBody);
-				}
-				MoveMode.Push(MovementType.Chase);
 			}
 			yield return IPauseTank();
 		}
-		ProcessState(TankState.Retreat);
-	}
-
-	protected override IEnumerator IRetreat() {
-		float time = 0;
-		FleeFrom(Pos, 30);
-
-		MoveMode.Push(MovementType.MoveSmart);
-		HeadMode.Push(TankHeadMode.KeepRotation);
-		while(time < Random(3, 6) && IsPlayReady) {
-			yield return IPauseTank();
-			time += GetTime;
-		}
-
-		ProcessState(TankState.Attack);
+		GoToNextState(TankState.Move);
 	}
 
 	protected override void DrawDebug() {

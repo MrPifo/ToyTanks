@@ -4,11 +4,13 @@ using UnityEngine;
 using System.Linq;
 using SimpleMan.Extensions;
 using System;
+using UnityEngine.SceneManagement;
 
 namespace Sperlich.PrefabManager {
 	public class PrefabManager : Singleton<PrefabManager> {
 
 		private static bool HasBeenInitialized = false;
+		public static string DefaultSceneSpawn { get; set; }
 		private static List<PoolData> Pools;
 		private static PrefabData _data;
 		public static PrefabData Data {
@@ -25,14 +27,14 @@ namespace Sperlich.PrefabManager {
 
 		protected override void Awake() {
 			base.Awake();
-			Initialize();
 		}
 
 
 		/// <summary>
 		/// Call this manually intialize the Prefab Pools
 		/// </summary>
-		public static void Initialize() {
+		public static void Initialize(string defaultScene) {
+			DefaultSceneSpawn = defaultScene;
 			if (HasBeenInitialized == false) {
 				Instance.CreatePools();
 				Logger.Log(Channel.System, "Prefabmanager intialized.");
@@ -43,13 +45,15 @@ namespace Sperlich.PrefabManager {
 			if(HasBeenInitialized == false && Data != null) {
 				Pools = new List<PoolData>();
 				foreach(PrefabData.PrefabInfo info in Data.prefabs) {
-					GameObject p = new GameObject {
-						name = info.type.ToString()
-					};
-					p.transform.SetParent(transform);
-					PoolData pool = p.AddComponent<PoolData>();
-					pool.Initialize(info);
-					Pools.Add(pool);
+					if(info.loadAsSingleton == false) {
+						GameObject p = new GameObject {
+							name = info.type.ToString()
+						};
+						p.transform.SetParent(transform);
+						PoolData pool = p.AddComponent<PoolData>();
+						pool.Initialize(info);
+						Pools.Add(pool);
+					}
 				}
 				HasBeenInitialized = true;
 			}
@@ -63,11 +67,21 @@ namespace Sperlich.PrefabManager {
 			if(Pools != null) {
 				foreach(PoolData pool in Pools) {
 					foreach(PoolData.PoolObject op in pool.pooledObjects) {
-						Destroy(op.storedObject);
+						if(Application.isPlaying) {
+							Destroy(op.storedObject);
+						} else {
+							DestroyImmediate(op.storedObject);
+						}
 					}
 				}
 				for(int i = 0; i < Pools.Count; i++) {
-					Destroy(Pools[i].gameObject);
+					if(Pools[i] != null) {
+						if(Application.isPlaying) {
+							Destroy(Pools[i].gameObject);
+						} else {
+							DestroyImmediate(Pools[i].gameObject);
+						}
+					}
 				}
 			}
 
@@ -90,7 +104,11 @@ namespace Sperlich.PrefabManager {
 				o.SetActive(true);
 				return o;
 			} catch (Exception e) {
-				Logger.LogError(Channel.Loading, "PrefabManager failed to instantiate " + type.ToString(), e);
+				if(HasBeenInitialized == false) {
+					Logger.LogError(Channel.System, "PrefabManager has not been initialized!", e);
+				} else {
+					Logger.LogError(Channel.Loading, "PrefabManager failed to instantiate " + type.ToString(), e);
+				}
 				throw e;
             }
 		}
@@ -121,7 +139,11 @@ namespace Sperlich.PrefabManager {
 		/// <param name="rotation"></param>
 		/// <returns></returns>
 		public static T Instantiate<T>(PrefabTypes type, Transform parent, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion()) {
-			return Instantiate(type, parent, position, rotation).GetComponent<T>();
+			GameObject o = Instantiate(type, parent, position, rotation);
+			if(SceneManager.GetSceneByName(DefaultSceneSpawn).IsValid()) {
+				SceneManager.MoveGameObjectToScene(o, SceneManager.GetSceneByName(DefaultSceneSpawn));
+			}
+			return o.GetComponent<T>();
 		}
 
 		/// <summary>
@@ -143,7 +165,11 @@ namespace Sperlich.PrefabManager {
 				poolObject.storedObject.SetActive(true);
 				return poolObject.storedObject;
 			} catch(Exception e) {
-				Logger.LogError(Channel.Loading, "PrefabManager failed to spawn " + type.ToString(), e);
+				if(HasBeenInitialized == false) {
+					Logger.LogError(Channel.System, "PrefabManager has not been initialized!", e);
+				} else {
+					Logger.LogError(Channel.Loading, "PrefabManager failed to spawn " + type.ToString(), e);
+				}
 				throw e;
 			}
         }

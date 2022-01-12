@@ -22,7 +22,7 @@ public class DebugTank : TankAI {
 		FindPath(moveTarget.position);
 		Vector3 startTarget = moveTarget.position;
 		while(IsPlayReady) {
-			ConsumePath();
+			//ConsumePath();
 			MoveAlongPath();
 			KeepHeadRot();
 			if(startTarget != moveTarget.position) {

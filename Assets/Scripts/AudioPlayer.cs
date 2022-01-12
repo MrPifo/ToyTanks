@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class AudioPlayer {
 
+	public static void Play(string track, AudioType audioType, float pitch, float volume) => Play(track, audioType, pitch, pitch, volume); 
 	public static void Play(string track, AudioType audioType, float randomMinPitch = 1f, float randomMaxPitch = 1f, float sourceVolume = 1f) {
 		if(AudioManager.instance != null && track != "" && AudioManager.instance.HasClip(track)) {
 			float globalVolume = GraphicSettings.MainVolume / 100f * sourceVolume;

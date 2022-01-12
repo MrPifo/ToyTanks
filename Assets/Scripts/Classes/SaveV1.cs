@@ -48,7 +48,7 @@ public class SaveV1 : ISaveGame {
 		SaveGame.Save();
 	}
 
-	public void UpdateSaveSlot(byte slot, ulong levelId, byte lives, short score, float time) {
+	public void UpdateSaveSlot(byte slot, ulong levelId, byte lives, int score, float time) {
 		switch(slot) {
 			case 0:
 				saveSlot1.levelId = levelId;

@@ -13,6 +13,9 @@ public class SaveSlotUI : UIScaleAnimation {
 	public TMP_Text score;
 	public TMP_Text lives;
 	public TMP_Text difficulty;
+	public Canvas confirmCanvas;
+	public CanvasGroup confirmGroup;
+	public Button confirmButton;
 	public GameObject deleteInfo;
 	public Image background;
 	public MenuItem saveSlotMenu;
@@ -24,6 +27,7 @@ public class SaveSlotUI : UIScaleAnimation {
 	private void Awake() {
 		bColor = background.color;
 		deleteInfo.transform.localScale = Vector3.zero;
+		CloseConfirmBox();
 	}
 
 	public void LoadAndDisplayData() {
@@ -44,8 +48,8 @@ public class SaveSlotUI : UIScaleAnimation {
 			case SaveGame.Campaign.Difficulty.Hard:
 				difficulty.color = new Color(1f, 0.32f, 0.24f);
 				break;
-			case SaveGame.Campaign.Difficulty.HardCore:
-				difficulty.color = new Color(1f, 0.07f, 0.07f);
+			case SaveGame.Campaign.Difficulty.Original:
+				difficulty.color = new Color(0.05f, 0.05f, 0.05f);
 				break;
 			default:
 				break;
@@ -110,15 +114,31 @@ public class SaveSlotUI : UIScaleAnimation {
 		base.MouseUp();
 	}
 
-	public void DeleteSaveGame() {
-		deletePlaying = true;
-		transform.DOScale(1.3f, 0.2f).OnComplete(() => {
-			transform.DOScale(1f, 0.2f).OnComplete(() => {
-				deletePlaying = false;
-				deleted = false;
-			});
+	public void OpenConfirmBox() {
+		confirmCanvas.enabled = true;
+		confirmGroup.DOFade(1, 0.25f);
+	}
+
+	public void CloseConfirmBox() {
+		confirmGroup.DOFade(0, 0.25f).OnComplete(() => {
+			confirmCanvas.enabled = false;
 		});
-		MenuManager.Instance.DeleteCampaign(slotNumber);
-		MenuManager.Instance.RenderSaveSlots();
+	}
+
+	public void DeleteSaveGame() {
+		OpenConfirmBox();
+		confirmButton.onClick.RemoveAllListeners();
+		confirmButton.onClick.AddListener(() => {
+			deletePlaying = true;
+			transform.DOScale(1.3f, 0.2f).OnComplete(() => {
+				transform.DOScale(1f, 0.2f).OnComplete(() => {
+					deletePlaying = false;
+					deleted = false;
+				});
+			});
+			MenuManager.Instance.DeleteCampaign(slotNumber);
+			MenuManager.Instance.RenderSaveSlots();
+			CloseConfirmBox();
+		});
 	}
 }

@@ -1,13 +1,24 @@
 ﻿using EpPathFinding.cs;
 using System.Collections.Generic;
 using UnityEngine;
-using SimpleMan.Extensions;
-// HDRP Related: using UnityEngine.Rendering.HighDefinition;
-using System.Collections;
 using DG.Tweening;
 using TMPro;
+using System.Collections;
 
 public static class ExtensionMethods {
+
+    /// <summary>
+    /// Helpers to run Coroutines
+    /// </summary>
+    private static ExtensionMethodHelper _helperInstance;
+    public static ExtensionMethodHelper Helper {
+        get {
+            if(_helperInstance == null) {
+                _helperInstance = new GameObject("ExtensionMethods_Helper").AddComponent<ExtensionMethodHelper>();
+            }
+            return _helperInstance;
+        }
+    }
 
     public static float Remap(this float from, float fromMin, float fromMax, float toMin, float toMax) {
         var fromAbs = from - fromMin;
@@ -160,12 +171,12 @@ public static class ExtensionMethods {
 	public static void Hide(this Transform transform) {
 		transform.gameObject.SetActive(false);
 	}
-    public static void Stretch(this MonoBehaviour t, float factor, float duration) {
-        float original = t.transform.localScale.x * t.transform.localScale.y * t.transform.localScale.z;
-        t.transform.DOScale(factor, duration / 2f).OnComplete(() => {
+    public static void Stretch(this MonoBehaviour t, float original, float to, float duration) => Stretch(t.gameObject, original, to, duration);
+    public static void Stretch(this GameObject t, float original, float to, float duration) {
+        t.transform.DOScale(to, duration / 2f).OnComplete(() => {
             t.transform.DOScale(original, duration / 2f);
-		});
-	}
+        });
+    }
     public static void Copy(this Camera cam, Camera target) {
         cam.orthographicSize = target.orthographicSize;
         cam.transform.position = target.transform.position;
@@ -174,6 +185,24 @@ public static class ExtensionMethods {
         cam.farClipPlane = target.farClipPlane;
         cam.fieldOfView = target.fieldOfView;
     }
+    public static void CountUp(this TMP_Text text, int from, int to, float duration) {
+        Helper.StartCoroutine(ICount());
+        IEnumerator ICount() {
+            float time = 0;
+            float stretchTime = 0;
+			while(time < duration) {
+				int current = (int)Mathf.Lerp(from, to, time.Remap(0, duration, 0, 1));
+				text.SetText(current.ToString());
+                if(stretchTime > duration / 20f) {
+                    stretchTime = 0;
+                    text.Stretch(1f, 1.3f, duration / 20f);
+                }
+                yield return null;
+                time += Time.deltaTime;
+                stretchTime += Time.deltaTime;
+            }
+		}
+	}
 	/// <summary>
 	/// Destroys this GameObject
 	/// </summary>
@@ -184,4 +213,9 @@ public static class ExtensionMethods {
 	/// </summary>
 	/// <param name="transform"></param>
 	//public static void Destroy(this Transform transform) => Object.Destroy(transform.gameObject);
+
+    // Helper for Coroutines
+    public sealed class ExtensionMethodHelper : MonoBehaviour {
+
+	}
 }

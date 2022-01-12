@@ -81,9 +81,9 @@ public static class SaveGame {
 					lives = 3,
 				};
 				break;
-			case Campaign.Difficulty.HardCore:
+			case Campaign.Difficulty.Original:
 				campaign = new Campaign() {
-					difficulty = Campaign.Difficulty.HardCore,
+					difficulty = Campaign.Difficulty.Original,
 					levelId = 1,
 					lives = 3,
 				};
@@ -180,7 +180,7 @@ public static class SaveGame {
 		}
 	}
 
-	public static void UpdateCampaign(ulong levelId, byte lives, short score, float time, byte saveSlot = 99) {
+	public static void UpdateCampaign(ulong levelId, byte lives, int score, float time, byte saveSlot = 99) {
 		if(saveSlot == 99) {
 			SaveInstance.UpdateSaveSlot(SaveInstance.currentSaveSlot, levelId, lives, score, time);
 		} else {
@@ -212,13 +212,13 @@ public static class SaveGame {
 
 	public class Campaign {
 
-		public enum Difficulty { Easy, Medium, Hard, HardCore }
+		public enum Difficulty { Easy, Medium, Hard, Original }
 
 		[JsonIgnore] public Worlds CurrentWorld => Game.GetWorld(levelId).WorldType;
 		public Difficulty difficulty;
 		public ulong levelId;
 		public byte lives;
-		public short score;
+		public int score;
 		public float time;
 		public float liveGainChance;
 

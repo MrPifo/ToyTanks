@@ -31,8 +31,8 @@ public class LevelManager : MonoBehaviour {
 	private int scoreOnLevelEnter;
 	private List<TankAsset> tankPrefabs;
 	private GameCamera gameCamera;
-	bool isBossLevel;
 	bool levelManagerInitializedCampaignLevelOnly;
+	bool ContainsBoss => FindObjectOfType<BossAI>() != null;
 
 	private GameManager.GameMode Mode {
 		get => GameManager.CurrentMode;
@@ -114,7 +114,7 @@ public class LevelManager : MonoBehaviour {
 		// Update and Add to time
 		if(Game.IsGamePlaying && Game.GamePaused == false && Game.IsGameRunningDebug == false) {
 			GameManager.PlayTime += Time.deltaTime;
-			UI.playTime.SetText(Mathf.Round(GameManager.PlayTime * 100f) / 100f + "s");
+			UI.playTime.SetText((Mathf.Round(GameManager.PlayTime * 100f) / 100f + "s").Replace(",", "."));
 		}
 		if(Input.GetKeyDown(KeyCode.Escape) && Game.IsGamePlaying && (Time.timeScale == 1f || Time.timeScale == 0f)) {
 			if(Game.GamePaused) {
@@ -219,17 +219,6 @@ public class LevelManager : MonoBehaviour {
 		GameObject.Find("WallDown").transform.position = new Vector3(0, 0, boundary.z * -2 - 2);
 	}
 
-	/* HDRP Related: 
-	public void ApplyLightData(LevelData.LightData lightData, HDAdditionalLightData light) {
-		if(lightData != null && light != null) {
-			light.transform.position = lightData.pos;
-			light.transform.eulerAngles = lightData.rotation;
-			light.SetIntensity(lightData.intensity);
-			light.RequestShadowMapRendering();
-			light.UpdateAllLightValues();
-		}
-	}*/
-
 	// Game Logic
 	public void StartGame() => StartCoroutine(nameof(IStartGame));
 	IEnumerator IStartGame() {
@@ -244,8 +233,6 @@ public class LevelManager : MonoBehaviour {
 		
 		// Set Level Boundaries and Lights
 		SetLevelBoundaryWalls(GridBoundary);
-		// HDRP Relate: ApplyLightData(CurrentLevel.sunLight, sunLight);
-		// HDRP Relate: ApplyLightData(CurrentLevel.spotLight, spotLight);
 
 		// Set Camera to Overview
 		gameCamera.camSettings.orthograpicSize = GetOrthographicSize(CurrentLevel.gridSize);
@@ -254,6 +241,15 @@ public class LevelManager : MonoBehaviour {
 		// Generate AI Grid
 		Game.CreateAIGrid(CurrentLevel.gridSize, baseLayer, GameObject.FindGameObjectWithTag("Ground"));
 		InitializeTanks();
+		
+		if(ContainsBoss) {
+			BossUI.ResetBossBar();
+			foreach(BossAI boss in FindObjectsOfType<BossAI>()) {
+				BossUI.RegisterBoss(boss);
+				boss.BossSpawnAnimate();
+			}
+			BossUI.InitAnimateBossBar();
+		}
 
 		// Turn On/Off tank lights
 		yield return new WaitForSeconds(1f);
@@ -265,21 +261,18 @@ public class LevelManager : MonoBehaviour {
 			}
 		}
 
+
 		// Initialize Gameplay UI
 		yield return new WaitForSeconds(1.5f);
-		// HDRP Relate: DOTween.To(x => UI.OutlinePass.threshold = x, UI.OutlinePass.threshold, 100, 2).SetEase(Ease.InCubic);
-		foreach(BossAI boss in FindObjectsOfType<BossAI>()) {
-			BossUI.RegisterBoss(boss);
-		}
-		BossUI.InitAnimateBossBar();
-		UI.playerScore.SetText("0");
-		UI.playerLives.SetText("0");
-		UI.playTime.SetText("0");
+		UI.playerScore.SetText(GameManager.Score.ToString());
+		UI.playerLives.SetText(GameManager.PlayerLives.ToString());
+		UI.playTime.SetText(GameManager.PlayTime.ToString());
 		UI.levelStage.SetText($"Level {CurrentLevel.levelId}");
 		UI.ShowGameplayUI(1);
 
 		// Start Game
 		yield return new WaitForSeconds(1);
+		StreakBubble.Interrupt();
 		if(GridSize == GridSizes.Size_15x12) {
 			gameCamera.ChangeState(GameCamera.GameCamState.Focus);
 		} else {
@@ -300,8 +293,9 @@ public class LevelManager : MonoBehaviour {
 		Game.IsGamePlaying = true;
 	}
 
-	public void TankDestroyedCheck() {
-		AddScore();
+	public void TankDestroyedCheck(TankBase destroyedTank) {
+		AddScore(destroyedTank.tankAsset.scoreAmount);
+		StreakBubble.DisplayBubble(mainCamera.WorldToScreenPoint(destroyedTank.Pos), GameManager.Score);
 		if(tankAIs != null) {
 			foreach(TankAI t in tankAIs) {
 				if(t.HasBeenDestroyed == false) {
@@ -315,10 +309,12 @@ public class LevelManager : MonoBehaviour {
 		}
 	}
 
-	public void AddScore() {
+	public void AddScore(int amount) {
 		if(Game.IsGameRunningDebug == false) {
-			GameManager.Score++;
+			int prev = GameManager.Score;
+			GameManager.Score += amount * StreakBubble.Streak;
 			UI.playerScore.SetText(GameManager.Score.ToString());
+			UI.playerScore.CountUp(prev, GameManager.Score, 1);
 		} else {
 			UI?.playerScore.SetText(Random.Range(0, 9).ToString());
 		}
@@ -328,16 +324,17 @@ public class LevelManager : MonoBehaviour {
 		Game.IsGamePlaying = false;
 		player.DisableControls();
 		DisableAllAIs();
+		
 
 		if(Game.IsGameRunningDebug == false) {
-			if(Difficulty != SaveGame.Campaign.Difficulty.Easy && Mode != GameManager.GameMode.LevelOnly && GameManager.PlayerLives > 0) {
+			if(Mode != GameManager.GameMode.LevelOnly && Difficulty != SaveGame.Campaign.Difficulty.Easy && GameManager.PlayerLives > 0) {
 				GameManager.PlayerLives--;
 				UI.playerLives.SetText(GameManager.PlayerLives.ToString());
 				GameManager.UpdateCampaign();
 			}
 
 			// Respawn and Continue Level if lives are sufficient
-			if(GameManager.PlayerLives > 0 || GameManager.Difficulty == SaveGame.Campaign.Difficulty.Easy) {
+			if(GameManager.CurrentMode == GameManager.GameMode.LevelOnly || GameManager.PlayerLives > 0 || GameManager.Difficulty == SaveGame.Campaign.Difficulty.Easy) {
 				Respawn();
 			} else {
 				Instance.StartCoroutine(Instance.GameOver());
@@ -362,6 +359,7 @@ public class LevelManager : MonoBehaviour {
 			player.DisableCrossHair();
 			player.DisableControls();
 			DisableAllAIs();
+			StreakBubble.Interrupt();
 
 			// Decide next GameOver step when player lives reach ZERO
 			switch(GameManager.CurrentMode) {
@@ -404,7 +402,7 @@ public class LevelManager : MonoBehaviour {
 								yield return new WaitForSeconds(2);
 								GameManager.LoadLevel("Mission Failed");
 								break;
-							case SaveGame.Campaign.Difficulty.HardCore:
+							case SaveGame.Campaign.Difficulty.Original:
 								// HardCore deletes SaveSlot
 								Logger.Log(Channel.SaveGame, "Player failed, wiping SaveSlot: " + SaveGame.SaveInstance.currentSaveSlot);
 								SaveGame.SaveInstance.WipeSlot(SaveGame.SaveInstance.currentSaveSlot);
@@ -441,7 +439,7 @@ public class LevelManager : MonoBehaviour {
 			case SaveGame.Campaign.Difficulty.Hard:
 				addPercentage = 0.035f;
 				break;
-			case SaveGame.Campaign.Difficulty.HardCore:
+			case SaveGame.Campaign.Difficulty.Original:
 				break;
 		}
 		GameManager.LiveGainChance += addPercentage;

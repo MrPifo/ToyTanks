@@ -7,7 +7,7 @@ using System.Collections;
 using UnityEngine;
 using MoreMountains.Feedbacks;
 
-public class BossTank01 : BossAI, IHittable {
+public class BossTank01 : BossAI, IHittable, IDamageEffector {
 
 	public enum BossBehaviour { Waiting, Charge, Burst }
 	public enum AttackBehaviour { None, Bursting }
@@ -23,6 +23,7 @@ public class BossTank01 : BossAI, IHittable {
 	public byte chargeSpeed = 8;
 	public byte waitDuration = 3;
 	public byte burstAmount = 4;
+	public AudioSource chargeSound;
 	private LayerMask chargePathMask = LayerMaskExtension.Create(GameMasks.Ground, GameMasks.Destructable, GameMasks.LevelBoundary, GameMasks.Block);
 	[Header("References")]
 	[SerializeField] Line chargeLineL;
@@ -40,6 +41,8 @@ public class BossTank01 : BossAI, IHittable {
 	RaycastHit chargeHit;
 	byte rollerRotSpeed = 100;
 	byte normalMoveSpeed;
+	public bool fireFromPlayer => false;
+	public Vector3 damageOrigin => Pos;
 
 	protected override void Awake() {
 		base.Awake();
@@ -47,7 +50,7 @@ public class BossTank01 : BossAI, IHittable {
 		trackSpawnDistance = 0.35f;
 		rollerTrigger.PlayerHit.AddListener(() => {
 			if(!Player.IsInvincible) {
-				Player.Kill();
+				Player.TakeDamage(this, true);
 			}
 		});
 
@@ -58,7 +61,6 @@ public class BossTank01 : BossAI, IHittable {
 
 	public override void InitializeTank() {
 		base.InitializeTank();
-		BossUI.RegisterBoss(this);
 		chargeDirection = Vector3.zero;
 		moveSpeed = normalMoveSpeed;
 		rollerTrigger.TriggerHit.RemoveAllListeners();
@@ -103,18 +105,27 @@ public class BossTank01 : BossAI, IHittable {
 		moveSpeed = chargeSpeed;
 
 		HeadMode.Push(TankHeadMode.KeepRotation);
-		while(isAlignedToPlayer < 0.98f && IsPlayReady) {
+		float maxTime = 0;
+		while(isAlignedToPlayer < 0.98f && IsPlayReady && maxTime < 1f) {
 			RotateTank(chargeDirection);
 			isAlignedToPlayer = Vector3.Dot((Player.Pos - Pos).normalized, transform.forward);
 			yield return IPauseTank();
+			maxTime += GetTime;
 		}
 		yield return new WaitForSeconds(0.25f);
 
 		canMove = true;
 		rollerTrigger.TriggerHit.AddListener(action);
+		AudioPlayer.Play("SnowChargeStart", AudioType.SoundEffect, 0.8f, 1.2f, 0.6f);
+		chargeSound.Play();
 		disableAvoidanceSystem = true;
-
 		MoveMode.Push(MovementType.None);
+		chargeSound.volume = 0.3f * GraphicSettings.SoundEffectsVolume;
+		chargeSound.pitch = 2f;
+		bool allowPitchDown = false;
+		MuteTrackSound = true;
+		DOTween.To(() => chargeSound.pitch, x => chargeSound.pitch = x, 1f, 0.6f).OnComplete(() => allowPitchDown = true);
+
 		while(bossStates == BossBehaviour.Charge && IsPlayReady) {
 			yield return IPauseTank();
 			DisplayChargeLine();
@@ -122,14 +133,22 @@ public class BossTank01 : BossAI, IHittable {
 			chargeSmoke.Play();
 			Move(chargeDirection);
 			GameCamera.ShortShake2D(0.02f, 25, 25);
+			if(allowPitchDown && chargeSound.pitch > 0.5f) {
+				chargeSound.pitch -= Time.deltaTime / 7f;
+			}
 		}
+		
 
 		canMove = false;
 		moveSpeed = normalMoveSpeed;
 		disableAvoidanceSystem = false;
 		rollerTrigger.TriggerHit.RemoveListener(action);
+		AudioPlayer.Play("ChargeImpact", AudioType.SoundEffect, 1f, 1f);
 		HideChargeLine();
 		GoToNextState(waitDuration);
+		DOTween.To(() => chargeSound.volume, x => chargeSound.volume = x, 0, 0.3f).SetEase(Ease.OutBounce).OnComplete(() => {
+			chargeSound.Stop();
+		});
 
 		void action() {
 			HideChargeLine();
@@ -196,7 +215,7 @@ public class BossTank01 : BossAI, IHittable {
 		chargeDirection = (chargeHit.point - Pos).normalized;
 	}
 
-	public new void TakeDamage(IDamageEffector effector) {
+	public override void TakeDamage(IDamageEffector effector, bool instantKill = false) {
 		base.TakeDamage(effector);
 		BossUI.BossTakeDamage(this, 1);
 	}

@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <MixerProject xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PresetVersion="15">
   <MixerVersion>2021.1.2</MixerVersion>
-  <SaveTime>2021-11-13T19:34:12.4405359+01:00</SaveTime>
+  <SaveTime>2022-01-12T11:15:46.0209555+01:00</SaveTime>
   <AutoSave>false</AutoSave>
-  <ExportResolution>2</ExportResolution>
-  <ExportPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Cylinder</ExportPath>
+  <ExportResolution>3</ExportResolution>
+  <ExportPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Triangle</ExportPath>
   <ExportToSubfolder>true</ExportToSubfolder>
   <OpenFolderAfterExport>false</OpenFolderAfterExport>
   <PutResolutionInNames>false</PutResolutionInNames>
   <PresetName>Specular Maps</PresetName>
-  <FoundPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Light\TriangleUp\TriangleUp.xml</FoundPath>
-  <ProjectName>TriangleUp</ProjectName>
+  <FoundPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Light\Triangle\Triangle.xml</FoundPath>
+  <ProjectName>Triangle</ProjectName>
   <UseNoiseFrequencyMultiplier>false</UseNoiseFrequencyMultiplier>
   <LayerStack PresetVersion="1">
     <InitOnce>true</InitOnce>
@@ -43,7 +43,7 @@
               <Source>
                 <ContentID>Albedo</ContentID>
                 <AssetPackID>vdcjecc</AssetPackID>
-                <SubID>nV2vh3poqEOP0-FivcWxFA</SubID>
+                <SubID>zOZiO-LVBEmnukmDgqFkgw</SubID>
                 <OriginalName>vdcjecc_4k_albedo</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Board_vdcjecc\vdcjecc_4k_albedo.jpg</CurrentFilePath>
                 <AssetID>vdcjecc</AssetID>
@@ -90,7 +90,7 @@
               <Source>
                 <ContentID>Metalness</ContentID>
                 <AssetPackID>vdcjecc</AssetPackID>
-                <SubID>2o8Ubfe5Wky4zL_4CfJ4-A</SubID>
+                <SubID>N8uciPZSYUOU3uYzajIItg</SubID>
                 <AssetID>vdcjecc</AssetID>
                 <LoadedFromLibrary>true</LoadedFromLibrary>
                 <InvertedPostLoading>false</InvertedPostLoading>
@@ -134,7 +134,7 @@
               <Source>
                 <ContentID>Roughness</ContentID>
                 <AssetPackID>vdcjecc</AssetPackID>
-                <SubID>utAgSF_stUy3uFDInLfDnA</SubID>
+                <SubID>dvq7OG07gkGelh1K5YYDgA</SubID>
                 <OriginalName>vdcjecc_4k_roughness</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Board_vdcjecc\vdcjecc_4k_roughness.jpg</CurrentFilePath>
                 <AssetID>vdcjecc</AssetID>
@@ -181,7 +181,7 @@
               <Source>
                 <ContentID>AO</ContentID>
                 <AssetPackID>vdcjecc</AssetPackID>
-                <SubID>ga-J0jcRuEq7ypVU9uGOgw</SubID>
+                <SubID>JBV1HB6AGUS4a5LUOiVWVA</SubID>
                 <OriginalName>vdcjecc_4k_ao</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Board_vdcjecc\vdcjecc_4k_ao.jpg</CurrentFilePath>
                 <AssetID>vdcjecc</AssetID>
@@ -228,7 +228,7 @@
               <Source>
                 <ContentID>Displacement</ContentID>
                 <AssetPackID>vdcjecc</AssetPackID>
-                <SubID>jU0wXsKV_0-5ZkBPYdpxaQ</SubID>
+                <SubID>TpPWjta_5k2wRtoplZDw4g</SubID>
                 <OriginalName>vdcjecc_4k_displacement</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Board_vdcjecc\vdcjecc_4k_displacement.exr</CurrentFilePath>
                 <AssetID>vdcjecc</AssetID>
@@ -275,7 +275,7 @@
               <Source>
                 <ContentID>Normal</ContentID>
                 <AssetPackID>vdcjecc</AssetPackID>
-                <SubID>uFeJivRGrE23aXgYpxZWlg</SubID>
+                <SubID>KZawanWgW0StqTCnnxLeQQ</SubID>
                 <OriginalName>vdcjecc_4k_normal</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Board_vdcjecc\vdcjecc_4k_normal.jpg</CurrentFilePath>
                 <AssetID>vdcjecc</AssetID>
@@ -1027,13 +1027,13 @@
         <InfoDetail>PNG, 8-bit</InfoDetail>
       </ExportMapPreset>
     </ExportMapList>
-    <ExportResolutionIndex>2</ExportResolutionIndex>
+    <ExportResolutionIndex>3</ExportResolutionIndex>
     <TextureSetList>
       <TextureSetExportContext>
-        <Detail>4 Maps, 1024px</Detail>
+        <Detail>4 Maps, 2048px</Detail>
         <ID>0</ID>
         <Visible>true</Visible>
-        <ResolutionIndex>2</ResolutionIndex>
+        <ResolutionIndex>3</ResolutionIndex>
         <ActiveMaps>
           <ExportMapPreset>
             <MapName>Diffuse</MapName>
@@ -1330,7 +1330,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>true</Visible>
+            <Visible>false</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Specular</MapName>
@@ -1475,7 +1475,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>true</Visible>
+            <Visible>false</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Displacement</MapName>
@@ -1570,10 +1570,10 @@
     <ExportButtonLabel>EXPORT TO DISK</ExportButtonLabel>
     <ActiveTextureSetsForExport>
       <TextureSetExportContext>
-        <Detail>4 Maps, 1024px</Detail>
+        <Detail>4 Maps, 2048px</Detail>
         <ID>0</ID>
         <Visible>true</Visible>
-        <ResolutionIndex>2</ResolutionIndex>
+        <ResolutionIndex>3</ResolutionIndex>
         <ActiveMaps>
           <ExportMapPreset>
             <MapName>Diffuse</MapName>
@@ -1870,7 +1870,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>true</Visible>
+            <Visible>false</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Specular</MapName>
@@ -2015,7 +2015,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>true</Visible>
+            <Visible>false</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Displacement</MapName>
@@ -2231,10 +2231,10 @@
   <AdvanceExportConfigSettings>
     <TargetTextureSets>
       <TextureSetExportContext>
-        <Detail>4 Maps, 1024px</Detail>
+        <Detail>4 Maps, 2048px</Detail>
         <ID>0</ID>
         <Visible>true</Visible>
-        <ResolutionIndex>2</ResolutionIndex>
+        <ResolutionIndex>3</ResolutionIndex>
         <ActiveMaps>
           <ExportMapPreset>
             <MapName>Diffuse</MapName>
@@ -2531,7 +2531,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>true</Visible>
+            <Visible>false</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Specular</MapName>
@@ -2676,7 +2676,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>true</Visible>
+            <Visible>false</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Displacement</MapName>
@@ -2762,10 +2762,10 @@
       </TextureSetExportContext>
     </TargetTextureSets>
     <CurrentTarget>
-      <Detail>4 Maps, 1024px</Detail>
+      <Detail>4 Maps, 2048px</Detail>
       <ID>0</ID>
       <Visible>true</Visible>
-      <ResolutionIndex>2</ResolutionIndex>
+      <ResolutionIndex>3</ResolutionIndex>
       <ActiveMaps>
         <ExportMapPreset>
           <MapName>Diffuse</MapName>
@@ -3062,7 +3062,7 @@
           <Detail>PNG, 8-bit</Detail>
         </PerTextureSetMapVisibilityContext>
         <PerTextureSetMapVisibilityContext>
-          <Visible>true</Visible>
+          <Visible>false</Visible>
           <IsSingleTextureSet>true</IsSingleTextureSet>
           <Map>
             <MapName>Specular</MapName>
@@ -3207,7 +3207,7 @@
           <Detail>PNG, 8-bit</Detail>
         </PerTextureSetMapVisibilityContext>
         <PerTextureSetMapVisibilityContext>
-          <Visible>true</Visible>
+          <Visible>false</Visible>
           <IsSingleTextureSet>true</IsSingleTextureSet>
           <Map>
             <MapName>Displacement</MapName>
@@ -3317,7 +3317,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>AO</ContentID>
       <AssetPackID>vdcjecc</AssetPackID>
-      <SubID>ga-J0jcRuEq7ypVU9uGOgw</SubID>
+      <SubID>JBV1HB6AGUS4a5LUOiVWVA</SubID>
       <OriginalName>vdcjecc_4k_ao</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Board_vdcjecc\vdcjecc_4k_ao.jpg</CurrentFilePath>
       <AssetID>vdcjecc</AssetID>
@@ -3332,7 +3332,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Normal</ContentID>
       <AssetPackID>vdcjecc</AssetPackID>
-      <SubID>uFeJivRGrE23aXgYpxZWlg</SubID>
+      <SubID>KZawanWgW0StqTCnnxLeQQ</SubID>
       <OriginalName>vdcjecc_4k_normal</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Board_vdcjecc\vdcjecc_4k_normal.jpg</CurrentFilePath>
       <AssetID>vdcjecc</AssetID>
@@ -3347,7 +3347,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Displacement</ContentID>
       <AssetPackID>vdcjecc</AssetPackID>
-      <SubID>jU0wXsKV_0-5ZkBPYdpxaQ</SubID>
+      <SubID>TpPWjta_5k2wRtoplZDw4g</SubID>
       <OriginalName>vdcjecc_4k_displacement</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Board_vdcjecc\vdcjecc_4k_displacement.exr</CurrentFilePath>
       <AssetID>vdcjecc</AssetID>
@@ -3362,7 +3362,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Preview</ContentID>
       <AssetPackID>vdcjecc</AssetPackID>
-      <SubID>uMLlFdga2UOaBgRaHq2QiQ</SubID>
+      <SubID>7-X2L3-HlkeMSscnk79JUw</SubID>
       <OriginalName>Wood_Board_vdcjecc_surface_Preview</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Board_vdcjecc\Wood_Board_vdcjecc_surface_Preview.png</CurrentFilePath>
       <AssetID>vdcjecc</AssetID>
@@ -3377,7 +3377,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Roughness</ContentID>
       <AssetPackID>vdcjecc</AssetPackID>
-      <SubID>utAgSF_stUy3uFDInLfDnA</SubID>
+      <SubID>dvq7OG07gkGelh1K5YYDgA</SubID>
       <OriginalName>vdcjecc_4k_roughness</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Board_vdcjecc\vdcjecc_4k_roughness.jpg</CurrentFilePath>
       <AssetID>vdcjecc</AssetID>
@@ -3392,7 +3392,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Metalness</ContentID>
       <AssetPackID>vdcjecc</AssetPackID>
-      <SubID>2o8Ubfe5Wky4zL_4CfJ4-A</SubID>
+      <SubID>N8uciPZSYUOU3uYzajIItg</SubID>
       <AssetID>vdcjecc</AssetID>
       <LoadedFromLibrary>true</LoadedFromLibrary>
       <InvertedPostLoading>false</InvertedPostLoading>
@@ -3404,7 +3404,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Albedo</ContentID>
       <AssetPackID>vdcjecc</AssetPackID>
-      <SubID>nV2vh3poqEOP0-FivcWxFA</SubID>
+      <SubID>zOZiO-LVBEmnukmDgqFkgw</SubID>
       <OriginalName>vdcjecc_4k_albedo</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Board_vdcjecc\vdcjecc_4k_albedo.jpg</CurrentFilePath>
       <AssetID>vdcjecc</AssetID>
@@ -3627,13 +3627,13 @@
     </MaterialIDMap>
     <MeshUIContext>
       <CurrentSplitType>1</CurrentSplitType>
-      <lastLoadedPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Triangle\Triangle.fbx</lastLoadedPath>
+      <lastLoadedPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Light\Triangle\Custom Sources\Triangle.fbx</lastLoadedPath>
       <MeshSplitType>1</MeshSplitType>
       <LoadTextureMaps>false</LoadTextureMaps>
       <IsSingleTextureSet>true</IsSingleTextureSet>
       <ConstrainScaleAspect>true</ConstrainScaleAspect>
       <IsAssetMissing>false</IsAssetMissing>
-      <CustomMeshPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Light\TriangleUp\Custom Sources\Triangle.fbx</CustomMeshPath>
+      <CustomMeshPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Light\Triangle\Custom Sources\Triangle.fbx</CustomMeshPath>
       <ScaleFactor>7.626291</ScaleFactor>
       <CustomMeshScaleX>1.96688</CustomMeshScaleX>
       <CustomMeshScaleY>1.99864316</CustomMeshScaleY>

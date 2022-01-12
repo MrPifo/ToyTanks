@@ -5,6 +5,7 @@ using DG.Tweening;
 using ToyTanks.LevelEditor;
 using Rewired.ComponentControls;
 using UnityEngine.EventSystems;
+using SimpleMan.Extensions;
 
 public class PlayerInput : TankBase, IHittable, IResettable {
 
@@ -42,17 +43,25 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 	public float crossHairRotSpeed;
 	public Vector2 mouseLocation;
 	Vector3 oldAimVector;
+	private bool isFrosted;
+	private Color frostColor;
+	public Canvas ScreenEffectCamera;
+	public UnityEngine.UI.Image FrostScreen;
 
 	protected override void Awake() {
 		base.Awake();
-		player = ReInput.players.GetPlayer(0);
 		mobileAimLine.gameObject.SetActive(false);
+		frostColor = FrostScreen.color;
+		FrostScreen.Hide();
 	}
 
 	public override void InitializeTank() {
 		base.InitializeTank();
 		playerControlScheme = Game.PlayerControlScheme;
 		makeInvincible = Game.isPlayerGodMode;
+		player = ReInput.players.GetPlayer(0);
+		ScreenEffectCamera.worldCamera = GameCamera.Instance.Camera;
+		ScreenEffectCamera.planeDistance = 0.5f;
 		SetupControls();
 		SetupCross();
 	}
@@ -129,7 +138,7 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 			maxDir = 1;
 		}
 		dirFactor *= maxDir;
-		var movePos = dirFactor * moveSpeed * Time.fixedDeltaTime * rig.transform.forward;
+		var movePos = dirFactor * moveSpeed * Time.fixedDeltaTime * rig.transform.forward * (isFrosted ? 0.5f : 1f);
 		if(!isShootStunned && canMove) {
 			rig.MovePosition(rig.position + movePos);
 		}
@@ -248,25 +257,25 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 		MoveHead(Crosshair.transform.position, true);
 	}
 
-	public override void Kill() {
-		base.Kill();
-		if(HasBeenDestroyed) {
-			DisableControls();
-			GameFeedbacks.PlayerDeath.PlayFeedbacks();
-			GameCamera.ShortShake2D(0.5f, 40, 40);
-		}
-	}
+	public override void TakeDamage(IDamageEffector effector, bool instantKill = false) {
+		base.TakeDamage(effector, instantKill);
 
-	public new void TakeDamage(IDamageEffector effector) {
-		base.TakeDamage(effector);
-
-		if(HasBeenDestroyed) {
-			DisableControls();
-			GameFeedbacks.PlayerDeath.PlayFeedbacks();
-			GameCamera.ShortShake2D(0.5f, 40, 40);
-		} else {
-			GameFeedbacks.PlayerHit.PlayFeedbacks();
-			GameCamera.ShortShake2D(0.5f, 5, 5);
+		if(IsInvincible == false) {
+			StreakBubble.Interrupt();
+			// Player can only end game once and when it is in control
+			if(HasBeenDestroyed && disableControl == false) {
+				DisableControls();
+				try {
+					GameFeedbacks.PlayerDeath.PlayFeedbacks();
+				} catch {
+					Logger.Log(Channel.Gameplay, "An error occured while playing PlayerDeath Feedbacks");
+				}
+				GameCamera.ShortShake2D(0.5f, 40, 40);
+				LevelManager.Instance?.PlayerDead();
+			} else {
+				GameFeedbacks.PlayerHit.PlayFeedbacks();
+				GameCamera.ShortShake2D(0.5f, 5, 5);
+			}
 		}
 	}
 
@@ -280,13 +289,11 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 
 	public void DisableControls() {
 		disableControl = true;
-		IsInvincible = true;
 		PlayerInputManager.HideControls();
 	}
 
 	public void EnableControls() {
 		disableControl = false;
-		IsInvincible = false;
 		PlayerInputManager.ShowControls();
 	}
 
@@ -295,5 +302,20 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 
 	public override void ResetState() {
 		base.ResetState();
+	}
+
+	//Screen Effects
+	public void FrostEffect(float duration) {
+		if(isFrosted == false) {
+			isFrosted = true;
+			FrostScreen.Show();
+			DOTween.To(() => FrostScreen.material.GetFloat("_AlphaClip"), x => FrostScreen.material.SetFloat("_AlphaClip", x), 0, 0.4f);
+			this.Delay(duration, () => {
+				DOTween.To(() => FrostScreen.material.GetFloat("_AlphaClip"), x => FrostScreen.material.SetFloat("_AlphaClip", x), 1, 0.4f).OnComplete(() => {
+					isFrosted = false;
+					FrostScreen.Hide();
+				});
+			});
+		}
 	}
 }

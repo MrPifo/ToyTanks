@@ -76,7 +76,7 @@ public class LoadingScreen : MonoBehaviour {
 			this.lives.text = (lives - 1) + "";
 			this.Delay(2, () => {
 				this.lives.text = (lives) + "";
-				this.lives.Stretch(1.2f, 0.5f);
+				this.lives.Stretch(1f, 1.2f, 0.5f);
 			});
 		}
 	}

@@ -162,7 +162,7 @@ public static class GameCommands {
 		var player = Object.FindObjectOfType<PlayerInput>();
 		try {
 			if(player != null) {
-				player.Kill();
+				player.TakeDamage(null, true);
 			} else {
 				throw new System.Exception();
 			}
@@ -230,7 +230,7 @@ public static class GameCommands {
 		var player = Object.FindObjectOfType<PlayerInput>();
 		try {
 			if(player != null) {
-				player.Revive();
+				player.ResetState();
 				Object.FindObjectOfType<PlayerInput>().InitializeTank();
 			} else {
 				throw new System.Exception();

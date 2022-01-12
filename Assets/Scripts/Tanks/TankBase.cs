@@ -9,6 +9,7 @@ using EpPathFinding.cs;
 // HDRP Related: using UnityEngine.Rendering.HighDefinition;
 using Sperlich.PrefabManager;
 using UnityEngine.Rendering.Universal;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -35,6 +36,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public bool disable2DirectionMovement;
 	public bool disableTracks;
 	public bool makeInvincible;     // Ivincibility for Debugging
+	public bool isUsingWheels;
 	[SerializeField]
 	protected TimeMode APITimeMode = TimeMode.FixedUpdate;
 	protected float GetTime {
@@ -54,6 +56,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	protected bool isShootStunned;
 	bool isLightTurning;
 	protected bool canMove;
+	protected string trackSound = "TankDrive";
 	float angleDiff;
 	float frontLightIntensity;
 	float backLightIntensity;
@@ -95,7 +98,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public Sperlich.Types.Int3 PlacedIndex { get; set; }
 	public Sperlich.Types.Int3[] OccupiedIndexes { get; set; }
 	public TankTypes TankType => tankAsset.tankType;
-	private TankReferences References { get; set; }
+	protected TankReferences References { get; set; }
 	protected bool IsPaused => Game.GamePaused || Game.IsTerminal;
 	/// <summary>
 	/// Makes moving in opposite direction without rotating possible
@@ -136,6 +139,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public GameObject tankTrack => References.tankTrack;
 	public ForceShield shield => References.shield;
 	public List<Transform> destroyTransformPieces => References.destroyTransformPieces;
+	public List<Transform> Wheels => References.tankWheels;
 	public ParticleSystem muzzleFlash => References.muzzleFlash;
 	public ParticleSystem sparkDestroyEffect => References.sparkDestroyEffect;
 	public ParticleSystem smokeDestroyEffect => References.smokeDestroyEffect;
@@ -195,6 +199,15 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public void Move(Vector3 moveDir) => Move(new Vector2(moveDir.x, moveDir.z));
 	public virtual void Move(Vector2 inputDir) { }
 
+	/// <summary>
+	/// Call this to make the wheels rotate to the corresponding movement
+	/// </summary>
+	public void UpdateWheelRotation() {
+		foreach(Transform t in Wheels) {
+			t.Rotate(-Vector3.right, 50 * distanceSinceLastFrame);
+		}
+	}
+
 	public void RotateTank(Vector3 moveDir) {
 		if(moveDir == Vector3.zero) return;
 		Quaternion rot = Quaternion.LookRotation(moveDir, Vector3.up);
@@ -240,7 +253,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	Vector3 SpawnTrack() {
 		//groundPainter.PaintTrack(new Vector2(Pos.x, Pos.z), transform.forward);
 		if(MuteTrackSound == false) {
-			AudioPlayer.Play("TankDrive", AudioType.SoundEffect, 0.95f, 1.05f, 0.4f);
+			AudioPlayer.Play(trackSound, AudioType.SoundEffect, 0.95f, 1.05f, 0.4f);
 		}
 		//return rig.position;
 		Transform track = PrefabManager.Spawn(PrefabTypes.TankTrack).transform;
@@ -265,7 +278,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 
 			Bullet bullet;
 			muzzleFlash.Play();
-			tankHead.DOScale(tankHead.localScale + Vector3.one / 7f, 0.2f).SetEase(new AnimationCurve(new Keyframe[] { new Keyframe(0, 0, 0.5f, 0.5f), new Keyframe(0.5f, 1, 0.5f, 0.5f), new Keyframe(1, 0, 0.5f, 0.5f) }));
+			tankHead.DOScale(tankHead.localScale + Vector3.one / 7f, Mathf.Min(reloadDuration, 0.2f)).SetEase(new AnimationCurve(new Keyframe[] { new Keyframe(0, 0, 0.5f, 0.5f), new Keyframe(0.5f, 1, 0.5f, 0.5f), new Keyframe(1, 0, 0.5f, 0.5f) }));
 			if(this is PlayerInput) {
 				bullet = PrefabManager.Spawn<Bullet>(BulletType, null, bulletOutput.position).SetupBullet(bulletOutput.forward, bulletOutput.position, true);
 			} else {
@@ -285,7 +298,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 		return null;
 	}
 
-	public virtual void TakeDamage(IDamageEffector effector) {
+	public virtual void TakeDamage(IDamageEffector effector, bool instantKill = false) {
 		if(IsInvincible == false && HasBeenDestroyed == false && Game.IsGameRunning) {
 			if(this is TankAI && effector.fireFromPlayer == false && IsFriendlyFireImmune) {
 				ShieldEffect(effector.damageOrigin);
@@ -301,7 +314,8 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 						}
 					}
 				}
-				if(healthPoints == 0) {
+				if(healthPoints == 0 || instantKill) {
+					healthPoints = 0;
 					GotDestroyed();
 				}
 
@@ -316,11 +330,6 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 		}
 	}
 
-	public virtual void Kill() {
-		if(HasBeenDestroyed == false) {
-			GotDestroyed();
-		}
-	}
 	protected virtual void GotDestroyed() {
 		HasBeenDestroyed = true;
 		foreach(Transform t in destroyTransformPieces) {
@@ -334,14 +343,6 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 		blobShadow.SetActive(false);
 		PlayDestroyExplosion();
 		TurnLightsOff();
-
-		if(FindObjectOfType<LevelManager>()) {
-			if(this is PlayerInput) {
-				LevelManager.Instance.PlayerDead();
-			} else {
-				LevelManager.Instance.TankDestroyedCheck();
-			}
-		}
 	}
 
 	public void PlayDestroyExplosion() {
@@ -370,37 +371,6 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 		shield.gameObject.SetActive(true);
 		shield.AddHit(impactPos);
 		this.Delay(1, () => shield.gameObject.SetActive(false));
-	}
-
-	[System.Obsolete]
-	public virtual void Revive() {
-		ResetState();
-		return;
-		isShootStunned = false;
-		isReloading = false;
-		HasBeenDestroyed = false;
-		canMove = true;
-		healthPoints = MaxHealthPoints;
-		blobShadow.SetActive(true);
-		transform.position = spawnPos;
-		transform.rotation = spawnRot;
-
-		int c = 0;
-		float respawnDuration = 1.5f;
-		DisableCollisions();
-		TurnLightsOff();
-		foreach(Transform t in destroyTransformPieces) {
-			t.DOLocalMove(destroyRestPoses[c], respawnDuration).SetEase(Ease.OutCubic);
-			t.DOLocalRotate(destroyRestRots[c].eulerAngles, respawnDuration).SetEase(Ease.OutCubic);
-			t.gameObject.layer = initLayer;
-			t.parent = transform;
-			Destroy(t.gameObject.GetComponent<Rigidbody>());
-			c++;
-		}
-		this.Delay(respawnDuration, () => EnableCollisions());
-		
-		damageSmokeBody.Stop();
-		damageSmokeHead.Stop();
 	}
 
 	public void TurnLightsOn() {
@@ -489,11 +459,16 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	}
 
 	public virtual void ResetState() {
+		Debug.Log("<color=blue>RESET: " + name + "</color>");
 		TankBase newTank = Instantiate(tankAsset.prefab).GetComponent<TankBase>();
 		newTank.transform.position = spawnPos;
 		newTank.transform.rotation = spawnRot;
 		newTank.OccupiedIndexes = OccupiedIndexes;
 		newTank.PlacedIndex = PlacedIndex;
+		newTank.transform.parent = transform.parent;
+		if(this is not BossAI) {
+			newTank.AnimateAssembly();
+		}
 
 		if(newTank is PlayerInput) {
 			PlayerInput input = (PlayerInput)newTank;
@@ -505,6 +480,24 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	public void CleanUpDestroyedPieces() {
 		foreach(Transform piece in destroyTransformPieces) {
 			Destroy(piece.gameObject);
+		}
+	}
+
+	public void AnimateAssembly() {
+		canMove = false;
+		var parts = destroyTransformPieces.OrderBy(t => t.position.y).ToList();
+		var pos = parts.Select(t => t.localPosition).ToList();
+		for(int i = 0; i < parts.Count; i++) {
+			parts[i].transform.localPosition += new Vector3(0, (i + 1) * 2, 0);
+		}
+		float timeDelay = Random.Range(1, 8);
+		for(int i = 0; i < parts.Count; i++) {
+			int p = i;
+			this.Delay(0.1f * (Time.deltaTime + i) * timeDelay, () => {
+				parts[p].DOLocalMove(pos[p], 0.45f).SetEase(Ease.OutBounce);
+				AudioPlayer.Play("TankAssemblyClick", AudioType.SoundEffect, 1f, 1f);
+				this.Delay(1f + timeDelay, () => canMove = true);
+			});
 		}
 	}
 
@@ -521,7 +514,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 #if UNITY_EDITOR
 	public void DebugDestroy() {
 		if(HasBeenDestroyed) {
-			Revive();
+			ResetState();
 		}
 		LevelManager.Instance.UI.playerLives.SetText(Random.Range(0, 5).ToString());
 		this.Delay(0.1f, () => GotDestroyed());
@@ -543,7 +536,7 @@ public class TankBaseDebugEditor : Editor {
 		}
 		if(GUILayout.Button("Revive")) {
 			builder.disableControl = false;
-			builder.Revive();
+			builder.ResetState();
 		}
 	}
 }

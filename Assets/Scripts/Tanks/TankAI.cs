@@ -40,11 +40,14 @@ public abstract class TankAI : TankBase, IHittable {
 	}
 	public enum TankHeadMode { None, RotateWithBody, KeepRotation, AimAtPlayer, AimAtPlayerOnSight }
 
+	[Range(1, 3)]
+	public float pathReachTreshold = 1f;
 	public byte playerDetectRadius = 25;
 	public byte playerLoseRadius = 25;
 	public byte playerTooClose = 5;
 	public float avoidanceRadius = 1f;
 	public float avoidanceDistance = 3f;
+	public float avoidanceStrength = 1f;
 	public bool showDebug;
 	public bool disableAvoidanceSystem;
 	public bool disableSmartMove;
@@ -52,6 +55,8 @@ public abstract class TankAI : TankBase, IHittable {
 	public FSM<MovementType> MoveMode = new FSM<MovementType>();
 	public FSM<TankHeadMode> HeadMode = new FSM<TankHeadMode>();
 	public float maxPathfindingRefreshSpeed = 0.2f;
+	[Range(0.001f, 0.1f)]
+	public float chanceToShootPerFrame;
 	float pathfindingRefreshTime;
 	protected float distToPlayer;
 	protected float pathNodeReachTreshold = 0.5f;
@@ -73,7 +78,10 @@ public abstract class TankAI : TankBase, IHittable {
 	protected bool IsPlayerInDetectRadius => distToPlayer < playerDetectRadius;
 	protected bool IsPlayerOutsideLoseRadius => distToPlayer > playerLoseRadius;
 	protected bool IsPlayerInShootRadius => distToPlayer < playerDetectRadius;
-	protected bool HasPathRemaining => currentPath != null && currentPath.Length > 1 ? true : false;
+	/// <summary>
+	/// Returns true if path contains nodes or has reached the last point of the path.
+	/// </summary>
+	protected bool HasPathRemaining => currentPath != null && currentPath.Length == 0 || HasReachedDestination == false ? true : false;
 	protected bool IsPlayerTooNearby => distToPlayer < playerTooClose;
 	protected bool IsAimingAtPlayer => IsFacingTarget(Player.transform);
 	protected bool HasSightContactToPlayer => HasSightContact(Player);
@@ -114,6 +122,9 @@ public abstract class TankAI : TankBase, IHittable {
 				Draw.Sphere(DirectionLeader.position, 0.5f, Color.green);
 				Draw.Line(rig.position, DirectionLeader.position, 3, Color.blue);
 			}
+			if(isUsingWheels) {
+				UpdateWheelRotation();
+			}
 		}
 	}
 
@@ -136,11 +147,11 @@ public abstract class TankAI : TankBase, IHittable {
 					break;
 				case MovementType.MovePath:
 					MoveAlongPath();
-					ConsumePath();
+					ConsumePath(pathReachTreshold);
 					break;
 				case MovementType.MoveSmart:
 					MoveSmart();
-					ConsumePath();
+					ConsumePath(pathReachTreshold);
 					break;
 				case MovementType.Chase:
 					ChasePlayer();
@@ -176,10 +187,6 @@ public abstract class TankAI : TankBase, IHittable {
 			}
 			Draw.Text(Pos + Vector3.up * 2, stateMachine.Text + " : " + healthPoints, 8, Color.black);
 		}
-	}
-
-	public override void Revive() {
-		base.Revive();
 	}
 
 	public override void InitializeTank() {
@@ -229,12 +236,13 @@ public abstract class TankAI : TankBase, IHittable {
 		IsAIEnabled = true;
 	}
 
-	public override void TakeDamage(IDamageEffector effector) {
+	public override void TakeDamage(IDamageEffector effector, bool instantKill = false) {
 		base.TakeDamage(effector);
 		if(!IsInvincible && healthPoints <= 0) {
 			FreeOccupiedGridPos();
 			healthBar.gameObject.SetActive(false);
 			enabled = false;
+			LevelManager.Instance?.TankDestroyedCheck(this);
 		} else if(IsFriendlyFireImmune == false || effector.fireFromPlayer) {
 			healthBar.transform.parent.gameObject.SetActive(true);
 		}
@@ -244,7 +252,6 @@ public abstract class TankAI : TankBase, IHittable {
 	/// System for preventing AI from being stuck or better movement.
 	/// </summary>
 	public virtual void AvoidanceSystem() {
-		evadeDir = Vector3.zero;
 		if(disableAvoidanceSystem == false && IsPlayReady && IsStatic == false) {
 			if(showDebug) {
 				Draw.Line(rig.position, rig.position + transform.forward * currentDirFactor * avoidanceDistance, 2, Color.red);
@@ -252,14 +259,19 @@ public abstract class TankAI : TankBase, IHittable {
 			if(Physics.SphereCast(new Ray(rig.position, transform.forward * currentDirFactor), avoidanceRadius, out RaycastHit hit, avoidanceDistance, AvoidcanceLayers)) {
 				if(showDebug) {
 					Draw.Sphere(hit.point, avoidanceRadius, Color.yellow, true);
+					for(float i = 0; i < 25f; i++) {
+						Draw.Sphere(Vector3.Lerp(Pos, hit.point, i.Remap(0f, 25f, 0f, 1f)), avoidanceRadius, Color.gray, true);
+					}
 				}
-				evadeDir = (rig.position - hit.point).normalized;
+				evadeDir = hit.normal;
 				if(Mathf.Abs(evadeDir.x) >= 0.15) {
 					evadeDir.x = Mathf.Sign(evadeDir.x);
 				} else {
 					evadeDir.x = 0;
 				}
 				evadeDir = new Vector3(evadeDir.x, 0, 0);
+			} else {
+				evadeDir = Vector3.Lerp(evadeDir, Vector3.zero, Time.deltaTime * 2);
 			}
 		}
 	}
@@ -273,7 +285,7 @@ public abstract class TankAI : TankBase, IHittable {
 	public override void Move(Vector2 inputDir) {
 		DirectionLeader.position = Vector3.Lerp(DirectionLeader.position, rig.position + new Vector3(inputDir.x, 0, inputDir.y) * 2, GetTime * turnSpeed);
 		if(evadeDir != Vector3.zero) {
-			DirectionLeader.position = Vector3.Lerp(DirectionLeader.position, DirectionLeader.position + evadeDir, GetTime * turnSpeed);
+			DirectionLeader.position = Vector3.Lerp(DirectionLeader.position, DirectionLeader.position + evadeDir * avoidanceStrength, GetTime);
 		}
 		moveDir = (DirectionLeader.position - rig.position).normalized;
 
@@ -479,11 +491,17 @@ public abstract class TankAI : TankBase, IHittable {
 		}
 		return true;
 	}
+	protected bool RandomShootChance() {
+		if(Random(0f, 1f) < chanceToShootPerFrame) {
+			return true;
+		}
+		return false;
+	}
 	/// <summary>
 	/// Needs to be called in Update as long as the tank is moving along a path.
 	/// This function reduces and updates the current active path without calculating a new path to save performance.
 	/// </summary>
-	protected void ConsumePath(float reachTreshold = 1) {
+	private void ConsumePath(float reachTreshold = 1) {
 		// Is required if path is not refreshed every frame
 		if(PathNodeCount > 0) {
 			if(Vector3.Distance(Pos, currentPath[0]) < reachTreshold) {

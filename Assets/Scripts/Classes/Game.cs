@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using CommandTerminal;
 using Sperlich.PrefabManager;
+using UnityEngine.SceneManagement;
 
 // This class holds all the Games information
 // - Existing Worlds
@@ -209,6 +210,7 @@ public static class Game {
 			UnityEngine.Object.Destroy(existingGrid.gameObject);
 		}
 		ActiveGrid = new GameObject().AddComponent<AIGrid>();
+		SceneManager.MoveGameObjectToScene(ActiveGrid.gameObject, SceneManager.GetSceneByName(PrefabManager.DefaultSceneSpawn));
 		ActiveGrid.GenerateGrid(size, mask);
 		ActiveGrid.name = "AIGrid";
 	}

@@ -113,7 +113,6 @@ namespace Sperlich.Debug.Draw {
 						Shapes.Draw.BlendMode = ShapesBlendMode.Opaque;
 					}
 
-
 					Shapes.Draw.Cuboid(c.pos, c.normal, c.size, c.color);
 				}
 				while(Lines.Count > 0) {

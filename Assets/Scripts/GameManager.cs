@@ -26,8 +26,8 @@ public class GameManager : Singleton<GameManager> {
 		get => CurrentCampaign is null ? _playerLives : CurrentCampaign.lives;
 		set { if(CurrentCampaign is null) _playerLives = value; else CurrentCampaign.lives = value; }
 	}
-	private static short _score;
-	public static short Score {
+	private static int _score;
+	public static int Score {
 		get => CurrentCampaign is null ? _score : CurrentCampaign.score;
 		set { if(CurrentCampaign is null) _score = value; else CurrentCampaign.score = value; }
 	}
@@ -208,7 +208,7 @@ public class GameManager : Singleton<GameManager> {
 		#region Initializing and Building Level
 		PrefabManager.ResetPrefabManager();
 		yield return new WaitForSeconds(0.15f);
-		PrefabManager.Initialize();
+		PrefabManager.Initialize("Level");
 		yield return new WaitForSeconds(0.15f);
 		levelManager.Initialize();
 		yield return new WaitForSeconds(0.15f);
@@ -217,11 +217,8 @@ public class GameManager : Singleton<GameManager> {
 
 		transitionScreen.FadeOutBanner(bannerFadeDuration);
 		yield return new WaitUntil(() => transitionScreen.onBannerFadeOutFinished);
-
-		transitionScreen.FadeOut(loadingScreenFadeDuration);
-		yield return new WaitUntil(() => transitionScreen.onFadeOutFinished);
-		AsyncOperation loadingScreenUnload = SceneManager.UnloadSceneAsync("LoadingScreen");
-		yield return new WaitUntil(() => loadingScreenUnload.isDone);
+		PrefabManager.DefaultSceneSpawn = "Level";
+		
 		switch(CurrentMode) {
 			case GameMode.Campaign:
 				levelManager.StartGame();
@@ -234,6 +231,10 @@ public class GameManager : Singleton<GameManager> {
 				LevelManager.Editor.LoadUserLevel(CurrentLevel);
 				break;
 		}
+		transitionScreen.FadeOut(loadingScreenFadeDuration);
+		yield return new WaitUntil(() => transitionScreen.onFadeOutFinished);
+		AsyncOperation loadingScreenUnload = SceneManager.UnloadSceneAsync("LoadingScreen");
+		yield return new WaitUntil(() => loadingScreenUnload.isDone);
 	}
 	IEnumerator TransitionToMenu(string message) {
 		Scene activeScene = SceneManager.GetActiveScene();
@@ -298,7 +299,7 @@ public class GameManager : Singleton<GameManager> {
 		levelManager.ClearMap();
 		PrefabManager.ResetPrefabManager();
 		yield return new WaitForSeconds(0.15f);
-		PrefabManager.Initialize();
+		PrefabManager.Initialize("Level");
 		yield return new WaitForSeconds(0.15f);
 		levelManager.Initialize();
 		yield return new WaitForSeconds(0.15f);
@@ -312,6 +313,7 @@ public class GameManager : Singleton<GameManager> {
 		yield return new WaitUntil(() => transitionScreen.onFadeOutFinished);
 		AsyncOperation loadingScreenUnload = SceneManager.UnloadSceneAsync("LoadingScreen");
 		yield return new WaitUntil(() => loadingScreenUnload.isDone);
+		
 		switch(CurrentMode) {
 			case GameMode.Campaign:
 				levelManager.StartGame();

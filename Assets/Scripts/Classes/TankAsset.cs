@@ -10,6 +10,8 @@ namespace ToyTanks.LevelEditor {
 		public GameObject prefab;
 		public Sprite preview;
 		public short health;
+		[Min(1)]
+		public int scoreAmount = 1;
 		public bool isStatic;
 		public bool isBoss;
 		public bool hasFriendlyFireShield;

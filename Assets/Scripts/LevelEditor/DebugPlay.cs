@@ -1,4 +1,5 @@
 using CommandTerminal;
+using Sperlich.PrefabManager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,7 @@ public class DebugPlay : MonoBehaviour {
 
 	private void Start() {
 		Game.Initialize();
+		PrefabManager.Initialize("Debug");
 		GameManager.CurrentLevel = new LevelData() { gridSize = GridSizes.Size_15x12, isNight = false };
 		Game.showTankDebugs = showDebug;
 		Game.IsGameRunning = true;

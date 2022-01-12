@@ -53,7 +53,7 @@ public class LevelUI : MonoBehaviour {
 
 		this.Delay(speed + 1, () => {
 			bannerText.transform.DOMoveX(bannerPos.x + 2000, speed / 2f);
-			bannerText.Stretch(1.25f, 0.25f);
+			bannerText.Stretch(1f, 1.25f, 0.25f);
 			counterBanner.transform.DOScaleY(0, 0.3f).OnComplete(() => {
 				counterBanner.gameObject.SetActive(false);
 				bannerText.transform.position = bannerPos;

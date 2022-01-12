@@ -9,6 +9,7 @@ public class YellowTank : TankAI {
 
 	public int burstAmount = 3;
 	public float moveDuration = 2;
+	public float burstCooldown;
 
 	private new void LateUpdate() {
 		base.LateUpdate();
@@ -22,16 +23,15 @@ public class YellowTank : TankAI {
 
 	protected override IEnumerator IAttack() {
 		int shots = 0;
-		int amount = Random(2, burstAmount);
 		if(HasSightContactToPlayer) {
-			while(shots < amount && HasSightContactToPlayer && IsPlayReady) {
+			while(shots < burstAmount && HasSightContactToPlayer && IsPlayReady) {
 				while(IsAimingAtPlayer == false && IsPlayReady) {
 					AimAtPlayer();
 					yield return null;
 				}
 				ShootBullet();
 				shots++;
-				yield return new WaitForSeconds(reloadDuration);
+				yield return new WaitForSeconds(reloadDuration + randomReloadDuration);
 				yield return IPauseTank();
 			}
 
@@ -40,14 +40,18 @@ public class YellowTank : TankAI {
 	}
 
 	protected override IEnumerator IMove() {
+		float time = 0;
 		if(RandomPath(Pos, playerDetectRadius, playerDetectRadius * 0.75f)) {
 			MoveMode.Push(MovementType.MoveSmart);
 			HeadMode.Push(TankHeadMode.AimAtPlayerOnSight);
-			while(IsPlayReady) {
-				if(HasReachedDestination) {
-					break;
+			while(IsPlayReady && HasReachedDestination == false) {
+				if(time > burstCooldown) {
+					if(HasSightContactToPlayer) {
+						break;
+					}
 				}
 				yield return IPauseTank();
+				time += GetTime;
 			}
 		}
 		yield return IPauseTank();

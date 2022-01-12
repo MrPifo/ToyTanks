@@ -64,10 +64,6 @@ public class MortarTank : TankAI, IHittable, IDamageEffector {
 		base.GotDestroyed();
 	}
 
-	public override void Revive() {
-		base.Revive();
-	}
-
 	protected override void DrawDebug() {
 		base.DrawDebug();
 		if(showDebug) {

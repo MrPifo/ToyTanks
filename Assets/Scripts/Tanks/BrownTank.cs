@@ -12,22 +12,16 @@ public class BrownTank : TankAI {
 	}
 
 	protected override IEnumerator IAttack() {
-		bool bulletShot = false;
 		while(IsPlayReady) {
 			if(HasSightContactToPlayer) {
 				AimAtPlayer();
-				if(CanShoot) {
-					if(IsFacingTarget(Player.transform) && bulletShot == false) {
-						bulletShot = true;
-						this.Delay(Random(reloadDuration, reloadDuration * 2), () => {
-							ShootBullet();
-							bulletShot = false;
-						});
-					}
+				if(CanShoot && IsFacingTarget(Player.transform) && RandomShootChance()) {
+					ShootBullet();
+					break;
 				}
 			}
-			yield return null;
-			while(IsPaused) yield return null;   // Pause AI
+			yield return IPauseTank();
 		}
+		GoToNextState(TankState.Attack);
 	}
 }

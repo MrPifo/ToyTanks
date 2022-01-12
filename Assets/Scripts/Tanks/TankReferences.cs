@@ -4,6 +4,7 @@ using Sperlich.PrefabManager;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 
 public class TankReferences : MonoBehaviour {
 
@@ -21,6 +22,7 @@ public class TankReferences : MonoBehaviour {
 	public Transform directionLeader;
 	public DecalProjector fakeShadow;
 	public List<Transform> destroyTransformPieces;
+	public List<Transform> tankWheels;
 	[Header("Explosion Effects")]
 	public ParticleSystem muzzleFlash;
 	public ParticleSystem sparkDestroyEffect;

@@ -9,6 +9,9 @@ namespace Sperlich.PrefabManager {
 		ExplosionCrater,
 		GraphicSettings,
 		InputManager,
-		GameFeedbacks
+		GameFeedbacks,
+		BossBar,
+		StreakBubble,
+		IceSpike
 	}
 }

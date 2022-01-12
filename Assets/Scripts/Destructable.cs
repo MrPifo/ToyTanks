@@ -27,7 +27,7 @@ public class Destructable : GameEntity, IHittable, IResettable {
 		}
 	}
 
-	public void TakeDamage(IDamageEffector effector) {
+	public void TakeDamage(IDamageEffector effector, bool instantKill = false) {
 		GetComponent<Collider>().enabled = false;
 		AudioPlayer.Play("BoxDestructable", AudioType.SoundEffect, 0.8f, 1f, 0.3f);
 		AdjustGridSpace(false);

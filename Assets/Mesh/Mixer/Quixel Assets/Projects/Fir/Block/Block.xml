@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <MixerProject xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PresetVersion="15">
   <MixerVersion>2021.1.2</MixerVersion>
-  <SaveTime>2021-12-24T23:30:26.1622295+01:00</SaveTime>
+  <SaveTime>2022-01-12T10:57:36.8819977+01:00</SaveTime>
   <AutoSave>false</AutoSave>
   <ExportResolution>2</ExportResolution>
   <ExportPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Block</ExportPath>
@@ -18,6 +18,425 @@
       <LayerSetComponent>
         <InitOnce>true</InitOnce>
         <Children>
+          <LayerPreset>
+            <InitOnce>true</InitOnce>
+            <Children />
+            <Level>1</Level>
+            <Depth>0</Depth>
+            <Name>Wooden Fiberboard</Name>
+            <Visible>true</Visible>
+            <ColorTagColor>
+              <r>0</r>
+              <g>0</g>
+              <b>0</b>
+              <a>0</a>
+            </ColorTagColor>
+            <Opacity>1</Opacity>
+            <FoldoutOpen>false</FoldoutOpen>
+            <ColorTag>None</ColorTag>
+            <Clipping>false</Clipping>
+            <Type>Surface</Type>
+            <ContentID>ucenad3g</ContentID>
+            <LayerID>-hkvDJ7hKEeJ-2lXuDF08w</LayerID>
+            <CustomChannelSettings />
+            <AlbedoChannel>
+              <Source>
+                <ContentID>Albedo</ContentID>
+                <AssetPackID>ucenad3g</AssetPackID>
+                <SubID>Rj09G5so5Eu_MW959vreYw</SubID>
+                <OriginalName>ucenad3g_4k_albedo</OriginalName>
+                <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_albedo.jpg</CurrentFilePath>
+                <AssetID>ucenad3g</AssetID>
+                <LoadedFromLibrary>true</LoadedFromLibrary>
+                <InvertedPostLoading>false</InvertedPostLoading>
+                <PremultipliedAlpha>false</PremultipliedAlpha>
+                <IsGenerated>false</IsGenerated>
+                <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+                <TexContent>Albedo</TexContent>
+                <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_albedo.jpg</FilePath>
+              </Source>
+              <MapType>Albedo</MapType>
+              <AverageColor>
+                <r>0.7253437</r>
+                <g>0.5669951</g>
+                <b>0.388591468</b>
+                <a>1</a>
+              </AverageColor>
+              <UnderlayingAverageColor>
+                <r>0.7253437</r>
+                <g>0.5669951</g>
+                <b>0.388591468</b>
+                <a>1</a>
+              </UnderlayingAverageColor>
+              <BlendMode>Normal</BlendMode>
+              <Name>ALBEDO</Name>
+              <Opacity>1</Opacity>
+              <Visible>true</Visible>
+              <RenderInverted>false</RenderInverted>
+              <MatchToBase>0</MatchToBase>
+              <FoldOutOpen>false</FoldOutOpen>
+              <isReloadButtonActive>false</isReloadButtonActive>
+              <LoadedCustomSource>false</LoadedCustomSource>
+              <LoadedSourceFromLibrary>true</LoadedSourceFromLibrary>
+              <Brightness>0.7253437</Brightness>
+              <InvertX>false</InvertX>
+              <InvertY>false</InvertY>
+              <Strength>1</Strength>
+              <WrapIntensity>0</WrapIntensity>
+              <Contrast>1</Contrast>
+              <GenerateFromDisplacement>false</GenerateFromDisplacement>
+            </AlbedoChannel>
+            <MetalnessChannel>
+              <Source>
+                <ContentID>Metalness</ContentID>
+                <AssetPackID>ucenad3g</AssetPackID>
+                <SubID>Rj09G5so5Eu_MW959vreYw</SubID>
+                <AssetID>ucenad3g</AssetID>
+                <LoadedFromLibrary>true</LoadedFromLibrary>
+                <InvertedPostLoading>false</InvertedPostLoading>
+                <PremultipliedAlpha>false</PremultipliedAlpha>
+                <IsGenerated>true</IsGenerated>
+                <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+                <TexContent>Metalness</TexContent>
+              </Source>
+              <MapType>Metalness</MapType>
+              <AverageColor>
+                <r>0</r>
+                <g>0</g>
+                <b>0</b>
+                <a>1</a>
+              </AverageColor>
+              <UnderlayingAverageColor>
+                <r>0</r>
+                <g>0</g>
+                <b>0</b>
+                <a>1</a>
+              </UnderlayingAverageColor>
+              <BlendMode>Normal</BlendMode>
+              <Name>METALNESS</Name>
+              <Opacity>1</Opacity>
+              <Visible>true</Visible>
+              <RenderInverted>false</RenderInverted>
+              <MatchToBase>0</MatchToBase>
+              <FoldOutOpen>false</FoldOutOpen>
+              <isReloadButtonActive>false</isReloadButtonActive>
+              <LoadedCustomSource>false</LoadedCustomSource>
+              <LoadedSourceFromLibrary>true</LoadedSourceFromLibrary>
+              <Brightness>0</Brightness>
+              <InvertX>false</InvertX>
+              <InvertY>false</InvertY>
+              <Strength>1</Strength>
+              <WrapIntensity>0</WrapIntensity>
+              <Contrast>1</Contrast>
+              <GenerateFromDisplacement>false</GenerateFromDisplacement>
+            </MetalnessChannel>
+            <RoughnessChannel>
+              <Source>
+                <ContentID>Roughness</ContentID>
+                <AssetPackID>ucenad3g</AssetPackID>
+                <SubID>Rj09G5so5Eu_MW959vreYw</SubID>
+                <OriginalName>ucenad3g_4k_roughness</OriginalName>
+                <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_roughness.jpg</CurrentFilePath>
+                <AssetID>ucenad3g</AssetID>
+                <LoadedFromLibrary>true</LoadedFromLibrary>
+                <InvertedPostLoading>false</InvertedPostLoading>
+                <PremultipliedAlpha>false</PremultipliedAlpha>
+                <IsGenerated>false</IsGenerated>
+                <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+                <TexContent>Roughness</TexContent>
+                <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_roughness.jpg</FilePath>
+              </Source>
+              <MapType>Roughness</MapType>
+              <AverageColor>
+                <r>0.8193002</r>
+                <g>0.8193002</g>
+                <b>0.8193002</b>
+                <a>1</a>
+              </AverageColor>
+              <UnderlayingAverageColor>
+                <r>0.8193002</r>
+                <g>0.8193002</g>
+                <b>0.8193002</b>
+                <a>1</a>
+              </UnderlayingAverageColor>
+              <BlendMode>Normal</BlendMode>
+              <Name>ROUGHNESS</Name>
+              <Opacity>1</Opacity>
+              <Visible>true</Visible>
+              <RenderInverted>false</RenderInverted>
+              <MatchToBase>0</MatchToBase>
+              <FoldOutOpen>false</FoldOutOpen>
+              <isReloadButtonActive>false</isReloadButtonActive>
+              <LoadedCustomSource>false</LoadedCustomSource>
+              <LoadedSourceFromLibrary>true</LoadedSourceFromLibrary>
+              <Brightness>0.8193002</Brightness>
+              <InvertX>false</InvertX>
+              <InvertY>false</InvertY>
+              <Strength>1</Strength>
+              <WrapIntensity>0</WrapIntensity>
+              <Contrast>1</Contrast>
+              <GenerateFromDisplacement>false</GenerateFromDisplacement>
+            </RoughnessChannel>
+            <AOChannel>
+              <Source>
+                <ContentID>AO</ContentID>
+                <AssetPackID>ucenad3g</AssetPackID>
+                <SubID>Rj09G5so5Eu_MW959vreYw</SubID>
+                <OriginalName>ucenad3g_4k_ao</OriginalName>
+                <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_ao.jpg</CurrentFilePath>
+                <AssetID>ucenad3g</AssetID>
+                <LoadedFromLibrary>true</LoadedFromLibrary>
+                <InvertedPostLoading>false</InvertedPostLoading>
+                <PremultipliedAlpha>false</PremultipliedAlpha>
+                <IsGenerated>false</IsGenerated>
+                <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+                <TexContent>AO</TexContent>
+                <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_ao.jpg</FilePath>
+              </Source>
+              <MapType>AO</MapType>
+              <AverageColor>
+                <r>0.9819143</r>
+                <g>0.9819143</g>
+                <b>0.9819143</b>
+                <a>1</a>
+              </AverageColor>
+              <UnderlayingAverageColor>
+                <r>0.9819143</r>
+                <g>0.9819143</g>
+                <b>0.9819143</b>
+                <a>1</a>
+              </UnderlayingAverageColor>
+              <BlendMode>Normal</BlendMode>
+              <Name>AO</Name>
+              <Opacity>1</Opacity>
+              <Visible>true</Visible>
+              <RenderInverted>false</RenderInverted>
+              <MatchToBase>0</MatchToBase>
+              <FoldOutOpen>false</FoldOutOpen>
+              <isReloadButtonActive>false</isReloadButtonActive>
+              <LoadedCustomSource>false</LoadedCustomSource>
+              <LoadedSourceFromLibrary>true</LoadedSourceFromLibrary>
+              <Brightness>0.9819143</Brightness>
+              <InvertX>false</InvertX>
+              <InvertY>false</InvertY>
+              <Strength>1</Strength>
+              <WrapIntensity>0</WrapIntensity>
+              <Contrast>1</Contrast>
+              <GenerateFromDisplacement>false</GenerateFromDisplacement>
+            </AOChannel>
+            <DisplacementChannel>
+              <Source>
+                <ContentID>Displacement</ContentID>
+                <AssetPackID>ucenad3g</AssetPackID>
+                <SubID>Rj09G5so5Eu_MW959vreYw</SubID>
+                <OriginalName>ucenad3g_4k_displacement</OriginalName>
+                <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_displacement.exr</CurrentFilePath>
+                <AssetID>ucenad3g</AssetID>
+                <LoadedFromLibrary>true</LoadedFromLibrary>
+                <InvertedPostLoading>false</InvertedPostLoading>
+                <PremultipliedAlpha>false</PremultipliedAlpha>
+                <IsGenerated>false</IsGenerated>
+                <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+                <TexContent>Displacement</TexContent>
+                <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_displacement.exr</FilePath>
+              </Source>
+              <MapType>Displacement</MapType>
+              <AverageColor>
+                <r>0</r>
+                <g>0</g>
+                <b>0</b>
+                <a>0</a>
+              </AverageColor>
+              <UnderlayingAverageColor>
+                <r>0</r>
+                <g>0</g>
+                <b>0</b>
+                <a>0</a>
+              </UnderlayingAverageColor>
+              <Name>DISPLACEMENT</Name>
+              <Opacity>1</Opacity>
+              <Visible>false</Visible>
+              <RenderInverted>false</RenderInverted>
+              <MatchToBase>0</MatchToBase>
+              <FoldOutOpen>false</FoldOutOpen>
+              <isReloadButtonActive>false</isReloadButtonActive>
+              <LoadedCustomSource>false</LoadedCustomSource>
+              <LoadedSourceFromLibrary>true</LoadedSourceFromLibrary>
+              <Intensity>10</Intensity>
+              <Brightness>0</Brightness>
+              <InvertX>false</InvertX>
+              <InvertY>false</InvertY>
+              <Strength>3.01574755</Strength>
+              <WrapIntensity>0</WrapIntensity>
+              <Contrast>1</Contrast>
+              <GenerateFromDisplacement>false</GenerateFromDisplacement>
+            </DisplacementChannel>
+            <NormalChannel>
+              <Source>
+                <ContentID>Normal</ContentID>
+                <AssetPackID>ucenad3g</AssetPackID>
+                <SubID>Rj09G5so5Eu_MW959vreYw</SubID>
+                <OriginalName>ucenad3g_4k_normal</OriginalName>
+                <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_normal.jpg</CurrentFilePath>
+                <AssetID>ucenad3g</AssetID>
+                <LoadedFromLibrary>true</LoadedFromLibrary>
+                <InvertedPostLoading>false</InvertedPostLoading>
+                <PremultipliedAlpha>false</PremultipliedAlpha>
+                <IsGenerated>false</IsGenerated>
+                <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+                <TexContent>Normal</TexContent>
+                <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_normal.jpg</FilePath>
+              </Source>
+              <MapType>Normal</MapType>
+              <AverageColor>
+                <r>0</r>
+                <g>0</g>
+                <b>0</b>
+                <a>0</a>
+              </AverageColor>
+              <UnderlayingAverageColor>
+                <r>0</r>
+                <g>0</g>
+                <b>0</b>
+                <a>0</a>
+              </UnderlayingAverageColor>
+              <Name>NORMAL</Name>
+              <Opacity>1</Opacity>
+              <Visible>false</Visible>
+              <RenderInverted>false</RenderInverted>
+              <MatchToBase>0</MatchToBase>
+              <FoldOutOpen>false</FoldOutOpen>
+              <isReloadButtonActive>false</isReloadButtonActive>
+              <LoadedCustomSource>false</LoadedCustomSource>
+              <LoadedSourceFromLibrary>true</LoadedSourceFromLibrary>
+              <Brightness>0</Brightness>
+              <InvertX>false</InvertX>
+              <InvertY>false</InvertY>
+              <Strength>1</Strength>
+              <WrapIntensity>0</WrapIntensity>
+              <Contrast>1</Contrast>
+              <GenerateFromDisplacement>false</GenerateFromDisplacement>
+            </NormalChannel>
+            <OpacityChannel>
+              <Source>
+                <ContentID>Opacity</ContentID>
+                <AssetID>4sgvrwjrcuua1vhxd3gkcw</AssetID>
+                <LoadedFromLibrary>false</LoadedFromLibrary>
+                <InvertedPostLoading>false</InvertedPostLoading>
+                <PremultipliedAlpha>false</PremultipliedAlpha>
+                <IsGenerated>false</IsGenerated>
+                <LastAttemptedLoadResolution>0</LastAttemptedLoadResolution>
+                <TexContent>Opacity</TexContent>
+              </Source>
+              <MapType>Opacity</MapType>
+              <AverageColor>
+                <r>1</r>
+                <g>1</g>
+                <b>1</b>
+                <a>1</a>
+              </AverageColor>
+              <UnderlayingAverageColor>
+                <r>0</r>
+                <g>0</g>
+                <b>0</b>
+                <a>0</a>
+              </UnderlayingAverageColor>
+              <BlendMode>Normal</BlendMode>
+              <Name>OPACITY</Name>
+              <Opacity>1</Opacity>
+              <Visible>false</Visible>
+              <RenderInverted>false</RenderInverted>
+              <MatchToBase>0</MatchToBase>
+              <FoldOutOpen>false</FoldOutOpen>
+              <isReloadButtonActive>false</isReloadButtonActive>
+              <LoadedCustomSource>false</LoadedCustomSource>
+              <LoadedSourceFromLibrary>false</LoadedSourceFromLibrary>
+              <SourcePath>DefaultSolid</SourcePath>
+              <Brightness>1</Brightness>
+              <InvertX>false</InvertX>
+              <InvertY>false</InvertY>
+              <Strength>1</Strength>
+              <WrapIntensity>0</WrapIntensity>
+              <Contrast>1</Contrast>
+              <GenerateFromDisplacement>false</GenerateFromDisplacement>
+            </OpacityChannel>
+            <FilterType>surface</FilterType>
+            <DisplacementScale>0.0301574748</DisplacementScale>
+            <isDisplacementCalculated>true</isDisplacementCalculated>
+            <_loadingTextures>false</_loadingTextures>
+            <PlacementSettings>
+              <ScanAreaVector>
+                <x>1</x>
+                <y>1</y>
+              </ScanAreaVector>
+              <PlacementMethod>UVTiling</PlacementMethod>
+              <Hexaplanar>
+                <RelativeBounds>Target</RelativeBounds>
+                <Scale>1</Scale>
+                <Radius>0.2</Radius>
+                <Angles>
+                  <float>0</float>
+                  <float>1</float>
+                </Angles>
+                <HeightInfluence>0.8</HeightInfluence>
+              </Hexaplanar>
+              <UVTiling>
+                <RepetitionsStretchValue>
+                  <x>1</x>
+                  <y>1</y>
+                </RepetitionsStretchValue>
+                <Repetitions>0</Repetitions>
+                <Tiling>TileXY</Tiling>
+                <OffsetU>0</OffsetU>
+                <OffsetV>0</OffsetV>
+                <RotateUV>0</RotateUV>
+                <RepetitionsX>1</RepetitionsX>
+                <RepetitionsY>1</RepetitionsY>
+              </UVTiling>
+              <UVFreeForm>
+                <RepetitionsStretchValue>
+                  <x>1</x>
+                  <y>1</y>
+                </RepetitionsStretchValue>
+                <OffsetU>0</OffsetU>
+                <OffsetV>0</OffsetV>
+                <RotateUV>0</RotateUV>
+                <Scale>1</Scale>
+              </UVFreeForm>
+            </PlacementSettings>
+            <VisibleDisplacementStrength>0.227029011</VisibleDisplacementStrength>
+            <UV>
+              <RepetitionsStretchValue>
+                <x>1</x>
+                <y>1</y>
+              </RepetitionsStretchValue>
+              <ScanAreaVector>
+                <x>0</x>
+                <y>0</y>
+              </ScanAreaVector>
+              <TilingX>true</TilingX>
+              <TilingY>true</TilingY>
+              <OffsetU>0</OffsetU>
+              <OffsetV>0</OffsetV>
+              <RotateUV>0</RotateUV>
+              <RepetitionsX>1</RepetitionsX>
+              <RepetitionsY>1</RepetitionsY>
+              <Scale>1</Scale>
+            </UV>
+            <Blend>
+              <LayerStyle>Masked</LayerStyle>
+              <HeightBlending>false</HeightBlending>
+              <InvertHeightBlending>false</InvertHeightBlending>
+              <Amount>0</Amount>
+              <BorderRadius>0.25</BorderRadius>
+              <BorderDetails>7.5</BorderDetails>
+              <UseUnderlying>1</UseUnderlying>
+              <BlurUnderlying>0</BlurUnderlying>
+              <FrequencyLow>1</FrequencyLow>
+              <FrequencyHigh>1</FrequencyHigh>
+              <FrequencyBalance>6</FrequencyBalance>
+            </Blend>
+          </LayerPreset>
           <LayerPreset>
             <InitOnce>true</InitOnce>
             <Children />
@@ -43,7 +462,7 @@
               <Source>
                 <ContentID>Albedo</ContentID>
                 <AssetPackID>udrmdjmdy</AssetPackID>
-                <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
+                <SubID>Bqh2jYZyxkWEOv01hyS_HA</SubID>
                 <OriginalName>udrmdjmdy_4k_albedo</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_albedo.jpg</CurrentFilePath>
                 <AssetID>udrmdjmdy</AssetID>
@@ -90,7 +509,7 @@
               <Source>
                 <ContentID>Metalness</ContentID>
                 <AssetPackID>udrmdjmdy</AssetPackID>
-                <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
+                <SubID>eowynu6Kjk-SdklV4pNicg</SubID>
                 <AssetID>udrmdjmdy</AssetID>
                 <LoadedFromLibrary>true</LoadedFromLibrary>
                 <InvertedPostLoading>false</InvertedPostLoading>
@@ -134,7 +553,7 @@
               <Source>
                 <ContentID>Roughness</ContentID>
                 <AssetPackID>udrmdjmdy</AssetPackID>
-                <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
+                <SubID>y2QF9UkYR0SeGH6L4nzo8A</SubID>
                 <OriginalName>udrmdjmdy_4k_roughness</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_roughness.jpg</CurrentFilePath>
                 <AssetID>udrmdjmdy</AssetID>
@@ -181,7 +600,7 @@
               <Source>
                 <ContentID>AO</ContentID>
                 <AssetPackID>udrmdjmdy</AssetPackID>
-                <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
+                <SubID>cNpMCuFu80mmV0SW5Xxlew</SubID>
                 <OriginalName>udrmdjmdy_4k_ao</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_ao.jpg</CurrentFilePath>
                 <AssetID>udrmdjmdy</AssetID>
@@ -228,7 +647,7 @@
               <Source>
                 <ContentID>Displacement</ContentID>
                 <AssetPackID>udrmdjmdy</AssetPackID>
-                <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
+                <SubID>zPGtIyO67UqaNZnmXly3Sg</SubID>
                 <OriginalName>udrmdjmdy_4k_displacement</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_displacement.exr</CurrentFilePath>
                 <AssetID>udrmdjmdy</AssetID>
@@ -275,7 +694,7 @@
               <Source>
                 <ContentID>Normal</ContentID>
                 <AssetPackID>udrmdjmdy</AssetPackID>
-                <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
+                <SubID>e8WlXSyCjkiSQyU7THUDPA</SubID>
                 <OriginalName>udrmdjmdy_4k_normal</OriginalName>
                 <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_normal.jpg</CurrentFilePath>
                 <AssetID>udrmdjmdy</AssetID>
@@ -305,14 +724,14 @@
               <Visible>true</Visible>
               <RenderInverted>false</RenderInverted>
               <MatchToBase>0</MatchToBase>
-              <FoldOutOpen>false</FoldOutOpen>
+              <FoldOutOpen>true</FoldOutOpen>
               <isReloadButtonActive>false</isReloadButtonActive>
               <LoadedCustomSource>false</LoadedCustomSource>
               <LoadedSourceFromLibrary>true</LoadedSourceFromLibrary>
               <Brightness>0</Brightness>
               <InvertX>false</InvertX>
               <InvertY>false</InvertY>
-              <Strength>1</Strength>
+              <Strength>2</Strength>
               <WrapIntensity>0</WrapIntensity>
               <Contrast>1</Contrast>
               <GenerateFromDisplacement>false</GenerateFromDisplacement>
@@ -360,6 +779,121 @@
               <Contrast>1</Contrast>
               <GenerateFromDisplacement>false</GenerateFromDisplacement>
             </OpacityChannel>
+            <TotalMask PresetVersion="1">
+              <InitOnce>true</InitOnce>
+              <Children>
+                <LayerNoiseMask>
+                  <InitOnce>true</InitOnce>
+                  <Children />
+                  <Level>0</Level>
+                  <Depth>0</Depth>
+                  <Name>Noise</Name>
+                  <Visible>false</Visible>
+                  <ColorTagColor>
+                    <r>0</r>
+                    <g>0</g>
+                    <b>0</b>
+                    <a>0</a>
+                  </ColorTagColor>
+                  <Opacity>1</Opacity>
+                  <FoldoutOpen>true</FoldoutOpen>
+                  <ColorTag>None</ColorTag>
+                  <Clipping>false</Clipping>
+                  <ComponentVersion>0</ComponentVersion>
+                  <IsMaskAssetMissing>false</IsMaskAssetMissing>
+                  <RenderInverted>false</RenderInverted>
+                  <WarpIntensity>0.1</WarpIntensity>
+                  <ShowDeprecated>false</ShowDeprecated>
+                  <MapType>NoiseMask</MapType>
+                  <EnableBlendModes>true</EnableBlendModes>
+                  <BlendMode>Max</BlendMode>
+                  <Amplitude>10</Amplitude>
+                  <Frequency>2.404692</Frequency>
+                  <Seed>91</Seed>
+                  <Lacunarity>2.50879765</Lacunarity>
+                  <Persistance>0.5733138</Persistance>
+                  <Octaves>5</Octaves>
+                  <MaskNoiseType>Simplex</MaskNoiseType>
+                </LayerNoiseMask>
+                <LayerNoiseMask>
+                  <InitOnce>true</InitOnce>
+                  <Children />
+                  <Level>0</Level>
+                  <Depth>0</Depth>
+                  <Name>Noise</Name>
+                  <Visible>false</Visible>
+                  <ColorTagColor>
+                    <r>0</r>
+                    <g>0</g>
+                    <b>0</b>
+                    <a>0</a>
+                  </ColorTagColor>
+                  <Opacity>1</Opacity>
+                  <FoldoutOpen>true</FoldoutOpen>
+                  <ColorTag>None</ColorTag>
+                  <Clipping>false</Clipping>
+                  <ComponentVersion>0</ComponentVersion>
+                  <IsMaskAssetMissing>false</IsMaskAssetMissing>
+                  <RenderInverted>false</RenderInverted>
+                  <WarpIntensity>0.1</WarpIntensity>
+                  <ShowDeprecated>false</ShowDeprecated>
+                  <MapType>NoiseMask</MapType>
+                  <EnableBlendModes>true</EnableBlendModes>
+                  <BlendMode>Max</BlendMode>
+                  <Amplitude>7.74486828</Amplitude>
+                  <Frequency>1.87683284</Frequency>
+                  <Seed>9</Seed>
+                  <Lacunarity>2</Lacunarity>
+                  <Persistance>0.5</Persistance>
+                  <Octaves>2</Octaves>
+                  <MaskNoiseType>Perlin</MaskNoiseType>
+                </LayerNoiseMask>
+                <LayerCurvatureMask>
+                  <InitOnce>true</InitOnce>
+                  <Children />
+                  <Level>0</Level>
+                  <Depth>0</Depth>
+                  <Name>Curvature</Name>
+                  <Visible>false</Visible>
+                  <ColorTagColor>
+                    <r>0</r>
+                    <g>0</g>
+                    <b>0</b>
+                    <a>0</a>
+                  </ColorTagColor>
+                  <Opacity>1</Opacity>
+                  <FoldoutOpen>true</FoldoutOpen>
+                  <ColorTag>None</ColorTag>
+                  <Clipping>false</Clipping>
+                  <ComponentVersion>3</ComponentVersion>
+                  <IsMaskAssetMissing>false</IsMaskAssetMissing>
+                  <RenderInverted>true</RenderInverted>
+                  <WarpIntensity>0.1</WarpIntensity>
+                  <ShowDeprecated>false</ShowDeprecated>
+                  <MapType>CurvatureMask</MapType>
+                  <EnableBlendModes>true</EnableBlendModes>
+                  <BlendMode>Max</BlendMode>
+                  <SoftMesh>false</SoftMesh>
+                  <FixSeams>false</FixSeams>
+                  <Normalise>false</Normalise>
+                  <AntiAlias>true</AntiAlias>
+                  <Steps>15</Steps>
+                  <Balance>0</Balance>
+                  <Blur>0</Blur>
+                  <Threshold>0.6</Threshold>
+                  <LevelsMinMax>
+                    <float>0.146853149</float>
+                    <float>0.2027972</float>
+                  </LevelsMinMax>
+                  <UnderlyingData>Base_Mesh_Only</UnderlyingData>
+                  <CurvatureType>Both</CurvatureType>
+                </LayerCurvatureMask>
+              </Children>
+              <Level>0</Level>
+              <Depth>1</Depth>
+              <OnClearTrigger />
+              <Enabled>true</Enabled>
+            </TotalMask>
             <FilterType>surface</FilterType>
             <DisplacementScale>0.0650000051</DisplacementScale>
             <isDisplacementCalculated>true</isDisplacementCalculated>
@@ -1030,7 +1564,7 @@
     <ExportResolutionIndex>2</ExportResolutionIndex>
     <TextureSetList>
       <TextureSetExportContext>
-        <Detail>6 Maps, 1024px</Detail>
+        <Detail>4 Maps, 1024px</Detail>
         <ID>0</ID>
         <Visible>true</Visible>
         <ResolutionIndex>2</ResolutionIndex>
@@ -1330,7 +1864,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>true</Visible>
+            <Visible>false</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Specular</MapName>
@@ -1475,7 +2009,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>true</Visible>
+            <Visible>false</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Displacement</MapName>
@@ -1570,7 +2104,7 @@
     <ExportButtonLabel>EXPORT TO DISK</ExportButtonLabel>
     <ActiveTextureSetsForExport>
       <TextureSetExportContext>
-        <Detail>6 Maps, 1024px</Detail>
+        <Detail>4 Maps, 1024px</Detail>
         <ID>0</ID>
         <Visible>true</Visible>
         <ResolutionIndex>2</ResolutionIndex>
@@ -1870,7 +2404,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>true</Visible>
+            <Visible>false</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Specular</MapName>
@@ -2015,7 +2549,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>true</Visible>
+            <Visible>false</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Displacement</MapName>
@@ -2231,7 +2765,7 @@
   <AdvanceExportConfigSettings>
     <TargetTextureSets>
       <TextureSetExportContext>
-        <Detail>6 Maps, 1024px</Detail>
+        <Detail>4 Maps, 1024px</Detail>
         <ID>0</ID>
         <Visible>true</Visible>
         <ResolutionIndex>2</ResolutionIndex>
@@ -2531,7 +3065,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>true</Visible>
+            <Visible>false</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Specular</MapName>
@@ -2676,7 +3210,7 @@
             <Detail>PNG, 8-bit</Detail>
           </PerTextureSetMapVisibilityContext>
           <PerTextureSetMapVisibilityContext>
-            <Visible>true</Visible>
+            <Visible>false</Visible>
             <IsSingleTextureSet>true</IsSingleTextureSet>
             <Map>
               <MapName>Displacement</MapName>
@@ -2762,7 +3296,7 @@
       </TextureSetExportContext>
     </TargetTextureSets>
     <CurrentTarget>
-      <Detail>6 Maps, 1024px</Detail>
+      <Detail>4 Maps, 1024px</Detail>
       <ID>0</ID>
       <Visible>true</Visible>
       <ResolutionIndex>2</ResolutionIndex>
@@ -3062,7 +3596,7 @@
           <Detail>PNG, 8-bit</Detail>
         </PerTextureSetMapVisibilityContext>
         <PerTextureSetMapVisibilityContext>
-          <Visible>true</Visible>
+          <Visible>false</Visible>
           <IsSingleTextureSet>true</IsSingleTextureSet>
           <Map>
             <MapName>Specular</MapName>
@@ -3207,7 +3741,7 @@
           <Detail>PNG, 8-bit</Detail>
         </PerTextureSetMapVisibilityContext>
         <PerTextureSetMapVisibilityContext>
-          <Visible>true</Visible>
+          <Visible>false</Visible>
           <IsSingleTextureSet>true</IsSingleTextureSet>
           <Map>
             <MapName>Displacement</MapName>
@@ -3315,24 +3849,9 @@
   </AdvanceExportConfigSettings>
   <Assets>
     <SourceAsset xsi:type="SourceTexture">
-      <ContentID>Roughness</ContentID>
-      <AssetPackID>udrmdjmdy</AssetPackID>
-      <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
-      <OriginalName>udrmdjmdy_4k_roughness</OriginalName>
-      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_roughness.jpg</CurrentFilePath>
-      <AssetID>udrmdjmdy</AssetID>
-      <LoadedFromLibrary>true</LoadedFromLibrary>
-      <InvertedPostLoading>false</InvertedPostLoading>
-      <PremultipliedAlpha>false</PremultipliedAlpha>
-      <IsGenerated>false</IsGenerated>
-      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
-      <TexContent>Roughness</TexContent>
-      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_roughness.jpg</FilePath>
-    </SourceAsset>
-    <SourceAsset xsi:type="SourceTexture">
       <ContentID>AO</ContentID>
       <AssetPackID>udrmdjmdy</AssetPackID>
-      <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
+      <SubID>cNpMCuFu80mmV0SW5Xxlew</SubID>
       <OriginalName>udrmdjmdy_4k_ao</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_ao.jpg</CurrentFilePath>
       <AssetID>udrmdjmdy</AssetID>
@@ -3345,24 +3864,9 @@
       <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_ao.jpg</FilePath>
     </SourceAsset>
     <SourceAsset xsi:type="SourceTexture">
-      <ContentID>Displacement</ContentID>
-      <AssetPackID>udrmdjmdy</AssetPackID>
-      <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
-      <OriginalName>udrmdjmdy_4k_displacement</OriginalName>
-      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_displacement.exr</CurrentFilePath>
-      <AssetID>udrmdjmdy</AssetID>
-      <LoadedFromLibrary>true</LoadedFromLibrary>
-      <InvertedPostLoading>false</InvertedPostLoading>
-      <PremultipliedAlpha>false</PremultipliedAlpha>
-      <IsGenerated>false</IsGenerated>
-      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
-      <TexContent>Displacement</TexContent>
-      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_displacement.exr</FilePath>
-    </SourceAsset>
-    <SourceAsset xsi:type="SourceTexture">
       <ContentID>Normal</ContentID>
       <AssetPackID>udrmdjmdy</AssetPackID>
-      <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
+      <SubID>e8WlXSyCjkiSQyU7THUDPA</SubID>
       <OriginalName>udrmdjmdy_4k_normal</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_normal.jpg</CurrentFilePath>
       <AssetID>udrmdjmdy</AssetID>
@@ -3375,9 +3879,54 @@
       <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_normal.jpg</FilePath>
     </SourceAsset>
     <SourceAsset xsi:type="SourceTexture">
+      <ContentID>Displacement</ContentID>
+      <AssetPackID>udrmdjmdy</AssetPackID>
+      <SubID>zPGtIyO67UqaNZnmXly3Sg</SubID>
+      <OriginalName>udrmdjmdy_4k_displacement</OriginalName>
+      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_displacement.exr</CurrentFilePath>
+      <AssetID>udrmdjmdy</AssetID>
+      <LoadedFromLibrary>true</LoadedFromLibrary>
+      <InvertedPostLoading>false</InvertedPostLoading>
+      <PremultipliedAlpha>false</PremultipliedAlpha>
+      <IsGenerated>false</IsGenerated>
+      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+      <TexContent>Displacement</TexContent>
+      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_displacement.exr</FilePath>
+    </SourceAsset>
+    <SourceAsset xsi:type="SourceTexture">
+      <ContentID>Preview</ContentID>
+      <AssetPackID>udrmdjmdy</AssetPackID>
+      <SubID>selNLyCCF0WBManAyxBCyg</SubID>
+      <OriginalName>Wood_Plank_udrmdjmdy_surface_Preview</OriginalName>
+      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\Wood_Plank_udrmdjmdy_surface_Preview.png</CurrentFilePath>
+      <AssetID>udrmdjmdy</AssetID>
+      <LoadedFromLibrary>true</LoadedFromLibrary>
+      <InvertedPostLoading>false</InvertedPostLoading>
+      <PremultipliedAlpha>false</PremultipliedAlpha>
+      <IsGenerated>false</IsGenerated>
+      <LastAttemptedLoadResolution>64</LastAttemptedLoadResolution>
+      <TexContent>Preview</TexContent>
+      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\Wood_Plank_udrmdjmdy_surface_Preview.png</FilePath>
+    </SourceAsset>
+    <SourceAsset xsi:type="SourceTexture">
+      <ContentID>Roughness</ContentID>
+      <AssetPackID>udrmdjmdy</AssetPackID>
+      <SubID>y2QF9UkYR0SeGH6L4nzo8A</SubID>
+      <OriginalName>udrmdjmdy_4k_roughness</OriginalName>
+      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_roughness.jpg</CurrentFilePath>
+      <AssetID>udrmdjmdy</AssetID>
+      <LoadedFromLibrary>true</LoadedFromLibrary>
+      <InvertedPostLoading>false</InvertedPostLoading>
+      <PremultipliedAlpha>false</PremultipliedAlpha>
+      <IsGenerated>false</IsGenerated>
+      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+      <TexContent>Roughness</TexContent>
+      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_roughness.jpg</FilePath>
+    </SourceAsset>
+    <SourceAsset xsi:type="SourceTexture">
       <ContentID>Metalness</ContentID>
       <AssetPackID>udrmdjmdy</AssetPackID>
-      <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
+      <SubID>eowynu6Kjk-SdklV4pNicg</SubID>
       <AssetID>udrmdjmdy</AssetID>
       <LoadedFromLibrary>true</LoadedFromLibrary>
       <InvertedPostLoading>false</InvertedPostLoading>
@@ -3389,7 +3938,7 @@
     <SourceAsset xsi:type="SourceTexture">
       <ContentID>Albedo</ContentID>
       <AssetPackID>udrmdjmdy</AssetPackID>
-      <SubID>a2poUisnaEOM8CTXU-3K8g</SubID>
+      <SubID>Bqh2jYZyxkWEOv01hyS_HA</SubID>
       <OriginalName>udrmdjmdy_4k_albedo</OriginalName>
       <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_albedo.jpg</CurrentFilePath>
       <AssetID>udrmdjmdy</AssetID>
@@ -3400,6 +3949,93 @@
       <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
       <TexContent>Albedo</TexContent>
       <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Plank_udrmdjmdy\udrmdjmdy_4k_albedo.jpg</FilePath>
+    </SourceAsset>
+    <SourceAsset xsi:type="SourceTexture">
+      <ContentID>Roughness</ContentID>
+      <AssetPackID>ucenad3g</AssetPackID>
+      <SubID>Rj09G5so5Eu_MW959vreYw</SubID>
+      <OriginalName>ucenad3g_4k_roughness</OriginalName>
+      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_roughness.jpg</CurrentFilePath>
+      <AssetID>ucenad3g</AssetID>
+      <LoadedFromLibrary>true</LoadedFromLibrary>
+      <InvertedPostLoading>false</InvertedPostLoading>
+      <PremultipliedAlpha>false</PremultipliedAlpha>
+      <IsGenerated>false</IsGenerated>
+      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+      <TexContent>Roughness</TexContent>
+      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_roughness.jpg</FilePath>
+    </SourceAsset>
+    <SourceAsset xsi:type="SourceTexture">
+      <ContentID>AO</ContentID>
+      <AssetPackID>ucenad3g</AssetPackID>
+      <SubID>Rj09G5so5Eu_MW959vreYw</SubID>
+      <OriginalName>ucenad3g_4k_ao</OriginalName>
+      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_ao.jpg</CurrentFilePath>
+      <AssetID>ucenad3g</AssetID>
+      <LoadedFromLibrary>true</LoadedFromLibrary>
+      <InvertedPostLoading>false</InvertedPostLoading>
+      <PremultipliedAlpha>false</PremultipliedAlpha>
+      <IsGenerated>false</IsGenerated>
+      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+      <TexContent>AO</TexContent>
+      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_ao.jpg</FilePath>
+    </SourceAsset>
+    <SourceAsset xsi:type="SourceTexture">
+      <ContentID>Displacement</ContentID>
+      <AssetPackID>ucenad3g</AssetPackID>
+      <SubID>Rj09G5so5Eu_MW959vreYw</SubID>
+      <OriginalName>ucenad3g_4k_displacement</OriginalName>
+      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_displacement.exr</CurrentFilePath>
+      <AssetID>ucenad3g</AssetID>
+      <LoadedFromLibrary>true</LoadedFromLibrary>
+      <InvertedPostLoading>false</InvertedPostLoading>
+      <PremultipliedAlpha>false</PremultipliedAlpha>
+      <IsGenerated>false</IsGenerated>
+      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+      <TexContent>Displacement</TexContent>
+      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_displacement.exr</FilePath>
+    </SourceAsset>
+    <SourceAsset xsi:type="SourceTexture">
+      <ContentID>Normal</ContentID>
+      <AssetPackID>ucenad3g</AssetPackID>
+      <SubID>Rj09G5so5Eu_MW959vreYw</SubID>
+      <OriginalName>ucenad3g_4k_normal</OriginalName>
+      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_normal.jpg</CurrentFilePath>
+      <AssetID>ucenad3g</AssetID>
+      <LoadedFromLibrary>true</LoadedFromLibrary>
+      <InvertedPostLoading>false</InvertedPostLoading>
+      <PremultipliedAlpha>false</PremultipliedAlpha>
+      <IsGenerated>false</IsGenerated>
+      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+      <TexContent>Normal</TexContent>
+      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_normal.jpg</FilePath>
+    </SourceAsset>
+    <SourceAsset xsi:type="SourceTexture">
+      <ContentID>Metalness</ContentID>
+      <AssetPackID>ucenad3g</AssetPackID>
+      <SubID>Rj09G5so5Eu_MW959vreYw</SubID>
+      <AssetID>ucenad3g</AssetID>
+      <LoadedFromLibrary>true</LoadedFromLibrary>
+      <InvertedPostLoading>false</InvertedPostLoading>
+      <PremultipliedAlpha>false</PremultipliedAlpha>
+      <IsGenerated>true</IsGenerated>
+      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+      <TexContent>Metalness</TexContent>
+    </SourceAsset>
+    <SourceAsset xsi:type="SourceTexture">
+      <ContentID>Albedo</ContentID>
+      <AssetPackID>ucenad3g</AssetPackID>
+      <SubID>Rj09G5so5Eu_MW959vreYw</SubID>
+      <OriginalName>ucenad3g_4k_albedo</OriginalName>
+      <CurrentFilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_albedo.jpg</CurrentFilePath>
+      <AssetID>ucenad3g</AssetID>
+      <LoadedFromLibrary>true</LoadedFromLibrary>
+      <InvertedPostLoading>false</InvertedPostLoading>
+      <PremultipliedAlpha>false</PremultipliedAlpha>
+      <IsGenerated>false</IsGenerated>
+      <LastAttemptedLoadResolution>1024</LastAttemptedLoadResolution>
+      <TexContent>Albedo</TexContent>
+      <FilePath>C:\Users\Julian\Documents\Megascans Library\Downloaded\surface\Wood_Boards_ucenad3g\ucenad3g_4k_albedo.jpg</FilePath>
     </SourceAsset>
   </Assets>
   <BaseLayer>
@@ -3612,7 +4248,7 @@
     </MaterialIDMap>
     <MeshUIContext>
       <CurrentSplitType>1</CurrentSplitType>
-      <lastLoadedPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Block\Quixel_Mesh.fbx</lastLoadedPath>
+      <lastLoadedPath>C:\Users\Julian\Desktop\ToyTanks\Assets\Mesh\Mixer\Quixel Assets\Projects\Fir\Block\Custom Sources\Quixel_Mesh.fbx</lastLoadedPath>
       <MeshSplitType>1</MeshSplitType>
       <LoadTextureMaps>false</LoadTextureMaps>
       <IsSingleTextureSet>true</IsSingleTextureSet>

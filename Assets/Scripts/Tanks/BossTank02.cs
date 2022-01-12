@@ -35,7 +35,6 @@ public class BossTank02 : BossAI, IHittable, IDamageEffector {
 
 	public override void InitializeTank() {
 		base.InitializeTank();
-		BossUI.RegisterBoss(this);
 		bossStates.Push(BossBehaviour.Waiting);
 		GoToNextState(2);
 		healthBar.gameObject.SetActive(false);
@@ -73,18 +72,13 @@ public class BossTank02 : BossAI, IHittable, IDamageEffector {
 
 	// State Execution
 
-	public new void TakeDamage(IDamageEffector effector) {
+	public override void TakeDamage(IDamageEffector effector, bool instantKill = false) {
 		base.TakeDamage(effector);
 		BossUI.BossTakeDamage(this, 1);
 	}
 
 	protected override void GotDestroyed() {
 		base.GotDestroyed();
-		BossUI.RemoveBoss(this);
-	}
-
-	public override void Revive() {
-		base.Revive();
 		BossUI.RemoveBoss(this);
 	}
 
