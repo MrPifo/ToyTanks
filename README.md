@@ -88,4 +88,3 @@ Here is a list of required packages to make the project work:
 * [Unity Command Terminal](https://github.com/stillwwater/command_terminal)
 * TextMeshPro
 
-<img src="https://sperlich.at/assets/project_pictures/toytanks_extensions.png?" style="width:25vw" />
