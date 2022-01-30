@@ -8,6 +8,7 @@ public static class GamePaths {
 	public static string UserLevelsFolder => GameFolder + "/CustomLevels";
 	public static string UserGraphicSettings => GameFolder + "/graphics.ini";
 	public static string ThemesPath => "Themes";
+	public static string PlayerStatsFile => GameFolder + "/PlayerStats.dat";
 	public static string GetLevelPath(LevelData data) => ValidateLevelPath($"{UserLevelsFolder}/{data.levelName}_{data.levelId}.json");
 	public static string ValidateLevelPath(string path) => path.Trim().ToLower().Replace(" ", "");
 

@@ -29,6 +29,9 @@ public class LevelManager : MonoBehaviour {
 	[SerializeField] private Camera pausePanelBlurCamera;
 	[SerializeField] private Camera bannerBlurCamera;
 	private int scoreOnLevelEnter;
+	private float elapsedTime;
+	private float scoreEarned;
+	private int playerDeaths;
 	private List<TankAsset> tankPrefabs;
 	private GameCamera gameCamera;
 	bool levelManagerInitializedCampaignLevelOnly;
@@ -105,7 +108,6 @@ public class LevelManager : MonoBehaviour {
 	void InitializeTanks() {
 		player = FindObjectOfType<PlayerInput>();
 		tankAIs = FindObjectsOfType<TankAI>();
-		player.SetupCross();
 		player.DisableControls();
 		DisableAllAIs();
 	}
@@ -114,6 +116,7 @@ public class LevelManager : MonoBehaviour {
 		// Update and Add to time
 		if(Game.IsGamePlaying && Game.GamePaused == false && Game.IsGameRunningDebug == false) {
 			GameManager.PlayTime += Time.deltaTime;
+			elapsedTime += Time.deltaTime;
 			UI.playTime.SetText((Mathf.Round(GameManager.PlayTime * 100f) / 100f + "s").Replace(",", "."));
 		}
 		if(Input.GetKeyDown(KeyCode.Escape) && Game.IsGamePlaying && (Time.timeScale == 1f || Time.timeScale == 0f)) {
@@ -130,11 +133,12 @@ public class LevelManager : MonoBehaviour {
 		optionsMenu.gameObject.SetActive(true);
 		optionsMenu.DOFade(1, 0.15f);
 		player.DisableControls();
+		player.CrossHair.DisableCrossHair();
 		UI.pauseBlur.Show();
-		pauseBlurCamera.Copy(mainCamera);
-		pausePanelBlurCamera.Copy(mainCamera);
 		GameManager.ShowCursor();
 		Time.timeScale = 1f;
+		BossUI.HideUI(0.1f);
+
 		DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 0.1f, 0.1f).SetEase(Ease.Linear).OnComplete(() => {
 			Time.timeScale = 0;
 		});
@@ -144,9 +148,12 @@ public class LevelManager : MonoBehaviour {
 		Game.GamePaused = false;
 		optionsMenu.DOFade(0, 0.3f);
 		player.EnableControls();
+		player.CrossHair.EnableCrossHair();
 		UI.pauseBlur.Hide();
 		GameManager.HideCursor();
-		Time.timeScale = 0.2f;
+		Time.timeScale = 1f;
+		BossUI.ShowUI(0.5f);
+
 		DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1, 0.1f).SetEase(Ease.Linear).OnComplete(() => {
 			optionsMenu.gameObject.SetActive(false);
 		});
@@ -156,8 +163,9 @@ public class LevelManager : MonoBehaviour {
 		Time.timeScale = 1f;
 		Game.GamePaused = false;
 		GameManager.ShowCursor();
+		player.CrossHair.EnableCrossHair();
 		optionsMenu.DOFade(0, 0.5f);
-		player.DisableCrossHair();
+		player.CrossHair.DisableCrossHair();
 		GameManager.ReturnToMenu("Quitting");
 	}
 
@@ -180,8 +188,7 @@ public class LevelManager : MonoBehaviour {
 		ClearMap();
 		var blockAssets = Resources.LoadAll<ThemeAsset>(GamePaths.ThemesPath).ToList().Find(t => t.theme == data.theme);
 		float timePerBlock = loadDuration / data.blocks.Count;
-		presets.ForEach(preset => preset.gameobject.Hide());
-		GetPreset(data.gridSize, data.theme).gameobject.Show();
+		EnablePreset(data.gridSize, data.theme);
 
 		foreach(var block in data.blocks) {
 			ThemeAsset.BlockAsset asset = blockAssets.GetAsset(block.type);
@@ -226,7 +233,7 @@ public class LevelManager : MonoBehaviour {
 		UI.PlayBannerAnimation();
 		GameManager.HideCursor();
 		Game.IsGameRunning = true;
-		this.RepeatUntil(() => Game.IsGamePlaying == false, () => bannerBlurCamera.Copy(mainCamera), () => { });
+		//this.RepeatUntil(() => Game.IsGamePlaying == false, () => bannerBlurCamera.Copy(mainCamera), () => { });
 
 		// Find theme
 		ThemeAsset theme = Resources.LoadAll<ThemeAsset>(GamePaths.ThemesPath).ToList().Find(t => t.theme == CurrentLevel.theme);
@@ -237,6 +244,9 @@ public class LevelManager : MonoBehaviour {
 		// Set Camera to Overview
 		gameCamera.camSettings.orthograpicSize = GetOrthographicSize(CurrentLevel.gridSize);
 		gameCamera.ChangeState(GameCamera.GameCamState.Overview);
+		if(Mode == GameManager.GameMode.Campaign) {
+			//RuntimeAnalytics.ArcadeLevelStarted(CurrentLevel.levelId);
+		}
 
 		// Generate AI Grid
 		Game.CreateAIGrid(CurrentLevel.gridSize, baseLayer, GameObject.FindGameObjectWithTag("Ground"));
@@ -263,7 +273,7 @@ public class LevelManager : MonoBehaviour {
 
 
 		// Initialize Gameplay UI
-		yield return new WaitForSeconds(1.5f);
+		yield return new WaitForSeconds(1f);
 		UI.playerScore.SetText(GameManager.Score.ToString());
 		UI.playerLives.SetText(GameManager.PlayerLives.ToString());
 		UI.playTime.SetText(GameManager.PlayTime.ToString());
@@ -271,7 +281,7 @@ public class LevelManager : MonoBehaviour {
 		UI.ShowGameplayUI(1);
 
 		// Start Game
-		yield return new WaitForSeconds(1);
+		yield return new WaitForSeconds(1f);
 		StreakBubble.Interrupt();
 		if(GridSize == GridSizes.Size_15x12) {
 			gameCamera.ChangeState(GameCamera.GameCamState.Focus);
@@ -297,6 +307,10 @@ public class LevelManager : MonoBehaviour {
 		AddScore(destroyedTank.tankAsset.scoreAmount);
 		StreakBubble.DisplayBubble(mainCamera.WorldToScreenPoint(destroyedTank.Pos), GameManager.Score);
 		if(tankAIs != null) {
+			if(destroyedTank is BossAI) {
+				PlayerStats.AddBossesKilled();
+			}
+			PlayerStats.AddKill();
 			foreach(TankAI t in tankAIs) {
 				if(t.HasBeenDestroyed == false) {
 					// All TankAIs must be destroyed or else returns
@@ -315,6 +329,7 @@ public class LevelManager : MonoBehaviour {
 			GameManager.Score += amount * StreakBubble.Streak;
 			UI.playerScore.SetText(GameManager.Score.ToString());
 			UI.playerScore.CountUp(prev, GameManager.Score, 1);
+			PlayerStats.AddScore(amount * StreakBubble.Streak);
 		} else {
 			UI?.playerScore.SetText(Random.Range(0, 9).ToString());
 		}
@@ -324,7 +339,8 @@ public class LevelManager : MonoBehaviour {
 		Game.IsGamePlaying = false;
 		player.DisableControls();
 		DisableAllAIs();
-		
+		PlayerStats.AddDeath();
+		playerDeaths++;
 
 		if(Game.IsGameRunningDebug == false) {
 			if(Mode != GameManager.GameMode.LevelOnly && Difficulty != SaveGame.Campaign.Difficulty.Easy && GameManager.PlayerLives > 0) {
@@ -356,10 +372,14 @@ public class LevelManager : MonoBehaviour {
 	public IEnumerator GameOver() {
 		if(Game.IsGameRunningDebug == false) {
 			Game.IsGamePlaying = false;
-			player.DisableCrossHair();
+			player.CrossHair.DisableCrossHair();
 			player.DisableControls();
 			DisableAllAIs();
 			StreakBubble.Interrupt();
+
+			// Update PlayerStats
+			PlayerStats.AddTotalPlaytime((int)elapsedTime);
+			
 
 			// Decide next GameOver step when player lives reach ZERO
 			switch(GameManager.CurrentMode) {
@@ -372,6 +392,8 @@ public class LevelManager : MonoBehaviour {
 						CheckRewardLive();
 						GameManager.UpdateCampaign();
 						gameCamera.PlayConfetti();
+						RuntimeAnalytics.AracadeLevelEnded(true, CurrentLevel.levelId, elapsedTime, playerDeaths, GameManager.Difficulty);
+						PlayerStats.AddLevelsCompleted();
 						Logger.Log(Channel.Gameplay, "Continue to next level: " + GameManager.LevelId);
 						yield return new WaitForSeconds(3);
 						// Reward Extra Lives
@@ -390,6 +412,7 @@ public class LevelManager : MonoBehaviour {
 								} else {
 									GameManager.LevelId = halfCheckpoint;
 								}
+								RuntimeAnalytics.AracadeLevelEnded(false, CurrentLevel.levelId, elapsedTime, playerDeaths, SaveGame.Campaign.Difficulty.Medium);
 								Logger.Log(Channel.Gameplay, "Returning to Checkpoint: " + GameManager.LevelId);
 								yield return new WaitForSeconds(3);
 								GameManager.LoadLevel("", true);
@@ -399,6 +422,7 @@ public class LevelManager : MonoBehaviour {
 								GameManager.PlayerLives = 2;
 								GameManager.LevelId = Game.GetWorld(GameManager.CurrentLevel.levelId).Levels[0].LevelId;
 								Logger.Log(Channel.Graphics, "Returning to Checkpoint: " + GameManager.LevelId);
+								RuntimeAnalytics.AracadeLevelEnded(false, CurrentLevel.levelId, elapsedTime, playerDeaths, SaveGame.Campaign.Difficulty.Hard);
 								yield return new WaitForSeconds(2);
 								GameManager.LoadLevel("Mission Failed");
 								break;
@@ -407,6 +431,8 @@ public class LevelManager : MonoBehaviour {
 								Logger.Log(Channel.SaveGame, "Player failed, wiping SaveSlot: " + SaveGame.SaveInstance.currentSaveSlot);
 								SaveGame.SaveInstance.WipeSlot(SaveGame.SaveInstance.currentSaveSlot);
 								SaveGame.Save();
+
+								RuntimeAnalytics.AracadeLevelEnded(true, CurrentLevel.levelId, elapsedTime, playerDeaths, SaveGame.Campaign.Difficulty.Original);
 								yield return new WaitForSeconds(3);
 								GameManager.ReturnToMenu("Mission Failed");
 								break;
@@ -425,6 +451,8 @@ public class LevelManager : MonoBehaviour {
 					Editor.StopTestPlay();
 					break;
 			}
+			playerDeaths = 0;
+			elapsedTime = 0;
 		}
 	}
 
@@ -508,7 +536,14 @@ public class LevelManager : MonoBehaviour {
 
 	public TankAsset GetTankAsset(TankTypes type) => tankPrefabs.Find(t => t.tankType == type);
 
-	public static LevelPreset GetPreset(GridSizes size, LevelEditor.Themes theme) => Instance.presets.Where(p => p.gridSize == size && p.theme == theme).FirstOrDefault();
+	//public static LevelPreset GetPreset(GridSizes size, LevelEditor.Themes theme) => Instance.presets.Where(p => p.gridSize == size && p.theme == theme).FirstOrDefault();
+
+	public static void EnablePreset(GridSizes size, LevelEditor.Themes theme) {
+		Instance.presets.ForEach(preset => { preset.gameobject.Hide(); preset.gameobject.transform.parent.Hide(); });
+		var preset = Instance.presets.Where(p => p.gridSize == size && p.theme == theme).FirstOrDefault().gameobject;
+		preset.transform.parent.Show();
+		preset.Show();
+	}
 
 	[System.Serializable]
 	public class LevelPreset {

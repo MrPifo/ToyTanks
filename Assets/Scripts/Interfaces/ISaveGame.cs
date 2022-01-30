@@ -1,4 +1,6 @@
-﻿public interface ISaveGame {
+﻿using System;
+
+public interface ISaveGame {
 	public int SaveGameVersion { get; }
-	public string LastPlayedUtcTimestamp { get; set; }
+	public DateTime LastModified { get; set; }
 }

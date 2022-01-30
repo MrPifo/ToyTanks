@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,18 +15,23 @@ public class GameStartup : MonoBehaviour {
 	[SerializeField] Canvas backgroundCanvas;
 	[SerializeField] CanvasGroup canvasGroup;
 	[SerializeField] CanvasGroup backgroundGroup;
-	[SerializeField] TextMeshProUGUI loadingText;
+	[SerializeField] public TextMeshProUGUI loadingText;
 	[SerializeField] Texture2D defaultCursor;
 	[SerializeField] Texture2D pointerCursor;
 	public Slider loadingBar;
 	private float currentProgress;
 	private int loadingSteps = 5;
 	private int currentLoadingStep = 1;
-	float waitTime = 0.5f;
+	public static GameStartup Instance;
+	public static TextMeshProUGUI LoadingText => Instance.loadingText;
+	int waitTime = 500;	// 0.5s wait time between loading steps
 
-	private void Start() => StartCoroutine(ILoadGame());
+	private void Start() {
+		Instance = this;
+		_ = LoadGame();
+	}
 
-	public IEnumerator ILoadGame() {
+	public async Task LoadGame() {
 		if(Game.ApplicationInitialized == false) {
 			// Checking permissions
 #if PLATFORM_ANDROID
@@ -45,38 +51,31 @@ public class GameStartup : MonoBehaviour {
 				Game.SetCursor("default");
 			} catch {
 				loadingText.SetText("Failed loading cursor textures.");
-				yield break;
-			}
-			NextLoadingStep();
-			yield return new WaitForSeconds(waitTime);
-			loadingText.SetText("Initializing Game.");
-			Logger.Log(Channel.Loading, "Initializing Game");
-			string error = string.Empty;
-			try {
-				error = Game.Initialize();
-				if(error != string.Empty) {
-					throw new System.Exception("Failed to initialize Game.");
-				}
-			} catch {
-				loadingText.SetText(error);
-				yield break;
+				await Task.Delay(1000);
 			}
 			NextLoadingStep();
 
-			yield return new WaitForSeconds(waitTime);
+			await Task.Delay(waitTime);
+			loadingText.SetText("Initializing Game.");
+			Logger.Log(Channel.Loading, "Initializing Game");
+
+			await Game.Initialize(true);
+			NextLoadingStep();
+
+			await Task.Delay(waitTime);
 			loadingText.SetText("Loading Menu");
 			Logger.Log(Channel.Loading, "Loading Menu.");
 			AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Menu", LoadSceneMode.Additive);
 			asyncLoad.allowSceneActivation = false;
 			NextLoadingStep();
 
-			yield return new WaitUntil(() => asyncLoad.progress >= 0.9f);
+			await TaskEx.WaitWhile(() => asyncLoad.progress < 0.9f);
 			asyncLoad.allowSceneActivation = true;
-			yield return new WaitForSeconds(waitTime);
+			await Task.Delay(waitTime);
 			loadingText.SetText("Loading complete");
 			NextLoadingStep();
 
-			yield return new WaitForSeconds(1.5f);
+			await Task.Delay(1500);
 			backgroundGroup.DOFade(0, 1);
 			canvasGroup.DOFade(0, 1).OnComplete(() => {
 				SceneManager.UnloadSceneAsync(0);

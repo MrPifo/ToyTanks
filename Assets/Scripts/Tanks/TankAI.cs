@@ -55,9 +55,10 @@ public abstract class TankAI : TankBase, IHittable {
 	public FSM<MovementType> MoveMode = new FSM<MovementType>();
 	public FSM<TankHeadMode> HeadMode = new FSM<TankHeadMode>();
 	public float maxPathfindingRefreshSpeed = 0.2f;
-	[Range(0.001f, 0.1f)]
+	[Range(1f, 100f)]
 	public float chanceToShootPerFrame;
-	float pathfindingRefreshTime;
+	private float pathfindingRefreshTime;
+	private float randomShootChanceTimeElapsed;
 	protected float distToPlayer;
 	protected float pathNodeReachTreshold = 0.5f;
 	public Vector3[] currentPath = new Vector3[0];
@@ -71,7 +72,7 @@ public abstract class TankAI : TankBase, IHittable {
 	/// <summary>
 	/// Layermask used for the avoidance system to prevent AI from being stuck
 	/// </summary>
-	protected static LayerMask AvoidcanceLayers = LayerMaskExtension.Create(GameMasks.Block, GameMasks.Destructable, GameMasks.Player);
+	protected static LayerMask AvoidcanceLayers = LayerMaskExtension.Create(GameMasks.Block, GameMasks.Destructable, GameMasks.Player, GameMasks.Bot);
 	protected static LayerMask MapLayers = LayerMaskExtension.Create(GameMasks.Block, GameMasks.Destructable, GameMasks.BulletTraverse, GameMasks.LevelBoundary);
 	// Properties
 	protected bool IsAIEnabled { get; set; }
@@ -468,7 +469,7 @@ public abstract class TankAI : TankBase, IHittable {
 		Ray ray = new Ray(Pos, (target.position - Pos).normalized);
 		ray.direction = new Vector3(ray.direction.x, 0, ray.direction.z);
 
-		if(Physics.SphereCast(ray, scanSize, out RaycastHit hit, Mathf.Infinity)) {
+		if(Physics.SphereCast(ray, scanSize, out RaycastHit hit, Mathf.Infinity, HitLayers)) {
 			if(hit.transform.gameObject == target.gameObject) {
 				return true;
 			}
@@ -479,7 +480,7 @@ public abstract class TankAI : TankBase, IHittable {
 		Ray ray = new Ray(Pos, (target - Pos).normalized);
 		ray.direction = new Vector3(ray.direction.x, 0, ray.direction.z);
 
-		if(Physics.SphereCast(ray, scanSize, Vector3.Distance(ray.origin, target))) {
+		if(Physics.SphereCast(ray, scanSize, Vector3.Distance(ray.origin, target), HitLayers)) {
 			return false;
 		}
 		return true;
@@ -491,9 +492,18 @@ public abstract class TankAI : TankBase, IHittable {
 		}
 		return true;
 	}
+	/// <summary>
+	/// Checks every second for shooting a random bullet.
+	/// </summary>
+	/// <returns></returns>
 	protected bool RandomShootChance() {
-		if(Random(0f, 1f) < chanceToShootPerFrame) {
-			return true;
+		if(randomShootChanceTimeElapsed > 1) {
+			randomShootChanceTimeElapsed = 0;
+			if(Random(0f, 100f) < chanceToShootPerFrame) {
+				return true;
+			}
+		} else {
+			randomShootChanceTimeElapsed += GetTime;
 		}
 		return false;
 	}

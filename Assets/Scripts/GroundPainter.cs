@@ -1,6 +1,5 @@
 using Sperlich.Debug.Draw;
 using UnityEngine;
-using PixelTracery;
 
 public class GroundPainter : MonoBehaviour {
 
@@ -55,7 +54,7 @@ public class GroundPainter : MonoBehaviour {
 				paintTexture.SetPixel(x, z, trackTexture.GetPixel(x, z));
 			}
 		}*/
-		paintTexture.PixSprite(uvPos.x, uvPos.y, trackTexture);
+		//paintTexture.PixSprite(uvPos.x, uvPos.y, trackTexture);
 		Debug.Log("AT: " + uvPos);
 		paintTexture.Apply();
 		currentGroundMaterial.SetTexture("_PaintMap", paintTexture);

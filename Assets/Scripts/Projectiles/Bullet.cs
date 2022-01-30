@@ -53,16 +53,18 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 	}
 
 	void FixedUpdate() {
-		if(Game.GamePaused || Game.IsTerminal || hitTarget) return;
+		if(Game.IsGameCurrentlyPlaying) {
 
-		Vector3 dir = (transform.position - (transform.position - Direction)).normalized;
-		if(dir != Vector3.zero) {
-			Quaternion look = Quaternion.LookRotation(dir, transform.up);
+			Vector3 dir = (transform.position - (transform.position - Direction)).normalized;
+			if(dir != Vector3.zero) {
+				Quaternion look = Quaternion.LookRotation(dir, transform.up);
 
-			Vector3 pos = Time.fixedDeltaTime * velocity * Direction;
-			rig.MovePosition(rig.position + pos);
-			rig.rotation = look;
-			time += Time.fixedDeltaTime;
+				Vector3 pos = Time.fixedDeltaTime * velocity * Direction;
+				rig.MovePosition(rig.position + pos);
+				rig.rotation = look;
+				time += Time.fixedDeltaTime;
+				rig.velocity = Vector3.zero;
+			}
 		}
 	}
 
@@ -148,6 +150,7 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 		hitBox.enabled = true;
 		rejectHitBox.enabled = true;
 		renderer.enabled = true;
+		rig.velocity = Vector3.zero;
 		fakeShadow.Show();
 		PrefabManager.FreeGameObject(this);
 	}

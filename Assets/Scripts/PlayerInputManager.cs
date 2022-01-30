@@ -1,6 +1,7 @@
 using Rewired;
 using Rewired.ComponentControls;
 using Rewired.Integration.UnityUI;
+using Sperlich.PrefabManager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,6 +33,14 @@ public class PlayerInputManager : MonoBehaviour {
         Destroy(mobileInput.gameObject);
 #endif
     }
+
+    /// <summary>
+    /// Initialized and creates a Singleton of PlayerInputManager
+    /// </summary>
+    public static void Initialize() {
+        PrefabManager.Instantiate<PlayerInputManager>(PrefabTypes.InputManager);
+        Logger.Log(Channel.System, "Player input system has been initialized.");
+	}
 
     public static void SetPlayerControlScheme(PlayerControlSchemes controlScheme) {
         if(MobileInputActive) {

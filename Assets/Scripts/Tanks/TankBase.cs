@@ -280,7 +280,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 			muzzleFlash.Play();
 			tankHead.DOScale(tankHead.localScale + Vector3.one / 7f, Mathf.Min(reloadDuration, 0.2f)).SetEase(new AnimationCurve(new Keyframe[] { new Keyframe(0, 0, 0.5f, 0.5f), new Keyframe(0.5f, 1, 0.5f, 0.5f), new Keyframe(1, 0, 0.5f, 0.5f) }));
 			if(this is PlayerInput) {
-				bullet = PrefabManager.Spawn<Bullet>(BulletType, null, bulletOutput.position).SetupBullet(bulletOutput.forward, bulletOutput.position, true);
+				bullet = PrefabManager.Spawn<Bullet>(BulletType, null, bulletOutput.position).SetupBullet(((this as PlayerInput).CrossHair.transform.position - bulletOutput.position).normalized, bulletOutput.position, true);
 			} else {
 				bullet = PrefabManager.Spawn<Bullet>(BulletType, null, bulletOutput.position).SetupBullet(bulletOutput.forward, bulletOutput.position, false);
 			}
@@ -472,7 +472,6 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 
 		if(newTank is PlayerInput) {
 			PlayerInput input = (PlayerInput)newTank;
-			input.DisableCrossHair();
 		}
 		CleanUpDestroyedPieces();
 		Destroy(gameObject);

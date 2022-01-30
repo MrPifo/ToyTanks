@@ -40,6 +40,5 @@ public class DebugPlay : MonoBehaviour {
 			}
 			t.InitializeTank();
 		}
-		LevelManager.player.SetupCross();
 	}
 }

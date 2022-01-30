@@ -12,6 +12,7 @@ namespace Sperlich.PrefabManager {
 		GameFeedbacks,
 		BossBar,
 		StreakBubble,
-		IceSpike
+		IceSpike,
+		GameAnalytics
 	}
 }

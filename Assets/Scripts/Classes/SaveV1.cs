@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class SaveV1 : ISaveGame {
 
 	public int SaveGameVersion => 1;
-	public string LastPlayedUtcTimestamp { get; set; }
+	public DateTime LastModified { get; set; }
 	public bool GameCompletedOnce { get; set; }
 
 	public List<World> Worlds { get; set; }
@@ -26,7 +26,7 @@ public class SaveV1 : ISaveGame {
 			}
 		}
 	}
-	[JsonIgnore] public byte currentSaveSlot;
+	[JsonIgnore] public byte currentSaveSlot = 8;
 	public SaveGame.Campaign saveSlot1;
 	public SaveGame.Campaign saveSlot2;
 	public SaveGame.Campaign saveSlot3;

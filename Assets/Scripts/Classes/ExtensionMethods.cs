@@ -177,14 +177,14 @@ public static class ExtensionMethods {
             t.transform.DOScale(original, duration / 2f);
         });
     }
-    public static void Copy(this Camera cam, Camera target) {
+    /*public static void Copy(this Camera cam, Camera target) {
         cam.orthographicSize = target.orthographicSize;
         cam.transform.position = target.transform.position;
         cam.transform.rotation = target.transform.rotation;
         cam.nearClipPlane = target.nearClipPlane;
         cam.farClipPlane = target.farClipPlane;
         cam.fieldOfView = target.fieldOfView;
-    }
+    }*/
     public static void CountUp(this TMP_Text text, int from, int to, float duration) {
         Helper.StartCoroutine(ICount());
         IEnumerator ICount() {

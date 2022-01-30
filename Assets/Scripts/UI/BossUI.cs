@@ -10,6 +10,7 @@ public class BossUI : MonoBehaviour {
     
 	private static Dictionary<BossAI, int> Bosses = new Dictionary<BossAI, int>();
 	public Slider bossBar;
+	public CanvasGroup canvasGroup;
 	public MMFeedbacks bossUIInitFeedback;
 	public MMFeedbacks bossUIHitFeedback;
 	public TranslucentImage backgroundBlur;
@@ -74,5 +75,13 @@ public class BossUI : MonoBehaviour {
 
 		Instance.bossUIHitFeedback.PlayFeedbacks();
 		Instance.bossBar.DOValue(Instance.bossBar.value, 0.25f).SetEase(Ease.Linear);
+	}
+
+	public static void HideUI(float duration = 0) {
+		Instance.canvasGroup.DOFade(0, duration);
+	}
+
+	public static void ShowUI(float duration = 0) {
+		Instance.canvasGroup.DOFade(1, duration);
 	}
 }

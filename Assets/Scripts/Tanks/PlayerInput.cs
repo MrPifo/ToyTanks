@@ -19,22 +19,8 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 	TouchPad touchPad;
 	TouchRegion touchRegion;
 	TouchJoystick aimJoystick;
+	public CrossHair CrossHair { private set; get; }
 	public float mobileAimHelperLineDistance = 5;
-	GameObject _crossHair;
-	Line crossLine;
-	public GameObject Crosshair {
-		get {
-			if(_crossHair == null) {
-				if(GameObject.FindGameObjectWithTag("CrossHair") == null) {
-					_crossHair = Instantiate(Resources.Load<GameObject>("CrossHair"));
-				} else {
-					_crossHair = GameObject.FindGameObjectWithTag("CrossHair");
-				}
-				crossLine = _crossHair.transform.GetChild(0).GetComponent<Line>();
-			}
-			return _crossHair;
-		}
-	}
 	public float crossHairMaxAppearanceDistance = 5f;
 	public float crossHairSize = 1.5f;
 	public bool disableControl;
@@ -58,12 +44,16 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 	public override void InitializeTank() {
 		base.InitializeTank();
 		playerControlScheme = Game.PlayerControlScheme;
+		Debug.Log("Scheme: " + Game.PlayerControlScheme);
 		makeInvincible = Game.isPlayerGodMode;
 		player = ReInput.players.GetPlayer(0);
 		ScreenEffectCamera.worldCamera = GameCamera.Instance.Camera;
 		ScreenEffectCamera.planeDistance = 0.5f;
 		SetupControls();
-		SetupCross();
+		if(CrossHair != null) {
+			CrossHair.DestroyCrossHair();
+		}
+		CrossHair = CrossHair.CreateCrossHair(this, player);
 	}
 
 	public void SetupControls() {
@@ -77,14 +67,14 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 				case PlayerControlSchemes.Desktop:
 					PlayerInputManager.Instance.touchController.Hide();
 					mobileAimLine.gameObject.SetActive(false);
-					EnableCrossHair();
+					CrossHair.EnableCrossHair();
 
 					break;
 				case PlayerControlSchemes.DoubleDPad:
 					PlayerInputManager.Instance.DoubleDPadUI.gameObject.Show();
 					PlayerInputManager.Instance.touchController.Show();
 					mobileAimLine.gameObject.SetActive(true);
-					DisableCrossHair();
+					CrossHair.DisableCrossHair();
 					touchRegion.InteractionStateChangedToPressed += Shoot;
 					aimJoystick.TapEvent += Shoot;
 
@@ -93,14 +83,14 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 					PlayerInputManager.Instance.DPadTapUI.gameObject.Show();
 					PlayerInputManager.Instance.touchController.Show();
 					mobileAimLine.gameObject.SetActive(false);
-					EnableCrossHair();
+					CrossHair.EnableCrossHair();
 					touchPad.TapEvent += MobileInputDPadAndTapUpdate;
 
 					break;
 				case PlayerControlSchemes.DoubleDPadAimAssistant:
 					PlayerInputManager.Instance.touchController.Show();
 					mobileAimLine.gameObject.SetActive(true);
-					DisableCrossHair();
+					CrossHair.DisableCrossHair();
 					aimJoystick.TapEvent += Shoot;
 
 					break;
@@ -108,17 +98,9 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 		}
 	}
 
-	public void SetupCross() {
-		Crosshair.gameObject.SetActive(true);
-		crossLine.gameObject.SetActive(true);
-		Crosshair.transform.position = Vector3.zero;
-		crossHairMat.SetFloat("_RotAngle", 0);
-		Crosshair.transform.rotation = Quaternion.identity;
-	}
-
 	protected void FixedUpdate() {
 		if(HasBeenInitialized && IsPaused == false || IgnoreDisables) {
-			if(!disableControl && Crosshair != null || IgnoreDisables) {
+			if(!disableControl && CrossHair != null || IgnoreDisables) {
 				PlayerControl();
 			}
 		}
@@ -164,7 +146,6 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 
 	void DesktopInput() {
 		Vector2 moveVector = new Vector2(player.GetAxis("MoveX"), player.GetAxis("MoveY"));
-		UpdateCrosshair();
 
 		if(player.GetButton("Shoot") && CanShoot) {
 			ShootBullet();
@@ -175,7 +156,7 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 	}
 
 	void MobileInputDoubleDPad() {
-		DisableCrossHair();
+		CrossHair.DisableCrossHair();
 		Vector2 moveVector = new Vector2(player.GetAxis("MoveX"), player.GetAxis("MoveY"));
 		Vector3 aimVector = new Vector3(player.GetAxis("AimX"), Pos.y, player.GetAxis("AimY"));
 		float aimReach = Mathf.Abs(aimVector.x) + Mathf.Abs(aimVector.z);
@@ -211,7 +192,6 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 
 	void MobileInputDPadAndTap() {
 		Vector2 moveVector = new Vector2(player.GetAxis("MoveX"), player.GetAxis("MoveY"));
-		UpdateCrosshair();
 
 		if (moveVector.x != 0f || moveVector.y != 0f) {
 			Move(moveVector);
@@ -224,38 +204,9 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 
 	void MobileInputDPadAndTapUpdate() {
 		mouseLocation = new Vector2(player.GetAxis("TouchX") * Screen.width, player.GetAxis("TouchY") * Screen.height);
-		UpdateCrosshair();
 		ShootBullet();
     }
-	void UpdateCrosshair() {
-		if(Game.Platform == GamePlatform.Mobile) {
-			if(player.GetAxis("TouchX") != 0 && player.GetAxis("TouchY") != 0) {
-				mouseLocation = new Vector2(player.GetAxis("TouchX") * Screen.width, player.GetAxis("TouchY") * Screen.height);
-			}
-		} else if(Game.Platform == GamePlatform.Desktop) {
-			if(Input.mousePosition.x != 0 && Input.mousePosition.y != 0) {
-				mouseLocation = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-			}
-		}
-		
-		Ray camRay = Camera.main.ScreenPointToRay(mouseLocation);
-		Plane plane = new Plane(Vector3.up, -1f);
-		plane.Raycast(camRay, out float enter);
-		Vector3 hitPoint = camRay.GetPoint(enter);
-
-		Crosshair.transform.position = hitPoint;
-		Crosshair.transform.localScale = Vector3.one * (crossHairSize / 10f);
-
-		if (Vector3.Distance(Pos, Crosshair.transform.position) > crossHairMaxAppearanceDistance) {
-			crossLine.gameObject.SetActive(true);
-			crossLine.Start = crossLine.transform.InverseTransformPoint(((tankHead.position + bulletOutput.position) / 2f) + Vector3.up * 0.35f);
-			crossLine.End = Vector3.zero;
-			crossLine.DashOffset += Time.deltaTime / 2f;
-		} else {
-			crossLine.gameObject.SetActive(false);
-		}
-		MoveHead(Crosshair.transform.position, true);
-	}
+	
 
 	public override void TakeDamage(IDamageEffector effector, bool instantKill = false) {
 		base.TakeDamage(effector, instantKill);
@@ -297,9 +248,6 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 		PlayerInputManager.ShowControls();
 	}
 
-	public void EnableCrossHair() => Crosshair.SetActive(true);
-	public void DisableCrossHair() => Crosshair.SetActive(false);
-
 	public override void ResetState() {
 		base.ResetState();
 	}
@@ -316,6 +264,12 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 					FrostScreen.Hide();
 				});
 			});
+		}
+	}
+
+	public void OnDestroy() {
+		if(CrossHair != null) {
+			CrossHair.DestroyCrossHair();
 		}
 	}
 }

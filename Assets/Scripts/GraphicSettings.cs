@@ -112,7 +112,6 @@ public class GraphicSettings : MonoBehaviour {
     static SupportedScreenSizes WindowGameSize {
         get {
             Int2 screenSize = new Int2(ParseInt(GetValue(WindowSettings, nameof(WindowGameSize) + "X")), ParseInt(GetValue(WindowSettings, nameof(WindowGameSize) + "Y")));
-            Debug.Log(screenSize);
             return GetSupportedScreenSize(screenSize);
 		}
         set {
@@ -150,6 +149,7 @@ public class GraphicSettings : MonoBehaviour {
 	/// Initialized the Graphic Settings
 	/// </summary>
 	public static void Initialize() {
+        _instance = PrefabManager.Instantiate<GraphicSettings>(PrefabTypes.GraphicSettings);
         DontDestroyOnLoad(Instance.gameObject);
         Instance.AdjustToPlatform();
         if(File.Exists(GamePaths.UserGraphicSettings) == false) {
@@ -161,6 +161,8 @@ public class GraphicSettings : MonoBehaviour {
             LoadSettings();
 		}
         ApplySettings();
+
+        Logger.Log(Channel.System, "GraphicsManager has been initialized.");
     }
     private void AdjustToPlatform() {
         if(Game.Platform == GamePlatform.Desktop) {
@@ -444,7 +446,6 @@ public class GraphicSettings : MonoBehaviour {
             SoundEffectsVolume = 40;
             Logger.Log(Channel.Graphics, "No SoundEffectsVolume setting found. Restoring to default.");
         }
-        Debug.Log(GetValue(WindowSettings, nameof(WindowGameSize)));
         if(GetValue(WindowSettings, nameof(WindowGameSize)) is null) {
             WindowGameSize = GetSupportedScreenSize(new Int2(Screen.currentResolution.width, Screen.currentResolution.height));
             Logger.Log(Channel.Graphics, "No WindowGameSize setting found. Restoring to default.");
@@ -495,7 +496,7 @@ public class GraphicSettings : MonoBehaviour {
                 return int.Parse(value);
             }
 		} catch {
-            Logger.Log(Channel.Graphics, Priority.Error, "Failed to read INT value " + value);
+            Logger.Log(Channel.Graphics, "Failed to read INT value " + value);
             throw new GraphicSettingsNotFound("Failed to read INT value: " + value);
 		}
 	}
@@ -507,7 +508,7 @@ public class GraphicSettings : MonoBehaviour {
                 return float.Parse(value);
             }
         } catch {
-            Logger.Log(Channel.Graphics, Priority.Error, "Failed to read FLOAT value " + value);
+            Logger.Log(Channel.Graphics, "Failed to read FLOAT value " + value);
             throw new GraphicSettingsNotFound("Failed to read FLOAT value: " + value);
         }
     }
@@ -519,7 +520,7 @@ public class GraphicSettings : MonoBehaviour {
                 return bool.Parse(value);
             }
         } catch {
-            Logger.Log(Channel.Graphics, Priority.Error, "Failed to read BOOLEAN value " + value);
+            Logger.Log(Channel.Graphics, "Failed to read BOOLEAN value " + value);
             throw new GraphicSettingsNotFound("Failed to read BOOLEAN value: " + value);
         }
     }
@@ -528,7 +529,7 @@ public class GraphicSettings : MonoBehaviour {
             LoadedSettings[section][parameter] = value.ToString();
             SaveSettings();
 		} catch {
-            Logger.Log(Channel.Graphics, Priority.Error, "Failed to set parameter " + parameter + " value.");
+            Logger.Log(Channel.Graphics, "Failed to set parameter " + parameter + " value.");
             throw new GraphicSettingsNotFound("Failed Setting parameter: " + parameter + " to " + value.ToString());
 		}
 	}

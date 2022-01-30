@@ -178,11 +178,15 @@ namespace ToyTanks.LevelEditor {
 				// Paint selected objects to delete red & Reset
 				var altBlock = selectedBlock;
 				if(MouseHit.transform.gameObject.TryGetComponent(out selectedBlock)) {
-					if(altBlock != null && selectedBlock != altBlock) {
-						altBlock.SetTheme(Theme);
-					}
-					if(IsDestroyMode) {
-						selectedBlock.MeshRender.sharedMaterial = removeMaterial;
+					if(selectedBlock.isLevelPreset) {
+						selectedBlock = null;
+					} else {
+						if(altBlock != null && selectedBlock != altBlock) {
+							altBlock.SetTheme(Theme);
+						}
+						if(IsDestroyMode) {
+							selectedBlock.MeshRender.sharedMaterial = removeMaterial;
+						}
 					}
 				} else {
 					if(altBlock != null) {
@@ -262,7 +266,6 @@ namespace ToyTanks.LevelEditor {
 				SwitchToGameView(1);
 				DeletePreview();
 				DeselectEverything();
-				FindObjectOfType<PlayerInput>()?.EnableCrossHair();
 				pathMeshGeneratorProgressBar.gameObject.SetActive(true);
 				foreach(var t in FindObjectsOfType<TankBase>()) {
 					t.enabled = true;
@@ -276,6 +279,8 @@ namespace ToyTanks.LevelEditor {
 				levelManager.StartGame();
 				Game.IsGameRunning = true;
 				DOTween.ToAlpha(() => gridColor, x => gridColor = x, 0, 2);
+				SaveGame.SaveInstance = new SaveV1();
+				SaveGame.SaveInstance.currentSaveSlot = 8;
 				GameManager.HideCursor();
 			}
 		}
@@ -301,7 +306,6 @@ namespace ToyTanks.LevelEditor {
 			RefreshUI();
 			GameManager.ShowCursor();
 			levelManager.ResetLevel();
-			FindObjectOfType<PlayerInput>()?.DisableCrossHair();
 			this.Delay(3, () => {
 				playTestButton.interactable = true;
 			});
@@ -479,9 +483,6 @@ namespace ToyTanks.LevelEditor {
 				o.transform.SetParent(LevelManager.TanksContainer);
 				o.GetComponent<TankBase>().PlacedIndex = tank.index;
 				o.GetComponent<TankBase>().OccupiedIndexes = indexes.ToArray();
-				if(o.TryGetComponent(out PlayerInput player)) {
-					player.DisableCrossHair();
-				}
 				Grid.AddIndex(indexes, TankAsset.Size.y);
 			} else {
 				Debug.LogWarning("Some blocks couldn't be placed due to overlapping.");
@@ -757,7 +758,8 @@ namespace ToyTanks.LevelEditor {
 			foreach(Transform t in themePresets) {
 				t.gameObject.SetActive(false);
 			}
-			themePresets.Find(newTheme.ToString()).gameObject.SetActive(true);
+
+			LevelManager.EnablePreset(GridSize, Theme);
 		}
 
 		public void SwitchGridSizeDropdown() => SwitchGridSize((GridSizes)gridSizeDropdown.value);
@@ -782,8 +784,7 @@ namespace ToyTanks.LevelEditor {
 					}
 				}
 
-				LevelManager.Instance.presets.ForEach(preset => preset.gameobject.Hide());
-				LevelManager.GetPreset(levelData.gridSize, levelData.theme).gameobject.Show();
+				LevelManager.EnablePreset(GridSize, Theme);
 			}
 
 			
@@ -985,8 +986,7 @@ namespace ToyTanks.LevelEditor {
 				RefreshUI();
 			}
 
-			LevelManager.Instance.presets.ForEach(preset => preset.gameobject.Hide());
-			LevelManager.GetPreset(levelData.gridSize, levelData.theme).gameobject.Show();
+			LevelManager.EnablePreset(GridSize, Theme);
 			LevelLightmapper.SwitchLightmaps(levelData.levelId);
 			HasLevelBeenLoaded = true;
 		}

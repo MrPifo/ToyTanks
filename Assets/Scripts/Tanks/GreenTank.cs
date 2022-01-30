@@ -30,7 +30,7 @@ public class GreenTank : TankAI {
 					AimAtPlayer();
 				} else if(IsBouncePathValid()) {
 					MoveHead(validPath[1].Item1.origin);
-					if(IsFacingTarget(validPath[0].Item2.point, 0.97f) && CanShoot && !WouldFriendlyFire) {
+					if(IsFacingTarget(validPath[0].Item2.point, 0.97f) && CanShoot && !WouldFriendlyFire && RandomShootChance()) {
 						ShootBullet();
 					}
 				} else {

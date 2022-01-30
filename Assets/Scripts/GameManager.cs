@@ -95,13 +95,16 @@ public class GameManager : Singleton<GameManager> {
 	}
 
 	public static void StartLevel(ulong levelId) {
-		CurrentMode = GameMode.LevelOnly;
-		LevelId = levelId;
-		PlayerLives = 0;
-		Score = 0;
-		PlayTime = 0;
-		Instance.LoadAllAvailableLevels();
-		Instance.LoadLevel("Level " + levelId);
+		if(isLoading == false) {
+			isLoading = true;
+			CurrentMode = GameMode.LevelOnly;
+			LevelId = levelId;
+			PlayerLives = 0;
+			Score = 0;
+			PlayTime = 0;
+			Instance.LoadAllAvailableLevels();
+			Instance.LoadLevel("Level " + levelId);
+		}
 	}
 
 	public static void StartEditor(LevelData level) {
@@ -131,6 +134,7 @@ public class GameManager : Singleton<GameManager> {
 
 	public void StartCampaign(byte saveSlot) {
 		if(!isLoading) {
+			isLoading = true;
 			LoadAllAvailableLevels();
 			Logger.Log(Channel.SaveGame, "Starting campaign on save slot " + saveSlot);
 			var camp = SaveGame.GetCampaign(saveSlot);
@@ -218,6 +222,7 @@ public class GameManager : Singleton<GameManager> {
 		transitionScreen.FadeOutBanner(bannerFadeDuration);
 		yield return new WaitUntil(() => transitionScreen.onBannerFadeOutFinished);
 		PrefabManager.DefaultSceneSpawn = "Level";
+		isLoading = false;
 		
 		switch(CurrentMode) {
 			case GameMode.Campaign:
@@ -266,6 +271,7 @@ public class GameManager : Singleton<GameManager> {
 		transitionScreen.FadeOut(loadingScreenFadeDuration);
 		FindObjectOfType<MenuManager>().mainMenu.FadeIn();
 		FindObjectOfType<MenuManager>().FadeOutBlur();
+		isLoading = false;
 		yield return new WaitUntil(() => transitionScreen.onFadeOutFinished);
 		AsyncOperation loadingScreenUnload = SceneManager.UnloadSceneAsync("LoadingScreen");
 		yield return new WaitUntil(() => loadingScreenUnload.isDone);
@@ -313,7 +319,8 @@ public class GameManager : Singleton<GameManager> {
 		yield return new WaitUntil(() => transitionScreen.onFadeOutFinished);
 		AsyncOperation loadingScreenUnload = SceneManager.UnloadSceneAsync("LoadingScreen");
 		yield return new WaitUntil(() => loadingScreenUnload.isDone);
-		
+		isLoading = false;
+
 		switch(CurrentMode) {
 			case GameMode.Campaign:
 				levelManager.StartGame();

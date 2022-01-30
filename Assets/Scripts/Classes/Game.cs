@@ -5,6 +5,11 @@ using System.Collections.Generic;
 using CommandTerminal;
 using Sperlich.PrefabManager;
 using UnityEngine.SceneManagement;
+using System.IO;
+using System.Text;
+using System.IO.Compression;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 // This class holds all the Games information
 // - Existing Worlds
@@ -90,6 +95,10 @@ public static class Game {
 	public static bool showGrid;
 	public static bool showTankDebugs;
 	public static bool isPlayerGodMode;
+	/// <summary>
+	/// Fixed Timesteps that have been passed since playing.
+	/// </summary>
+	public static ulong FixedSteps => Instance.fixedSteps;
 	public static bool ApplicationInitialized { get; set; }
 	/// <summary>
 	/// True when hit pause within a level.
@@ -107,8 +116,28 @@ public static class Game {
 	/// True when a level has been started and the player is allowed to move.
 	/// </summary>
 	public static bool IsGamePlaying { get; set; }
+	/// <summary>
+	/// True if are IsGamePlaying && GamePaused == false && IsTerminal == false;
+	/// Generally speaking if the player is able to move and shoot without the game being paused or whatsoever.
+	/// </summary>
+	public static bool IsGameCurrentlyPlaying => IsGamePlaying && GamePaused == false && IsTerminal == false;
+	/// <summary>
+	/// Keeps track of overall info of the player. Useful for Achievments later on. 
+	/// </summary>
+	public static PlayerStats PlayerStats { get; set; }
+
 	public static GamePlatform Platform { get; set; }
-	public static PlayerControlSchemes PlayerControlScheme { get; set; } = PlayerControlSchemes.DoubleDPad;
+	public static PlayerControlSchemes PlayerControlScheme { get; set; } = Platform == GamePlatform.Desktop ? PlayerControlSchemes.Desktop : PlayerControlSchemes.DoubleDPad;
+	private static GameMono _instance;
+	public static GameMono Instance {
+		get {
+			if(_instance == null) {
+				_instance = new GameObject("").AddComponent<GameMono>();
+				UnityEngine.Object.DontDestroyOnLoad(_instance.gameObject);
+			}
+			return _instance;
+		}
+	}
 
 	public class World {
 		public World(Worlds worldType, Level[] levels, MenuCameraSettings menuCameraSettings) {
@@ -144,43 +173,79 @@ public static class Game {
 	/// <summary>
 	/// Must be called whenever the game is started. Returns an error string if something went wrong.
 	/// </summary>
-	public static string Initialize() {
+	public static async Task Initialize(bool isDuringStartup = false) {
 		if(ApplicationInitialized == false) {
-			Logger.FileLogPath = Application.persistentDataPath + "/log.txt";
-			Logger.ClearLogFile();
+			Logger.Initialize();
 			Logger.Log(Channel.Default, "### Begin of the logfile, continue starting the game. ###");
 
 			CheckPlatform();
-			if(PrefabManager.Instance == null) {
-				return "No Prefabmanager Instance exists.";
-			}
-			if(PrefabManager.Data == null) {
-				return "Prefabmanager is missing data.";
-			}
-			try {
-				PrefabManager.Instantiate(PrefabTypes.InputManager);
-			} catch {
-				return "Failed to load System-Input module.";
-			}
-			Logger.Log(Channel.System, "InputManager has been initialized.");
 
+			// Input Manager
 			try {
-				PrefabManager.Instantiate(PrefabTypes.GraphicSettings);
+				PlayerInputManager.Initialize();
+				if(isDuringStartup) {
+					GameStartup.LoadingText.SetText("Input System initialized");
+					await Task.Delay(250);
+				}
+			} catch(Exception e) {
+				Logger.LogError("Failed to initalize the player input system.", e);
+			}
+
+			// Graphic Settings
+			try {
 				GraphicSettings.Initialize();
-				Logger.Log(Channel.System, "GraphicsManager has been initialized.");
-			} catch {
-				return "Failed to load GraphicSettings module.";
+				if(isDuringStartup) {
+					GameStartup.LoadingText.SetText("Graphic Settings initialized");
+					await Task.Delay(250);
+				}
+			} catch(Exception e) {
+				Logger.LogError("Failed to initialize GraphicSettings.", e);
 			}
 
+			// Runtime Analytics, only run this when build
+			try {
+#if UNITY_EDITOR == false
+				await RuntimeAnalytics.Initialize();
+				if(isDuringStartup) {
+					GameStartup.LoadingText.SetText("Session created");
+					await Task.Delay(250);
+				}
+#endif
+			} catch(Exception e) {
+				Logger.LogError("Failed to initialize GameAnalytics", e);
+			}
+
+			// SaveGame
 			try {
 				SaveGame.GameStartUp();
-			} catch {
-				return "Failed to load player Save-Game.";
+				if(isDuringStartup) {
+					GameStartup.LoadingText.SetText("Save Game loaded");
+					await Task.Delay(250);
+				}
+			} catch(Exception e) {
+				Logger.LogError("Critical error occurred while loading the games SaveGame file. Progress will be reset.", e);
 			}
+
+			// Player Stats
+			try {
+				PlayerStats.GameStartup();
+				if(isDuringStartup) {
+					GameStartup.LoadingText.SetText("Player Stats loaded");
+					await Task.Delay(250);
+				}
+			} catch(Exception e) {
+				Logger.LogError("Critical error occured while loading the Player Stats. Progress will be reset.", e);
+			}
+
 			PlayerInputManager.HideControls();
+
+			// Refresh the games save files timestamps
+			SaveGame.Save();
+			PlayerStats.SavePlayerStats();
+
+			// End of loading
 			ApplicationInitialized = true;
         }
-		return string.Empty;
     }
 	public static void CheckPlatform() {
 #if UNITY_ANDROID
@@ -191,6 +256,7 @@ public static class Game {
 #endif
 		Logger.Log(Channel.Platform, "Game has been started in " + Platform + " mode.");
 	}
+	public static bool EveryFixedFrame(int step) => FixedSteps % (ulong)step == 0;
 
 	/// <summary>
 	/// Change the player input control scheme. Only available for mobile platform.
@@ -229,13 +295,13 @@ public static class Game {
 			try {
 				Cursor.SetCursor(Cursors[cursor.ToLower()], Vector2.zero, CursorMode.Auto);
 			} catch {
-				Logger.Log(Channel.Rendering, Priority.Error, "Failed setting Cursor Texture!");
+				Logger.Log(Channel.Rendering, "Failed setting Cursor Texture!");
 			}
 		} else {
 			try {
 				Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
 			} catch {
-				Logger.Log(Channel.Rendering, Priority.Error, "Failed setting Cursor Texture to null");
+				Logger.Log(Channel.Rendering, "Failed setting Cursor Texture to null");
 			}
 		}
 	}
@@ -243,5 +309,171 @@ public static class Game {
 		if(!Cursors.ContainsKey(name)) {
 			Cursors.Add(name, texture);
 		}
+	}
+
+	// File Helper Methods
+	/// <summary>
+	/// Compresses and returns the given string.
+	/// </summary>
+	/// <param name="str"></param>
+	/// <returns></returns>
+	public static string CompressString(string str) {
+		var bytes = Encoding.UTF8.GetBytes(str);
+
+		using(var msi = new MemoryStream(bytes))
+		using(var mso = new MemoryStream()) {
+			using(var gs = new GZipStream(mso, CompressionMode.Compress)) {
+				//msi.CopyTo(gs);
+				CopyTo(msi, gs);
+			}
+
+			return Convert.ToBase64String(mso.ToArray());
+		}
+	}
+	/// <summary>
+	/// Decompresses and returns the given string.
+	/// </summary>
+	/// <param name="compressedString"></param>
+	/// <returns></returns>
+	public static string DecompressString(string compressedString) {
+		byte[] bytes = Convert.FromBase64String(compressedString);
+		using(var msi = new MemoryStream(bytes))
+		using(var mso = new MemoryStream()) {
+			using(var gs = new GZipStream(msi, CompressionMode.Decompress)) {
+				//gs.CopyTo(mso);
+				CopyTo(gs, mso);
+			}
+
+			return Encoding.UTF8.GetString(mso.ToArray());
+		}
+	}
+	private static void CopyTo(Stream src, Stream dest) {
+		byte[] bytes = new byte[4096];
+
+		int cnt;
+
+		while((cnt = src.Read(bytes, 0, bytes.Length)) != 0) {
+			dest.Write(bytes, 0, cnt);
+		}
+	}
+	/// <summary>
+	/// Checks if the integrity of the PlayerStats file. Return (bool integrityOkay, bool notFound).
+	/// </summary>
+	/// <returns></returns>
+	public static (bool integrityOkay, bool notFound) VerifyIntegrity<T>(string path, bool isCompressed = false) {
+		// Check if file even exists
+		if(File.Exists(path)) {
+			try {
+				string content = ReadFromFile(path, isCompressed);
+				if(string.IsNullOrEmpty(content)) {
+					throw new Exception("File empty.");
+				}
+
+				// Try to parse the decompressed files content
+				JsonConvert.DeserializeObject<T>(content);
+				return (true, false);
+			} catch(Exception e) {
+				Logger.LogError("Content seems to be corrupted from file " + path, e);
+				return (false, false);
+			}
+		} else {
+			Logger.Log(Channel.SaveGame, "PlayerStats file not found.");
+			return (true, true);
+		}
+	}
+	/// <summary>
+	/// Writes the given string to a file.
+	/// </summary>
+	/// <param name="content"></param>
+	/// <param name="compress"></param>
+	public static void WriteToFile(string content, string path, bool compress = false) {
+		try {
+			using var stream = new FileStream(path, FileMode.Open, FileAccess.Write);
+			using var sw = new StreamWriter(stream);
+
+			if(compress) {
+				content = CompressString(content);
+			}
+			
+			sw.Write(content);
+			sw.Close();
+		} catch(FileNotFoundException e) {
+			Logger.LogError("Failed to write content to " + path, e);
+			throw e;
+		} catch(IOException e) {
+			Logger.LogError("Something else went wrong writing content to file " + path, e);
+			throw e;
+		}
+	}
+	public static string ReadFromFile(string path, bool decompress = false) {
+		try {
+			using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+			using var sw = new StreamReader(stream);
+			string content = sw.ReadToEnd();
+			sw.Close();
+
+			if(decompress) {
+				content = DecompressString(content);
+			}
+
+			return content;
+		} catch(FileNotFoundException e) {
+			Logger.LogError("Failed to read content from " + path, e);
+			throw e;
+		} catch(IOException e) {
+			Logger.LogError("Something else went wrong reading content from file " + path, e);
+			throw e;
+		}
+	}
+	public static bool CreateFile(string path) {
+		if(File.Exists(path) == false) {
+			using var fs = File.Create(path);
+			fs.Close();
+			return true;
+		} else {
+			Logger.LogError("File already exists on " + path, null);
+			return false;
+		}
+	}
+	public static bool DeleteFile(string path) {
+		if(File.Exists(path)) {
+			try {
+				File.Delete(path);
+				return true;
+			} catch(Exception e) {
+				Logger.LogError("Failed to delete file " + path, e);
+				return false;
+			}
+		}
+		return false;
+	}
+	public static void RenameFile(string path, string newName) {
+		FileInfo info = new FileInfo(path);
+		if(info.Exists) {
+			path = path.Replace(Path.GetFileNameWithoutExtension(path), newName);
+			info.MoveTo(path);
+		}
+	}
+	public static void CreateBackupOfFile(string path) {
+		if(File.Exists(path)) {
+			string filename = Path.GetFileNameWithoutExtension(path);
+			string backupPath = path.Replace(filename, filename + "_corrutped_backup_" + DateTime.Now.ToFileTime());
+			File.Copy(path, backupPath);
+		}
+	}
+
+
+
+	public class GameMono : MonoBehaviour {
+
+		public ulong fixedSteps;
+
+		private void FixedUpdate() {
+			fixedSteps++;
+			if(fixedSteps < 0) {
+				fixedSteps = 0;
+			}
+		}
+
 	}
 }

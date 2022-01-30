@@ -10,28 +10,36 @@ using System.Runtime.InteropServices;
 public static class SaveGame {
 
 	public static SaveV1 SaveInstance { get; set; }
+#if UNITY_EDITOR
+	public const bool CompressSaveGame = false;
 	public static Formatting JsonFormatting => Formatting.Indented;
+#else
+	public const bool CompressSaveGame = true;
+	public static Formatting JsonFormatting => Formatting.None;
+#endif
 
-	private static void WriteSaveGame(string json) {
-		using(StreamWriter sw = new StreamWriter(GamePaths.SaveGamePath, false, System.Text.Encoding.UTF8)) {
-			sw.Write(json);
-			sw.Flush();
-		}
-	}
-	private static string ReadSaveGame() {
-		using(StreamReader sr = new StreamReader(GamePaths.SaveGamePath, System.Text.Encoding.Unicode)) {
-			return sr.ReadToEnd();
-		}
-	}
 	public static void GameStartUp() {
-		if (ValidateSaveGame() == false) {
-			SaveInstance = CreateFreshSaveGame();
-			WriteSaveGame(JsonConvert.SerializeObject(SaveInstance, JsonFormatting));
-
-			Logger.Log(Channel.SaveGame, "SaveGame file has been created.");
-		} else {
-			LoadGame();
+		(bool integrityOkay, bool notFound) status = Game.VerifyIntegrity<SaveV1>(GamePaths.SaveGamePath, CompressSaveGame);
+		if (status.notFound) {
+			try {
+				if(Game.CreateFile(GamePaths.SaveGamePath)) {
+					Game.WriteToFile(JsonConvert.SerializeObject(CreateFreshSaveGame(), JsonFormatting), GamePaths.SaveGamePath, CompressSaveGame);
+					Logger.Log(Channel.SaveGame, "SaveGame file has been created.");
+				} else {
+					throw new Exception();
+				}
+			} catch(Exception e) {
+				Logger.LogError("Failed to create a fresh SaveGame file.", e);
+			}
+		} else if(status.integrityOkay == false) {
+			Logger.Log(Channel.SaveGame, "SaveGame file seems to be corrupted. Continue to create a new SaveGame file.");
+			Game.CreateBackupOfFile(GamePaths.SaveGamePath);
+			Game.DeleteFile(GamePaths.SaveGamePath);
+			Game.CreateFile(GamePaths.SaveGamePath);
+			Game.WriteToFile(JsonConvert.SerializeObject(CreateFreshSaveGame(), JsonFormatting), GamePaths.SaveGamePath, CompressSaveGame);
 		}
+
+		LoadGame();
 	}
 
 	public static SaveV1 CreateFreshSaveGame() {
@@ -117,66 +125,44 @@ public static class SaveGame {
 	}
 
 	public static void Save() {
-		if(ValidateSaveGame()) {
-			try {
-				var json = JsonConvert.SerializeObject(SaveInstance, JsonFormatting);
-				WriteSaveGame(json);
+		try {
+			SaveInstance.LastModified = DateTime.Now;
+			var json = JsonConvert.SerializeObject(SaveInstance, JsonFormatting, new JsonSerializerSettings() {
+				CheckAdditionalContent = false,
+				NullValueHandling = NullValueHandling.Include,
+				MissingMemberHandling = MissingMemberHandling.Ignore,
+				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+			});
+			Game.WriteToFile(json, GamePaths.SaveGamePath, CompressSaveGame);
 
-				Logger.Log(Channel.SaveGame, "Game has been saved.");
-			} catch (Exception e) {
-				Logger.LogError(Channel.SaveGame, "Something went wrong saving to the SaveGame file.", e);
-			}
-		} else {
-			Logger.Log(Channel.SaveGame, "No Savegame file has been found.");
-        }
+			Logger.Log(Channel.SaveGame, "Game has been saved.");
+		} catch(Exception e) {
+			Logger.LogError("Something went wrong while saving to the SaveGame file.", e);
+		}
 	}
 
 	public static void LoadGame() {
-		if(ValidateSaveGame()) {
-			try {
-				Logger.Log(Channel.SaveGame, "Loading SaveGame.");
-				JObject json = JObject.Parse(ReadSaveGame());
-				int version = json[nameof(ISaveGame.SaveGameVersion)].Value<int>();
-				Logger.Log(Channel.SaveGame, "Detected SaveGame version: " + version);
-
-				switch (version) {
-					case 1: {
-							SaveInstance = json.ToObject<SaveV1>();
-							SaveInstance.Worlds.AddRange(CheckAddWorlds());
-							Save();
-						}
-						break;
-
-					default:
-						Logger.Log(Channel.SaveGame, Priority.Error, $"Current SaveGame: v{version} has no compatibility with the game!");
-						SaveInstance = CreateFreshSaveGame();
-						Save();
-						break;
-				}
-			} catch (Exception e) {
-				Logger.LogError(Channel.SaveGame, "Something went wrong loading the SaveGame file.", e);
-			}
-		} else {
-			Logger.Log(Channel.SaveGame, "No SaveGame file has been found.");
-        }
-	}
-
-	public static bool ValidateSaveGame() {
-		if(File.Exists(GamePaths.SaveGamePath) == false) {
-			Logger.Log(Channel.SaveGame, "No Savegame file has been found.");
-			return false;
-		}
-		FileInfo info = new FileInfo(GamePaths.SaveGamePath);
-		if (info.Length == 0) {
-			Logger.Log(Channel.SaveGame, "Savegame file is empty.");
-			return false;
-		}
 		try {
-			JObject json = JObject.Parse(ReadSaveGame());
-			return true;
+			JObject json = JObject.Parse(Game.ReadFromFile(GamePaths.SaveGamePath, CompressSaveGame));
+			int version = json[nameof(ISaveGame.SaveGameVersion)].Value<int>();
+			Logger.Log(Channel.SaveGame, "Detected SaveGame version: " + version);
+
+			switch (version) {
+				case 1: {
+						SaveInstance = json.ToObject<SaveV1>();
+						SaveInstance.Worlds.AddRange(CheckAddWorlds());
+						Logger.Log(Channel.SaveGame, "SaveGame has been loaded.");
+					}
+					break;
+
+				default:
+					Logger.Log(Channel.SaveGame, $"Current SaveGame: v{version} has no compatibility with the game!");
+					SaveInstance = CreateFreshSaveGame();
+					Save();
+					break;
+			}
 		} catch (Exception e) {
-			Logger.LogError(Channel.SaveGame, "Failed to parse Savegame file.", e);
-			return false;
+			Logger.LogError("Something went wrong loading the SaveGame file.", e);
 		}
 	}
 
@@ -194,6 +180,9 @@ public static class SaveGame {
 			case 0: return SaveInstance.saveSlot1;
 			case 1: return SaveInstance.saveSlot2;
 			case 2: return SaveInstance.saveSlot3;
+			case 8:
+				Debug.LogWarning("No active SaveSlot selected! If this is message shows up during Level-Scene startup everything is okay.");
+				return null;
 			default:
 				throw new NotImplementedException("SaveSlot " + saveSlot + " is not available.");
 		}
