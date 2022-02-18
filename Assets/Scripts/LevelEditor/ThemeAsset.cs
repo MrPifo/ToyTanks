@@ -7,7 +7,7 @@ namespace ToyTanks.LevelEditor {
 	[CreateAssetMenu(fileName = "LevelTheme", menuName = "Themes/Theme", order = 1)]
 	public class ThemeAsset : ScriptableObject {
 
-		public LevelEditor.Themes theme;
+		public WorldTheme theme;
 		public Material floorMaterial;
 		public bool SSR;
 		public bool isDark;
@@ -15,7 +15,7 @@ namespace ToyTanks.LevelEditor {
 
 		[Serializable]
 		public class BlockAsset {
-			public LevelEditor.BlockTypes block;
+			public BlockType block;
 			public GameObject prefab;
 			public Material material;
 			public Sprite preview;
@@ -24,7 +24,7 @@ namespace ToyTanks.LevelEditor {
 			public bool isDynamic {
 				get {
 					switch(block) {
-						case LevelEditor.BlockTypes.BoxDestructable:
+						case BlockType.BoxDestructable:
 							return true;
 						default:
 							return false;
@@ -33,7 +33,7 @@ namespace ToyTanks.LevelEditor {
 			}
 		}
 
-		public BlockAsset GetAsset(LevelEditor.BlockTypes type) {
+		public BlockAsset GetAsset(BlockType type) {
 			foreach(var a in assets) {
 				if(a.block == type) {
 					return a;

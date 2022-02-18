@@ -19,7 +19,6 @@ public class LevelManager : MonoBehaviour {
 	[SerializeField] private float gridDensity = 2;
 	[SerializeField] private float gridPointDistance = 3f;
 	[SerializeField] private float gridPointOverlapRadius = 1f;
-	[SerializeField] private bool showGrid;
 	[SerializeField] private CanvasGroup optionsMenu;
 	[SerializeField] private Transform themePresets;
 	[SerializeField] private LayerMask baseLayer;
@@ -175,12 +174,13 @@ public class LevelManager : MonoBehaviour {
 
 	public void ClearMap() {
 		// Clear all GameEntities from level
-		foreach(GameEntity entity in FindObjectsOfType<GameEntity>().Where(g => g.CompareTag("LevelPreset") == false)) {
+		foreach(GameEntity entity in FindObjectsOfType<GameEntity>().Where(g => g != null && g.CompareTag("LevelPreset") == false)) {
 			if(entity is TankBase) {
 				(entity as TankBase).CleanUpDestroyedPieces();
 			}
-			Destroy(entity.gameObject);
+			DestroyImmediate(entity.gameObject);
 		}
+		LevelGround.Instance.Clear();
 		presets.ForEach(preset => preset.gameobject.Hide());
 	}
 
@@ -194,7 +194,6 @@ public class LevelManager : MonoBehaviour {
 			ThemeAsset.BlockAsset asset = blockAssets.GetAsset(block.type);
 			var b = Instantiate(asset.prefab, block.pos, Quaternion.Euler(block.rotation)).GetComponent<LevelBlock>();
 			b.transform.SetParent(BlocksContainer);
-			b.Index = block.index;
 			b.MeshRender.sharedMaterial = asset.material;
 			if(asset.isDynamic == false) {
 				b.gameObject.isStatic = true;
@@ -214,8 +213,7 @@ public class LevelManager : MonoBehaviour {
 			t.gameObject.SetActive(false);
 		}
 		themePresets.Find(data.theme.ToString()).gameObject.SetActive(true);
-		var floor = GameObject.FindGameObjectWithTag("Ground").GetComponent<MeshRenderer>();
-		floor.sharedMaterial = blockAssets.floorMaterial;
+		LevelGround.Instance.GenerateAndPatch(GridSize, data.groundTiles);
 		LevelLightmapper.SwitchLightmaps(CurrentLevel.levelId);
 	}
 
@@ -288,8 +286,6 @@ public class LevelManager : MonoBehaviour {
 		} else {
 			gameCamera.ChangeState(GameCamera.GameCamState.Overview);
 		}
-		gameCamera.focusOnPlayerStrength = CurrentLevel.customCameraFocusIntensity == null ? gameCamera.focusOnPlayerStrength : (float)CurrentLevel.customCameraFocusIntensity;
-		gameCamera.maxOrthographicSize = CurrentLevel.customMaxZoomOut == null ? gameCamera.maxOrthographicSize : (float)CurrentLevel.customMaxZoomOut;
 		player.EnableControls();
 		EnableAllAIs();
 
@@ -297,9 +293,6 @@ public class LevelManager : MonoBehaviour {
 			t.InitializeTank();
 		}
 
-		if(IsEditor) {
-			Editor.playTestButton.interactable = true;
-		}
 		Game.IsGamePlaying = true;
 	}
 
@@ -538,7 +531,7 @@ public class LevelManager : MonoBehaviour {
 
 	//public static LevelPreset GetPreset(GridSizes size, LevelEditor.Themes theme) => Instance.presets.Where(p => p.gridSize == size && p.theme == theme).FirstOrDefault();
 
-	public static void EnablePreset(GridSizes size, LevelEditor.Themes theme) {
+	public static void EnablePreset(GridSizes size, WorldTheme theme) {
 		Instance.presets.ForEach(preset => { preset.gameobject.Hide(); preset.gameobject.transform.parent.Hide(); });
 		var preset = Instance.presets.Where(p => p.gridSize == size && p.theme == theme).FirstOrDefault().gameobject;
 		preset.transform.parent.Show();
@@ -547,7 +540,7 @@ public class LevelManager : MonoBehaviour {
 
 	[System.Serializable]
 	public class LevelPreset {
-		public LevelEditor.Themes theme;
+		public WorldTheme theme;
 		public GridSizes gridSize;
 		public GameObject gameobject;
 	}

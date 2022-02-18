@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 public static class Game {
 
 	static readonly List<World> Worlds = new List<World>() {
-		new World(global::Worlds.WoodWorld, new Level[10] {
+		new World(global::WorldTheme.Woody, new Level[10] {
 			new Level(0, 1),
 			new Level(1, 2),
 			new Level(2, 3),
@@ -35,7 +35,7 @@ public static class Game {
 			rot = new Vector3(60, 0, 0),
 		}),
 
-		new World(global::Worlds.FloorWorld, new Level[10] {
+		new World(global::WorldTheme.Fir, new Level[10] {
 			new Level(0, 11),
 			new Level(1, 12),
 			new Level(2, 13),
@@ -69,7 +69,7 @@ public static class Game {
 			rot = new Vector3(60, 0, 0),
 		}),*/
 
-		new World(global::Worlds.SnowyLands, new Level[10] {
+		new World(global::WorldTheme.Snowy, new Level[10] {
 			new Level(0, 21),
 			new Level(1, 22),
 			new Level(2, 23),
@@ -140,16 +140,16 @@ public static class Game {
 	}
 
 	public class World {
-		public World(Worlds worldType, Level[] levels, MenuCameraSettings menuCameraSettings) {
+		public World(WorldTheme worldType, Level[] levels, MenuCameraSettings menuCameraSettings) {
 			this.levels = levels;
 			this.worldType = worldType;
 			this.menuCameraSettings = menuCameraSettings;
 		}
-		readonly Worlds worldType;
+		readonly WorldTheme worldType;
 		readonly Level[] levels;
 		readonly MenuCameraSettings menuCameraSettings;
 
-		public Worlds WorldType => worldType;
+		public WorldTheme WorldType => worldType;
 		public Level[] Levels => levels;
 		public MenuCameraSettings MenuCameraSettings => menuCameraSettings;
 
@@ -283,13 +283,13 @@ public static class Game {
 
 	// Getter Methods
 	public static World[] GetWorlds => Worlds.ToArray();
-	public static World GetWorld(Worlds worldType) => Worlds.Find(w => w.WorldType == worldType);
+	public static World GetWorld(WorldTheme worldType) => Worlds.Find(w => w.WorldType == worldType);
 	public static World GetWorld(ulong levelId) => Worlds.Find(w => w.Levels.Any(l => l.LevelId == levelId));
-	public static Level[] GetLevels(Worlds worldType) => GetWorld(worldType).Levels;
-	public static Level GetLevelByOrder(Worlds worldType, int order) => GetWorld(worldType).Levels.Where(l => l.Order == order).First();
+	public static Level[] GetLevels(WorldTheme worldType) => GetWorld(worldType).Levels;
+	public static Level GetLevelByOrder(WorldTheme worldType, int order) => GetWorld(worldType).Levels.Where(l => l.Order == order).First();
 	public static Level GetLevelById(ulong levelId) => Levels.Where(l => l.LevelId == levelId).First();
 	public static bool LevelExists(ulong levelId) => Levels.Any(l => l.LevelId == levelId);
-	public static int LevelCount(Worlds worldType) => GetWorld(worldType).Levels.Length;
+	public static int LevelCount(WorldTheme worldType) => GetWorld(worldType).Levels.Length;
 	public static void SetCursor(string cursor = "") {
 		if(Cursors.ContainsKey(cursor.ToLower())) {
 			try {

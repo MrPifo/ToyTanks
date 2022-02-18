@@ -16,7 +16,7 @@ using UnityEditor;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(TankReferences))]
-public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
+public class TankBase : GameEntity, IHittable, IResettable, IForceShield, IEditor {
 
 	public enum TimeMode { DeltaTime, FixedUpdate }
 
@@ -77,8 +77,6 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	protected GroundPainter groundPainter;
 	List<Vector3> destroyRestPoses;
 	List<Quaternion> destroyRestRots;
-	Material[] bodyMats;
-	Material[] headMats;
 	List<GridPos> lastOccupied = new List<GridPos>();
 	GameObject healthPointPrefab;
 
@@ -153,8 +151,6 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 	protected virtual void Awake() {
 		References = GetComponent<TankReferences>();
 		rig = GetComponent<Rigidbody>();
-		headMats = tankHead.GetComponent<MeshRenderer>().sharedMaterials;
-		bodyMats = tankBody.GetComponent<MeshRenderer>().sharedMaterials;
 		healthPoints = tankAsset.health;
 		directionLeaderRestPos = DirectionLeader.position;
 		healthPointPrefab = healthBar.transform.GetChild(0).gameObject;
@@ -502,12 +498,28 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield {
 
 	// Only for Editor purposes
 	public void RestoreMaterials() {
-		tankBody.GetComponent<MeshRenderer>().sharedMaterials = bodyMats;
-		tankHead.GetComponent<MeshRenderer>().sharedMaterials = headMats;
+		try {
+			LevelEditor.RestoreMaterials(tankHead.GetComponent<MeshRenderer>().materials);
+			LevelEditor.RestoreMaterials(tankBody.GetComponent<MeshRenderer>().materials);
+		} catch {
+			Debug.LogWarning("References to materials lost. Cannot mostly be ignored.");
+		}
 	}
-	public void SwapMaterial(Material mat) {
-		tankBody.GetComponent<MeshRenderer>().sharedMaterials = new Material[] { mat, mat };
-		tankHead.GetComponent<MeshRenderer>().sharedMaterials = new Material[] { mat, mat };
+	public void SetAsPreview() {
+		try {
+			LevelEditor.SetMaterialsAsPreview(tankHead.GetComponent<MeshRenderer>().materials);
+			LevelEditor.SetMaterialsAsPreview(tankBody.GetComponent<MeshRenderer>().materials);
+		} catch {
+			Debug.LogWarning("References to materials lost. Cannot mostly be ignored.");
+		}
+	}
+	public void SetAsDestroyPreview() {
+		try {
+			LevelEditor.SetMaterialsAsDestroyPreview(tankHead.GetComponent<MeshRenderer>().materials);
+			LevelEditor.SetMaterialsAsDestroyPreview(tankBody.GetComponent<MeshRenderer>().materials);
+		} catch {
+			Debug.LogWarning("References to materials lost. Cannot mostly be ignored.");
+		}
 	}
 
 #if UNITY_EDITOR

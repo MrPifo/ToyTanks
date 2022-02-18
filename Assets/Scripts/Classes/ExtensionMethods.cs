@@ -177,6 +177,9 @@ public static class ExtensionMethods {
             t.transform.DOScale(original, duration / 2f);
         });
     }
+    public static RectTransform RectTransform(this Component t) {
+        return t.GetComponent<RectTransform>();
+    }
     /*public static void Copy(this Camera cam, Camera target) {
         cam.orthographicSize = target.orthographicSize;
         cam.transform.position = target.transform.position;

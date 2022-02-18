@@ -43,7 +43,7 @@ public class MenuManager : MonoBehaviour {
 			return _instance;
 		}
 	}
-	public static Worlds lastVisitedWorld = Worlds.WoodWorld;
+	public static WorldTheme lastVisitedWorld = WorldTheme.Woody;
 
 	GameObject customLevelButton;
 	string currentCustomFilePath;

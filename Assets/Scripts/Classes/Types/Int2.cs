@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
 using UnityEngine;
+using Newtonsoft.Json;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -17,9 +18,19 @@ namespace Sperlich.Types {
 			y = _y;
 		}
 
+		[JsonIgnore]
 		public Int2 yx => new Int2(y, x);
+		/// <summary>
+		/// Converts Int2 to Vector3(x, 0, y)
+		/// </summary>
+		[JsonIgnore]
 		public Vector3 xyz => new Vector3(x, 0, y);
+		[JsonIgnore]
 		public UnityEngine.Vector2 Vector2 => new UnityEngine.Vector2(x, y);
+		/// <summary>
+		/// Converts Int2 to Vector3(x, y, 0)
+		/// </summary>
+		[JsonIgnore]
 		public UnityEngine.Vector3 Vector3 => new UnityEngine.Vector3(x, y, 0);
 		public static implicit operator UnityEngine.Vector2(Int2 item) => new UnityEngine.Vector2(item.x, item.y);
 		public static implicit operator UnityEngine.Vector2Int(Int2 item) => new UnityEngine.Vector2Int(item.x, item.y);

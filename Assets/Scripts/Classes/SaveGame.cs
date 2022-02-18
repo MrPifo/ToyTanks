@@ -10,13 +10,8 @@ using System.Runtime.InteropServices;
 public static class SaveGame {
 
 	public static SaveV1 SaveInstance { get; set; }
-#if UNITY_EDITOR
 	public const bool CompressSaveGame = false;
 	public static Formatting JsonFormatting => Formatting.Indented;
-#else
-	public const bool CompressSaveGame = true;
-	public static Formatting JsonFormatting => Formatting.None;
-#endif
 
 	public static void GameStartUp() {
 		(bool integrityOkay, bool notFound) status = Game.VerifyIntegrity<SaveV1>(GamePaths.SaveGamePath, CompressSaveGame);
@@ -194,16 +189,16 @@ public static class SaveGame {
 
 	// Version dependent Helper functions
 	public static bool HasGameBeenCompletedOnce => SaveInstance.GameCompletedOnce;
-	public static SaveV1.World GetWorld(Worlds world) => SaveInstance.Worlds.Find(w => w.world == world);
-	public static SaveV1.Level GetLevel(Worlds world, ulong levelId) => GetWorld(world).levels.Where(l => l.LevelId == levelId).FirstOrDefault();
-	public static int UnlockedLevelCount(Worlds world) => GetWorld(world).levels.Count(l => l.IsUnlocked == true);
-	public static bool IsLevelUnlocked(Worlds world, ulong levelId) => GetLevel(world, levelId).IsUnlocked;
+	public static SaveV1.World GetWorld(WorldTheme world) => SaveInstance.Worlds.Find(w => w.world == world);
+	public static SaveV1.Level GetLevel(WorldTheme world, ulong levelId) => GetWorld(world).levels.Where(l => l.LevelId == levelId).FirstOrDefault();
+	public static int UnlockedLevelCount(WorldTheme world) => GetWorld(world).levels.Count(l => l.IsUnlocked == true);
+	public static bool IsLevelUnlocked(WorldTheme world, ulong levelId) => GetLevel(world, levelId).IsUnlocked;
 
 	public class Campaign {
 
 		public enum Difficulty { Easy, Medium, Hard, Original }
 
-		[JsonIgnore] public Worlds CurrentWorld => Game.GetWorld(levelId).WorldType;
+		[JsonIgnore] public WorldTheme CurrentWorld => Game.GetWorld(levelId).WorldType;
 		public Difficulty difficulty;
 		public ulong levelId;
 		public byte lives;

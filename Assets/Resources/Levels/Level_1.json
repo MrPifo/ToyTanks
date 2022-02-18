@@ -1,39 +1,27 @@
 {
   "levelName": "",
   "levelId": 1,
-  "isNight": false,
-  "gridSize": 2,
-  "indirectLightIntensity": 0.0,
-  "customCameraFocusIntensity": null,
-  "customMaxZoomOut": null,
-  "theme": 0,
-  "sunLight": {
-    "pos": {
-      "x": 0,
-      "y": 15,
-      "z": 0
-    },
-    "rotation": {
-      "x": 50,
-      "y": 45,
-      "z": 0
-    },
-    "intensity": 6
-  },
-  "spotLight": {
-    "pos": {
-      "x": 0,
-      "y": 25,
-      "z": -10
-    },
-    "rotation": {
-      "x": 55,
-      "y": 0,
-      "z": 0
-    },
-    "intensity": 0
-  },
+  "gridSize": "Size_9x6",
+  "theme": "Woody",
   "blocks": [
+    {
+      "pos": {
+        "x": -1,
+        "y": 2,
+        "z": -1
+      },
+      "index": {
+        "x": 2,
+        "y": 2,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "TriangleRoof"
+    },
     {
       "pos": {
         "x": 0,
@@ -42,7 +30,7 @@
       },
       "index": {
         "x": 0,
-        "y": 4,
+        "y": 0,
         "z": 0
       },
       "rotation": {
@@ -50,8 +38,7 @@
         "y": 90,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -69,8 +56,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -88,8 +74,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -107,8 +92,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -126,8 +110,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -145,8 +128,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -164,8 +146,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -183,8 +164,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -202,8 +182,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -221,8 +200,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -240,8 +218,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -259,8 +236,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -278,27 +254,7 @@
         "y": 270,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
-    },
-    {
-      "pos": {
-        "x": -1,
-        "y": 2,
-        "z": -1
-      },
-      "index": {
-        "x": -4,
-        "y": 2,
-        "z": -2
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 0,
-      "type": 5
+      "type": "Block"
     },
     {
       "pos": {
@@ -316,8 +272,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -335,8 +290,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -346,7 +300,7 @@
       },
       "index": {
         "x": -6,
-        "y": 4,
+        "y": 0,
         "z": -2
       },
       "rotation": {
@@ -354,13 +308,12 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 1
+      "type": "Block2"
     }
   ],
   "tanks": [
     {
-      "tankType": 1,
+      "tankType": "Brown",
       "pos": {
         "x": -1,
         "y": 0,
@@ -378,7 +331,7 @@
       }
     },
     {
-      "tankType": 0,
+      "tankType": "Player",
       "pos": {
         "x": -1,
         "y": 0,
@@ -393,6 +346,379 @@
         "x": 0,
         "y": 90,
         "z": 0
+      }
+    }
+  ],
+  "groundTiles": [
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 2,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 2,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 2,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 2,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 2,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 2,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 4,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 4,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 4,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 4,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 4,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 4,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 6,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 6,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 8,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 8,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 8,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 8,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 8,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 10,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 10,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 10,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 10,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 10,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 10,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 10,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 12,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 12,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 12,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 12,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 12,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 12,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 12,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 14,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 14,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 14,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 14,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 14,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 14,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 14,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 16,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 16,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 16,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 16,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 16,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 16,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 16,
+        "y": -2
       }
     }
   ]

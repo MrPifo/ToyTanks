@@ -108,7 +108,6 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 
 	public override void Move(Vector2 inputDir) {
 		moveDir = new Vector3(inputDir.x, 0, inputDir.y);
-		rig.velocity = Vector3.zero;
 		float dirFactor = Mathf.Sign(Vector3.Dot(moveDir.normalized, rig.transform.forward));
 		if(disable2DirectionMovement) {
 			dirFactor = 1;

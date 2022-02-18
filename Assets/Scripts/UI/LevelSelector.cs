@@ -41,7 +41,7 @@ public class LevelSelector : MonoBehaviour {
 		}
 	}
 
-	public void SwitchToWorld(Worlds worldType) {
+	public void SwitchToWorld(WorldTheme worldType) {
 		Logger.Log(Channel.UI, "Switching to world " + worldType.ToString());
 		SaveGame.LoadGame();
 		activeWorld = menus.Where(w => w.world == worldType).First();
@@ -58,15 +58,15 @@ public class LevelSelector : MonoBehaviour {
 
 	public void NextWorld() {
 		int nWorld = (int)(activeWorld.world) + 1;
-		if(nWorld < System.Enum.GetValues(typeof(Worlds)).Length) {
-			SwitchToWorld((Worlds)nWorld);
+		if(nWorld < System.Enum.GetValues(typeof(WorldTheme)).Length) {
+			SwitchToWorld((WorldTheme)nWorld);
 		}
 	}
 
 	public void PreviousWorld() {
 		int nWorld = (int)(activeWorld.world) - 1;
 		if(nWorld >= 0) {
-			SwitchToWorld((Worlds)nWorld);
+			SwitchToWorld((WorldTheme)nWorld);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class LevelSelector : MonoBehaviour {
 		if(pWorld >= 0) {
 			previousButton.Show();
 		}
-		if(nWorld < System.Enum.GetValues(typeof(Worlds)).Length) {
+		if(nWorld < System.Enum.GetValues(typeof(WorldTheme)).Length) {
 			nextButton.Show();
 		}
 	}

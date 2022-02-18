@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MenuWorldUI : MonoBehaviour {
 
-	public Worlds world;
+	public WorldTheme world;
 	public MenuCameraSettings cameraSettings = new MenuCameraSettings();
 	public List<(ulong id, MenuLevelUI)> levels = new List<(ulong id, MenuLevelUI)>();
 

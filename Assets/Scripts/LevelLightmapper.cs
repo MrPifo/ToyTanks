@@ -157,14 +157,14 @@ namespace ToyTanks.LevelEditor {
 				if(textAsset != null) {
 					var mapLight = JsonConvert.DeserializeObject<MapLightData>(textAsset.text);
 					foreach(var mesh in FindObjectsOfType<LevelBlock>()) {
-						if(mapLight.HasInfo(mesh.Index) && mesh.type != LevelEditor.BlockTypes.Hole) {
+						/*if(mapLight.HasInfo(mesh.Index) && mesh.type != BlockType.Hole) {
 							var light = mapLight.GetInfo(mesh.Index);
 							mesh.MeshRender.lightmapIndex = light.index;
 							mesh.MeshRender.lightmapScaleOffset = new Vector4(light.scaleOffset[0], light.scaleOffset[1], light.scaleOffset[2], light.scaleOffset[3]);
 							mesh.MeshRender.realtimeLightmapScaleOffset = mesh.MeshRender.lightmapScaleOffset;
 							mesh.MeshRender.realtimeLightmapIndex = mesh.MeshRender.lightmapIndex;
 							mesh.MeshRender.UpdateGIMaterials();
-						}
+						}*/
 					}
 
 					var ground = GameObject.FindGameObjectWithTag("Ground")?.GetComponent<MeshRenderer>();
@@ -173,8 +173,8 @@ namespace ToyTanks.LevelEditor {
 						ground.lightmapScaleOffset = new Vector4(mapLight.groundInfo.scaleOffset[0], mapLight.groundInfo.scaleOffset[1], mapLight.groundInfo.scaleOffset[2], mapLight.groundInfo.scaleOffset[3]);
 						ground.realtimeLightmapIndex = 0;
 						ground.realtimeLightmapScaleOffset = new Vector4(mapLight.groundInfo.scaleOffset[0], mapLight.groundInfo.scaleOffset[1], mapLight.groundInfo.scaleOffset[2], mapLight.groundInfo.scaleOffset[3]);
-						ground.GetComponent<MeshFilter>().sharedMesh = Instance.defaultPlaneMesh;
-						ground.UpdateGIMaterials();
+						//ground.GetComponent<MeshFilter>().sharedMesh = Instance.defaultPlaneMesh;
+						//ground.UpdateGIMaterials();
 					}
 				}
 				Instance.Delay(0.5f, () => {
@@ -211,7 +211,7 @@ namespace ToyTanks.LevelEditor {
 			DrawDefaultInspector();
 			var builder = (LevelLightmapper)target;
 			if(GUILayout.Button("Bake") && Lightmapping.isRunning == false) {
-				LevelLightmapper.BakeLighting(FindObjectOfType<LevelEditor>().levelData);
+				LevelLightmapper.BakeLighting(FindObjectOfType<LevelEditor>().LevelData);
 			}
 			if(GUILayout.Button("Bake All Levels") && Lightmapping.isRunning == false) {
 				LevelLightmapper.BakeAllLevels(bakeRange.x, bakeRange.y);

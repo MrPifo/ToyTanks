@@ -94,7 +94,7 @@ public class SaveV1 : ISaveGame {
 	[Serializable]
 	public class World {
 		[JsonConverter(typeof(StringEnumConverter))]
-		public Worlds world;
+		public WorldTheme world;
 		public Level[] levels;
 	}
 

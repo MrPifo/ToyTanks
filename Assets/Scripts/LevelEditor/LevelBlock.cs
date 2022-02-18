@@ -2,22 +2,24 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using NaughtyAttributes;
 
 namespace ToyTanks.LevelEditor {
-	public class LevelBlock : GameEntity {
+	public class LevelBlock : GameEntity, IEditor {
 
+		[SerializeField]
 		private MeshFilter _meshFilter;
 		public MeshFilter MeshFilter {
-			get => isLevelPreset || _meshFilter == null ? GetComponent<MeshFilter>() : _meshFilter;
+			get => isNotEditable || _meshFilter == null ? GetComponent<MeshFilter>() : _meshFilter;
 			set => _meshFilter = value;
 		}
+		[SerializeField]
 		private MeshRenderer _meshRenderer;
 		public MeshRenderer MeshRender {
-			get => isLevelPreset || _meshRenderer == null ? GetComponent<MeshRenderer>() : _meshRenderer;
+			get => isNotEditable || _meshRenderer == null ? gameObject.transform.SearchComponent<MeshRenderer>() : _meshRenderer;
 			set => _meshRenderer = value;
 		}
-		public LevelEditor.Themes theme;
-		public LevelEditor.BlockTypes type;
+		public BlockType type;
 		public Vector3 customBounds;
 		public Vector3 offset;
 		public Vector3 Size {
@@ -37,11 +39,11 @@ namespace ToyTanks.LevelEditor {
 		}
 		private Int3 _index;
 		public Int3 Index {
-			get => isLevelPreset ? new Int3(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y), Mathf.RoundToInt(transform.position.z)) : _index;
+			get => isNotEditable ? new Int3(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y), Mathf.RoundToInt(transform.position.z)) : _index;
 			set => _index = value;
 		}
 		public List<Int3> allIndexes;
-		public bool isLevelPreset;
+		public bool isNotEditable;
 		Mesh defaultMesh;
 
 		private void Awake() {
@@ -56,13 +58,11 @@ namespace ToyTanks.LevelEditor {
 			MeshFilter.sharedMesh = defaultMesh;
 		}
 
-		public void SetTheme(LevelEditor.Themes theme) {
-			this.theme = theme;
-
+		public void SetTheme(WorldTheme theme) {
 			MeshRender.sharedMaterial = LevelEditor.ThemeAssets.Find(t => t.theme == theme).GetAsset(type).material;
 		}
 
-		public void SetData(Int3 index, List<Int3> indexes, LevelEditor.BlockTypes type) {
+		public void SetData(Int3 index, List<Int3> indexes, BlockType type) {
 			Index = index;
 			allIndexes = indexes;
 			this.type = type;
@@ -70,6 +70,20 @@ namespace ToyTanks.LevelEditor {
 
 		public void SetPosition(Vector3 pos) {
 			transform.position = pos + offset;
+		}
+
+		public void RestoreMaterials() {
+			MeshRender.material.SetFloat("_EditorPreview", 0);
+		}
+
+		public void SetAsPreview() {
+			MeshRender.material.SetFloat("_EditorPreview", 1);
+			MeshRender.material.DisableKeyword("_EDITORDESTROY");
+		}
+
+		public void SetAsDestroyPreview() {
+			MeshRender.material.SetFloat("_EditorPreview", 1);
+			MeshRender.material.EnableKeyword("_EDITORDESTROY");
 		}
 	}
 }

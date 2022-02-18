@@ -1,14 +1,8 @@
 {
   "levelName": "",
   "levelId": 26,
-  "isNight": false,
-  "gridSize": 1,
-  "indirectLightIntensity": 0.0,
-  "customCameraFocusIntensity": null,
-  "customMaxZoomOut": null,
-  "theme": 3,
-  "sunLight": null,
-  "spotLight": null,
+  "gridSize": "Size_12x9",
+  "theme": "Snowy",
   "blocks": [
     {
       "pos": {
@@ -26,8 +20,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -45,8 +38,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -64,8 +56,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -83,8 +74,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -102,8 +92,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -121,8 +110,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -140,8 +128,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -159,8 +146,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -178,8 +164,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -197,8 +182,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -216,8 +200,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -235,8 +218,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -254,8 +236,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -273,8 +254,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -292,8 +272,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -311,8 +290,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -330,8 +308,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -349,8 +326,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -368,8 +344,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -387,8 +362,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -406,8 +380,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -425,8 +398,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -444,8 +416,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -463,8 +434,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -482,8 +452,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -501,8 +470,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -520,8 +488,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -539,8 +506,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -558,8 +524,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -577,8 +542,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -596,8 +560,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -615,8 +578,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -634,8 +596,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -653,8 +614,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -672,8 +632,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -691,8 +650,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -710,8 +668,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -729,8 +686,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -748,8 +704,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -767,8 +722,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -786,8 +740,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -805,8 +758,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -824,8 +776,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -843,8 +794,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -862,8 +812,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -881,8 +830,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -900,122 +848,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
-    },
-    {
-      "pos": {
-        "x": -2,
-        "y": 0,
-        "z": 14
-      },
-      "index": {
-        "x": -2,
-        "y": 0,
-        "z": 14
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 8
-    },
-    {
-      "pos": {
-        "x": -2,
-        "y": 0,
-        "z": 12
-      },
-      "index": {
-        "x": -2,
-        "y": 0,
-        "z": 12
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 8
-    },
-    {
-      "pos": {
-        "x": -20,
-        "y": 0,
-        "z": 0
-      },
-      "index": {
-        "x": -20,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 8
-    },
-    {
-      "pos": {
-        "x": -18,
-        "y": 0,
-        "z": 0
-      },
-      "index": {
-        "x": -18,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 8
-    },
-    {
-      "pos": {
-        "x": -16,
-        "y": 0,
-        "z": 0
-      },
-      "index": {
-        "x": -16,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 8
-    },
-    {
-      "pos": {
-        "x": -14,
-        "y": 0,
-        "z": 0
-      },
-      "index": {
-        "x": -14,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 8
+      "type": "Block"
     },
     {
       "pos": {
@@ -1033,8 +866,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -1052,8 +884,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -1071,8 +902,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -1090,8 +920,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -1109,8 +938,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -1128,8 +956,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -1147,8 +974,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -1166,122 +992,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
-    },
-    {
-      "pos": {
-        "x": -2,
-        "y": 0,
-        "z": -14
-      },
-      "index": {
-        "x": -2,
-        "y": 0,
-        "z": -14
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 8
-    },
-    {
-      "pos": {
-        "x": -2,
-        "y": 0,
-        "z": -12
-      },
-      "index": {
-        "x": -2,
-        "y": 0,
-        "z": -12
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 8
-    },
-    {
-      "pos": {
-        "x": 12,
-        "y": 0,
-        "z": 0
-      },
-      "index": {
-        "x": 12,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 8
-    },
-    {
-      "pos": {
-        "x": 14,
-        "y": 0,
-        "z": 0
-      },
-      "index": {
-        "x": 14,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 8
-    },
-    {
-      "pos": {
-        "x": 16,
-        "y": 0,
-        "z": 0
-      },
-      "index": {
-        "x": 16,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 8
-    },
-    {
-      "pos": {
-        "x": 18,
-        "y": 0,
-        "z": 0
-      },
-      "index": {
-        "x": 18,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 8
+      "type": "Block2"
     },
     {
       "pos": {
@@ -1299,8 +1010,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -1318,8 +1028,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -1337,8 +1046,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -1356,8 +1064,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -1375,8 +1082,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1394,8 +1100,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1413,8 +1118,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1432,8 +1136,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1451,8 +1154,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -1470,8 +1172,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -1489,8 +1190,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -1508,8 +1208,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -1527,8 +1226,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -1546,8 +1244,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -1565,8 +1262,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -1584,8 +1280,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -1603,8 +1298,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -1622,8 +1316,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -1641,8 +1334,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -1660,8 +1352,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -1679,8 +1370,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1698,8 +1388,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1717,8 +1406,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1736,8 +1424,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1755,8 +1442,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1774,8 +1460,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1793,8 +1478,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1812,8 +1496,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1831,8 +1514,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1850,8 +1532,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1869,8 +1550,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1888,8 +1568,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1907,8 +1586,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1926,8 +1604,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1945,8 +1622,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1964,8 +1640,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -1983,8 +1658,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2002,8 +1676,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2021,8 +1694,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2040,8 +1712,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2059,8 +1730,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2078,8 +1748,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2097,8 +1766,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2116,8 +1784,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2135,8 +1802,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2154,8 +1820,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2173,8 +1838,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2192,8 +1856,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2211,8 +1874,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2230,8 +1892,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2249,8 +1910,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2268,8 +1928,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2287,8 +1946,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2306,8 +1964,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2325,8 +1982,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2336,7 +1992,7 @@
       },
       "index": {
         "x": -2,
-        "y": 4,
+        "y": 0,
         "z": -4
       },
       "rotation": {
@@ -2344,8 +2000,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2363,8 +2018,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -2382,8 +2036,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -2401,8 +2054,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -2420,8 +2072,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -2439,8 +2090,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -2458,8 +2108,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -2477,8 +2126,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -2496,8 +2144,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -2515,8 +2162,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -2534,8 +2180,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -2553,89 +2198,12 @@
         "y": 0,
         "z": 0
       },
-      "theme": 3,
-      "type": 1
-    },
-    {
-      "pos": {
-        "x": -5,
-        "y": 0,
-        "z": 3
-      },
-      "index": {
-        "x": -6,
-        "y": 0,
-        "z": 2
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 3
-    },
-    {
-      "pos": {
-        "x": 1,
-        "y": 0,
-        "z": 3
-      },
-      "index": {
-        "x": 0,
-        "y": 0,
-        "z": 2
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 3
-    },
-    {
-      "pos": {
-        "x": 1,
-        "y": 0,
-        "z": -3
-      },
-      "index": {
-        "x": 0,
-        "y": 0,
-        "z": -4
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 3
-    },
-    {
-      "pos": {
-        "x": -5,
-        "y": 0,
-        "z": -3
-      },
-      "index": {
-        "x": -6,
-        "y": 0,
-        "z": -4
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 3
+      "type": "Block2"
     }
   ],
   "tanks": [
     {
-      "tankType": 4,
+      "tankType": "Mortar",
       "pos": {
         "x": 7,
         "y": 0,
@@ -2653,7 +2221,7 @@
       }
     },
     {
-      "tankType": 3,
+      "tankType": "Green",
       "pos": {
         "x": 19,
         "y": 0,
@@ -2671,7 +2239,7 @@
       }
     },
     {
-      "tankType": 3,
+      "tankType": "Green",
       "pos": {
         "x": -21,
         "y": 0,
@@ -2689,7 +2257,7 @@
       }
     },
     {
-      "tankType": 2,
+      "tankType": "Grey",
       "pos": {
         "x": -11,
         "y": 0,
@@ -2707,7 +2275,7 @@
       }
     },
     {
-      "tankType": 2,
+      "tankType": "Grey",
       "pos": {
         "x": 19,
         "y": 0,
@@ -2725,7 +2293,7 @@
       }
     },
     {
-      "tankType": 2,
+      "tankType": "Grey",
       "pos": {
         "x": 19,
         "y": 0,
@@ -2743,7 +2311,7 @@
       }
     },
     {
-      "tankType": 10,
+      "tankType": "Snowplower",
       "pos": {
         "x": 19,
         "y": 0,
@@ -2761,7 +2329,7 @@
       }
     },
     {
-      "tankType": 11,
+      "tankType": "Camouflage",
       "pos": {
         "x": 7,
         "y": 0,
@@ -2779,7 +2347,7 @@
       }
     },
     {
-      "tankType": 11,
+      "tankType": "Camouflage",
       "pos": {
         "x": 1,
         "y": 0,
@@ -2797,7 +2365,7 @@
       }
     },
     {
-      "tankType": 11,
+      "tankType": "Camouflage",
       "pos": {
         "x": -5,
         "y": 0,
@@ -2815,7 +2383,7 @@
       }
     },
     {
-      "tankType": 0,
+      "tankType": "Player",
       "pos": {
         "x": -19,
         "y": 0,
@@ -2832,5 +2400,6 @@
         "z": 0
       }
     }
-  ]
+  ],
+  "groundTiles": []
 }

@@ -16,13 +16,13 @@ public static class GameCommands {
 			if(editor != null) {
 				if(args.Length == 1) {
 					try {
-						editor.levelData = new LevelData() {
+						editor.LevelData = new LevelData() {
 							levelId = (ulong)args[0].Int,
 							levelName = "",
 							blocks = new System.Collections.Generic.List<LevelData.BlockData>(),
 							gridSize = GridSizes.Size_12x9,
 							tanks = new System.Collections.Generic.List<LevelData.TankData>(),
-							theme = LevelEditor.Themes.Light
+							theme = WorldTheme.Woody
 						};
 						editor.SaveAsOfficialLevel();
 						AssetDatabase.Refresh();
@@ -33,13 +33,13 @@ public static class GameCommands {
 				} else if(args.Length == 2) {
 					try {
 						editor.LoadOfficialLevel((ulong)args[1].Int);
-						editor.levelData = new LevelData() {
+						editor.LevelData = new LevelData() {
 							levelId = (ulong)args[0].Int,
 							levelName = "",
 							blocks = new System.Collections.Generic.List<LevelData.BlockData>(),
-							gridSize = editor.levelData.gridSize,
+							gridSize = editor.LevelData.gridSize,
 							tanks = new System.Collections.Generic.List<LevelData.TankData>(),
-							theme = editor.levelData.theme
+							theme = editor.LevelData.theme
 						};
 						editor.SaveAsOfficialLevel();
 						AssetDatabase.Refresh();
@@ -62,7 +62,7 @@ public static class GameCommands {
 		try {
 			if(editor != null) {
 				editor.LoadOfficialLevel((ulong)args[0].Int);
-				if(editor.levelData != null) {
+				if(editor.LevelData != null) {
 					Terminal.Log("Level has been loaded.");
 				} else {
 					Terminal.Log("Level not found.");
@@ -195,7 +195,7 @@ public static class GameCommands {
 	public static void SaveLevel(CommandArg[] args) {
 		var editor = Object.FindObjectOfType<LevelEditor>();
 		try {
-			if(editor != null && editor.levelData != null) {
+			if(editor != null && editor.LevelData != null) {
 				if(Game.IsGameRunningDebug) {
 					editor.SaveAsOfficialLevel();
 					Terminal.Log("Campaign level has been saved.");

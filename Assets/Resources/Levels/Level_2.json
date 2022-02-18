@@ -1,38 +1,8 @@
 {
   "levelName": "",
   "levelId": 2,
-  "isNight": false,
-  "gridSize": 2,
-  "indirectLightIntensity": 0.0,
-  "customCameraFocusIntensity": null,
-  "customMaxZoomOut": null,
-  "theme": 0,
-  "sunLight": {
-    "pos": {
-      "x": 0,
-      "y": 15,
-      "z": 0
-    },
-    "rotation": {
-      "x": 50,
-      "y": 45,
-      "z": 0
-    },
-    "intensity": 6
-  },
-  "spotLight": {
-    "pos": {
-      "x": 0,
-      "y": 25,
-      "z": -10
-    },
-    "rotation": {
-      "x": 55,
-      "y": 0,
-      "z": 0
-    },
-    "intensity": 0
-  },
+  "gridSize": "Size_9x6",
+  "theme": "Woody",
   "blocks": [
     {
       "pos": {
@@ -50,8 +20,7 @@
         "y": 90,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -69,8 +38,7 @@
         "y": 90,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -88,8 +56,7 @@
         "y": 90,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -107,8 +74,7 @@
         "y": 270,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -126,8 +92,7 @@
         "y": 270,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -145,8 +110,7 @@
         "y": 270,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -164,8 +128,7 @@
         "y": 270,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -183,8 +146,7 @@
         "y": 270,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -202,8 +164,7 @@
         "y": 270,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -221,8 +182,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -240,8 +200,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -259,8 +218,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -278,8 +236,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 0
+      "type": "Block"
     },
     {
       "pos": {
@@ -297,8 +254,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 5
+      "type": "TriangleRoof"
     },
     {
       "pos": {
@@ -316,8 +272,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -335,8 +290,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -354,8 +308,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 1
+      "type": "Block2"
     },
     {
       "pos": {
@@ -373,8 +326,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -392,8 +344,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -411,8 +362,7 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 2
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -430,13 +380,12 @@
         "y": 0,
         "z": 0
       },
-      "theme": 0,
-      "type": 2
+      "type": "BlockHalf"
     }
   ],
   "tanks": [
     {
-      "tankType": 2,
+      "tankType": "Grey",
       "pos": {
         "x": 7,
         "y": 0,
@@ -454,7 +403,7 @@
       }
     },
     {
-      "tankType": 0,
+      "tankType": "Player",
       "pos": {
         "x": -13,
         "y": 0,
@@ -472,7 +421,7 @@
       }
     },
     {
-      "tankType": 1,
+      "tankType": "Brown",
       "pos": {
         "x": 15,
         "y": 0,
@@ -489,5 +438,6 @@
         "z": 0
       }
     }
-  ]
+  ],
+  "groundTiles": []
 }

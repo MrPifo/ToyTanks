@@ -14,7 +14,7 @@ public class DebugPlay : MonoBehaviour {
 	private void Start() {
 		Game.Initialize();
 		PrefabManager.Initialize("Debug");
-		GameManager.CurrentLevel = new LevelData() { gridSize = GridSizes.Size_15x12, isNight = false };
+		GameManager.CurrentLevel = new LevelData() { gridSize = GridSizes.Size_15x12 };
 		Game.showTankDebugs = showDebug;
 		Game.IsGameRunning = true;
 		Game.IsGameRunningDebug = true;

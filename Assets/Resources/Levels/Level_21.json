@@ -1,15 +1,225 @@
 {
   "levelName": "",
   "levelId": 21,
-  "isNight": false,
-  "gridSize": 2,
-  "indirectLightIntensity": 0.0,
-  "customCameraFocusIntensity": null,
-  "customMaxZoomOut": null,
-  "theme": 3,
-  "sunLight": null,
-  "spotLight": null,
+  "gridSize": "Size_9x6",
+  "theme": "Snowy",
   "blocks": [
+    {
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -16,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": -16,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -2,
+        "y": 0,
+        "z": -8
+      },
+      "index": {
+        "x": -2,
+        "y": 0,
+        "z": -8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 0,
+        "y": 0,
+        "z": -8
+      },
+      "index": {
+        "x": 0,
+        "y": 0,
+        "z": -8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 4,
+        "y": 0,
+        "z": -8
+      },
+      "index": {
+        "x": 4,
+        "y": 0,
+        "z": -8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": -12,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": -12,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": -12,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": -12,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": -14,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": -14,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 2,
+        "y": 0,
+        "z": -8
+      },
+      "index": {
+        "x": 2,
+        "y": 0,
+        "z": -8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": -4,
+        "y": 0,
+        "z": -8
+      },
+      "index": {
+        "x": -4,
+        "y": 0,
+        "z": -8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 4,
+        "y": 2,
+        "z": -8
+      },
+      "index": {
+        "x": 4,
+        "y": 2,
+        "z": -8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 2,
+        "y": 2,
+        "z": -8
+      },
+      "index": {
+        "x": 2,
+        "y": 2,
+        "z": -8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
     {
       "pos": {
         "x": 3,
@@ -26,268 +236,21 @@
         "y": 90,
         "z": 0
       },
-      "theme": 3,
-      "type": 5
-    },
-    {
-      "pos": {
-        "x": 2,
-        "y": 2,
-        "z": -8
-      },
-      "index": {
-        "x": 2,
-        "y": 2,
-        "z": -8
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 2
-    },
-    {
-      "pos": {
-        "x": 4,
-        "y": 2,
-        "z": -8
-      },
-      "index": {
-        "x": 4,
-        "y": 2,
-        "z": -8
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 2
-    },
-    {
-      "pos": {
-        "x": -4,
-        "y": 0,
-        "z": -8
-      },
-      "index": {
-        "x": -4,
-        "y": 0,
-        "z": -8
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 1
-    },
-    {
-      "pos": {
-        "x": 2,
-        "y": 0,
-        "z": -8
-      },
-      "index": {
-        "x": 2,
-        "y": 0,
-        "z": -8
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 1
-    },
-    {
-      "pos": {
-        "x": -14,
-        "y": 0,
-        "z": -2
-      },
-      "index": {
-        "x": -14,
-        "y": 0,
-        "z": -2
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 1
-    },
-    {
-      "pos": {
-        "x": -12,
-        "y": 0,
-        "z": 0
-      },
-      "index": {
-        "x": -12,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 1
-    },
-    {
-      "pos": {
-        "x": -12,
-        "y": 0,
-        "z": -2
-      },
-      "index": {
-        "x": -12,
-        "y": 0,
-        "z": -2
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 1
-    },
-    {
-      "pos": {
-        "x": 4,
-        "y": 0,
-        "z": -8
-      },
-      "index": {
-        "x": 4,
-        "y": 0,
-        "z": -8
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 1
-    },
-    {
-      "pos": {
-        "x": 0,
-        "y": 0,
-        "z": -8
-      },
-      "index": {
-        "x": 0,
-        "y": 0,
-        "z": -8
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 0
-    },
-    {
-      "pos": {
-        "x": -2,
-        "y": 0,
-        "z": -8
-      },
-      "index": {
-        "x": -2,
-        "y": 0,
-        "z": -8
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 0
-    },
-    {
-      "pos": {
-        "x": -16,
-        "y": 0,
-        "z": -2
-      },
-      "index": {
-        "x": -16,
-        "y": 0,
-        "z": -2
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 0
-    },
-    {
-      "pos": {
-        "x": -18,
-        "y": 0,
-        "z": -2
-      },
-      "index": {
-        "x": -18,
-        "y": 0,
-        "z": -2
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "theme": 3,
-      "type": 0
+      "type": "TriangleRoof"
     }
   ],
   "tanks": [
     {
-      "tankType": 0,
+      "tankType": "Brown",
       "pos": {
-        "x": -15,
+        "x": 13,
         "y": 0,
         "z": -11
       },
       "index": {
-        "x": -16,
-        "y": 0,
-        "z": -12
-      },
-      "rotation": {
-        "x": 0,
-        "y": 90,
-        "z": 0
-      }
-    },
-    {
-      "tankType": 10,
-      "pos": {
-        "x": 13,
-        "y": 0,
-        "z": 9
-      },
-      "index": {
         "x": 14,
         "y": 0,
-        "z": 10
+        "z": -10
       },
       "rotation": {
         "x": 0,
@@ -296,7 +259,7 @@
       }
     },
     {
-      "tankType": 10,
+      "tankType": "Snowplower",
       "pos": {
         "x": -15,
         "y": 0,
@@ -314,22 +277,41 @@
       }
     },
     {
-      "tankType": 1,
+      "tankType": "Snowplower",
       "pos": {
         "x": 13,
         "y": 0,
-        "z": -11
+        "z": 9
       },
       "index": {
         "x": 14,
         "y": 0,
-        "z": -10
+        "z": 10
       },
       "rotation": {
         "x": 0,
         "y": 270,
         "z": 0
       }
+    },
+    {
+      "tankType": "Player",
+      "pos": {
+        "x": -15,
+        "y": 0,
+        "z": -11
+      },
+      "index": {
+        "x": -16,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
     }
-  ]
+  ],
+  "groundTiles": []
 }
