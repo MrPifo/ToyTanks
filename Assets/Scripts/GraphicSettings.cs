@@ -43,13 +43,13 @@ public class GraphicSettings : MonoBehaviour {
     bool lockAudioPreview;
 
     // UI Interface
-    public HorizontalChoose controlScheme => GameObject.FindGameObjectWithTag("ControlSchemeUI").transform.SearchComponent<HorizontalChoose>();
-    public HorizontalChoose textureQualityChoose => GameObject.FindGameObjectWithTag("TextureQualityUI").transform.SearchComponent<HorizontalChoose>();
-    public HorizontalChoose shadowQualityChoose => GameObject.FindGameObjectWithTag("ShadowQualityUI").transform.SearchComponent<HorizontalChoose>();
-    public HorizontalChoose windowModeDropdown => GameObject.FindGameObjectWithTag("WindowModeUI").transform.SearchComponent<HorizontalChoose>();
+    //public HorizontalChoose controlScheme => GameObject.FindGameObjectWithTag("ControlSchemeUI").transform.SearchComponent<HorizontalChoose>();
+    //public HorizontalChoose textureQualityChoose => GameObject.FindGameObjectWithTag("TextureQualityUI").transform.SearchComponent<HorizontalChoose>();
+    //public HorizontalChoose shadowQualityChoose => GameObject.FindGameObjectWithTag("ShadowQualityUI").transform.SearchComponent<HorizontalChoose>();
+    //public HorizontalChoose windowModeDropdown => GameObject.FindGameObjectWithTag("WindowModeUI").transform.SearchComponent<HorizontalChoose>();
     public TMP_Dropdown windowResolutionDropdown => GameObject.FindGameObjectWithTag("WindowResolutionUI").transform.SearchComponent<TMP_Dropdown>();
-    public SliderWithText mainVolumeSlider => GameObject.FindGameObjectWithTag("MainVolumeUI").transform.SearchComponent<SliderWithText>();
-    public SliderWithText soundEffectsVolumeSlider => GameObject.FindGameObjectWithTag("SoundEffectsVolumeUI").transform.SearchComponent<SliderWithText>();
+    //public SliderWithText mainVolumeSlider => GameObject.FindGameObjectWithTag("MainVolumeUI").transform.SearchComponent<SliderWithText>();
+    //public SliderWithText soundEffectsVolumeSlider => GameObject.FindGameObjectWithTag("SoundEffectsVolumeUI").transform.SearchComponent<SliderWithText>();
     public Toggle antialiasingToggle => GameObject.FindGameObjectWithTag("AntialisingQualityUI").transform.SearchComponent<Toggle>();
     public Toggle ambientOcclusionToggle => GameObject.FindGameObjectWithTag("AmbientOcclusionQualityUI").transform.SearchComponent<Toggle>();
     public Toggle performanceModeToggle => GameObject.FindGameObjectWithTag("PerformanceModeUI").transform.SearchComponent<Toggle>();
@@ -196,20 +196,20 @@ public class GraphicSettings : MonoBehaviour {
         Instance.windowResolutionDropdown.RefreshShownValue();
     }
     public static void RenderWindowModeDropdown() {
-        Instance.windowModeDropdown.objs = new List<string>() { "Fullscreen", "Borderless", "Window" };
-        Instance.windowModeDropdown.index = TextureQuality;
+        //Instance.windowModeDropdown.objs = new List<string>() { "Fullscreen", "Borderless", "Window" };
+        //Instance.windowModeDropdown.index = TextureQuality;
     }
     public static void RenderTextureResolutionsDropdown() {
-        Instance.textureQualityChoose.objs = new List<string>() { "High", "Medium", "Low" };
-        Instance.textureQualityChoose.index = TextureQuality;
+        //Instance.textureQualityChoose.objs = new List<string>() { "High", "Medium", "Low" };
+        //Instance.textureQualityChoose.index = TextureQuality;
     }
     public static void RenderShadowResolutionDropdown() {
-        Instance.shadowQualityChoose.objs = new List<string>() { "High", "Low", "Off" };
-        Instance.shadowQualityChoose.index = ShadowQuality;
+        //Instance.shadowQualityChoose.objs = new List<string>() { "High", "Low", "Off" };
+        //Instance.shadowQualityChoose.index = ShadowQuality;
     }
     public static void RenderControlSchemes() {
-        Instance.controlScheme.objs = new List<string>() { "Double DPad", "DPad and Tap" };
-        Instance.controlScheme.index = (int)ControlScheme;
+        //Instance.controlScheme.objs = new List<string>() { "Double DPad", "DPad and Tap" };
+        //Instance.controlScheme.index = (int)ControlScheme;
     }
     public static void OpenOptionsMenu(float duration = 0.1f) {
         if(Instance == null) {
@@ -238,10 +238,10 @@ public class GraphicSettings : MonoBehaviour {
     public static void RefreshUI() {
         if (Game.Platform == GamePlatform.Desktop) {
             Instance.antialiasingToggle.isOn = Antialiasing;
-            Instance.shadowQualityChoose.index = ShadowQuality;
-            Instance.textureQualityChoose.index = TextureQuality;
-            Instance.mainVolumeSlider.SetValue(MainVolume);
-            Instance.soundEffectsVolumeSlider.SetValue(SoundEffectsVolume);
+            //Instance.shadowQualityChoose.index = ShadowQuality;
+            //Instance.textureQualityChoose.index = TextureQuality;
+            //Instance.mainVolumeSlider.SetValue(MainVolume);
+            //Instance.soundEffectsVolumeSlider.SetValue(SoundEffectsVolume);
 
             RenderResolutionDropdown();
             RenderWindowModeDropdown();
@@ -249,10 +249,10 @@ public class GraphicSettings : MonoBehaviour {
             RenderShadowResolutionDropdown();
         } else if (Game.Platform == GamePlatform.Mobile) {
             Instance.antialiasingToggle.isOn = Antialiasing;
-            Instance.shadowQualityChoose.index = ShadowQuality;
-            Instance.textureQualityChoose.index = TextureQuality;
-            Instance.mainVolumeSlider.SetValue(MainVolume);
-            Instance.soundEffectsVolumeSlider.SetValue(SoundEffectsVolume);
+            //Instance.shadowQualityChoose.index = ShadowQuality;
+            //Instance.textureQualityChoose.index = TextureQuality;
+            //Instance.mainVolumeSlider.SetValue(MainVolume);
+            //Instance.soundEffectsVolumeSlider.SetValue(SoundEffectsVolume);
 
             RenderTextureResolutionsDropdown();
             RenderShadowResolutionDropdown();
@@ -383,20 +383,20 @@ public class GraphicSettings : MonoBehaviour {
     public void SetAmbientOcclusionUI() => SetAmbientOcclusion(ambientOcclusionToggle.isOn);
     public void SetAntialiasingUI() => SetAntialiasing(antialiasingToggle.isOn);
     public void SetTextureQualityUI() {
-        SetTextureResolution(textureQualityChoose.index);
+        //SetTextureResolution(textureQualityChoose.index);
 	}
     public void SetShadowQualityUI() {
-        SetShadowResolution(shadowQualityChoose.index);
+        //SetShadowResolution(shadowQualityChoose.index);
 	}
 	public void SetMainVolumeUI() {
-		SetMainVolume((int)mainVolumeSlider.Value);
+		//SetMainVolume((int)mainVolumeSlider.Value);
 	}
 	public void SetSoundEffectsVolumeUI() {
-		SetSoundEffectsVolume((int)soundEffectsVolumeSlider.Value);
+		//SetSoundEffectsVolume((int)soundEffectsVolumeSlider.Value);
 	}
     public void SetPerformanceModeUI() => SetPerformanceMode(performanceModeToggle.isOn);
-    public void SetControlSchemeUI() => SetControlScheme((PlayerControlSchemes)controlScheme.index);
-    public void SetWindowModeUI() => SetGameWindowMode((FullScreenMode)windowModeDropdown.index);
+    //public void SetControlSchemeUI() => SetControlScheme((PlayerControlSchemes)controlScheme.index);
+    //public void SetWindowModeUI() => SetGameWindowMode((FullScreenMode)windowModeDropdown.index);
     public void SetWindowResolutionUI() => SetGameWindowSize((SupportedScreenSizes)(windowResolutionDropdown.options.Count - 1 - windowResolutionDropdown.value), FullscreenMode);
     public void SetVsync() => SetVsync(vsyncToggle.isOn);
 

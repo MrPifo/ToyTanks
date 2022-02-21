@@ -19,6 +19,7 @@ ExportedObj/
 .consulo/
 .vsconfig
 .packages.config
+user.keystore
 *.csproj
 *.unityproj
 *.sln

@@ -16,7 +16,6 @@ public class SaveSlotUI : UIScaleAnimation {
 	public Canvas confirmCanvas;
 	public CanvasGroup confirmGroup;
 	public Button confirmButton;
-	public GameObject deleteInfo;
 	public Image background;
 	public MenuItem saveSlotMenu;
 	float holdTime;
@@ -26,7 +25,6 @@ public class SaveSlotUI : UIScaleAnimation {
 
 	private void Awake() {
 		bColor = background.color;
-		deleteInfo.transform.localScale = Vector3.zero;
 		CloseConfirmBox();
 	}
 
@@ -83,14 +81,12 @@ public class SaveSlotUI : UIScaleAnimation {
 	public override void MouseEnter() {
 		if(deletePlaying == false) {
 			base.MouseEnter();
-			deleteInfo.transform.DOScale(1, 0.05f);
 		}
 	}
 
 	public override void MouseExit() {
 		if(deletePlaying == false) {
 			base.MouseExit();
-			deleteInfo.transform.DOScale(0, 0.05f);
 		}
 	}
 

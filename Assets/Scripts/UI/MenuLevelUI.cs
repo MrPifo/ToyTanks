@@ -21,8 +21,8 @@ namespace ToyTanks.UI {
 		public Line connectLine;
 		public SpriteRenderer preview;
 		public GameObject lockIcon;
-		public ButtonAudio.ButtonAudios hoverAudio;
-		public ButtonAudio.ButtonAudios clickAudio;
+		public CustomButton hoverAudio;
+		public CustomButton clickAudio;
 		bool isUnlocked;
 		Vector3 lineEndPos;
 
