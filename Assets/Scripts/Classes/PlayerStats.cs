@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
-using Newtonsoft.Json;
+using BayatGames.SaveGameFree;
+using BayatGames.SaveGameFree.Serializers;
 
 public class PlayerStats {
 
@@ -19,57 +20,57 @@ public class PlayerStats {
 	public int TotalScore { get; set; }
 	public DateTime LastModified { get; set; }
 	public static string FilePath => GamePaths.PlayerStatsFile;
-
-#if UNITY_EDITOR
-	public const bool CompressPlayerStats = false;
-	public static Formatting JsonFormatting => Formatting.Indented;
-#else
-	public const bool CompressPlayerStats = true;
-	public static Formatting JsonFormatting => Formatting.None;
-#endif
+	public static string PlayerStatsVersionNumber;
+	public static bool EncodeSaveGame = true;
 
 	public static void GameStartup() {
-		(bool integrityOkay, bool notFound) status = Game.VerifyIntegrity<PlayerStats>(FilePath, CompressPlayerStats);
-		if(status.notFound) {
-			try {
-				if(Game.CreateFile(FilePath)) {
-					Game.WriteToFile(JsonConvert.SerializeObject(new PlayerStats(), JsonFormatting), FilePath, CompressPlayerStats);
-					Logger.Log(Channel.PlayerStats, "PlayerStats file has been created.");
-				} else {
-					throw new Exception();
-				}
-			} catch(Exception e) {
-				Logger.LogError("Failed to create a fresh PlayerStats file.", e);
-			}
-		} else if(status.integrityOkay == false) {
-			Logger.Log(Channel.PlayerStats, "PlayerStats file seems to be corrupted. Continue to create a new PlayerStats file.");
-			Game.CreateBackupOfFile(FilePath);
-			Game.DeleteFile(FilePath);
-			Game.CreateFile(FilePath);
-			Game.WriteToFile(JsonConvert.SerializeObject(new PlayerStats(), JsonFormatting), FilePath, CompressPlayerStats);
-		}
+		SaveGame.Serializer = new SaveGameJsonSerializer();
+		SaveGame.LogError = true;
+#if UNITY_EDITOR
+		EncodeSaveGame = false;
+#endif
+		SaveGame.Encode = EncodeSaveGame;
 
 		LoadPlayerStats();
 	}
 
 	public static void LoadPlayerStats() {
-		try {
-			string json = Game.ReadFromFile(FilePath, CompressPlayerStats);
-			Instance = JsonConvert.DeserializeObject<PlayerStats>(json);
+		// Check GameSave Version Number
+		SaveGame.Encode = false;    // is not encoded
+		if(SaveGame.TryLoad(nameof(PlayerStatsVersionNumber), out PlayerStatsVersionNumber) && PlayerStatsVersionNumber != "") {
+			Logger.Log(Channel.SaveGame, "Detected PlayerStats version " + PlayerStatsVersionNumber);
+		} else {
+			Logger.Log(Channel.SaveGame, "Failed to identify PlayerStats version.");
+			PlayerStatsVersionNumber = "1.0";    // Needs to be updated to newest version if updated. Setting VersionNumber to highest default
+			SaveGame.Save(nameof(PlayerStatsVersionNumber), "1.0");
+		}
+		SaveGame.Encode = EncodeSaveGame;
 
-			Logger.Log(Channel.PlayerStats, "PlayerStats have been loaded. Last Modification: " + Instance.LastModified.ToShortDateString());
-		} catch(Exception e) {
-			Logger.LogError("Something went wrong loading the PlayerStats file.", e);
+		switch(PlayerStatsVersionNumber) {
+			case "1.0":
+				if(SaveGame.TryLoad(nameof(PlayerStats), out PlayerStats _instance)) {
+					Instance = _instance;
+				} else {
+					Logger.Log(Channel.SaveGame, "No compatible PlayerStats have been found. Creating new one.");
+					Instance = new PlayerStats();
+					SavePlayerStats();
+				}
+				break;
+			default:
+				Instance = new PlayerStats();
+				SavePlayerStats();
+				break;
 		}
 	}
 
 	public static void SavePlayerStats() {
 		try {
-			Instance.LastModified = DateTime.Now;
-			var json = JsonConvert.SerializeObject(Instance, JsonFormatting);
-			Game.WriteToFile(json, FilePath, CompressPlayerStats);
+			if(Game.IsGameRunning && Game.IsGameRunningDebug == false) {
+				Instance.LastModified = DateTime.Now;
+				SaveGame.Save(nameof(PlayerStats), Instance);
 
-			Logger.Log(Channel.PlayerStats, "PlayerStats have been saved.");
+				Logger.Log(Channel.PlayerStats, "PlayerStats have been saved.");
+			}
 		} catch(Exception e) {
 			Logger.LogError("Something went wrong while saving to the PlayerStats file.", e);
 		}

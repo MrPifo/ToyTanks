@@ -2,7 +2,9 @@
 using Shapes;
 using Sperlich.PrefabManager;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class CrossHair : MonoBehaviour {
 
@@ -64,7 +66,9 @@ public class CrossHair : MonoBehaviour {
 	public void DestroyCrossHair() => Destroy(gameObject);
 
 	public static CrossHair CreateCrossHair(TankBase assignedTank, Player inputModule) {
-		var crossHair = Instantiate(Resources.Load<GameObject>("CrossHair")).GetComponent<CrossHair>();
+		var waiter = Addressables.InstantiateAsync("CrossHair", null, true);
+		waiter.WaitForCompletion();
+		var crossHair = waiter.Result.gameObject.GetComponent<CrossHair>();
 		crossHair.input = inputModule;
 		crossHair.assignedTank = assignedTank;
 		crossHair.EnableCrossHair();

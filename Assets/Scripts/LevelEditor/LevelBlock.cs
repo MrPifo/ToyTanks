@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using NaughtyAttributes;
 
 namespace ToyTanks.LevelEditor {
 	public class LevelBlock : GameEntity, IEditor {
@@ -59,10 +58,10 @@ namespace ToyTanks.LevelEditor {
 		}
 
 		public void SetTheme(WorldTheme theme) {
-			MeshRender.sharedMaterial = LevelEditor.ThemeAssets.Find(t => t.theme == theme).GetAsset(type).material;
+			MeshRender.sharedMaterial = AssetLoader.GetBlockAsset(theme, type).material;
 		}
 
-		public void SetData(Int3 index, List<Int3> indexes, BlockType type) {
+		public virtual void SetData(Int3 index, List<Int3> indexes, BlockType type) {
 			Index = index;
 			allIndexes = indexes;
 			this.type = type;
@@ -73,17 +72,15 @@ namespace ToyTanks.LevelEditor {
 		}
 
 		public void RestoreMaterials() {
-			MeshRender.material.SetFloat("_EditorPreview", 0);
+			LevelEditor.RestoreMaterials(MeshRender.materials);
 		}
 
 		public void SetAsPreview() {
-			MeshRender.material.SetFloat("_EditorPreview", 1);
-			MeshRender.material.DisableKeyword("_EDITORDESTROY");
+			LevelEditor.SetMaterialsAsPreview(MeshRender.materials);
 		}
 
 		public void SetAsDestroyPreview() {
-			MeshRender.material.SetFloat("_EditorPreview", 1);
-			MeshRender.material.EnableKeyword("_EDITORDESTROY");
+			LevelEditor.SetMaterialsAsDestroyPreview(MeshRender.materials);
 		}
 	}
 }

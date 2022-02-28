@@ -22,7 +22,6 @@ namespace ToyTanks.UI {
 		public float randomHoverPitch = 0.1f;
 		[Range(0, 0.5f)]
 		public float randomClickPitch = 0.1f;
-		private bool onTransition;
 		private bool isHovered;
 
 		public void SetOnClick(UnityAction action) {
@@ -35,31 +34,20 @@ namespace ToyTanks.UI {
 
 		public void OnPointerEnter(PointerEventData eventData) {
 			isHovered = true;
-			if(onTransition == false) {
-				onTransition = true;
-				AudioPlayer.Play(hoverAudio.ToString(), AudioType.UI, hoverPitch - randomHoverPitch, hoverPitch + randomHoverPitch);
-				
-				switch(animationMode) {
-					case AnimationMode.Scale:
-						transform.DOScale(1f, 0.1f).OnComplete(() => {
-							onTransition = false;
-						});
-						break;
-				}
+			AudioPlayer.Play(hoverAudio.ToString(), AudioType.UI, hoverPitch - randomHoverPitch, hoverPitch + randomHoverPitch);
+			switch(animationMode) {
+				case AnimationMode.Scale:
+					transform.DOScale(1.1f, 0.1f);
+					break;
 			}
 		}
 
 		public void OnPointerExit(PointerEventData eventData) {
 			isHovered = false;
-			if(onTransition == false) {
-				onTransition = true;
-				switch(animationMode) {
-					case AnimationMode.Scale:
-						transform.DOScale(1f, 0.1f).OnComplete(() => {
-							onTransition = false;
-						});
-						break;
-				}
+			switch(animationMode) {
+				case AnimationMode.Scale:
+					transform.DOScale(1f, 0.1f);
+					break;
 			}
 		}
 

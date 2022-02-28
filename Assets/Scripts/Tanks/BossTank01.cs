@@ -6,6 +6,7 @@ using Sperlich.FSM;
 using System.Collections;
 using UnityEngine;
 using MoreMountains.Feedbacks;
+using System.Collections.Generic;
 
 public class BossTank01 : BossAI, IHittable, IDamageEffector {
 
@@ -24,7 +25,7 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 	public byte waitDuration = 3;
 	public byte burstAmount = 4;
 	public AudioSource chargeSound;
-	private LayerMask chargePathMask = LayerMaskExtension.Create(GameMasks.Ground, GameMasks.Destructable, GameMasks.LevelBoundary, GameMasks.Block);
+	private LayerMask chargePathMask = LayerMaskExtension.Create(GameMasks.Ground, GameMasks.Destructable, GameMasks.LevelBoundary, GameMasks.Block, GameMasks.BulletTraverse);
 	[Header("References")]
 	[SerializeField] Line chargeLineL;
 	[SerializeField] Line chargeLineR;
@@ -36,7 +37,7 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 	[SerializeField] MMFeedbacks hitChargeFeedback;
 	[SerializeField] ParticleSystem chargeSmoke;
 
-	FSM<BossBehaviour> bossStates = new FSM<BossBehaviour>();
+	new FSM<BossBehaviour> TankState = new FSM<BossBehaviour>();
 	Vector3 chargeDirection;
 	RaycastHit chargeHit;
 	byte rollerRotSpeed = 100;
@@ -64,28 +65,37 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 		chargeDirection = Vector3.zero;
 		moveSpeed = normalMoveSpeed;
 		rollerTrigger.TriggerHit.RemoveAllListeners();
-		bossStates.Push(BossBehaviour.Waiting);
+		TankState.FillWeightedStates(new List<(BossBehaviour, float)>() {
+			(BossBehaviour.Charge, 25f),
+			(BossBehaviour.Burst, 50f),
+		});
 		HideChargeLine();
-		GoToNextState(2);
+		GoToNextState(TankState.GetWeightedRandom(), 1.5f);
 		healthBar.gameObject.SetActive(false);
 	}
 
 	// State Decision Maker
-	protected override void GoToNextState(float delay = 0) {
-		if(IsPlayReady) {
-			this.Delay(delay, () => {
-				bossStates.Push(BossBehaviour.Waiting);
-				while(bossStates == BossBehaviour.Waiting) {
-					bossStates.Push(bossStates.GetRandom());
-				}
-				ProcessState();
-			});
+	protected void GoToNextState(BossBehaviour state, float delay = 0) {
+		TankState.Push(state);
+		this.Delay(delay, () => ProcessState());
+	}
+
+	private void CalculateMove(float delay = 0) {
+		if(IsAIEnabled) {
+			if(distToPlayer > 25) {
+				TankState.AddWeight(BossBehaviour.Charge, 30f);
+			} else {
+				TankState.AddWeight(BossBehaviour.Charge, 20f);
+			}
+			TankState.AddWeight(BossBehaviour.Burst, 10f);
+			TankState.PushRandomWeighted();
+			this.Delay(delay == 0 ? Time.deltaTime : delay, () => ProcessState());
 		}
 	}
 
 	protected void ProcessState() {
 		if(IsPlayReady) {
-			switch(bossStates.State) {
+			switch(TankState.State) {
 				case BossBehaviour.Charge:
 					StartCoroutine(ICharge());
 					break;
@@ -119,6 +129,11 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 		AudioPlayer.Play("SnowChargeStart", AudioType.SoundEffect, 0.8f, 1.2f, 0.6f);
 		chargeSound.Play();
 		disableAvoidanceSystem = true;
+		if(CurrentPhase == BossPhases.Half_Life) {
+			HeadMode.Push(TankHeadMode.AimAtPlayer);
+		} else {
+			HeadMode.Push(TankHeadMode.KeepRotation);
+		}
 		MoveMode.Push(MovementType.None);
 		chargeSound.volume = 0.3f * GraphicSettings.SoundEffectsVolume;
 		chargeSound.pitch = 2f;
@@ -126,12 +141,15 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 		MuteTrackSound = true;
 		DOTween.To(() => chargeSound.pitch, x => chargeSound.pitch = x, 1f, 0.6f).OnComplete(() => allowPitchDown = true);
 
-		while(bossStates == BossBehaviour.Charge && IsPlayReady) {
+		while(TankState == BossBehaviour.Charge && IsPlayReady) {
 			yield return IPauseTank();
 			DisplayChargeLine();
 			chargeVibration.PlayFeedbacks();
 			chargeSmoke.Play();
 			Move(chargeDirection);
+			if(CurrentPhase == BossPhases.Half_Life && HasSightContactToPlayer && RandomShootChance()) {
+				ShootBullet();
+			}
 			GameCamera.ShortShake2D(0.02f, 25, 25);
 			if(allowPitchDown && chargeSound.pitch > 0.5f) {
 				chargeSound.pitch -= Time.deltaTime / 7f;
@@ -145,7 +163,7 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 		rollerTrigger.TriggerHit.RemoveListener(action);
 		AudioPlayer.Play("ChargeImpact", AudioType.SoundEffect, 1f, 1f);
 		HideChargeLine();
-		GoToNextState(waitDuration);
+		CalculateMove(2f);
 		DOTween.To(() => chargeSound.volume, x => chargeSound.volume = x, 0, 0.3f).SetEase(Ease.OutBounce).OnComplete(() => {
 			chargeSound.Stop();
 		});
@@ -153,7 +171,7 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 		void action() {
 			HideChargeLine();
 			moveSpeed = normalMoveSpeed;
-			bossStates.Push(BossBehaviour.Waiting);
+			TankState.Push(BossBehaviour.Waiting);
 			float initY = Pos.y;
 			transform.DOMoveX(transform.position.x + -chargeDirection.x, 0.35f);
 			transform.DOMoveZ(transform.position.z + -chargeDirection.z, 0.35f);
@@ -169,43 +187,61 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 
 	IEnumerator IBurst() {
 		int shot = 0;
-		this.RepeatUntil(() => bossStates == BossBehaviour.Burst && IsPlayReady, () => {
+		this.RepeatUntil(() => TankState == BossBehaviour.Burst && IsPlayReady, () => {
 			MoveHead(Player.Pos + Player.MovingDir * 1.5f);
 		}, null);
-		while(shot < burstAmount && IsPlayReady) {
+		byte originalMoveSpeed = moveSpeed;
+		byte newBurstAmount = burstAmount;
+		if(CurrentPhase == BossPhases.Half_Life) {
+			MoveMode.Push(MovementType.MoveSmart);
+			RandomPath(Pos, playerDetectRadius, 6f, false);
+			moveSpeed /= 3;
+			canMove = true;
+			newBurstAmount = 4;
+		} 
+
+		while(shot < newBurstAmount && IsPlayReady) {
 			ShootBullet();
 			shot++;
-			yield return new WaitForSeconds(reloadDuration);
+			if(CurrentPhase == BossPhases.Half_Life) {
+				yield return new WaitForSeconds(0.5f);
+			} else {
+				yield return new WaitForSeconds(reloadDuration);
+			}
 			yield return IPauseTank();
 		}
-		GoToNextState(waitDuration);
+		moveSpeed = originalMoveSpeed;
+		rig.velocity = Vector3.zero;
+		CalculateMove(1f);
 	}
 	// Helper
 	void HideChargeLine() {
 		chargeLineL.gameObject.SetActive(false);
 		chargeLineR.gameObject.SetActive(false);
 		chargeLineM.gameObject.SetActive(false);
+		chargePath.transform.SetParent(transform);
 		chargePath.SetActive(false);
 	}
 
 	void DisplayChargeLine() {
 		chargePath.SetActive(true);
-		Physics.Raycast(Pos, chargeDirection, out chargeHit, Mathf.Infinity, chargePathMask);
+		chargePath.transform.SetParent(null);
+		Physics.Raycast(Pos, transform.forward, out chargeHit, Mathf.Infinity, chargePathMask);
 		chargeLineL.gameObject.SetActive(true);
 		chargeLineR.gameObject.SetActive(true);
 		chargeLineM.gameObject.SetActive(true);
 		chargeLineL.transform.localPosition = Vector3.zero;
 		chargeLineL.Start = chargeLineL.transform.InverseTransformPoint(Pos);
-		chargeLineL.End = chargeLineL.transform.InverseTransformPoint(chargeHit.point + chargeDirection);
+		chargeLineL.End = chargeLineL.transform.InverseTransformPoint(chargeHit.point + transform.forward);
 		chargeLineL.transform.localPosition = new Vector3(-0.8f, 0, 0);
 
 		chargeLineR.transform.localPosition = Vector3.zero;
 		chargeLineR.Start = chargeLineR.transform.InverseTransformPoint(Pos);
-		chargeLineR.End = chargeLineR.transform.InverseTransformPoint(chargeHit.point + chargeDirection);
+		chargeLineR.End = chargeLineR.transform.InverseTransformPoint(chargeHit.point + transform.forward);
 		chargeLineR.transform.localPosition = new Vector3(0.8f, 0, 0);
 
 		chargeLineM.Start = chargeLineM.transform.InverseTransformPoint(Pos);
-		chargeLineM.End = chargeLineM.transform.InverseTransformPoint(chargeHit.point + chargeDirection);
+		chargeLineM.End = chargeLineM.transform.InverseTransformPoint(chargeHit.point + transform.forward);
 	}
 
 	void CalculateCharge() {
@@ -218,6 +254,10 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 	public override void TakeDamage(IDamageEffector effector, bool instantKill = false) {
 		base.TakeDamage(effector);
 		BossUI.BossTakeDamage(this, 1);
+
+		if(healthPoints <= MaxHealthPoints / 2) {
+			CurrentPhase = BossPhases.Half_Life;
+		}
 	}
 
 	protected override void GotDestroyed() {
@@ -228,7 +268,7 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 	protected override void DrawDebug() {
 		base.DrawDebug();
 		if(showDebug) {
-			Text(Pos + Vector3.up, bossStates.State.ToString());
+			Text(Pos + Vector3.up, TankState.State.ToString());
 		}
 	}
 

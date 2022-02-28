@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 #if PLATFORM_ANDROID
@@ -43,6 +44,11 @@ public class GameStartup : MonoBehaviour {
 			}
 #endif
 
+			Addressables.Initialize();
+			await Task.Delay(waitTime);
+			loadingText.SetText("Initializing Game.");
+			Logger.Log(Channel.Loading, "Initializing Game");
+
 			loadingText.SetText("Loading Assets");
 			try {
 				Logger.Log(Channel.Loading, "Loading Assets.");
@@ -54,10 +60,6 @@ public class GameStartup : MonoBehaviour {
 				await Task.Delay(1000);
 			}
 			NextLoadingStep();
-
-			await Task.Delay(waitTime);
-			loadingText.SetText("Initializing Game.");
-			Logger.Log(Channel.Loading, "Initializing Game");
 
 			await Game.Initialize(true);
 			NextLoadingStep();

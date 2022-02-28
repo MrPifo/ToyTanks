@@ -43,7 +43,6 @@ public class LevelSelector : MonoBehaviour {
 
 	public void SwitchToWorld(WorldTheme worldType) {
 		Logger.Log(Channel.UI, "Switching to world " + worldType.ToString());
-		SaveGame.LoadGame();
 		activeWorld = menus.Where(w => w.world == worldType).First();
 		activeWorld.RenderWorld();
 		ApplyCameraSettings(Game.GetWorld(activeWorld.world).MenuCameraSettings, 0.5f);

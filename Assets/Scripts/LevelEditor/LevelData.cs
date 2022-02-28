@@ -2,9 +2,6 @@
 using Newtonsoft.Json.Converters;
 using Sperlich.Types;
 using System.Collections.Generic;
-using ToyTanks.LevelEditor;
-using UnityEngine;
-// HDRP Related: using UnityEngine.Rendering.HighDefinition;
 
 [System.Serializable]
 public class LevelData {
@@ -27,7 +24,11 @@ public class LevelData {
 		[JsonConverter(typeof(StringEnumConverter))]
 		public BlockType type;
 	}
-
+	[System.Serializable]
+	public class BlockExtraData : BlockData {
+		[JsonConverter(typeof(StringEnumConverter))]
+		public new ExtraBlocks type;
+	}
 	[System.Serializable]
 	public class TankData {
 		[JsonConverter(typeof(StringEnumConverter))]

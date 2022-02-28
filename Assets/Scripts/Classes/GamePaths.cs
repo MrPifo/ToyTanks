@@ -13,7 +13,7 @@ public static class GamePaths {
 	public static string ValidateLevelPath(string path) => path.Trim().ToLower().Replace(" ", "");
 
 	// Editor Paths
-	public static string Official_Levels_Folder => $"{Application.dataPath}/Resources/Levels";
+	public static string Official_Levels_Folder => $"{Application.dataPath}/Addressables/Levels";
 	public static string GetOfficialLevelPath(LevelData levelData) => GetOfficialLevelPath(levelData.levelId);
 	public static string GetOfficialLevelPath(ulong levelId) => $"{Official_Levels_Folder}/Level_{levelId}.json";
 }

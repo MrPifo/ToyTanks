@@ -49,8 +49,7 @@ namespace ToyTanks.UI {
 		public void Initialize(Game.Level level) {
 			this.level = level;
 			try {
-				var sprite = Resources.Load<Sprite>(Game.LevelScreenshotPath + level.LevelId);
-				preview.sprite = sprite;
+				preview.sprite = AssetLoader.GetOfficialLevelPreview(level.LevelId);
 			} catch {
 			}
 

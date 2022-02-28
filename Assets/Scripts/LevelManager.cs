@@ -31,7 +31,6 @@ public class LevelManager : MonoBehaviour {
 	private float elapsedTime;
 	private float scoreEarned;
 	private int playerDeaths;
-	private List<TankAsset> tankPrefabs;
 	private GameCamera gameCamera;
 	bool levelManagerInitializedCampaignLevelOnly;
 	bool ContainsBoss => FindObjectOfType<BossAI>() != null;
@@ -61,7 +60,7 @@ public class LevelManager : MonoBehaviour {
 	public static LevelEditor Editor => FindObjectOfType<LevelEditor>();
 	public static Transform BlocksContainer => GameObject.FindGameObjectWithTag("LevelBlocks").transform;
 	public static Transform TanksContainer => GameObject.FindGameObjectWithTag("LevelTanks").transform;
-	public static SaveGame.Campaign.Difficulty Difficulty => SaveGame.GetCampaign(SaveGame.SaveInstance.currentSaveSlot).difficulty;
+	public static CampaignV1.Difficulty Difficulty => GameSaver.GetCampaign(GameSaver.SaveInstance.currentSaveSlot).difficulty;
 	private static LevelManager _instance;
 	public static LevelManager Instance {
 		get {
@@ -82,7 +81,6 @@ public class LevelManager : MonoBehaviour {
 		gameCamera = FindObjectOfType<GameCamera>();
 		optionsMenu.alpha = 0;
 		optionsMenu.gameObject.SetActive(false);
-		tankPrefabs = Resources.LoadAll<TankAsset>("Tanks").ToList();
 		Terminal.InitializeCommandConsole();
 		
 		// Start Editor if no GameManager is present
@@ -186,26 +184,31 @@ public class LevelManager : MonoBehaviour {
 
 	public IEnumerator LoadAndBuildMap(LevelData data, float loadDuration) {
 		ClearMap();
-		var blockAssets = Resources.LoadAll<ThemeAsset>(GamePaths.ThemesPath).ToList().Find(t => t.theme == data.theme);
 		float timePerBlock = loadDuration / data.blocks.Count;
 		EnablePreset(data.gridSize, data.theme);
 
 		foreach(var block in data.blocks) {
-			ThemeAsset.BlockAsset asset = blockAssets.GetAsset(block.type);
-			var b = Instantiate(asset.prefab, block.pos, Quaternion.Euler(block.rotation)).GetComponent<LevelBlock>();
-			b.transform.SetParent(BlocksContainer);
-			b.MeshRender.sharedMaterial = asset.material;
-			if(asset.isDynamic == false) {
+			GameObject b = null;
+			LevelBlock comp = null;
+			if(block is LevelData.BlockExtraData) {
+				ExtraBlockAsset asset = AssetLoader.GetExtraBlockAsset((block as LevelData.BlockExtraData).type);
+				b = Instantiate(asset.prefab, block.pos, Quaternion.Euler(block.rotation));
+				comp = b.GetComponent<LevelBlock>();
 				b.gameObject.isStatic = true;
 			} else {
-				b.gameObject.isStatic = false;
+				BlockAsset asset = AssetLoader.GetBlockAsset(data.theme, block.type);
+				b = Instantiate(asset.prefab, block.pos, Quaternion.Euler(block.rotation));
+				comp = b.GetComponent<LevelBlock>();
+				comp.MeshRender.sharedMaterial = asset.material;
 			}
-			b.SetPosition(block.pos);
+			
+			b.transform.SetParent(BlocksContainer);
+			comp.SetPosition(block.pos);
 			yield return new WaitForSeconds(timePerBlock);
 		}
 
 		foreach(var tank in data.tanks) {
-			var asset = GetTankAsset(tank.tankType);
+			var asset = AssetLoader.GetTank(tank.tankType);
 			var t = Instantiate(asset.prefab, tank.pos + asset.tankSpawnOffset, Quaternion.Euler(tank.rotation)).GetComponent<TankBase>();
 			t.transform.SetParent(TanksContainer);
 		}
@@ -232,9 +235,6 @@ public class LevelManager : MonoBehaviour {
 		GameManager.HideCursor();
 		Game.IsGameRunning = true;
 		//this.RepeatUntil(() => Game.IsGamePlaying == false, () => bannerBlurCamera.Copy(mainCamera), () => { });
-
-		// Find theme
-		ThemeAsset theme = Resources.LoadAll<ThemeAsset>(GamePaths.ThemesPath).ToList().Find(t => t.theme == CurrentLevel.theme);
 		
 		// Set Level Boundaries and Lights
 		SetLevelBoundaryWalls(GridBoundary);
@@ -247,7 +247,7 @@ public class LevelManager : MonoBehaviour {
 		}
 
 		// Generate AI Grid
-		Game.CreateAIGrid(CurrentLevel.gridSize, baseLayer, GameObject.FindGameObjectWithTag("Ground"));
+		Game.CreateAIGrid(CurrentLevel.gridSize, baseLayer);
 		InitializeTanks();
 		
 		if(ContainsBoss) {
@@ -261,20 +261,13 @@ public class LevelManager : MonoBehaviour {
 
 		// Turn On/Off tank lights
 		yield return new WaitForSeconds(1f);
-		foreach(var t in FindObjectsOfType<TankBase>()) {
-			if(theme.isDark) {
-				t.TurnLightsOn();
-			} else {
-				t.TurnLightsOff();
-			}
-		}
 
 
 		// Initialize Gameplay UI
 		yield return new WaitForSeconds(1f);
 		UI.playerScore.SetText(GameManager.Score.ToString());
 		UI.playerLives.SetText(GameManager.PlayerLives.ToString());
-		UI.playTime.SetText(GameManager.PlayTime.ToString());
+		UI.playTime.SetText(Mathf.Round(GameManager.PlayTime * 100) / 100 + "");
 		UI.levelStage.SetText($"Level {CurrentLevel.levelId}");
 		UI.ShowGameplayUI(1);
 
@@ -336,14 +329,14 @@ public class LevelManager : MonoBehaviour {
 		playerDeaths++;
 
 		if(Game.IsGameRunningDebug == false) {
-			if(Mode != GameManager.GameMode.LevelOnly && Difficulty != SaveGame.Campaign.Difficulty.Easy && GameManager.PlayerLives > 0) {
+			if(Mode != GameManager.GameMode.LevelOnly && Difficulty != CampaignV1.Difficulty.Easy && GameManager.PlayerLives > 0) {
 				GameManager.PlayerLives--;
 				UI.playerLives.SetText(GameManager.PlayerLives.ToString());
 				GameManager.UpdateCampaign();
 			}
 
 			// Respawn and Continue Level if lives are sufficient
-			if(GameManager.CurrentMode == GameManager.GameMode.LevelOnly || GameManager.PlayerLives > 0 || GameManager.Difficulty == SaveGame.Campaign.Difficulty.Easy) {
+			if(GameManager.CurrentMode == GameManager.GameMode.LevelOnly || GameManager.PlayerLives > 0 || GameManager.Difficulty == CampaignV1.Difficulty.Easy) {
 				Respawn();
 			} else {
 				Instance.StartCoroutine(Instance.GameOver());
@@ -377,9 +370,9 @@ public class LevelManager : MonoBehaviour {
 			// Decide next GameOver step when player lives reach ZERO
 			switch(GameManager.CurrentMode) {
 				case GameManager.GameMode.Campaign:
-					if(GameManager.PlayerLives > 0 || GameManager.Difficulty == SaveGame.Campaign.Difficulty.Easy) {
+					if(GameManager.PlayerLives > 0 || GameManager.Difficulty == CampaignV1.Difficulty.Easy) {
 						// Continue when players live are sufficient OR playing in EASY
-						SaveGame.UnlockLevel(SaveGame.SaveInstance.currentSaveSlot, GameManager.LevelId);
+						GameSaver.UnlockLevel(GameSaver.SaveInstance.currentSaveSlot, GameManager.LevelId);
 						GameManager.LevelId++;
 
 						CheckRewardLive();
@@ -394,7 +387,7 @@ public class LevelManager : MonoBehaviour {
 					} else {
 						// Reset Player to CheckPoint
 						switch(GameManager.Difficulty) {
-							case SaveGame.Campaign.Difficulty.Medium:
+							case CampaignV1.Difficulty.Medium:
 								// Medium Mode resets to the currents world most middle Level (Typicially Level 5 of a World)
 								GameManager.PlayerLives = 4;
 								ulong halfCheckpoint = Game.GetWorld(GameManager.CurrentLevel.levelId).Levels[Game.GetWorld(GameManager.CurrentLevel.levelId).Levels.Length / 2].LevelId;
@@ -405,27 +398,27 @@ public class LevelManager : MonoBehaviour {
 								} else {
 									GameManager.LevelId = halfCheckpoint;
 								}
-								RuntimeAnalytics.AracadeLevelEnded(false, CurrentLevel.levelId, elapsedTime, playerDeaths, SaveGame.Campaign.Difficulty.Medium);
+								RuntimeAnalytics.AracadeLevelEnded(false, CurrentLevel.levelId, elapsedTime, playerDeaths, CampaignV1.Difficulty.Medium);
 								Logger.Log(Channel.Gameplay, "Returning to Checkpoint: " + GameManager.LevelId);
 								yield return new WaitForSeconds(3);
 								GameManager.LoadLevel("", true);
 								break;
-							case SaveGame.Campaign.Difficulty.Hard:
+							case CampaignV1.Difficulty.Hard:
 								// Hard Mode resets to the currents world first level
 								GameManager.PlayerLives = 2;
 								GameManager.LevelId = Game.GetWorld(GameManager.CurrentLevel.levelId).Levels[0].LevelId;
 								Logger.Log(Channel.Graphics, "Returning to Checkpoint: " + GameManager.LevelId);
-								RuntimeAnalytics.AracadeLevelEnded(false, CurrentLevel.levelId, elapsedTime, playerDeaths, SaveGame.Campaign.Difficulty.Hard);
+								RuntimeAnalytics.AracadeLevelEnded(false, CurrentLevel.levelId, elapsedTime, playerDeaths, CampaignV1.Difficulty.Hard);
 								yield return new WaitForSeconds(2);
 								GameManager.LoadLevel("Mission Failed");
 								break;
-							case SaveGame.Campaign.Difficulty.Original:
+							case CampaignV1.Difficulty.Original:
 								// HardCore deletes SaveSlot
-								Logger.Log(Channel.SaveGame, "Player failed, wiping SaveSlot: " + SaveGame.SaveInstance.currentSaveSlot);
-								SaveGame.SaveInstance.WipeSlot(SaveGame.SaveInstance.currentSaveSlot);
-								SaveGame.Save();
+								Logger.Log(Channel.SaveGame, "Player failed, wiping SaveSlot: " + GameSaver.SaveInstance.currentSaveSlot);
+								GameSaver.SaveInstance.WipeSlot(GameSaver.SaveInstance.currentSaveSlot);
+								GameSaver.Save();
 
-								RuntimeAnalytics.AracadeLevelEnded(true, CurrentLevel.levelId, elapsedTime, playerDeaths, SaveGame.Campaign.Difficulty.Original);
+								RuntimeAnalytics.AracadeLevelEnded(true, CurrentLevel.levelId, elapsedTime, playerDeaths, CampaignV1.Difficulty.Original);
 								yield return new WaitForSeconds(3);
 								GameManager.ReturnToMenu("Mission Failed");
 								break;
@@ -452,15 +445,15 @@ public class LevelManager : MonoBehaviour {
 	static void CheckRewardLive() {
 		float addPercentage = 0;
 		switch(GameManager.Difficulty) {
-			case SaveGame.Campaign.Difficulty.Easy:
+			case CampaignV1.Difficulty.Easy:
 				break;
-			case SaveGame.Campaign.Difficulty.Medium:
+			case CampaignV1.Difficulty.Medium:
 				addPercentage = 0.05f;
 				break;
-			case SaveGame.Campaign.Difficulty.Hard:
+			case CampaignV1.Difficulty.Hard:
 				addPercentage = 0.035f;
 				break;
-			case SaveGame.Campaign.Difficulty.Original:
+			case CampaignV1.Difficulty.Original:
 				break;
 		}
 		GameManager.LiveGainChance += addPercentage;
@@ -526,8 +519,6 @@ public class LevelManager : MonoBehaviour {
 			}
 		}
 	}
-
-	public TankAsset GetTankAsset(TankTypes type) => tankPrefabs.Find(t => t.tankType == type);
 
 	//public static LevelPreset GetPreset(GridSizes size, LevelEditor.Themes theme) => Instance.presets.Where(p => p.gridSize == size && p.theme == theme).FirstOrDefault();
 

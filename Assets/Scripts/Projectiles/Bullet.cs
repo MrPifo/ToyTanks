@@ -119,6 +119,8 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 						TakeDamage(this);
 					} else if(bounces > maxBounces) {
 						TakeDamage(this);
+					} else if(IsReflective(coll.transform) == false) {
+						TakeDamage(this);
 					} else {
 						Reflect(hit.normal);
 						lastHitTime = time;
@@ -153,5 +155,12 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 		rig.velocity = Vector3.zero;
 		fakeShadow.Show();
 		PrefabManager.FreeGameObject(this);
+	}
+
+	public static bool IsReflective(Transform t) {
+		if(t.transform.CompareTag(ExtraBlocks.Sandbag.ToString()) || t.transform.CompareTag(ExtraBlocks.Tschechigel.ToString())) {
+			return false;
+		}
+		return true;
 	}
 }

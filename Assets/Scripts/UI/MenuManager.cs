@@ -4,7 +4,6 @@ using UnityEngine.UI;
 using TMPro;
 using System.IO;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using CommandTerminal;
 using LeTai.Asset.TranslucentImage;
@@ -64,15 +63,15 @@ public class MenuManager : MonoBehaviour {
 		Terminal.InitializeCommandConsole();
 	}
 
-	public void SetActiveSaveSlot(byte slot) => SaveGame.SaveInstance.currentSaveSlot = slot;
+	public void SetActiveSaveSlot(byte slot) => GameSaver.SaveInstance.currentSaveSlot = slot;
 
 	public void RenderSaveSlots() {
 		for(byte i = 0; i < saveSlots.Length; i++) {
-			if(SaveGame.GetCampaign(i) != null) {
+			if(GameSaver.GetCampaign(i) != null) {
 				saveSlots[i].LoadAndDisplayData();
 			} else {
 				saveSlots[i].DisplayEmpty();
-				if(SaveGame.HasGameBeenCompletedOnce) {
+				if(GameSaver.HasGameBeenCompletedOnce) {
 					hardCoreDifficulty.SetActive(true);
 				} else {
 					hardCoreDifficulty.SetActive(false);
@@ -82,14 +81,14 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	public void CreateNewCampaign(int difficulty) {
-		SaveGame.CreateFreshCampaign((SaveGame.Campaign.Difficulty)difficulty, SaveGame.SaveInstance.currentSaveSlot);
-		StartGame(SaveGame.SaveInstance.currentSaveSlot);
+		GameSaver.CreateFreshCampaign((CampaignV1.Difficulty)difficulty, GameSaver.SaveInstance.currentSaveSlot);
+		StartGame(GameSaver.SaveInstance.currentSaveSlot);
 	}
 
 	public static void StartGame(byte saveSlot) => FindObjectOfType<GameManager>().StartCampaign(saveSlot);
 
 	public void DeleteCampaign(int saveSlot) {
-		SaveGame.SaveInstance.WipeSlot((byte)saveSlot);
+		GameSaver.SaveInstance.WipeSlot((byte)saveSlot);
 		RenderSaveSlots();
 	}
 
@@ -109,7 +108,7 @@ public class MenuManager : MonoBehaviour {
 		}
 		foreach(string path in filePaths) {
 			string json = File.ReadAllText(path);
-			LevelData data = JsonConvert.DeserializeObject<LevelData>(json);
+			/*LevelData data = JsonConvert.DeserializeObject<LevelData>(json);
 			if(json.Length == 0 || data == null) {
 				continue;
 			}
@@ -119,7 +118,7 @@ public class MenuManager : MonoBehaviour {
 			button.transform.Find("Name").GetComponent<TMP_Text>().SetText(data.levelName);
 			button.GetComponent<Button>().onClick.AddListener(() => {
 				EnterLevelOverview(data);
-			});
+			});*/
 		}
 	}
 
@@ -135,7 +134,7 @@ public class MenuManager : MonoBehaviour {
 		var path = GamePaths.ValidateLevelPath(GamePaths.GetLevelPath(currentLevelData));
 		var stream = File.Create(path);
 		stream.Close();
-		File.WriteAllText(path, JsonConvert.SerializeObject(currentLevelData));
+		//File.WriteAllText(path, JsonConvert.SerializeObject(currentLevelData));
 		EnterLevelOverview(currentLevelData);
 	}
 
@@ -169,7 +168,7 @@ public class MenuManager : MonoBehaviour {
 			var stream = File.Create(path);
 			stream.Close();
 		}
-		File.WriteAllText(path, JsonConvert.SerializeObject(data));
+		//File.WriteAllText(path, JsonConvert.SerializeObject(data));
 	}
 
 	public void ExitLevelOverview() {

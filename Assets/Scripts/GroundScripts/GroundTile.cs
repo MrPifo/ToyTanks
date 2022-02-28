@@ -13,6 +13,7 @@ public class GroundTile : IEditor {
 		set => _index = value;
 	}
 	public GroundTileType type;
+	public bool hasBlockAbove;
 	public BlockType blockAbove;
 	/// <summary>
 	/// Orientation of the ground tile:
@@ -29,7 +30,7 @@ public class GroundTile : IEditor {
 	public MeshRenderer MeshRender { get; private set; }
 	public Mesh GetMesh => LevelGround.GetMesh(type);
 	private BoxCollider collider;
-	public GroundTileData data => LevelGround.GetTileData(type);
+	public GroundTileData data => AssetLoader.GetGroundTile(type);
 
 	public void Apply(int x, int z) {
 		if(GameObject != null) {
@@ -40,7 +41,6 @@ public class GroundTile : IEditor {
 				MeshRender = GameObject.AddComponent<MeshRenderer>();
 			}
 			collider = GameObject.AddComponent<BoxCollider>();
-			MeshRender.receiveGI = ReceiveGI.Lightmaps;
 			GameObject.layer = GameMasks.Ground;
 			GameObject.isStatic = true;
 			GameObject.transform.position = new Vector3(x * 2, 0, z * 2);
@@ -53,6 +53,7 @@ public class GroundTile : IEditor {
 	// Looks at it surroundings and objects and decides which tile type to use
 	public void EvaluateTile() {
 		var blocks = Object.FindObjectsOfType<LevelBlock>().Where(b => b.isNotEditable == false && b.Index.y == 0).ToList();
+		hasBlockAbove = false;
 		orientation = 0;
 		if(collider != null) {
 			collider.size = new Vector3(2, 0.01f, 2);
@@ -60,8 +61,8 @@ public class GroundTile : IEditor {
 
 		if(Physics.Raycast(Index.xyz - Vector3.up, Vector3.up, out RaycastHit hit, 50, LevelGround.detectionMask)) {
 			if(hit.transform.TryGetComponent(out LevelBlock block) && block.isNotEditable == false) {
-				//Debug.DrawLine(Index.xyz - Vector3.up, hit.point, Color.red, 5, false);
 				blockAbove = block.type;
+				hasBlockAbove = true;
 			}
 		}
 
@@ -192,9 +193,10 @@ public class GroundTile : IEditor {
 					UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(ExtraMesh.gameObject, GameObject.scene);
 					ExtraMesh.transform.SetParent(GameObject.transform);
 					ExtraMesh.transform.localPosition = Vector3.zero;
+					ExtraMesh.tag = "GroundTileExtra";
 				}
-			} catch {
-				Debug.LogError("Failed to set extra prefab from " + data);
+			} catch(System.Exception e) {
+				Logger.LogError("Failed to set extra prefab from " + data, e);
 			}
 		} else {
 			try {
@@ -203,9 +205,10 @@ public class GroundTile : IEditor {
 					UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(ExtraMesh.gameObject, LevelGround.Instance.gameObject.scene);
 					ExtraMesh.transform.SetParent(LevelGround.Instance.transform);
 					ExtraMesh.transform.localPosition = Index.xyz;
+					ExtraMesh.tag = "GroundTileExtra";
 				}
-			} catch {
-				Debug.LogError("Failed to set extra prefab from " + data);
+			} catch(System.Exception e) {
+				Logger.LogError("Failed to set extra prefab from " + data, e);
 			}
 		}
 	}
@@ -225,7 +228,9 @@ public class GroundTile : IEditor {
 	}
 
 	public void RestoreMaterials() {
-		MeshRender?.material?.SetFloat("_EditorPreview", 0);
+		if(GameObject != null) {
+			MeshRender?.material?.SetFloat("_EditorPreview", 0);
+		}
 	}
 
 	public void SetAsPreview() {

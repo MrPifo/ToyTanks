@@ -6,6 +6,7 @@ using UnityEngine;
 using CommandTerminal;
 using SimpleMan.Extensions;
 using System.Collections;
+using Sperlich.Types;
 
 public class AIGrid : MonoBehaviour {
 
@@ -46,6 +47,10 @@ public class AIGrid : MonoBehaviour {
 					Grid.LockAt(x, y);
 				}
 				if(hits.Any(h => h.Layer() == LayerMask.NameToLayer("Block"))) {
+					Grid.LockAt(x, y);
+				}
+					
+				if(LevelGround.GetTileAtWorldPos(Grid.GetWorldPos(x, y), out GroundTile tile) && GroundTile.IsAnyGapTile(tile.type)) {
 					Grid.LockAt(x, y);
 				}
 				if(Grid.IsLockedAt(x, y) == false && hits.Any(h => h.Layer() == LayerMask.NameToLayer("Destructable"))) {

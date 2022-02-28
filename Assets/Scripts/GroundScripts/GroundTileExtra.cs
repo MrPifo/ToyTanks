@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using ToyTanks.LevelEditor;
 using UnityEngine;
 
-public class GroundTileExtra : MonoBehaviour {
+public class GroundTileExtra : GameEntity {
     
     public GroundTileType tileType;
     public MeshRenderer meshRender;

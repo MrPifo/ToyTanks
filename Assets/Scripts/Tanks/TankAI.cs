@@ -140,6 +140,7 @@ public abstract class TankAI : TankBase, IHittable {
 			AvoidanceSystem();
 			distToPlayer = Vector3.Distance(Pos, Player.Pos);
 			pathfindingRefreshTime += GetTime;
+			rig.velocity = Vector3.zero;
 			switch(MoveMode.State) {
 				case MovementType.None:
 					break;
@@ -300,14 +301,14 @@ public abstract class TankAI : TankBase, IHittable {
 			maxDir = 1;
 		}
 		float factor = currentDirFactor * maxDir;*/
-		Vector3 movePos = currentDirFactor * moveSpeed * GetTime * rig.transform.forward;
+		Vector3 movePos = currentDirFactor * moveSpeed * rig.transform.forward;
 
 		if(!isShootStunned && canMove) {
-			rig.MovePosition(rig.position + movePos);
+			//rig.MovePosition(rig.position + movePos);
+			rig.velocity = movePos;
 			rig.MoveRotation(Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(moveDir * currentDirFactor, Vector3.up), GetTime * turnSpeed));
 		}
 		TrackTracer(currentDirFactor);
-		rig.velocity = Vector3.zero;
 	}
 	/// <summary>
 	/// Tank will aim the player. Should be called in Update.

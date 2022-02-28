@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 using System.IO;
 using System.Text;
 using System.IO.Compression;
-using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 // This class holds all the Games information
@@ -204,20 +203,18 @@ public static class Game {
 
 			// Runtime Analytics, only run this when build
 			try {
-#if UNITY_EDITOR == false
 				await RuntimeAnalytics.Initialize();
 				if(isDuringStartup) {
 					GameStartup.LoadingText.SetText("Session created");
 					await Task.Delay(250);
 				}
-#endif
 			} catch(Exception e) {
 				Logger.LogError("Failed to initialize GameAnalytics", e);
 			}
 
 			// SaveGame
 			try {
-				SaveGame.GameStartUp();
+				GameSaver.GameStartUp();
 				if(isDuringStartup) {
 					GameStartup.LoadingText.SetText("Save Game loaded");
 					await Task.Delay(250);
@@ -240,7 +237,7 @@ public static class Game {
 			PlayerInputManager.HideControls();
 
 			// Refresh the games save files timestamps
-			SaveGame.Save();
+			GameSaver.Save();
 			PlayerStats.SavePlayerStats();
 
 			// End of loading
@@ -269,7 +266,7 @@ public static class Game {
     }
 
 	// Generation Methods
-	public static void CreateAIGrid(GridSizes size, LayerMask mask, bool visualize = false) {
+	public static void CreateAIGrid(GridSizes size, LayerMask mask) {
 		Logger.Log(Channel.System, $"Generating AI Pathfinding Grid ({size.ToString()})");
 		var existingGrid = UnityEngine.Object.FindObjectOfType<AIGrid>();
 		if(existingGrid != null) {
@@ -354,31 +351,6 @@ public static class Game {
 
 		while((cnt = src.Read(bytes, 0, bytes.Length)) != 0) {
 			dest.Write(bytes, 0, cnt);
-		}
-	}
-	/// <summary>
-	/// Checks if the integrity of the PlayerStats file. Return (bool integrityOkay, bool notFound).
-	/// </summary>
-	/// <returns></returns>
-	public static (bool integrityOkay, bool notFound) VerifyIntegrity<T>(string path, bool isCompressed = false) {
-		// Check if file even exists
-		if(File.Exists(path)) {
-			try {
-				string content = ReadFromFile(path, isCompressed);
-				if(string.IsNullOrEmpty(content)) {
-					throw new Exception("File empty.");
-				}
-
-				// Try to parse the decompressed files content
-				JsonConvert.DeserializeObject<T>(content);
-				return (true, false);
-			} catch(Exception e) {
-				Logger.LogError("Content seems to be corrupted from file " + path, e);
-				return (false, false);
-			}
-		} else {
-			Logger.Log(Channel.SaveGame, "PlayerStats file not found.");
-			return (true, true);
 		}
 	}
 	/// <summary>

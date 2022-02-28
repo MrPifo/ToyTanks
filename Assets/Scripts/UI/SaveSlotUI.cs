@@ -29,7 +29,7 @@ public class SaveSlotUI : UIScaleAnimation {
 	}
 
 	public void LoadAndDisplayData() {
-		SaveGame.Campaign camp = SaveGame.GetCampaign((byte)slotNumber);
+		CampaignV1 camp = GameSaver.GetCampaign((byte)slotNumber);
 		level.SetText("Level: " + camp.levelId);
 		time.SetText("Time: " + Mathf.Round(camp.time) + "s");
 		score.SetText("Score: " + camp.score);
@@ -37,16 +37,16 @@ public class SaveSlotUI : UIScaleAnimation {
 		difficulty.SetText(camp.difficulty.ToString());
 
 		switch(camp.difficulty) {
-			case SaveGame.Campaign.Difficulty.Easy:
+			case CampaignV1.Difficulty.Easy:
 				difficulty.color = new Color(0.28f, 1, 0.58f);
 				break;
-			case SaveGame.Campaign.Difficulty.Medium:
+			case CampaignV1.Difficulty.Medium:
 				difficulty.color = new Color(0.84f, 1, 0.25f);
 				break;
-			case SaveGame.Campaign.Difficulty.Hard:
+			case CampaignV1.Difficulty.Hard:
 				difficulty.color = new Color(1f, 0.32f, 0.24f);
 				break;
-			case SaveGame.Campaign.Difficulty.Original:
+			case CampaignV1.Difficulty.Original:
 				difficulty.color = new Color(0.05f, 0.05f, 0.05f);
 				break;
 			default:
@@ -64,7 +64,7 @@ public class SaveSlotUI : UIScaleAnimation {
 	}
 
 	private void Update() {
-		if(isMouseDown && SaveGame.GetCampaign((byte)slotNumber) != null && deletePlaying == false) {
+		if(isMouseDown && GameSaver.GetCampaign((byte)slotNumber) != null && deletePlaying == false) {
 			holdTime += Time.deltaTime;
 			if(holdTime > 2) {
 				deleted = true;
@@ -93,10 +93,10 @@ public class SaveSlotUI : UIScaleAnimation {
 	public void MouseClick() {
 		if(deleted == false && deletePlaying == false) {
 			deleted = false;
-			SaveGame.SaveInstance.currentSaveSlot = (byte)slotNumber;
-			if(SaveGame.GetCampaign((byte)slotNumber) != null && holdTime < 0.25f) {
+			GameSaver.SaveInstance.currentSaveSlot = (byte)slotNumber;
+			if(GameSaver.GetCampaign((byte)slotNumber) != null && holdTime < 0.25f) {
 				MenuManager.StartGame((byte)slotNumber);
-			} else if(SaveGame.GetCampaign((byte)slotNumber) == null) {
+			} else if(GameSaver.GetCampaign((byte)slotNumber) == null) {
 				saveSlotMenu.TransitionMenu(1);
 			}
 		}

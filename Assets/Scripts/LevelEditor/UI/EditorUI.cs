@@ -67,6 +67,7 @@ namespace ToyTanks.LevelEditor.UI {
 				case LevelEditor.BuildMode.Move:
 					break;
                 case LevelEditor.BuildMode.Build:
+                case LevelEditor.BuildMode.BuildExtra:
                 case LevelEditor.BuildMode.Tanks:
                 case LevelEditor.BuildMode.TerraformDown:
                 case LevelEditor.BuildMode.TerraformUp:
@@ -101,6 +102,7 @@ namespace ToyTanks.LevelEditor.UI {
                     actionButtonIcon.color = new Color(0.121f, 0.537f, 1f);
                     break;
 				case LevelEditor.BuildMode.Build:
+                case LevelEditor.BuildMode.BuildExtra:
                     actionButtonIcon.sprite = buildSprite;
                     actionButtonIcon.color = new Color(0.537f, 1f, 0.121f);
                     break;
@@ -146,7 +148,7 @@ namespace ToyTanks.LevelEditor.UI {
             foreach(var item in themeItems) {
                 item.Deselect();
                 item.value = num;
-                item.SetText(LevelEditor.ThemeAssets.Find(t => (int)t.theme == num).theme.ToString());
+                item.SetText((WorldTheme)num + "");
                 item.SetOnClick(() => {
                     item.Select();
                     editor.SwitchTheme((WorldTheme)item.value);
@@ -203,8 +205,7 @@ namespace ToyTanks.LevelEditor.UI {
             // Render Asset View Tab
             switch(editor.assetView) {
 				case LevelEditor.AssetView.Blocks:
-					var themeAsset = LevelEditor.ThemeAssets.Find(t => t.theme == editor.theme);
-					foreach(var block in themeAsset.assets) {
+					foreach(var block in AssetLoader.GetBlockAssets(editor.theme)) {
 						var asset = Instantiate(selectItem.gameObject).GetComponent<SelectItem>();
 						asset.transform.SetParent(assetScrollRect.content.transform);
                         asset.SetSprite(block.preview);
@@ -226,8 +227,31 @@ namespace ToyTanks.LevelEditor.UI {
                         assetItems[(int)editor.selectedBlockType].Select();
                     }
                     break;
+                case LevelEditor.AssetView.ExtraBlocks:
+                    foreach(var block in AssetLoader.GetExtraBlockAssets()) {
+                        var asset = Instantiate(selectItem.gameObject).GetComponent<SelectItem>();
+                        asset.transform.SetParent(assetScrollRect.content.transform);
+                        asset.SetSprite(block.preview);
+                        asset.Deselect();
+                        asset.SetOnClick(() => {
+                            if(asset.isSelected == false) {
+                                editor.buildMode = LevelEditor.BuildMode.BuildExtra;
+                                editor.selectedExtraBlock = block.block;
+                                RenderAssets();
+                            } else {
+                                editor.buildMode = LevelEditor.BuildMode.View;
+                                asset.Deselect();
+                            }
+                            UpdateActionButton();
+                        });
+                        assetItems.Add(asset);
+                    }
+                    if(editor.buildMode == LevelEditor.BuildMode.BuildExtra) {
+                        assetItems[GetExtraBlockEnumOrder(editor.selectedExtraBlock)].Select();
+                    }
+                    break;
 				case LevelEditor.AssetView.Tanks:
-					foreach(var tank in LevelEditor.Tanks) {
+					foreach(var tank in AssetLoader.TankAssets) {
 						var asset = Instantiate(selectItem.gameObject).GetComponent<SelectItem>();
 						asset.transform.SetParent(assetScrollRect.content.transform);
 						asset.SetSprite(tank.preview);
@@ -250,7 +274,7 @@ namespace ToyTanks.LevelEditor.UI {
                     }
 					break;
                 case LevelEditor.AssetView.Terrain:
-                    foreach(var tile in LevelGround.GroundTiles.Where(t => t.notSelectable == false).OrderBy(t => (int)t.type)) {
+                    foreach(var tile in AssetLoader.GroundTileAssets.Where(t => t.notSelectable == false)) {
                         var asset = Instantiate(selectItem.gameObject).GetComponent<SelectItem>();
                         asset.transform.SetParent(assetScrollRect.content.transform);
                         asset.value = (int)tile.type;   // Not required but makes debugging easier
@@ -315,5 +339,15 @@ namespace ToyTanks.LevelEditor.UI {
                 UpdateActionButton();
             }
 		}
+
+        public int GetExtraBlockEnumOrder(ExtraBlocks type) {
+            var values = System.Enum.GetValues(typeof(ExtraBlocks));
+            for(int i = 0; i < values.Length; i++) {
+                if((ExtraBlocks)values.GetValue(i) == type) {
+                    return i;
+                }
+            }
+            return 0;
+        }
     }
 }

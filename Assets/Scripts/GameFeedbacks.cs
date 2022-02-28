@@ -14,6 +14,8 @@ public class GameFeedbacks : MonoBehaviour {
 	public static GameFeedbacks Instance {
 		get {
 			if(_instance == null) {
+				PlayerDeath.Initialization();
+				PlayerHit.Initialization();
 				_instance = PrefabManager.Instantiate<GameFeedbacks>(PrefabTypes.GameFeedbacks);
 			}
 			return _instance;

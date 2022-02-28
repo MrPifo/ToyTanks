@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using SimpleMan.Extensions;
-using NaughtyAttributes;
 using Sperlich.Types;
 using ToyTanks.LevelEditor;
 
 public class LevelGround : MonoBehaviour {
 
-	[HorizontalLine(color: EColor.Red)]
+	//[HorizontalLine(color: EColor.Red)]
 	[Header("New")]
 	public Material mat;
 	public GridSizes gridSize = GridSizes.Size_15x12;
@@ -16,9 +15,8 @@ public class LevelGround : MonoBehaviour {
 	/// Use GameObjects to represent individual ground tiles?
 	/// </summary>
 	public bool useGameObjects;
-	public static LayerMask detectionMask => LayerMaskExtension.Create(GameMasks.Block, GameMasks.BulletTraverse, GameMasks.Destructable);
+	public static LayerMask detectionMask => LayerMaskExtension.Create(GameMasks.Block, GameMasks.Player, GameMasks.Bot, GameMasks.BulletTraverse, GameMasks.Destructable);
 	public List<GroundTile> Tiles;
-	public static List<GroundTileData> GroundTiles { get; set; }
 	private static LevelGround _instance;
 	public static LevelGround Instance {
 		get {
@@ -79,7 +77,6 @@ public class LevelGround : MonoBehaviour {
 	/// Generates the ground tiles. Turn on useGameObjects to spawn individual ground tiles, otherwise the groundtiles get merged into a single mesh.
 	/// </summary>
 	public void Generate(GridSizes gridSize, bool useGameObjects, List<LevelData.GroundTileData> generateFrom = null) {
-		FetchGroundTiles();
 		Clear();
 
 		this.useGameObjects = useGameObjects;
@@ -107,7 +104,9 @@ public class LevelGround : MonoBehaviour {
 		if(generateFrom != null) {
 			foreach(var tileData in generateFrom) {
 				var tile = GetTileAtWorldPos(tileData.index.xyz);
-				tile.ChangeType(tileData.groundType);
+				if(tile != null) {
+					tile.ChangeType(tileData.groundType);
+				}
 			}
 		}
 		UpdateGapTiles();
@@ -116,7 +115,7 @@ public class LevelGround : MonoBehaviour {
 	/// <summary>
 	/// Merges all tiles into a single mesh and mesh collider to save on performance
 	/// </summary>
-	[Button("Patch")]
+	//[Button("Patch")]
 	public void PatchTiles() {
 		GameObject primCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		Mesh baseCubeMesh = primCube.GetComponent<MeshFilter>().sharedMesh;
@@ -204,7 +203,7 @@ public class LevelGround : MonoBehaviour {
 		Debug.Log("Ground has been patched");
 	}
 
-	[Button("Clear")]
+	//[Button("Clear")]
 	public void Clear() {
 		if(TryGetComponent(out MeshFilter filter)) {
 			DestroyImmediate(filter);
@@ -227,6 +226,9 @@ public class LevelGround : MonoBehaviour {
 		foreach(var g in GameObject.FindGameObjectsWithTag("GroundTile")) {
 			DestroyImmediate(g);
 		}
+		foreach(var g in FindObjectsOfType<GroundTileExtra>()) {
+			DestroyImmediate(g.gameObject);
+		}
 		Tiles = new List<GroundTile>();
 	}
 
@@ -239,7 +241,7 @@ public class LevelGround : MonoBehaviour {
 
 	public static Mesh GetMesh(GroundTileType type) {
 		Mesh mesh = null;
-		var tile = GroundTiles.Find(tile => tile.type == type);
+		var tile = AssetLoader.GetGroundTile(type);
 		if(tile != null) {
 			mesh = tile.mesh;
 		}
@@ -247,19 +249,17 @@ public class LevelGround : MonoBehaviour {
 	}
 
 	public void SetTheme(WorldTheme theme) {
-		FetchGroundTiles();
 		if(useGameObjects) {
 			foreach(var tile in Tiles) {
-				var data = GroundTiles.Find(t => t.type == tile.type);
 				if(tile.MeshRender != null) {
-					tile.MeshRender.sharedMaterial = LevelEditor.ThemeAssets.Find(t => t.theme == theme).floorMaterial;
+					tile.MeshRender.sharedMaterial = AssetLoader.GetTheme(theme).floorMaterial;
 				}
 				if(tile.ExtraMesh != null) {
 					tile.ExtraMesh.SetTheme(theme);
 				}
 			}
 		} else {
-			Render.sharedMaterial = LevelEditor.ThemeAssets.Find(t => t.theme == theme).floorMaterial;
+			Render.sharedMaterial = AssetLoader.GetTheme(theme).floorMaterial;
 		}
 	}
 
@@ -295,9 +295,13 @@ public class LevelGround : MonoBehaviour {
 	public static GroundTile GetTileAtWorldPos(Vector3 pos) {
 		return Instance.Tiles.Find(t => t.Index == new Int2(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.z)));
 	}
-
-	public static GroundTileData GetTileData(GroundTileType type) {
-		return GroundTiles.Find(t => t.type == type);
+	public static bool GetTileAtWorldPos(Vector3 pos, out GroundTile tile) {
+		tile = null;
+		tile = Instance.Tiles.Find(t => t.Index == new Int2(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.z)));
+		if(tile != null) {
+			return true;
+		}
+		return false;
 	}
 
 	public static Vector3[] GetColliderVertexPositions(Transform from, BoxCollider b) {
@@ -314,15 +318,12 @@ public class LevelGround : MonoBehaviour {
 		return vertices;
 	}
 
-	// Ground Tiles Helper
-	public void FetchGroundTiles() {
-		GroundTiles = Resources.LoadAll<GroundTileData>("GroundTiles").ToList();
-	}
-
-	[Button("Editor Test Generate")]
+#if UNITY_EDITOR
+	//[Button("Editor Test Generate")]
 	public void TestGenerate() {
 		FindObjectOfType<LevelEditor>().LoadOfficialLevel(1);
 		useGameObjects = false;
 		PatchTiles();
 	}
+#endif
 }

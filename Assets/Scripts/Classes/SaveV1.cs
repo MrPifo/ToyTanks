@@ -1,18 +1,15 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 [Serializable]
-public class SaveV1 : ISaveGame {
+public class SaveV1 : SaveBase {
 
-	public int SaveGameVersion => 1;
-	public DateTime LastModified { get; set; }
+	public new string SaveGameVersion => "1.0";
 	public bool GameCompletedOnce { get; set; }
 
 	public List<World> Worlds { get; set; }
 
-	[JsonIgnore] public SaveGame.Campaign CurrentCampaign {
+	public CampaignV1 CurrentCampaign {
 		get {
 			switch(currentSaveSlot) {
 				case 0:
@@ -26,12 +23,13 @@ public class SaveV1 : ISaveGame {
 			}
 		}
 	}
-	[JsonIgnore] public byte currentSaveSlot = 8;
-	public SaveGame.Campaign saveSlot1;
-	public SaveGame.Campaign saveSlot2;
-	public SaveGame.Campaign saveSlot3;
+	[NonSerialized]
+	public byte currentSaveSlot = 8;
+	public CampaignV1 saveSlot1;
+	public CampaignV1 saveSlot2;
+	public CampaignV1 saveSlot3;
 
-	public void WriteSaveSlot(byte slot, SaveGame.Campaign campaign) {
+	public void WriteSaveSlot(byte slot, CampaignV1 campaign) {
 		switch(slot) {
 			case 0:
 				saveSlot1 = campaign;
@@ -45,7 +43,7 @@ public class SaveV1 : ISaveGame {
 			default:
 				throw new NotImplementedException("Save Slot " + currentSaveSlot + " is not available");
 		}
-		SaveGame.Save();
+		GameSaver.Save();
 	}
 
 	public void UpdateSaveSlot(byte slot, ulong levelId, byte lives, int score, float time) {
@@ -71,7 +69,7 @@ public class SaveV1 : ISaveGame {
 			default:
 				throw new NotImplementedException("Save Slot " + currentSaveSlot + " is not available");
 		}
-		SaveGame.Save();
+		GameSaver.Save();
 	}
 
 	public void WipeSlot(byte slot) {
@@ -88,12 +86,12 @@ public class SaveV1 : ISaveGame {
 			default:
 				throw new NotImplementedException("Save Slot " + currentSaveSlot + " is not available");
 		}
-		SaveGame.Save();
+		GameSaver.Save();
 	}
 
 	[Serializable]
 	public class World {
-		[JsonConverter(typeof(StringEnumConverter))]
+		//[JsonConverter(typeof(StringEnumConverter))]
 		public WorldTheme world;
 		public Level[] levels;
 	}

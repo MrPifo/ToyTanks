@@ -85,14 +85,13 @@ public class RuntimeAnalytics {
 		using var compressStream = new FileStream(UserDataFilePath, FileMode.Open, FileAccess.Write);
 		using var ds = new DeflateStream(compressStream, CompressionLevel.Optimal);
 		using var sw = new StreamWriter(ds);
-		sw.Write(JsonConvert.SerializeObject(PlayerInfo));
+		//sw.Write(JsonConvert.SerializeObject(PlayerInfo));
 	}
 
 	public static UserInfo GetUserInfo() {
 		using var compressStream = new FileStream(UserDataFilePath, FileMode.Open, FileAccess.Read);
 		using var ds = new DeflateStream(compressStream, CompressionMode.Decompress);
 		using var sr = new StreamReader(ds);
-
 		return JsonConvert.DeserializeObject<UserInfo>(sr.ReadToEnd());
 	}
 
@@ -122,7 +121,7 @@ public class RuntimeAnalytics {
 		}
 	}
 
-	public static async Task AracadeLevelEnded(bool completed, ulong levelId, float time, int deaths, SaveGame.Campaign.Difficulty difficulty) {
+	public static async Task AracadeLevelEnded(bool completed, ulong levelId, float time, int deaths, CampaignV1.Difficulty difficulty) {
 		if(HasBeenInitialized) {
 			try {
 				var url = "https://sperlich.at/api/toytanks/arcadelevelinfo.php";

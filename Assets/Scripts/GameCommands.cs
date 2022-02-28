@@ -2,6 +2,7 @@
 using ToyTanks.LevelEditor;
 using UnityEngine;
 using CameraShake;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -19,11 +20,14 @@ public static class GameCommands {
 						editor.LevelData = new LevelData() {
 							levelId = (ulong)args[0].Int,
 							levelName = "",
-							blocks = new System.Collections.Generic.List<LevelData.BlockData>(),
+							blocks = new List<LevelData.BlockData>(),
 							gridSize = GridSizes.Size_12x9,
-							tanks = new System.Collections.Generic.List<LevelData.TankData>(),
-							theme = WorldTheme.Woody
+							tanks = new List<LevelData.TankData>(),
+							theme = WorldTheme.Woody,
+							groundTiles = new List<LevelData.GroundTileData>()
 						};
+						AssetLoader.LevelAssets = null;
+						editor.loadedLevelId = (ulong)args[0].Int;
 						editor.SaveAsOfficialLevel();
 						AssetDatabase.Refresh();
 						LoadCampaignLevel(new CommandArg[1] { args[0] });
@@ -118,7 +122,7 @@ public static class GameCommands {
 		try {
 			System.IO.File.Copy(GamePaths.SaveGamePath, GamePaths.GameFolder + "/SaveGame_backup.dat");
 			System.IO.File.Delete(GamePaths.SaveGamePath);
-			SaveGame.GameStartUp();
+			GameSaver.GameStartUp();
 			Terminal.Log("Save file has been deleted. A backup has been created at: " + GamePaths.GameFolder + "/SaveGame_backup.dat");
 		} catch {
 			Terminal.Log(TerminalLogType.Error, "Failed restoring default settings.");
@@ -191,6 +195,7 @@ public static class GameCommands {
 		}
 	}
 
+#if UNITY_EDITOR
 	[RegisterCommand(Help = "Save the current level in Editor mode")]
 	public static void SaveLevel(CommandArg[] args) {
 		var editor = Object.FindObjectOfType<LevelEditor>();
@@ -210,6 +215,7 @@ public static class GameCommands {
 			Terminal.Log(TerminalLogType.Error,"Failed to save level.");
 		}
 	}
+#endif
 
 	[RegisterCommand(Help = "Skips or Ends the current level")]
 	public static void Skip(CommandArg[] args) {

@@ -99,6 +99,7 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 	}
 
 	protected void FixedUpdate() {
+		rig.velocity = Vector3.zero;
 		if(HasBeenInitialized && IsPaused == false || IgnoreDisables) {
 			if(!disableControl && CrossHair != null || IgnoreDisables) {
 				PlayerControl();
@@ -119,9 +120,9 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 			maxDir = 1;
 		}
 		dirFactor *= maxDir;
-		var movePos = dirFactor * moveSpeed * Time.fixedDeltaTime * rig.transform.forward * (isFrosted ? 0.5f : 1f);
+		var movePos = dirFactor * moveSpeed * rig.transform.forward * (isFrosted ? 0.5f : 1f);
 		if(!isShootStunned && canMove) {
-			rig.MovePosition(rig.position + movePos);
+			rig.velocity = movePos;
 		}
 		TrackTracer(dirFactor);
 	}

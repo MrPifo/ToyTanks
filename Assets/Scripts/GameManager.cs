@@ -1,9 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using System;
+using System.Linq;
 using System.Collections;
 using Sperlich.PrefabManager;
 
@@ -47,16 +46,16 @@ public class GameManager : Singleton<GameManager> {
 	}
 	public static bool isLoading;
 	public static bool rewardLive;
-	public static SaveGame.Campaign.Difficulty Difficulty => CurrentCampaign.difficulty;
+	public static CampaignV1.Difficulty Difficulty => CurrentCampaign.difficulty;
 	public static GameMode CurrentMode;
 
 	public static LoadingScreen screen;
 	public static bool GameBooted = false;
-	public static List<LevelData> Levels { get; set; }
+	public static LevelData[] Levels => AssetLoader.LevelAssets;
 	static LevelData _currentLevel;
 	public static LevelData CurrentLevel {
 		get {
-			LevelData level = Levels?.Find(l => l.levelId == LevelId);
+			LevelData level = Levels?.ToList().Find(l => l.levelId == LevelId);
 			if(level == null) {
 				return _currentLevel;
 			}
@@ -64,7 +63,7 @@ public class GameManager : Singleton<GameManager> {
 		}
 		set => _currentLevel = value;
 	}
-	static SaveGame.Campaign CurrentCampaign => SaveGame.GetCampaign(SaveGame.SaveInstance.currentSaveSlot);
+	static CampaignV1 CurrentCampaign => GameSaver.GetCampaign(GameSaver.SaveInstance.currentSaveSlot);
 	UnityAction<Scene, LoadSceneMode> loadingScreenStartedCallback;
 	UnityAction<Scene, Scene> loadingScreenExitCallback;
 	private static readonly System.Random RandomGenerator = new System.Random();
@@ -102,7 +101,6 @@ public class GameManager : Singleton<GameManager> {
 			PlayerLives = 0;
 			Score = 0;
 			PlayTime = 0;
-			Instance.LoadAllAvailableLevels();
 			Instance.LoadLevel("Level " + levelId);
 		}
 	}
@@ -124,20 +122,11 @@ public class GameManager : Singleton<GameManager> {
 		ShowCursor();
 	}
 
-	public void LoadAllAvailableLevels() {
-		Levels = new List<LevelData>();
-		foreach(var asset in Resources.LoadAll<TextAsset>("Levels")) {
-			var levelData = JsonConvert.DeserializeObject<LevelData>(asset.text);
-			Levels.Add(levelData);
-		}
-	}
-
 	public void StartCampaign(byte saveSlot) {
 		if(!isLoading) {
 			isLoading = true;
-			LoadAllAvailableLevels();
 			Logger.Log(Channel.SaveGame, "Starting campaign on save slot " + saveSlot);
-			var camp = SaveGame.GetCampaign(saveSlot);
+			var camp = GameSaver.GetCampaign(saveSlot);
 			CurrentMode = GameMode.Campaign;
 			LevelId = camp.levelId;
 			PlayTime = camp.time;
@@ -147,11 +136,11 @@ public class GameManager : Singleton<GameManager> {
 		}
 	}
 
-	public static void UpdateCampaign() => SaveGame.UpdateCampaign(LevelId, PlayerLives, Score, PlayTime);
+	public static void UpdateCampaign() => GameSaver.UpdateCampaign(LevelId, PlayerLives, Score, PlayTime);
 
 	public void ReturnToMenu(string message) => StartCoroutine(TransitionToMenu(message));
 	public void LoadLevel(string message, bool displayCampaignInformation = false) {
-		if(Levels.Find(l => l.levelId == LevelId) != null) {
+		if(AssetLoader.GetOfficialLevel(LevelId) != null) {
 			if(SceneManager.GetSceneByName("Level").IsValid() == false && SceneManager.GetSceneByName("Level").isLoaded == false) {
 				StartCoroutine(TransitionToLevel(message, displayCampaignInformation));
 			} else {
@@ -198,7 +187,7 @@ public class GameManager : Singleton<GameManager> {
 		#region BannerInformation
 		transitionScreen.FadeInBanner(bannerFadeDuration);
 		if(displayCampaignInformation) {
-			if(Difficulty == SaveGame.Campaign.Difficulty.Easy) {
+			if(Difficulty == CampaignV1.Difficulty.Easy) {
 				transitionScreen.SetSingleMessage("Mission " + LevelId);
 			} else {
 				transitionScreen.SetInfo("Mission " + LevelId, PlayerLives);
@@ -293,7 +282,7 @@ public class GameManager : Singleton<GameManager> {
 
 		#region BannerInformation
 		transitionScreen.FadeInBanner(bannerFadeDuration);
-		if(Difficulty == SaveGame.Campaign.Difficulty.Easy) {
+		if(Difficulty == CampaignV1.Difficulty.Easy) {
 			transitionScreen.SetSingleMessage("Mission " + LevelId);
 		} else {
 			transitionScreen.SetInfo("Mission " + LevelId, PlayerLives);
@@ -350,7 +339,7 @@ public class GameManager : Singleton<GameManager> {
 	}
 
 	// Helpers
-	public bool LevelExists(ulong levelId) => Levels.Exists(t => t.levelId == levelId);
+	public bool LevelExists(ulong levelId) => AssetLoader.LevelAssets.ToList().Exists(t => t.levelId == levelId);
 	// Return a random ulong between a min and max value.
 	public static ulong GetRandomLevelId(ulong min, ulong max) {
 		byte[] buffer = new byte[sizeof(ulong)];

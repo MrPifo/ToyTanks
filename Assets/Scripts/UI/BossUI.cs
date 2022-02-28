@@ -77,11 +77,15 @@ public class BossUI : MonoBehaviour {
 		Instance.bossBar.DOValue(Instance.bossBar.value, 0.25f).SetEase(Ease.Linear);
 	}
 
-	public static void HideUI(float duration = 0) {
-		Instance.canvasGroup.DOFade(0, duration);
+	public static void HideUI(float duration = 0.01f) {
+		if(Bosses.Count > 0) {
+			Instance.canvasGroup.DOFade(0, duration);
+		}
 	}
 
 	public static void ShowUI(float duration = 0) {
-		Instance.canvasGroup.DOFade(1, duration);
+		if(Bosses.Count > 0) {
+			Instance.canvasGroup.DOFade(1, duration);
+		}
 	}
 }

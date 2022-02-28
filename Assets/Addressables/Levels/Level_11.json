@@ -1,0 +1,1849 @@
+{
+  "levelName": "",
+  "levelId": 11,
+  "gridSize": "Size_9x6",
+  "theme": "Fir",
+  "blocks": [
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeTurn",
+      "pos": {
+        "x": 16,
+        "y": 2,
+        "z": 10
+      },
+      "index": {
+        "x": 16,
+        "y": 2,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeTurn",
+      "pos": {
+        "x": -18,
+        "y": 2,
+        "z": 10
+      },
+      "index": {
+        "x": -18,
+        "y": 2,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeLong",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": 10
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeLong",
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": 10
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeEnd",
+      "pos": {
+        "x": 2,
+        "y": 2,
+        "z": 4
+      },
+      "index": {
+        "x": 2,
+        "y": 2,
+        "z": 4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeEnd",
+      "pos": {
+        "x": 0,
+        "y": 2,
+        "z": 4
+      },
+      "index": {
+        "x": 0,
+        "y": 2,
+        "z": 4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "pos": {
+        "x": 2,
+        "y": 2,
+        "z": 2
+      },
+      "index": {
+        "x": 2,
+        "y": 2,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 0,
+        "y": 2,
+        "z": 2
+      },
+      "index": {
+        "x": 0,
+        "y": 2,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 2,
+        "y": 2,
+        "z": 0
+      },
+      "index": {
+        "x": 2,
+        "y": 2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 0,
+        "y": 2,
+        "z": 0
+      },
+      "index": {
+        "x": 0,
+        "y": 2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeEnd",
+      "pos": {
+        "x": 2,
+        "y": 2,
+        "z": -2
+      },
+      "index": {
+        "x": 2,
+        "y": 2,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeEnd",
+      "pos": {
+        "x": 0,
+        "y": 2,
+        "z": -2
+      },
+      "index": {
+        "x": 0,
+        "y": 2,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "pos": {
+        "x": 2,
+        "y": 0,
+        "z": -4
+      },
+      "index": {
+        "x": 2,
+        "y": 0,
+        "z": -4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 0,
+        "y": 0,
+        "z": -4
+      },
+      "index": {
+        "x": 0,
+        "y": 0,
+        "z": -4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": -4
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": -4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": -4
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": -4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeTurn",
+      "pos": {
+        "x": 12,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": 12,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeTurn",
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": -10
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": -10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeTurn",
+      "pos": {
+        "x": 12,
+        "y": 0,
+        "z": 12
+      },
+      "index": {
+        "x": 12,
+        "y": 0,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeTurn",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": -10
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": -10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeTurn",
+      "pos": {
+        "x": -14,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": -14,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "pos": {
+        "x": -18,
+        "y": 4,
+        "z": -14
+      },
+      "index": {
+        "x": -18,
+        "y": 4,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": -18,
+        "y": 4,
+        "z": 12
+      },
+      "index": {
+        "x": -18,
+        "y": 4,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 16,
+        "y": 4,
+        "z": 12
+      },
+      "index": {
+        "x": 16,
+        "y": 4,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 16,
+        "y": 4,
+        "z": -14
+      },
+      "index": {
+        "x": 16,
+        "y": 4,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "A_Letter",
+      "pos": {
+        "x": 16,
+        "y": 2,
+        "z": -14
+      },
+      "index": {
+        "x": 16,
+        "y": 2,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 14,
+        "y": 2,
+        "z": -14
+      },
+      "index": {
+        "x": 14,
+        "y": 2,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 16,
+        "y": 2,
+        "z": -12
+      },
+      "index": {
+        "x": 16,
+        "y": 2,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "C_Letter",
+      "pos": {
+        "x": -18,
+        "y": 2,
+        "z": -14
+      },
+      "index": {
+        "x": -18,
+        "y": 2,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": -16,
+        "y": 2,
+        "z": -14
+      },
+      "index": {
+        "x": -16,
+        "y": 2,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": -18,
+        "y": 2,
+        "z": -12
+      },
+      "index": {
+        "x": -18,
+        "y": 2,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": -16,
+        "y": 2,
+        "z": 12
+      },
+      "index": {
+        "x": -16,
+        "y": 2,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 14,
+        "y": 2,
+        "z": 12
+      },
+      "index": {
+        "x": 14,
+        "y": 2,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "A_Letter",
+      "pos": {
+        "x": 16,
+        "y": 2,
+        "z": 12
+      },
+      "index": {
+        "x": 16,
+        "y": 2,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "C_Letter",
+      "pos": {
+        "x": 14,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": 14,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "C_Letter",
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "B_Letter",
+      "pos": {
+        "x": -16,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": -16,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "B_Letter",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "B_Letter",
+      "pos": {
+        "x": -18,
+        "y": 2,
+        "z": 12
+      },
+      "index": {
+        "x": -18,
+        "y": 2,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "B_Letter",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": 12
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "B_Letter",
+      "pos": {
+        "x": 14,
+        "y": 0,
+        "z": 12
+      },
+      "index": {
+        "x": 14,
+        "y": 0,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "A_Letter",
+      "pos": {
+        "x": -16,
+        "y": 0,
+        "z": 12
+      },
+      "index": {
+        "x": -16,
+        "y": 0,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "A_Letter",
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": 12
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "A_Letter",
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "A_Letter",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeTurn",
+      "pos": {
+        "x": -6,
+        "y": 0,
+        "z": -4
+      },
+      "index": {
+        "x": -6,
+        "y": 0,
+        "z": -4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "BronzePipeTurn",
+      "pos": {
+        "x": 8,
+        "y": 0,
+        "z": -4
+      },
+      "index": {
+        "x": 8,
+        "y": 0,
+        "z": -4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "pos": {
+        "x": 0,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": 0,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -4,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": -4,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 4,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": 4,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 6,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": 6,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 8,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": 8,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 8,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": 8,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 4,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": 4,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 2,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": 2,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -2,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": -2,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -4,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": -4,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -6,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": -6,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -2,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": -2,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 4,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": 4,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": -2,
+        "y": 0,
+        "z": 4
+      },
+      "index": {
+        "x": -2,
+        "y": 0,
+        "z": 4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 6,
+        "y": 0,
+        "z": 6
+      },
+      "index": {
+        "x": 6,
+        "y": 0,
+        "z": 6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 6,
+        "y": 0,
+        "z": 4
+      },
+      "index": {
+        "x": 6,
+        "y": 0,
+        "z": 4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": -4,
+        "y": 0,
+        "z": 6
+      },
+      "index": {
+        "x": -4,
+        "y": 0,
+        "z": 6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": -4,
+        "y": 0,
+        "z": 4
+      },
+      "index": {
+        "x": -4,
+        "y": 0,
+        "z": 4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 4,
+        "y": 0,
+        "z": 4
+      },
+      "index": {
+        "x": 4,
+        "y": 0,
+        "z": 4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 6,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": 6,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -4,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": -4,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -6,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": -6,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 2,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": 2,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": -2,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": -2,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 0,
+        "y": 0,
+        "z": 4
+      },
+      "index": {
+        "x": 0,
+        "y": 0,
+        "z": 4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 2,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": 2,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 0,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": 0,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 2,
+        "y": 0,
+        "z": 4
+      },
+      "index": {
+        "x": 2,
+        "y": 0,
+        "z": 4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -3,
+        "y": 2,
+        "z": 1
+      },
+      "index": {
+        "x": -4,
+        "y": 2,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "TriangleRoof"
+    },
+    {
+      "pos": {
+        "x": 5,
+        "y": 2,
+        "z": 1
+      },
+      "index": {
+        "x": 4,
+        "y": 2,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "TriangleRoof"
+    },
+    {
+      "pos": {
+        "x": -4,
+        "y": 2,
+        "z": 6
+      },
+      "index": {
+        "x": -4,
+        "y": 2,
+        "z": 6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 6,
+        "y": 2,
+        "z": 6
+      },
+      "index": {
+        "x": 6,
+        "y": 2,
+        "z": 6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 8,
+        "y": 2,
+        "z": -2
+      },
+      "index": {
+        "x": 8,
+        "y": 2,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 8,
+        "y": 2,
+        "z": 0
+      },
+      "index": {
+        "x": 8,
+        "y": 2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": -6,
+        "y": 2,
+        "z": 0
+      },
+      "index": {
+        "x": -6,
+        "y": 2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": -6,
+        "y": 2,
+        "z": -2
+      },
+      "index": {
+        "x": -6,
+        "y": 2,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    }
+  ],
+  "tanks": [
+    {
+      "tankType": "Brown",
+      "pos": {
+        "x": -15,
+        "y": 0,
+        "z": 9
+      },
+      "index": {
+        "x": -14,
+        "y": 0,
+        "z": 8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Brown",
+      "pos": {
+        "x": 13,
+        "y": 0,
+        "z": 9
+      },
+      "index": {
+        "x": 14,
+        "y": 0,
+        "z": 8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Mortar",
+      "pos": {
+        "x": 1,
+        "y": 0,
+        "z": 9
+      },
+      "index": {
+        "x": 2,
+        "y": 0,
+        "z": 8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Player",
+      "pos": {
+        "x": 1,
+        "y": 0,
+        "z": -9
+      },
+      "index": {
+        "x": 0,
+        "y": 0,
+        "z": -10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ],
+  "groundTiles": [
+    {
+      "groundType": "Gap_End",
+      "index": {
+        "x": -8,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_2Wall",
+      "index": {
+        "x": -8,
+        "y": 0
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": -8,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_End",
+      "index": {
+        "x": -6,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_End",
+      "index": {
+        "x": -4,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_End",
+      "index": {
+        "x": -2,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_End",
+      "index": {
+        "x": 4,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_End",
+      "index": {
+        "x": 6,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_End",
+      "index": {
+        "x": 8,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_End",
+      "index": {
+        "x": 10,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_2Wall",
+      "index": {
+        "x": 10,
+        "y": 0
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 10,
+        "y": 2
+      }
+    }
+  ]
+}

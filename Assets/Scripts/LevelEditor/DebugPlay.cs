@@ -26,7 +26,7 @@ public class DebugPlay : MonoBehaviour {
 		PlayerInputManager.ShowControls();
 		FindObjectOfType<GameCamera>().camSettings.orthograpicSize = 19;
 		FindObjectOfType<GameCamera>().ChangeState(GameCamera.GameCamState.Focus);
-		Game.CreateAIGrid(gridSize, mask, true);
+		Game.CreateAIGrid(gridSize, mask);
 		//LevelManager.SetLevelBoundaryWalls(LevelManager.GetGridBoundary(Game.ActiveGrid.gridSize));
 
 		foreach(var t in FindObjectsOfType<TankBase>()) {
