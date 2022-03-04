@@ -128,7 +128,6 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 		rollerTrigger.TriggerHit.AddListener(action);
 		AudioPlayer.Play("SnowChargeStart", AudioType.SoundEffect, 0.8f, 1.2f, 0.6f);
 		chargeSound.Play();
-		disableAvoidanceSystem = true;
 		if(CurrentPhase == BossPhases.Half_Life) {
 			HeadMode.Push(TankHeadMode.AimAtPlayer);
 		} else {
@@ -139,6 +138,7 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 		chargeSound.pitch = 2f;
 		bool allowPitchDown = false;
 		MuteTrackSound = true;
+		disableDirectionLeader = true;
 		DOTween.To(() => chargeSound.pitch, x => chargeSound.pitch = x, 1f, 0.6f).OnComplete(() => allowPitchDown = true);
 
 		while(TankState == BossBehaviour.Charge && IsPlayReady) {
@@ -158,8 +158,8 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 		
 
 		canMove = false;
+		disableDirectionLeader = false;
 		moveSpeed = normalMoveSpeed;
-		disableAvoidanceSystem = false;
 		rollerTrigger.TriggerHit.RemoveListener(action);
 		AudioPlayer.Play("ChargeImpact", AudioType.SoundEffect, 1f, 1f);
 		HideChargeLine();

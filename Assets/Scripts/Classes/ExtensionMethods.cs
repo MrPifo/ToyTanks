@@ -4,6 +4,9 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 using System.Collections;
+using System.Threading.Tasks;
+using System;
+using UnityEngine.SceneManagement;
 
 public static class ExtensionMethods {
 
@@ -180,14 +183,6 @@ public static class ExtensionMethods {
     public static RectTransform RectTransform(this Component t) {
         return t.GetComponent<RectTransform>();
     }
-    /*public static void Copy(this Camera cam, Camera target) {
-        cam.orthographicSize = target.orthographicSize;
-        cam.transform.position = target.transform.position;
-        cam.transform.rotation = target.transform.rotation;
-        cam.nearClipPlane = target.nearClipPlane;
-        cam.farClipPlane = target.farClipPlane;
-        cam.fieldOfView = target.fieldOfView;
-    }*/
     public static void CountUp(this TMP_Text text, int from, int to, float duration) {
         Helper.StartCoroutine(ICount());
         IEnumerator ICount() {
@@ -206,19 +201,7 @@ public static class ExtensionMethods {
             }
 		}
 	}
-	/// <summary>
-	/// Destroys this GameObject
-	/// </summary>
-	/// <param name="gameObject"></param>
-	//public static void Destroy(this GameObject gameObject) => Object.Destroy(gameObject);
-	/// <summary>
-	/// Destroy the holding GameObject
-	/// </summary>
-	/// <param name="transform"></param>
-	//public static void Destroy(this Transform transform) => Object.Destroy(transform.gameObject);
 
     // Helper for Coroutines
-    public sealed class ExtensionMethodHelper : MonoBehaviour {
-
-	}
+    public sealed class ExtensionMethodHelper : MonoBehaviour {}
 }

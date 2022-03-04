@@ -1,166 +1,172 @@
 {
   "levelName": "",
   "levelId": 28,
-  "gridSize": "Size_12x9",
+  "gridSize": "Size_9x6",
   "theme": "Snowy",
   "blocks": [
     {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
       "pos": {
-        "x": -2,
+        "x": 10,
         "y": 0,
-        "z": -12
+        "z": -8
       },
       "index": {
-        "x": -2,
+        "x": 10,
         "y": 0,
-        "z": -12
+        "z": -8
       },
       "rotation": {
         "x": 0,
         "y": 0,
         "z": 0
-      },
-      "type": "Block2"
+      }
     },
     {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
       "pos": {
-        "x": 0,
+        "x": 10,
         "y": 0,
-        "z": -12
+        "z": -6
       },
       "index": {
-        "x": 0,
+        "x": 10,
         "y": 0,
-        "z": -12
+        "z": -6
       },
       "rotation": {
         "x": 0,
-        "y": 0,
+        "y": 270,
         "z": 0
-      },
-      "type": "Block2"
+      }
     },
     {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
       "pos": {
-        "x": 2,
+        "x": 10,
         "y": 0,
-        "z": -12
+        "z": -4
       },
       "index": {
-        "x": 2,
+        "x": 10,
         "y": 0,
-        "z": -12
+        "z": -4
       },
       "rotation": {
         "x": 0,
-        "y": 0,
+        "y": 270,
         "z": 0
-      },
-      "type": "Block2"
+      }
     },
     {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
       "pos": {
-        "x": -4,
+        "x": 10,
         "y": 0,
-        "z": -12
+        "z": 2
       },
       "index": {
-        "x": -4,
+        "x": 10,
         "y": 0,
-        "z": -12
+        "z": 2
       },
       "rotation": {
         "x": 0,
-        "y": 0,
+        "y": 270,
         "z": 0
-      },
-      "type": "Block2"
+      }
     },
     {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
       "pos": {
-        "x": -2,
+        "x": 10,
         "y": 0,
-        "z": 10
+        "z": 4
       },
       "index": {
-        "x": -2,
+        "x": 10,
         "y": 0,
-        "z": 10
+        "z": 4
       },
       "rotation": {
         "x": 0,
-        "y": 0,
+        "y": 270,
         "z": 0
-      },
-      "type": "Block2"
+      }
     },
     {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
       "pos": {
-        "x": 0,
+        "x": 10,
         "y": 0,
-        "z": 10
+        "z": 6
       },
       "index": {
-        "x": 0,
+        "x": 10,
         "y": 0,
-        "z": 10
+        "z": 6
       },
       "rotation": {
         "x": 0,
-        "y": 0,
+        "y": 180,
         "z": 0
-      },
-      "type": "Block2"
-    },
-    {
-      "pos": {
-        "x": -4,
-        "y": 0,
-        "z": 10
-      },
-      "index": {
-        "x": -4,
-        "y": 0,
-        "z": 10
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "type": "Block2"
-    },
-    {
-      "pos": {
-        "x": 2,
-        "y": 0,
-        "z": 10
-      },
-      "index": {
-        "x": 2,
-        "y": 0,
-        "z": 10
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "type": "Block2"
+      }
     }
   ],
   "tanks": [
     {
-      "tankType": "Snowplower",
+      "tankType": "Camouflage",
       "pos": {
-        "x": 19,
+        "x": 13,
         "y": 0,
-        "z": 13
+        "z": 5
       },
       "index": {
-        "x": 20,
+        "x": 14,
         "y": 0,
-        "z": 14
+        "z": 4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Camouflage",
+      "pos": {
+        "x": 13,
+        "y": 0,
+        "z": -7
+      },
+      "index": {
+        "x": 12,
+        "y": 0,
+        "z": -8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Snowplower",
+      "pos": {
+        "x": 15,
+        "y": 0,
+        "z": -1
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": 0
       },
       "rotation": {
         "x": 0,
@@ -169,122 +175,50 @@
       }
     },
     {
-      "tankType": "Snowplower",
+      "tankType": "Brown",
       "pos": {
-        "x": -21,
+        "x": 13,
         "y": 0,
-        "z": 13
+        "z": -13
       },
       "index": {
-        "x": -22,
+        "x": 14,
         "y": 0,
-        "z": 12
-      },
-      "rotation": {
-        "x": 0,
-        "y": 90,
-        "z": 0
-      }
-    },
-    {
-      "tankType": "Snowplower",
-      "pos": {
-        "x": -21,
-        "y": 0,
-        "z": -15
-      },
-      "index": {
-        "x": -22,
-        "y": 0,
-        "z": -16
-      },
-      "rotation": {
-        "x": 0,
-        "y": 90,
-        "z": 0
-      }
-    },
-    {
-      "tankType": "Snowplower",
-      "pos": {
-        "x": 19,
-        "y": 0,
-        "z": -15
-      },
-      "index": {
-        "x": 20,
-        "y": 0,
-        "z": -14
+        "z": -12
       },
       "rotation": {
         "x": 0,
         "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Brown",
+      "pos": {
+        "x": 13,
+        "y": 0,
+        "z": 11
+      },
+      "index": {
+        "x": 12,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
         "z": 0
       }
     },
     {
       "tankType": "Player",
       "pos": {
-        "x": -1,
+        "x": -15,
         "y": 0,
         "z": -1
       },
       "index": {
-        "x": 0,
-        "y": 0,
-        "z": -2
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      }
-    },
-    {
-      "tankType": "Camouflage",
-      "pos": {
-        "x": -1,
-        "y": 0,
-        "z": 13
-      },
-      "index": {
-        "x": 0,
-        "y": 0,
-        "z": 12
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      }
-    },
-    {
-      "tankType": "Camouflage",
-      "pos": {
-        "x": -1,
-        "y": 0,
-        "z": -15
-      },
-      "index": {
-        "x": -2,
-        "y": 0,
-        "z": -16
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      }
-    },
-    {
-      "tankType": "Green",
-      "pos": {
-        "x": -23,
-        "y": 0,
-        "z": -1
-      },
-      "index": {
-        "x": -24,
+        "x": -16,
         "y": 0,
         "z": -2
       },
@@ -293,25 +227,1184 @@
         "y": 90,
         "z": 0
       }
-    },
-    {
-      "tankType": "Green",
-      "pos": {
-        "x": 21,
-        "y": 0,
-        "z": -1
-      },
-      "index": {
-        "x": 22,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 270,
-        "z": 0
-      }
     }
   ],
-  "groundTiles": []
+  "groundTiles": [
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": -18,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -18,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -18,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -18,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -18,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": -18,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": -18,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -18,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -18,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -18,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -18,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": -18,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -16,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -16,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -16,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -16,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -16,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -16,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -16,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -16,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -16,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -16,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -16,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -16,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -14,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -14,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -14,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -14,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -14,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -14,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -14,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -14,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -14,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -14,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -14,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -14,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -12,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -12,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -12,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -12,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -12,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -12,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -12,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -12,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -12,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -12,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -12,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -12,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -10,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -10,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -10,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -10,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -10,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -10,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -10,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -10,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -10,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -10,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -10,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -10,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -8,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -8,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -8,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -8,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -8,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -8,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -8,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -8,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -8,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -8,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -8,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -8,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -6,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -6,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -6,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -6,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -6,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -6,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -6,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -6,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -6,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -6,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -6,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -6,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -4,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -4,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -4,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -4,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -4,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -4,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -4,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -4,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -4,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -4,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -4,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -4,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -2,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -2,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -2,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -2,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -2,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -2,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -2,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -2,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -2,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -2,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -2,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -2,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 0,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 0,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 0,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 0,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 0,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 0,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 0,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 0,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 0,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 0,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 0,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 0,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 2,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 2,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 2,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 2,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 2,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 2,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 2,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 2,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 2,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 2,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 2,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 2,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 4,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 4,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 4,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 4,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 4,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 4,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 4,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 4,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 4,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 4,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 4,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 4,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 6,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 6,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 6,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 6,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 8,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 8,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 8,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 8,
+        "y": 12
+      }
+    }
+  ]
 }

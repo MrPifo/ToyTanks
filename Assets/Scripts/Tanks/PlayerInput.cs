@@ -29,6 +29,7 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 	public float crossHairRotSpeed;
 	public Vector2 mouseLocation;
 	Vector3 oldAimVector;
+	public Vector2 moveVector;
 	private bool isFrosted;
 	private Color frostColor;
 	public Canvas ScreenEffectCamera;
@@ -145,7 +146,7 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 	}
 
 	void DesktopInput() {
-		Vector2 moveVector = new Vector2(player.GetAxis("MoveX"), player.GetAxis("MoveY"));
+		moveVector = new Vector2(player.GetAxis("MoveX"), player.GetAxis("MoveY"));
 
 		if(player.GetButton("Shoot") && CanShoot) {
 			ShootBullet();
@@ -217,14 +218,14 @@ public class PlayerInput : TankBase, IHittable, IResettable {
 			if(HasBeenDestroyed && disableControl == false) {
 				DisableControls();
 				try {
-					GameFeedbacks.PlayerDeath.PlayFeedbacks();
+					//GameFeedbacks.PlayerDeath.PlayFeedbacks();
 				} catch {
 					Logger.Log(Channel.Gameplay, "An error occured while playing PlayerDeath Feedbacks");
 				}
 				GameCamera.ShortShake2D(0.5f, 40, 40);
 				LevelManager.Instance?.PlayerDead();
 			} else {
-				GameFeedbacks.PlayerHit.PlayFeedbacks();
+				//GameFeedbacks.PlayerHit.PlayFeedbacks();
 				GameCamera.ShortShake2D(0.5f, 5, 5);
 			}
 		}

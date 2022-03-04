@@ -67,7 +67,7 @@ namespace ToyTanks.UI {
 				rect.Color = hoverColor;
 				transform.DOScale(1.4f, 0.2f).SetEase(Ease.OutCubic);
 				Game.SetCursor("pointer");
-				AudioPlayer.Play(hoverAudio.ToString(), AudioType.UI);
+				AudioPlayer.Play(hoverAudio?.ToString(), AudioType.UI);
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace ToyTanks.UI {
 			if(isUnlocked) {
 				MenuManager.Instance.worldOverviewMenu.FadeOut();
 				GameManager.StartLevel(level.LevelId);
-				AudioPlayer.Play(clickAudio.ToString(), AudioType.UI);
+				AudioPlayer.Play(clickAudio?.ToString(), AudioType.UI);
 			}
 		}
 	}

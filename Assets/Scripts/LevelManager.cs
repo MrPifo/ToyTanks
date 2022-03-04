@@ -9,7 +9,10 @@ using ToyTanks.LevelEditor;
 // HDRP Related: using UnityEngine.Rendering.HighDefinition;
 using CommandTerminal;
 using Sperlich.PrefabManager;
-using SimpleMan.Extensions;
+using UnityFx.Async;            // Library core.
+using UnityFx.Async.Extensions; // BCL/Unity extension methods.
+using UnityFx.Async.Promises;   // Promise extensions.
+using System.Threading.Tasks;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -133,12 +136,12 @@ public class LevelManager : MonoBehaviour {
 		player.CrossHair.DisableCrossHair();
 		UI.pauseBlur.Show();
 		GameManager.ShowCursor();
-		Time.timeScale = 1f;
+		//Time.timeScale = 1f;
 		BossUI.HideUI(0.1f);
 
-		DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 0.1f, 0.1f).SetEase(Ease.Linear).OnComplete(() => {
+		/*DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 0.1f, 0.1f).SetEase(Ease.Linear).OnComplete(() => {
 			Time.timeScale = 0;
-		});
+		});*/
 	}
 
 	public void ResumeGame() {
@@ -148,12 +151,13 @@ public class LevelManager : MonoBehaviour {
 		player.CrossHair.EnableCrossHair();
 		UI.pauseBlur.Hide();
 		GameManager.HideCursor();
-		Time.timeScale = 1f;
+		//Time.timeScale = 1f;
 		BossUI.ShowUI(0.5f);
 
-		DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1, 0.1f).SetEase(Ease.Linear).OnComplete(() => {
-			optionsMenu.gameObject.SetActive(false);
-		});
+		optionsMenu.gameObject.SetActive(false);
+		/*DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1, 0.1f).SetEase(Ease.Linear).OnComplete(() => {
+			
+		});*/
 	}
 
 	public void ReturnToMenu() {
@@ -165,10 +169,6 @@ public class LevelManager : MonoBehaviour {
 		player.CrossHair.DisableCrossHair();
 		GameManager.ReturnToMenu("Quitting");
 	}
-
-	public void OpenGraphicsMenu() {
-		GraphicSettings.OpenOptionsMenu(0.2f);
-    }
 
 	public void ClearMap() {
 		// Clear all GameEntities from level
@@ -182,9 +182,8 @@ public class LevelManager : MonoBehaviour {
 		presets.ForEach(preset => preset.gameobject.Hide());
 	}
 
-	public IEnumerator LoadAndBuildMap(LevelData data, float loadDuration) {
+	public async Task LoadAndBuildMap(LevelData data, float loadDuration) {
 		ClearMap();
-		float timePerBlock = loadDuration / data.blocks.Count;
 		EnablePreset(data.gridSize, data.theme);
 
 		foreach(var block in data.blocks) {
@@ -200,11 +199,12 @@ public class LevelManager : MonoBehaviour {
 				b = Instantiate(asset.prefab, block.pos, Quaternion.Euler(block.rotation));
 				comp = b.GetComponent<LevelBlock>();
 				comp.MeshRender.sharedMaterial = asset.material;
+				b.gameObject.isStatic = true;
 			}
 			
 			b.transform.SetParent(BlocksContainer);
 			comp.SetPosition(block.pos);
-			yield return new WaitForSeconds(timePerBlock);
+			await Task.Delay(10);
 		}
 
 		foreach(var tank in data.tanks) {
@@ -217,7 +217,8 @@ public class LevelManager : MonoBehaviour {
 		}
 		themePresets.Find(data.theme.ToString()).gameObject.SetActive(true);
 		LevelGround.Instance.GenerateAndPatch(GridSize, data.groundTiles);
-		LevelLightmapper.SwitchLightmaps(CurrentLevel.levelId);
+		LevelGround.Instance.SetTheme(data.theme);
+		//LevelLightmapper.SwitchLightmaps(CurrentLevel.levelId);
 	}
 
 	public static void SetLevelBoundaryWalls(Int3 boundary) {
@@ -228,8 +229,7 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	// Game Logic
-	public void StartGame() => StartCoroutine(nameof(IStartGame));
-	IEnumerator IStartGame() {
+	public async Task StartGame() {
 		// Game Startup
 		UI.PlayBannerAnimation();
 		GameManager.HideCursor();
@@ -260,11 +260,11 @@ public class LevelManager : MonoBehaviour {
 		}
 
 		// Turn On/Off tank lights
-		yield return new WaitForSeconds(1f);
+		await Task.Delay(1000);
 
 
 		// Initialize Gameplay UI
-		yield return new WaitForSeconds(1f);
+		await Task.Delay(1000);
 		UI.playerScore.SetText(GameManager.Score.ToString());
 		UI.playerLives.SetText(GameManager.PlayerLives.ToString());
 		UI.playTime.SetText(Mathf.Round(GameManager.PlayTime * 100) / 100 + "");
@@ -272,7 +272,7 @@ public class LevelManager : MonoBehaviour {
 		UI.ShowGameplayUI(1);
 
 		// Start Game
-		yield return new WaitForSeconds(1f);
+		await Task.Delay(1000);
 		StreakBubble.Interrupt();
 		if(GridSize == GridSizes.Size_15x12) {
 			gameCamera.ChangeState(GameCamera.GameCamState.Focus);
@@ -322,7 +322,6 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void PlayerDead() {
-		Game.IsGamePlaying = false;
 		player.DisableControls();
 		DisableAllAIs();
 		PlayerStats.AddDeath();
@@ -337,12 +336,20 @@ public class LevelManager : MonoBehaviour {
 
 			// Respawn and Continue Level if lives are sufficient
 			if(GameManager.CurrentMode == GameManager.GameMode.LevelOnly || GameManager.PlayerLives > 0 || GameManager.Difficulty == CampaignV1.Difficulty.Easy) {
+				Debug.Log("Player result: Respawn");
 				Respawn();
 			} else {
-				Instance.StartCoroutine(Instance.GameOver());
+				Debug.Log("Player result: Reset");
+				StartCoroutine(GameOver());
 			}
 		} else if(Mode == GameManager.GameMode.Editor) {
 			Editor.StopTestPlay();
+		}
+	}
+
+	public void ClearBullets() {
+		foreach(var b in FindObjectsOfType<Bullet>()) {
+			b.TakeDamage(null, true);
 		}
 	}
 
@@ -356,11 +363,13 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public IEnumerator GameOver() {
-		if(Game.IsGameRunningDebug == false) {
+		if(Game.IsGameRunningDebug == false && Game.IsGamePlaying) {
 			Game.IsGamePlaying = false;
 			player.CrossHair.DisableCrossHair();
 			player.DisableControls();
 			DisableAllAIs();
+			ClearBullets();
+			GameSaver.UpdateLevel(GameManager.LevelId, elapsedTime);
 			StreakBubble.Interrupt();
 
 			// Update PlayerStats
@@ -372,7 +381,7 @@ public class LevelManager : MonoBehaviour {
 				case GameManager.GameMode.Campaign:
 					if(GameManager.PlayerLives > 0 || GameManager.Difficulty == CampaignV1.Difficulty.Easy) {
 						// Continue when players live are sufficient OR playing in EASY
-						GameSaver.UnlockLevel(GameSaver.SaveInstance.currentSaveSlot, GameManager.LevelId);
+						GameSaver.UnlockLevel(GameManager.LevelId);
 						GameManager.LevelId++;
 
 						CheckRewardLive();
@@ -380,10 +389,9 @@ public class LevelManager : MonoBehaviour {
 						gameCamera.PlayConfetti();
 						RuntimeAnalytics.AracadeLevelEnded(true, CurrentLevel.levelId, elapsedTime, playerDeaths, GameManager.Difficulty);
 						PlayerStats.AddLevelsCompleted();
-						Logger.Log(Channel.Gameplay, "Continue to next level: " + GameManager.LevelId);
 						yield return new WaitForSeconds(3);
 						// Reward Extra Lives
-						GameManager.LoadLevel("", true);
+						_ = TransitionToNextLevel();
 					} else {
 						// Reset Player to CheckPoint
 						switch(GameManager.Difficulty) {
@@ -400,17 +408,19 @@ public class LevelManager : MonoBehaviour {
 								}
 								RuntimeAnalytics.AracadeLevelEnded(false, CurrentLevel.levelId, elapsedTime, playerDeaths, CampaignV1.Difficulty.Medium);
 								Logger.Log(Channel.Gameplay, "Returning to Checkpoint: " + GameManager.LevelId);
+								GameManager.UpdateCampaign();
 								yield return new WaitForSeconds(3);
-								GameManager.LoadLevel("", true);
+								_ = TransitionToNextLevel();
 								break;
 							case CampaignV1.Difficulty.Hard:
 								// Hard Mode resets to the currents world first level
 								GameManager.PlayerLives = 2;
 								GameManager.LevelId = Game.GetWorld(GameManager.CurrentLevel.levelId).Levels[0].LevelId;
+								GameManager.UpdateCampaign();
 								Logger.Log(Channel.Graphics, "Returning to Checkpoint: " + GameManager.LevelId);
 								RuntimeAnalytics.AracadeLevelEnded(false, CurrentLevel.levelId, elapsedTime, playerDeaths, CampaignV1.Difficulty.Hard);
 								yield return new WaitForSeconds(2);
-								GameManager.LoadLevel("Mission Failed");
+								_ = TransitionToNextLevel();
 								break;
 							case CampaignV1.Difficulty.Original:
 								// HardCore deletes SaveSlot
@@ -420,7 +430,7 @@ public class LevelManager : MonoBehaviour {
 
 								RuntimeAnalytics.AracadeLevelEnded(true, CurrentLevel.levelId, elapsedTime, playerDeaths, CampaignV1.Difficulty.Original);
 								yield return new WaitForSeconds(3);
-								GameManager.ReturnToMenu("Mission Failed");
+								_ = TransitionToNextLevel();
 								break;
 						}
 					}
@@ -440,6 +450,41 @@ public class LevelManager : MonoBehaviour {
 			playerDeaths = 0;
 			elapsedTime = 0;
 		}
+	}
+
+	async Task TransitionToNextLevel() {
+		Logger.Log(Channel.Gameplay, "Continue to next level: " + GameManager.LevelId);
+		await UI.ShowTransitionScreen();
+		string loadingString = "Level " + GameManager.LevelId;
+		for(int i = 0; i < loadingString.Length; i++) {
+			UI.loadingScreenText.text += loadingString[i];
+			AudioPlayer.Play("TankAssemblyClick", AudioType.SoundEffect, 0.8f, 1.2f, 1f);
+			await Task.Delay(100);
+		}
+		await Task.Delay(500);
+		#region Initializing and Building Level
+		ClearMap();
+		PrefabManager.ResetPrefabManager();
+		PrefabManager.Initialize("Level");
+		Initialize();
+
+		await LoadAndBuildMap(CurrentLevel, 5f);
+		UI.tutorial.gameObject.SetActive(false);
+		await UI.HideTransitionScreen();
+
+		switch(GameManager.CurrentMode) {
+			case GameManager.GameMode.Campaign:
+				StartGame();
+				break;
+			case GameManager.GameMode.LevelOnly:
+				StartGame();
+				break;
+			case GameManager.GameMode.Editor:
+				Editor.StartLevelEditor();
+				Editor.LoadUserLevel(CurrentLevel);
+				break;
+		}
+		#endregion
 	}
 
 	static void CheckRewardLive() {
@@ -519,8 +564,6 @@ public class LevelManager : MonoBehaviour {
 			}
 		}
 	}
-
-	//public static LevelPreset GetPreset(GridSizes size, LevelEditor.Themes theme) => Instance.presets.Where(p => p.gridSize == size && p.theme == theme).FirstOrDefault();
 
 	public static void EnablePreset(GridSizes size, WorldTheme theme) {
 		Instance.presets.ForEach(preset => { preset.gameobject.Hide(); preset.gameobject.transform.parent.Hide(); });

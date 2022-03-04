@@ -3,16 +3,16 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using System;
 using System.Linq;
-using System.Collections;
 using Sperlich.PrefabManager;
+using System.Threading.Tasks;
 
-public class GameManager : Singleton<GameManager> {
+public class GameManager : Singleton<MonoBehaviour> {
 
 	public enum GameMode { None, Campaign, LevelOnly, Editor }
 
-	public float loadingScreenFadeDuration = 2f;
-	public float bannerFadeDuration = 1f;
-	public float totalLoadingFadeDuration = 2f;
+	public const float loadingScreenFadeDuration = 0.3f;
+	public const float bannerFadeDuration = 0.3f;
+	public const float totalLoadingFadeDuration = 0.3f;
 
 	// Game information
 	private static ulong _levelId;
@@ -52,7 +52,7 @@ public class GameManager : Singleton<GameManager> {
 	public static LoadingScreen screen;
 	public static bool GameBooted = false;
 	public static LevelData[] Levels => AssetLoader.LevelAssets;
-	static LevelData _currentLevel;
+	private static LevelData _currentLevel;
 	public static LevelData CurrentLevel {
 		get {
 			LevelData level = Levels?.ToList().Find(l => l.levelId == LevelId);
@@ -63,9 +63,9 @@ public class GameManager : Singleton<GameManager> {
 		}
 		set => _currentLevel = value;
 	}
-	static CampaignV1 CurrentCampaign => GameSaver.GetCampaign(GameSaver.SaveInstance.currentSaveSlot);
-	UnityAction<Scene, LoadSceneMode> loadingScreenStartedCallback;
-	UnityAction<Scene, Scene> loadingScreenExitCallback;
+	private static CampaignV1 CurrentCampaign => GameSaver.GetCampaign(GameSaver.SaveInstance.currentSaveSlot);
+	private static UnityAction<Scene, LoadSceneMode> loadingScreenStartedCallback;
+	private static UnityAction<Scene, Scene> loadingScreenExitCallback;
 	private static readonly System.Random RandomGenerator = new System.Random();
 
 	protected override void Awake() {
@@ -82,7 +82,7 @@ public class GameManager : Singleton<GameManager> {
 		ShowCursor();
 	}
 
-	public void CopyCamera() {
+	public static void CopyCamera() {
 		var mainCam = Camera.main;
 		var thisCam = GameObject.FindGameObjectWithTag("LoadingScreenCamera").GetComponent<Camera>();
 
@@ -101,7 +101,7 @@ public class GameManager : Singleton<GameManager> {
 			PlayerLives = 0;
 			Score = 0;
 			PlayTime = 0;
-			Instance.LoadLevel("Level " + levelId);
+			LoadLevel("Level " + levelId);
 		}
 	}
 
@@ -109,7 +109,7 @@ public class GameManager : Singleton<GameManager> {
 		CurrentMode = GameMode.Editor;
 		LevelId = level.levelId;
 		CurrentLevel = level;
-		Instance.LoadLevel("Starting Editor");
+		LoadLevel("Starting Editor");
 	}
 
 	public void ResetGameStatus() {
@@ -138,54 +138,51 @@ public class GameManager : Singleton<GameManager> {
 
 	public static void UpdateCampaign() => GameSaver.UpdateCampaign(LevelId, PlayerLives, Score, PlayTime);
 
-	public void ReturnToMenu(string message) => StartCoroutine(TransitionToMenu(message));
-	public void LoadLevel(string message, bool displayCampaignInformation = false) {
+	public static void ReturnToMenu(string message) => TransitionToMenu(message);
+	public static void LoadLevel(string message, bool displayCampaignInformation = false) {
 		if(AssetLoader.GetOfficialLevel(LevelId) != null) {
 			if(SceneManager.GetSceneByName("Level").IsValid() == false && SceneManager.GetSceneByName("Level").isLoaded == false) {
-				StartCoroutine(TransitionToLevel(message, displayCampaignInformation));
-			} else {
-				StartCoroutine(TransitionToNextLevel());
+				try {
+					TransitionToLevel(message, displayCampaignInformation);
+				} catch(Exception ex) {
+					Debug.LogError(ex.Message);
+				}
 			}
 		} else {
 			ReturnToMenu("Campaign End");
 		}
 	}
-	IEnumerator TransitionToLevel(string message, bool displayCampaignInformation = false) {
+	static async void TransitionToLevel(string message, bool displayCampaignInformation = false) {
 		Scene activeScene = SceneManager.GetActiveScene();
 
 		#region Loading LoadingScreen
 		// Load LoadingScreen
-		AsyncOperation loadingScreen = SceneManager.LoadSceneAsync("LoadingScreen", LoadSceneMode.Additive);
-		loadingScreen.allowSceneActivation = true;
-
-		yield return new WaitUntil(() => loadingScreen.isDone);
+		await SceneEx.LoadSceneAsync("LoadingScreen");
+		while(FindObjectOfType<LoadingScreen>() == null) {
+			await Task.Delay(100);
+		}
 		LoadingScreen transitionScreen = FindObjectOfType<LoadingScreen>();
-		transitionScreen.FadeIn(loadingScreenFadeDuration);
-
-		yield return new WaitUntil(() => transitionScreen.onFadeInFinished);
+		await transitionScreen.FadeIn(loadingScreenFadeDuration);
 		#endregion
 
 		#region LoadingLevel
-		AsyncOperation level = SceneManager.LoadSceneAsync("Level", LoadSceneMode.Additive);
-		level.allowSceneActivation = true;
-		yield return new WaitUntil(() => level.isDone);
+		await SceneEx.LoadSceneAsync("Level");
+
+		while(FindObjectOfType<LevelManager>() == null) {
+			await Task.Delay(100);
+		}
 		LevelManager levelManager = FindObjectOfType<LevelManager>();
-		yield return new WaitForSeconds(0.25f);
 		#endregion
 
 		#region Unloading Menu/Level
 		if(activeScene.name == "Menu") {
-			AsyncOperation unloadLevel = SceneManager.UnloadSceneAsync("Menu");
-			unloadLevel.allowSceneActivation = true;
-			yield return new WaitUntil(() => unloadLevel.isDone);
+			await SceneEx.UnloadSceneAsync("Menu");
 		} else if(activeScene.name == "Level") {
-			AsyncOperation unloadLevel = SceneManager.UnloadSceneAsync("Level");
-			yield return new WaitUntil(() => unloadLevel.isDone);
+			await SceneEx.UnloadSceneAsync("level");
 		}
 		#endregion
 
 		#region BannerInformation
-		transitionScreen.FadeInBanner(bannerFadeDuration);
 		if(displayCampaignInformation) {
 			if(Difficulty == CampaignV1.Difficulty.Easy) {
 				transitionScreen.SetSingleMessage("Mission " + LevelId);
@@ -195,133 +192,66 @@ public class GameManager : Singleton<GameManager> {
 		} else {
 			transitionScreen.SetSingleMessage(message);
 		}
-		yield return new WaitUntil(() => transitionScreen.onBannerFadeInFinished);
+		await transitionScreen.FadeInBanner(bannerFadeDuration);
 		#endregion
 
 		#region Initializing and Building Level
 		PrefabManager.ResetPrefabManager();
-		yield return new WaitForSeconds(0.15f);
 		PrefabManager.Initialize("Level");
-		yield return new WaitForSeconds(0.15f);
+		GraphicSettings.ApplySettings();
 		levelManager.Initialize();
-		yield return new WaitForSeconds(0.15f);
-		yield return levelManager.LoadAndBuildMap(CurrentLevel, totalLoadingFadeDuration);
+		if(LevelId == 1) {
+			LevelManager.Instance.UI.tutorial.gameObject.SetActive(true);
+		}
+		await levelManager.LoadAndBuildMap(CurrentLevel, totalLoadingFadeDuration);
 		#endregion
 
-		transitionScreen.FadeOutBanner(bannerFadeDuration);
-		yield return new WaitUntil(() => transitionScreen.onBannerFadeOutFinished);
+		await transitionScreen.FadeOutBanner(bannerFadeDuration);
 		PrefabManager.DefaultSceneSpawn = "Level";
 		isLoading = false;
-		
+
+		_ = levelManager.UI.HideTransitionScreen();
+		await transitionScreen.FadeOut(loadingScreenFadeDuration);
+		await SceneEx.UnloadSceneAsync("LoadingScreen");
+
 		switch(CurrentMode) {
 			case GameMode.Campaign:
-				levelManager.StartGame();
+				await levelManager.StartGame();
 				break;
 			case GameMode.LevelOnly:
-				levelManager.StartGame();
+				await levelManager.StartGame();
 				break;
 			case GameMode.Editor:
 				LevelManager.Editor.StartLevelEditor();
 				LevelManager.Editor.LoadUserLevel(CurrentLevel);
 				break;
 		}
-		transitionScreen.FadeOut(loadingScreenFadeDuration);
-		yield return new WaitUntil(() => transitionScreen.onFadeOutFinished);
-		AsyncOperation loadingScreenUnload = SceneManager.UnloadSceneAsync("LoadingScreen");
-		yield return new WaitUntil(() => loadingScreenUnload.isDone);
 	}
-	IEnumerator TransitionToMenu(string message) {
+	static async void TransitionToMenu(string message) {
 		Scene activeScene = SceneManager.GetActiveScene();
 
 		// Load LoadingScreen
-		AsyncOperation loadingScreen = SceneManager.LoadSceneAsync("LoadingScreen", LoadSceneMode.Additive);
-		loadingScreen.allowSceneActivation = true;
-		yield return new WaitUntil(() => loadingScreen.isDone);
+		await SceneEx.LoadSceneAsync("LoadingScreen");
 
+		while(FindObjectOfType<LoadingScreen>() == null) {
+			await Task.Delay(100);
+		}
 		LoadingScreen transitionScreen = FindObjectOfType<LoadingScreen>();
-		transitionScreen.FadeIn(loadingScreenFadeDuration);
-		yield return new WaitUntil(() => transitionScreen.onFadeInFinished);
+		await transitionScreen.FadeIn(loadingScreenFadeDuration);
 
-		transitionScreen.FadeInBanner(bannerFadeDuration);
 		transitionScreen.SetSingleMessage(message);
-		yield return new WaitUntil(() => transitionScreen.onBannerFadeInFinished);
+		await transitionScreen.FadeInBanner(bannerFadeDuration);
 
-		AsyncOperation unloadLevel = SceneManager.UnloadSceneAsync("Level");
-		yield return new WaitUntil(() => unloadLevel.isDone);
+		await SceneEx.UnloadSceneAsync("Level");
+		await SceneEx.LoadSceneAsync("Menu");
 
-		AsyncOperation menu = SceneManager.LoadSceneAsync("Menu", LoadSceneMode.Additive);
-		menu.allowSceneActivation = true;
-		yield return new WaitUntil(() => menu.isDone);
-
-		yield return new WaitForSeconds(totalLoadingFadeDuration);
-		transitionScreen.FadeOutBanner(bannerFadeDuration);
-		yield return new WaitUntil(() => transitionScreen.onBannerFadeOutFinished);
-
-		transitionScreen.FadeOut(loadingScreenFadeDuration);
+		await transitionScreen.FadeOutBanner(bannerFadeDuration);
 		FindObjectOfType<MenuManager>().mainMenu.FadeIn();
 		FindObjectOfType<MenuManager>().FadeOutBlur();
+		await transitionScreen.FadeOut(loadingScreenFadeDuration);
+		await SceneEx.UnloadSceneAsync("LoadingScreen");
+
 		isLoading = false;
-		yield return new WaitUntil(() => transitionScreen.onFadeOutFinished);
-		AsyncOperation loadingScreenUnload = SceneManager.UnloadSceneAsync("LoadingScreen");
-		yield return new WaitUntil(() => loadingScreenUnload.isDone);
-	}
-	IEnumerator TransitionToNextLevel() {
-		LevelManager levelManager = FindObjectOfType<LevelManager>();
-
-		#region Loading LoadingScreen
-		// Load LoadingScreen
-		AsyncOperation loadingScreen = SceneManager.LoadSceneAsync("LoadingScreen", LoadSceneMode.Additive);
-		loadingScreen.allowSceneActivation = true;
-
-		yield return new WaitUntil(() => loadingScreen.isDone);
-		LoadingScreen transitionScreen = FindObjectOfType<LoadingScreen>();
-		transitionScreen.FadeIn(loadingScreenFadeDuration);
-
-		yield return new WaitUntil(() => transitionScreen.onFadeInFinished);
-		#endregion
-
-		#region BannerInformation
-		transitionScreen.FadeInBanner(bannerFadeDuration);
-		if(Difficulty == CampaignV1.Difficulty.Easy) {
-			transitionScreen.SetSingleMessage("Mission " + LevelId);
-		} else {
-			transitionScreen.SetInfo("Mission " + LevelId, PlayerLives);
-		}
-		yield return new WaitUntil(() => transitionScreen.onBannerFadeInFinished);
-		#endregion
-
-		#region Initializing and Building Level
-		levelManager.ClearMap();
-		PrefabManager.ResetPrefabManager();
-		yield return new WaitForSeconds(0.15f);
-		PrefabManager.Initialize("Level");
-		yield return new WaitForSeconds(0.15f);
-		levelManager.Initialize();
-		yield return new WaitForSeconds(0.15f);
-		yield return levelManager.LoadAndBuildMap(CurrentLevel, totalLoadingFadeDuration);
-		#endregion
-
-		transitionScreen.FadeOutBanner(bannerFadeDuration);
-		yield return new WaitUntil(() => transitionScreen.onBannerFadeOutFinished);
-
-		transitionScreen.FadeOut(loadingScreenFadeDuration);
-		yield return new WaitUntil(() => transitionScreen.onFadeOutFinished);
-		AsyncOperation loadingScreenUnload = SceneManager.UnloadSceneAsync("LoadingScreen");
-		yield return new WaitUntil(() => loadingScreenUnload.isDone);
-		isLoading = false;
-
-		switch(CurrentMode) {
-			case GameMode.Campaign:
-				levelManager.StartGame();
-				break;
-			case GameMode.LevelOnly:
-				levelManager.StartGame();
-				break;
-			case GameMode.Editor:
-				LevelManager.Editor.StartLevelEditor();
-				LevelManager.Editor.LoadUserLevel(CurrentLevel);
-				break;
-		}
 	}
 
 	public static void ShowCursor() {
@@ -339,7 +269,7 @@ public class GameManager : Singleton<GameManager> {
 	}
 
 	// Helpers
-	public bool LevelExists(ulong levelId) => AssetLoader.LevelAssets.ToList().Exists(t => t.levelId == levelId);
+	public static bool LevelExists(ulong levelId) => AssetLoader.LevelAssets.ToList().Exists(t => t.levelId == levelId);
 	// Return a random ulong between a min and max value.
 	public static ulong GetRandomLevelId(ulong min, ulong max) {
 		byte[] buffer = new byte[sizeof(ulong)];

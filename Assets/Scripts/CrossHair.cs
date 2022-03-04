@@ -62,7 +62,7 @@ public class CrossHair : MonoBehaviour {
 	}
 
 	public void EnableCrossHair() => crossHair.SetActive(true);
-	public void DisableCrossHair() { crossHair.SetActive(false); Debug.Log("HIDDEN"); }
+	public void DisableCrossHair() { crossHair.SetActive(false); }
 	public void DestroyCrossHair() => Destroy(gameObject);
 
 	public static CrossHair CreateCrossHair(TankBase assignedTank, Player inputModule) {

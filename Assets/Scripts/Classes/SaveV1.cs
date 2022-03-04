@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 [Serializable]
 public class SaveV1 : SaveBase {
 
 	public new string SaveGameVersion => "1.0";
-	public bool GameCompletedOnce { get; set; }
 
-	public List<World> Worlds { get; set; }
+	public List<PlayedLevel> PlayedLevels { get; set; } = new List<PlayedLevel>();
 
 	public CampaignV1 CurrentCampaign {
 		get {
@@ -89,16 +90,24 @@ public class SaveV1 : SaveBase {
 		GameSaver.Save();
 	}
 
-	[Serializable]
-	public class World {
-		//[JsonConverter(typeof(StringEnumConverter))]
-		public WorldTheme world;
-		public Level[] levels;
+	public PlayedLevel GetPlayedLevel(ulong levelId) {
+		try {
+			return PlayedLevels.Find(l => l.LevelId == levelId);
+		} catch {
+			throw new Exception("The level with the ID " + levelId + " has not been yet played by the player.");
+		}
 	}
 
 	[Serializable]
-	public class Level {
-		public ulong LevelId;
-		public bool IsUnlocked;
+	public class PlayedLevel {
+		public readonly ulong LevelId;
+		public bool completed;
+		public float completionTime;
+		public int attempts;
+		public DateTime lastAttempt;
+
+		public PlayedLevel(ulong levelId) {
+			LevelId = levelId;
+		}
 	}
 }

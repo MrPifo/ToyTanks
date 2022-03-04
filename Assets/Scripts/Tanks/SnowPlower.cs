@@ -56,7 +56,7 @@ public class SnowPlower : TankAI, IHittable, IDamageEffector {
 		bool isCharging = true;
 		plowTrigger.TriggerHit.RemoveAllListeners();
 		plowTrigger.TriggerHit.AddListener(() => {
-			if(plowTrigger.CurrentCollider.transform.TrySearchComponent(out IHittable hittable)) {
+			if(plowTrigger.CurrentCollider.transform.TrySearchComponent(out IHittable hittable) && hittable.IsInvincible == false && hittable.IsFriendlyFireImmune == false) {
 				hittable.TakeDamage(this);
 			} else {
 				isCharging = false;
@@ -72,7 +72,9 @@ public class SnowPlower : TankAI, IHittable, IDamageEffector {
 		float time = 0;
 
 		// Movement is managed manually
-		MoveMode.Push(MovementType.None);
+		MoveMode.Push(MovementType.Move);
+		disableDirectionLeader = true;
+
 		while(isCharging && IsPlayReady) {
 			yield return IPauseTank();
 			Move(chargeDirection);
@@ -88,6 +90,7 @@ public class SnowPlower : TankAI, IHittable, IDamageEffector {
 		plowTrigger.GetComponent<Collider>().enabled = false;
 		MuteTrackSound = false;
 		disableAvoidanceSystem = false;
+		disableDirectionLeader = false;
 
 		canMove = false;
 		moveSpeed = normalMoveSpeed;

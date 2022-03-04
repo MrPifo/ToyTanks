@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using ToyTanks.UI;
 using SimpleMan.Extensions;
+using System.Threading.Tasks;
 
 public class LoadingScreen : MonoBehaviour {
 
@@ -16,47 +17,40 @@ public class LoadingScreen : MonoBehaviour {
 	public Text singleMessage;
 	public Slider progressBar;
 	public float value;
-	public bool onFadeInFinished;
-	public bool onFadeOutFinished;
-	public bool onBannerFadeInFinished;
-	public bool onBannerFadeOutFinished;
 
 	private void Awake() {
 		screen.alpha = 0;
 		banner.alpha = 0;
 	}
 
-	public void FadeIn(float duration, Ease ease = Ease.Linear) {
-		DOTween.To(() => screen.alpha, x => screen.alpha = x, 1, duration).SetEase(ease).OnComplete(() => {
-			onFadeInFinished = true;
-		});
+	public async Task FadeIn(float duration, Ease ease = Ease.Linear) {
+		Debug.Log("0");
 		background.transform.localScale = Vector3.zero;
+		Debug.Log("1");
 		background.DOScale(1, duration / 3f).SetEase(ease);
+		Debug.Log("2");
 
 		var randomMenu = FindObjectOfType<MenuItem>();
 		if(randomMenu != null) {
 			randomMenu.TriggerFlashTransition();
 		}
+		Debug.Log("3");
+
+		await DOTween.To(() => screen.alpha, x => screen.alpha = x, 1, duration).SetEase(ease).AsyncWaitForCompletion();
 	}
 
-	public void FadeOut(float duration, Ease ease = Ease.Linear) {
-		DOTween.To(() => screen.alpha, x => screen.alpha = x, 0, duration).SetEase(ease).OnComplete(() => {
-			onFadeOutFinished = true;
-		});
+	public async Task FadeOut(float duration, Ease ease = Ease.Linear) {
 		background.transform.localScale = Vector3.one;
 		background.DOScale(0, duration / 3f).SetEase(ease);
+		await DOTween.To(() => screen.alpha, x => screen.alpha = x, 0, duration).SetEase(ease).AsyncWaitForCompletion();
 	}
 
-	public void FadeInBanner(float duration, Ease ease = Ease.Linear) {
-		DOTween.To(() => banner.alpha, x => banner.alpha = x, 1, duration).SetEase(ease).OnComplete(() => {
-			onBannerFadeInFinished = true;
-		});
+	public async Task FadeInBanner(float duration, Ease ease = Ease.Linear) {
+		await DOTween.To(() => banner.alpha, x => banner.alpha = x, 1, duration).SetEase(ease).AsyncWaitForCompletion();
 	}
 
-	public void FadeOutBanner(float duration, Ease ease = Ease.Linear) {
-		DOTween.To(() => banner.alpha, x => banner.alpha = x, 0, duration).SetEase(ease).OnComplete(() => {
-			onBannerFadeOutFinished = true;
-		});
+	public async Task FadeOutBanner(float duration, Ease ease = Ease.Linear) {
+		await DOTween.To(() => banner.alpha, x => banner.alpha = x, 0, duration).SetEase(ease).AsyncWaitForCompletion();
 	}
 
 	public void SetProgress(float value) {

@@ -23,7 +23,7 @@ public class MenuWorldUI : MonoBehaviour {
 
 	public void RenderWorld() {
 		foreach(var level in levels) {
-			if(GameSaver.GetLevel(world, level.id) != null && GameSaver.IsLevelUnlocked(world, level.id)) {
+			if(GameSaver.HasLevelBeenPlayed(level.id) && GameSaver.HasLevelBeenUnlocked(level.id)) {
 				level.Item2.UnlockLevel();
 			} else {
 				level.Item2.LockLevel();

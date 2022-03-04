@@ -45,12 +45,13 @@ public abstract class TankAI : TankBase, IHittable {
 	public byte playerDetectRadius = 25;
 	public byte playerLoseRadius = 25;
 	public byte playerTooClose = 5;
-	public float avoidanceRadius = 1f;
 	public float avoidanceDistance = 3f;
-	public float avoidanceStrength = 1f;
+	public float baseAvoidanceStrength = 3f;
+	private float avoidanceStrengthOverTime = 0f;
 	public bool showDebug;
 	public bool disableAvoidanceSystem;
 	public bool disableSmartMove;
+	public bool disableDirectionLeader;
 	public DiagonalMovement diagonalMethod;
 	public FSM<MovementType> MoveMode = new FSM<MovementType>();
 	public FSM<TankHeadMode> HeadMode = new FSM<TankHeadMode>();
@@ -136,7 +137,7 @@ public abstract class TankAI : TankBase, IHittable {
 	}
 
 	private void ComputeAI() {
-		if(IsPlayReady && IsPaused == false) {
+		if(IsPlayReady && Game.IsGamePlaying && IsPaused == false) {
 			AvoidanceSystem();
 			distToPlayer = Vector3.Distance(Pos, Player.Pos);
 			pathfindingRefreshTime += GetTime;
@@ -179,6 +180,8 @@ public abstract class TankAI : TankBase, IHittable {
 					}
 					break;
 			}
+		} else {
+			rig.velocity = Vector3.zero;
 		}
 	}
 
@@ -258,22 +261,27 @@ public abstract class TankAI : TankBase, IHittable {
 			if(showDebug) {
 				Draw.Line(rig.position, rig.position + transform.forward * currentDirFactor * avoidanceDistance, 2, Color.red);
 			}
-			if(Physics.SphereCast(new Ray(rig.position, transform.forward * currentDirFactor), avoidanceRadius, out RaycastHit hit, avoidanceDistance, AvoidcanceLayers)) {
-				if(showDebug) {
-					Draw.Sphere(hit.point, avoidanceRadius, Color.yellow, true);
-					for(float i = 0; i < 25f; i++) {
-						Draw.Sphere(Vector3.Lerp(Pos, hit.point, i.Remap(0f, 25f, 0f, 1f)), avoidanceRadius, Color.gray, true);
+			var colls = rig.SweepTestAll(disable2DirectionMovement ? transform.forward : (DirectionLeader.position - Pos).normalized, avoidanceDistance);
+			if(colls.Length > 0) {
+				Vector3 evadeDir = Vector3.zero;
+				foreach(var coll in colls) {
+					if(showDebug) {
+						Draw.Sphere(coll.transform.position, 0.25f, Color.red, 0.5f);
 					}
+					evadeDir -= (coll.transform.position - Pos).normalized;
 				}
-				evadeDir = hit.normal;
-				if(Mathf.Abs(evadeDir.x) >= 0.15) {
-					evadeDir.x = Mathf.Sign(evadeDir.x);
+				evadeDir /= colls.Length;
+				evadeDir.y = 0;
+				this.evadeDir = Vector3.Lerp(evadeDir, this.evadeDir, Time.deltaTime * 2);
+
+				// Checks if the Rigidbody should be moving, but in reality isnt
+				if(Mathf.Round(rig.velocity.magnitude) == 0 || Mathf.Round(moveDir.magnitude) > 0) {
+					avoidanceStrengthOverTime += Time.deltaTime * 8;
 				} else {
-					evadeDir.x = 0;
+					avoidanceStrengthOverTime = Mathf.Lerp(avoidanceStrengthOverTime, 1f, Time.deltaTime);
 				}
-				evadeDir = new Vector3(evadeDir.x, 0, 0);
 			} else {
-				evadeDir = Vector3.Lerp(evadeDir, Vector3.zero, Time.deltaTime * 2);
+				evadeDir = Vector3.Lerp(evadeDir, Vector3.zero, Time.deltaTime * 3);
 			}
 		}
 	}
@@ -286,10 +294,14 @@ public abstract class TankAI : TankBase, IHittable {
 	/// <param name="inputDir"></param>
 	public override void Move(Vector2 inputDir) {
 		DirectionLeader.position = Vector3.Lerp(DirectionLeader.position, rig.position + new Vector3(inputDir.x, 0, inputDir.y) * 2, GetTime * turnSpeed);
-		if(evadeDir != Vector3.zero) {
-			DirectionLeader.position = Vector3.Lerp(DirectionLeader.position, DirectionLeader.position + evadeDir * avoidanceStrength, GetTime);
+		if(evadeDir != Vector3.zero && disableAvoidanceSystem == false) {
+			DirectionLeader.position = Vector3.Lerp(DirectionLeader.position, DirectionLeader.position + evadeDir * baseAvoidanceStrength * avoidanceStrengthOverTime, GetTime);
 		}
-		moveDir = (DirectionLeader.position - rig.position).normalized;
+		if(disable2DirectionMovement == false) {
+			moveDir = (DirectionLeader.position - rig.position).normalized;
+		} else {
+			moveDir = new Vector3(inputDir.normalized.x, 0, inputDir.normalized.y) + evadeDir * baseAvoidanceStrength * avoidanceStrengthOverTime;
+		}
 
 		currentDirFactor = Mathf.Sign(Vector3.Dot(moveDir.normalized, rig.transform.forward));
 		if(disable2DirectionMovement) {

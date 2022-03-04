@@ -1,202 +1,260 @@
 {
   "levelName": "",
   "levelId": 29,
-  "gridSize": "Size_12x9",
+  "gridSize": "Size_9x6",
   "theme": "Snowy",
   "blocks": [
     {
       "pos": {
-        "x": 14,
-        "y": 0,
-        "z": -10
+        "x": -18,
+        "y": 4,
+        "z": -14
       },
       "index": {
-        "x": 14,
-        "y": 0,
-        "z": -10
+        "x": -18,
+        "y": 4,
+        "z": -14
       },
       "rotation": {
         "x": 0,
-        "y": 270,
+        "y": 0,
         "z": 0
       },
-      "type": "Block"
+      "type": "BlockHalf"
     },
     {
       "pos": {
         "x": -16,
-        "y": 0,
-        "z": -10
+        "y": 2,
+        "z": -14
       },
       "index": {
         "x": -16,
+        "y": 2,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
         "y": 0,
-        "z": -10
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": -18,
+        "y": 2,
+        "z": -12
+      },
+      "index": {
+        "x": -18,
+        "y": 2,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 16,
+        "y": 4,
+        "z": -14
+      },
+      "index": {
+        "x": 16,
+        "y": 4,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 14,
+        "y": 2,
+        "z": -14
+      },
+      "index": {
+        "x": 14,
+        "y": 2,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 16,
+        "y": 2,
+        "z": -12
+      },
+      "index": {
+        "x": 16,
+        "y": 2,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 16,
+        "y": 4,
+        "z": 12
+      },
+      "index": {
+        "x": 16,
+        "y": 4,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": -18,
+        "y": 4,
+        "z": 12
+      },
+      "index": {
+        "x": -18,
+        "y": 4,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": -18,
+        "y": 2,
+        "z": 10
+      },
+      "index": {
+        "x": -18,
+        "y": 2,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": -16,
+        "y": 2,
+        "z": 12
+      },
+      "index": {
+        "x": -16,
+        "y": 2,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 16,
+        "y": 2,
+        "z": 10
+      },
+      "index": {
+        "x": 16,
+        "y": 2,
+        "z": 10
       },
       "rotation": {
         "x": 0,
         "y": 270,
         "z": 0
-      },
-      "type": "Block"
+      }
     },
     {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
       "pos": {
-        "x": 12,
-        "y": 0,
-        "z": -8
+        "x": 14,
+        "y": 2,
+        "z": 12
       },
       "index": {
-        "x": 12,
-        "y": 0,
-        "z": -8
+        "x": 14,
+        "y": 2,
+        "z": 12
       },
       "rotation": {
         "x": 0,
         "y": 270,
         "z": 0
-      },
-      "type": "Block"
+      }
     },
     {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
       "pos": {
-        "x": -14,
+        "x": 4,
         "y": 0,
-        "z": -8
+        "z": 12
       },
       "index": {
-        "x": -14,
+        "x": 4,
         "y": 0,
-        "z": -8
+        "z": 12
       },
       "rotation": {
         "x": 0,
         "y": 270,
         "z": 0
-      },
-      "type": "Block"
+      }
     },
     {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
       "pos": {
-        "x": -14,
+        "x": 2,
         "y": 0,
-        "z": -10
+        "z": 12
       },
       "index": {
-        "x": -14,
+        "x": 2,
         "y": 0,
-        "z": -10
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": -14,
-        "y": 0,
-        "z": -12
-      },
-      "index": {
-        "x": -14,
-        "y": 0,
-        "z": -12
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": -14,
-        "y": 0,
-        "z": -14
-      },
-      "index": {
-        "x": -14,
-        "y": 0,
-        "z": -14
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": 12,
-        "y": 0,
-        "z": -14
-      },
-      "index": {
-        "x": 12,
-        "y": 0,
-        "z": -14
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": 12,
-        "y": 0,
-        "z": -12
-      },
-      "index": {
-        "x": 12,
-        "y": 0,
-        "z": -12
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": 12,
-        "y": 0,
-        "z": -10
-      },
-      "index": {
-        "x": 12,
-        "y": 0,
-        "z": -10
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    }
-  ],
-  "tanks": [
-    {
-      "tankType": "Snowplower",
-      "pos": {
-        "x": -15,
-        "y": 0,
-        "z": 1
-      },
-      "index": {
-        "x": -14,
-        "y": 0,
-        "z": 0
+        "z": 12
       },
       "rotation": {
         "x": 0,
@@ -205,20 +263,458 @@
       }
     },
     {
-      "tankType": "Snowplower",
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
       "pos": {
-        "x": 13,
+        "x": 0,
         "y": 0,
-        "z": 1
+        "z": 12
       },
       "index": {
-        "x": 14,
+        "x": 0,
         "y": 0,
-        "z": 0
+        "z": 12
       },
       "rotation": {
         "x": 0,
         "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": -2,
+        "y": 0,
+        "z": 12
+      },
+      "index": {
+        "x": -2,
+        "y": 0,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": -4,
+        "y": 0,
+        "z": 12
+      },
+      "index": {
+        "x": -4,
+        "y": 0,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": -6,
+        "y": 0,
+        "z": 12
+      },
+      "index": {
+        "x": -6,
+        "y": 0,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "C_Letter",
+      "pos": {
+        "x": -18,
+        "y": 2,
+        "z": 12
+      },
+      "index": {
+        "x": -18,
+        "y": 2,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "B_Letter",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": 10
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "A_Letter",
+      "pos": {
+        "x": -16,
+        "y": 0,
+        "z": 12
+      },
+      "index": {
+        "x": -16,
+        "y": 0,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "A_Letter",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": 12
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "A_Letter",
+      "pos": {
+        "x": 16,
+        "y": 2,
+        "z": 12
+      },
+      "index": {
+        "x": 16,
+        "y": 2,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "C_Letter",
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": 10
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "C_Letter",
+      "pos": {
+        "x": 14,
+        "y": 0,
+        "z": 12
+      },
+      "index": {
+        "x": 14,
+        "y": 0,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "C_Letter",
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": 12
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": 12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "B_Letter",
+      "pos": {
+        "x": 16,
+        "y": 2,
+        "z": -14
+      },
+      "index": {
+        "x": 16,
+        "y": 2,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "C_Letter",
+      "pos": {
+        "x": 14,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": 14,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "C_Letter",
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "C_Letter",
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "A_Letter",
+      "pos": {
+        "x": -18,
+        "y": 2,
+        "z": -14
+      },
+      "index": {
+        "x": -18,
+        "y": 2,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "B_Letter",
+      "pos": {
+        "x": -16,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": -16,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "B_Letter",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "B_Letter",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "DestructibleBox",
+      "pos": {
+        "x": 0,
+        "y": 0,
+        "z": -6
+      },
+      "index": {
+        "x": 0,
+        "y": 0,
+        "z": -6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "DestructibleBox",
+      "pos": {
+        "x": -2,
+        "y": 0,
+        "z": -6
+      },
+      "index": {
+        "x": -2,
+        "y": 0,
+        "z": -6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    }
+  ],
+  "tanks": [
+    {
+      "tankType": "Camouflage",
+      "pos": {
+        "x": 9,
+        "y": 0,
+        "z": -9
+      },
+      "index": {
+        "x": 8,
+        "y": 0,
+        "z": -10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Camouflage",
+      "pos": {
+        "x": -11,
+        "y": 0,
+        "z": -9
+      },
+      "index": {
+        "x": -10,
+        "y": 0,
+        "z": -8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
         "z": 0
       }
     },
@@ -241,25 +737,43 @@
       }
     },
     {
-      "tankType": "Grey",
+      "tankType": "Snowplower",
       "pos": {
-        "x": 3,
+        "x": -11,
         "y": 0,
-        "z": 9
+        "z": 7
       },
       "index": {
-        "x": 4,
+        "x": -10,
         "y": 0,
         "z": 8
       },
       "rotation": {
         "x": 0,
-        "y": 180,
+        "y": 270,
         "z": 0
       }
     },
     {
-      "tankType": "Grey",
+      "tankType": "Snowplower",
+      "pos": {
+        "x": 9,
+        "y": 0,
+        "z": 7
+      },
+      "index": {
+        "x": 8,
+        "y": 0,
+        "z": 6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Yellow",
       "pos": {
         "x": -3,
         "y": 0,
@@ -277,14 +791,14 @@
       }
     },
     {
-      "tankType": "Grey",
+      "tankType": "Yellow",
       "pos": {
-        "x": -9,
+        "x": 1,
         "y": 0,
         "z": 9
       },
       "index": {
-        "x": -8,
+        "x": 2,
         "y": 0,
         "z": 8
       },
@@ -293,43 +807,232 @@
         "y": 180,
         "z": 0
       }
-    },
-    {
-      "tankType": "Camouflage",
-      "pos": {
-        "x": 15,
-        "y": 0,
-        "z": -13
-      },
-      "index": {
-        "x": 14,
-        "y": 0,
-        "z": -14
-      },
-      "rotation": {
-        "x": 0,
-        "y": 90,
-        "z": 0
-      }
-    },
-    {
-      "tankType": "Camouflage",
-      "pos": {
-        "x": -17,
-        "y": 0,
-        "z": -13
-      },
-      "index": {
-        "x": -16,
-        "y": 0,
-        "z": -12
-      },
-      "rotation": {
-        "x": 0,
-        "y": 270,
-        "z": 0
-      }
     }
   ],
-  "groundTiles": []
+  "groundTiles": [
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -14,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -14,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -12,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -12,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -10,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -10,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -8,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -8,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -8,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -8,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -8,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -8,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -8,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -8,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -8,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": -8,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 6,
+        "y": -14
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 6,
+        "y": -12
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 6,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 6,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 6,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 6,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 6,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 6,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 6,
+        "y": 10
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 6,
+        "y": 12
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 8,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 8,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 10,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 10,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 12,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "RoundHole",
+      "index": {
+        "x": 12,
+        "y": 4
+      }
+    }
+  ]
 }

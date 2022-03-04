@@ -156,6 +156,11 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield, IEdito
 		healthPointPrefab = healthBar.transform.GetChild(0).gameObject;
 		healthPointPrefab.SetActive(false);
 		TurnLightsOff();
+		if(GraphicSettings.PerformanceMode) {
+			FakeShadow.enabled = false;
+		} else {
+			FakeShadow.enabled = true;
+		}
 	}
 
 	public virtual void InitializeTank() {
@@ -285,7 +290,7 @@ public class TankBase : GameEntity, IHittable, IResettable, IForceShield, IEdito
 				isReloading = true;
 				this.Delay(reloadDuration + Random.Range(0f, randomReloadDuration), () => isReloading = false);
 			}
-			if(shootStunDuration > 0) {
+			if(shootStunDuration > 0 && isShootStunned == false) {
 				isShootStunned = true;
 				this.Delay(shootStunDuration, () => isShootStunned = false);
 			}

@@ -794,7 +794,7 @@ namespace ToyTanks.LevelEditor {
 			GameManager.CurrentLevel = LevelData;
 		}
 		public void ExitLevelEditor() {
-			FindObjectOfType<GameManager>().ReturnToMenu("Exiting Editor");
+			GameManager.ReturnToMenu("Exiting Editor");
 		}
 
 		// Level IO
@@ -804,22 +804,11 @@ namespace ToyTanks.LevelEditor {
 				DestroyImmediate(b.gameObject);
 			}
 			foreach(var t in FindObjectsOfType<TankBase>()) {
-				if(Application.isPlaying) {
-					Destroy(t.gameObject);
-				} else {
-					DestroyImmediate(t.gameObject);
-				}
-
+				DestroyImmediate(t.gameObject);
 			}
 
 			hoverSpaceIndexes = (false, new List<Int3>(), new List<Int3>());
 			CurrentHoverIndex = new Int3(0, -2, 0);
-			if(selectedTank != null) {
-				Destroy(selectedTank);
-			}
-			if(selectedBlock != null) {
-				Destroy(selectedBlock);
-			}
 			DeletePreview();
 			ResetSelection();
 			LevelManager.Instance.presets.ForEach(preset => preset.gameobject.Hide());
@@ -905,7 +894,6 @@ namespace ToyTanks.LevelEditor {
 			Grid = new LevelGrid(GridBoundary, 2);
 			loadedLevelId = LevelData.levelId;
 			failedIndexes = new List<Int3>();
-			SwitchTheme(LevelData.theme);
 			SwitchGridSize(LevelData.gridSize);
 			DeletePreview();
 			ResetSelection();
@@ -919,9 +907,11 @@ namespace ToyTanks.LevelEditor {
 				}
 			}
 
+			SwitchTheme(LevelData.theme);
 			LevelManager.EnablePreset(gridSize, theme);
-			LevelLightmapper.SwitchLightmaps(LevelData.levelId);
+			//LevelLightmapper.SwitchLightmaps(LevelData.levelId);
 			LevelGround.Instance.Generate(gridSize, true, LevelData.groundTiles);
+			LevelGround.Instance.SetTheme(theme);
 			hasLevelBeenLoaded = true;
 			editorUI.RefreshUI();
 		}

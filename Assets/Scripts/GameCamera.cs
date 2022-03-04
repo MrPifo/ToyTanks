@@ -42,6 +42,7 @@ public class GameCamera : Singleton<GameCamera> {
 	public GameCamState cameraState = GameCamState.Free;
 	public ParticleSystem confettiRight;
 	public ParticleSystem confettiLeft;
+	public Camera tiltShitCamera;
 
 	protected override void Awake() {
 		base.Awake();
@@ -189,6 +190,11 @@ public class GameCamera : Singleton<GameCamera> {
 				preferredOrthographicSize = LevelManager.GetOrthographicSize(LevelManager.GridSize);
 				FollowPlayer();
 				break;
+		}
+		if(GraphicSettings.PerformanceMode) {
+			tiltShitCamera.gameObject.SetActive(false);
+		} else {
+			tiltShitCamera.gameObject.SetActive(true);
 		}
 	}
 

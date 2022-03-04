@@ -15,6 +15,7 @@ namespace Sperlich.Debug.Draw {
 		static Queue<DrawDisc> Discs { get; set; } = new Queue<DrawDisc>();
 		static Queue<DrawRing> Rings { get; set; } = new Queue<DrawRing>();
 		static Queue<DrawText> Texts { get; set; } = new Queue<DrawText>();
+		static List<IGizmo> Gizmos { get; set; } = new List<IGizmo>();
 		static Queue<DrawSphere> Spheres { get; set; } = new Queue<DrawSphere>();
 		static Queue<DrawCube> Cubes { get; set; } = new Queue<DrawCube>();
 
@@ -101,6 +102,10 @@ namespace Sperlich.Debug.Draw {
 					SetZTest(s.zTest);
 
 					Shapes.Draw.Sphere(s.pos, s.radius, s.color);
+					s.lifeTime -= Time.deltaTime;
+					if(s.lifeTime > 0) {
+						Spheres.Enqueue(s);
+					}
 				}
 				while(Cubes.Count > 0) {
 					var c = Cubes.Dequeue();
@@ -205,14 +210,16 @@ namespace Sperlich.Debug.Draw {
 			});
 		}
 
-		public static void Sphere(Vector3 pos, bool zTest = false) => Sphere(pos, 1f, zTest);
-		public static void Sphere(Vector3 pos, float radius, bool zTest = false) => Sphere(pos, radius, Color.white, zTest);
-		public static void Sphere(Vector3 pos, float radius, Color32 color, bool zTest = false) {
+		public static void Sphere(Vector3 pos, float duration = 0f, bool zTest = false) => Sphere(pos, 1f, duration, zTest);
+		public static void Sphere(Vector3 pos, float radius, Color32 color, bool zTest = false) => Sphere(pos, radius, color, 0, zTest);
+		public static void Sphere(Vector3 pos, float radius, float duration = 0f, bool zTest = false) => Sphere(pos, radius, Color.white, duration, zTest);
+		public static void Sphere(Vector3 pos, float radius, Color32 color, float duration, bool zTest = false) {
 			Spheres.Enqueue(new DrawSphere() {
 				pos = pos,
 				radius = radius,
 				color = color,
-				zTest = zTest
+				zTest = zTest,
+				lifeTime = duration,
 			});
 		}
 
@@ -226,7 +233,7 @@ namespace Sperlich.Debug.Draw {
 				normal = normal,
 				size = size,
 				color = color,
-				zTest = zTest
+				zTest = zTest,
 			});
 		}
 
@@ -254,7 +261,10 @@ namespace Sperlich.Debug.Draw {
 			return colors;
 		}
 
-		struct DrawLine {
+		interface IGizmo {
+			public float lifeTime { get; set; }
+		}
+		struct DrawLine : IGizmo {
 			public Vector3 start;
 			public Vector3 end;
 			public Color32 startColor;
@@ -263,8 +273,10 @@ namespace Sperlich.Debug.Draw {
 			public LineGeometry geometry;
 			public float thickness;
 			public bool zTest;
+
+			public float lifeTime { get; set; }
 		}
-		struct DrawDisc {
+		struct DrawDisc : IGizmo {
 			public Vector3 pos;
 			public Vector3 normal;
 			public Color32 startColor;
@@ -273,8 +285,10 @@ namespace Sperlich.Debug.Draw {
 			public bool zTest;
 			public bool softFill;
 			public float radius;
+
+			public float lifeTime { get; set; }
 		}
-		struct DrawRing {
+		struct DrawRing : IGizmo {
 			public Vector3 pos;
 			public Vector3 normal;
 			public Color32 startColor;
@@ -284,27 +298,35 @@ namespace Sperlich.Debug.Draw {
 			public float thickness;
 			public bool zTest;
 			public bool softFill;
+
+			public float lifeTime { get; set; }
 		}
-		struct DrawText {
+		struct DrawText : IGizmo {
 			public Vector3 pos;
 			public Vector3 normal;
 			public Color32 color;
 			public float fontSize;
 			public string text;
 			public bool zTest;
+
+			public float lifeTime { get; set; }
 		}
-		struct DrawSphere {
+		struct DrawSphere : IGizmo {
 			public Vector3 pos;
 			public Color32 color;
 			public float radius;
 			public bool zTest;
+
+			public float lifeTime { get; set; }
 		}
-		struct DrawCube {
+		struct DrawCube : IGizmo {
 			public Vector3 pos;
 			public Vector3 normal;
 			public Color32 color;
 			public Vector3 size;
 			public bool zTest;
+
+			public float lifeTime { get; set; }
 		}
 	}
 }

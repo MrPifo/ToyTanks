@@ -216,6 +216,6 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	public void OpenGraphicSettings() {
-		GraphicSettings.OpenOptionsMenu(0.2f);
+		GraphicSettings.OpenOptionsMenu();
 	}
 }

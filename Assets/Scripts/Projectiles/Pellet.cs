@@ -2,6 +2,7 @@ using DG.Tweening;
 using Sperlich.PrefabManager;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class Pellet : GameEntity, IDamageEffector, IRecycle {
 
@@ -60,6 +61,11 @@ public class Pellet : GameEntity, IDamageEffector, IRecycle {
 	public void BlastOff(Vector3 spawnPos, Vector3 impactPosition, System.Action onExplodeCallback = null) {
 		StartCoroutine(IShoot());
 		IEnumerator IShoot() {
+			if(GraphicSettings.PerformanceMode) {
+				pelletBlobShadow.GetComponent<DecalProjector>().enabled = false;
+			} else {
+				pelletBlobShadow.GetComponent<DecalProjector>().enabled = true;
+			}
 			// Setup bullet flying path
 			transform.position = spawnPos;
 			Vector3 pelletFlyDirection = (impactPosition - spawnPos).normalized;

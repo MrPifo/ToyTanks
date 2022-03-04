@@ -50,6 +50,11 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 		rig = GetComponent<Rigidbody>();
 		OnBulletDestroyed = new UnityEvent();
 		baseVelocity = velocity;
+		if(GraphicSettings.PerformanceMode) {
+			fakeShadow.gameObject.SetActive(false);
+		} else {
+			fakeShadow.gameObject.SetActive(true);
+		}
 	}
 
 	void FixedUpdate() {
@@ -105,7 +110,7 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 		transform.position = startPos;
 		Direction = dir;
 		isFromPlayer = firedFromPlayer;
-		AudioPlayer.Play("BulletShot", AudioType.SoundEffect, 0.8f, 1.2f);
+		AudioPlayer.Play("BulletShot", AudioType.SoundEffect, 0.8f, 1.2f, 1.2f);
 		return this;
 	}
 

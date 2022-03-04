@@ -25,23 +25,9 @@ public static class GameSaver {
 
 	private static SaveV1 CreateFreshSaveGame() {
 		var save = new SaveV1() {
-			Worlds = new List<SaveV1.World>()
+			PlayedLevels = new List<SaveV1.PlayedLevel>(),
+			LastModified = DateTime.Now,
 		};
-		foreach(var en in Game.GetWorlds) {
-			var levels = new SaveV1.Level[Game.LevelCount(en.WorldType)];
-			var gameLevels = Game.GetLevels(en.WorldType);
-			for(int i = 0; i < gameLevels.Length; i++) {
-				levels[i] = new SaveV1.Level() {
-					IsUnlocked = false,
-					LevelId = gameLevels[i].LevelId
-				};
-			}
-
-			save.Worlds.Add(new SaveV1.World() {
-				world = en.WorldType,
-				levels = levels
-			});
-		}
 		return save;
 	}
 
@@ -119,22 +105,76 @@ public static class GameSaver {
 		}
 	}
 
-	public static void UnlockLevel(byte saveSlot, ulong levelId) {
-		GetWorld(GetCampaign(saveSlot).CurrentWorld).levels.Where(l => l.LevelId == levelId).First().IsUnlocked = true;
+	public static void UnlockLevel(ulong levelId) {
+		try {
+			AddNewPlayedLevel(levelId);
+			var level = SaveInstance.GetPlayedLevel(levelId);
+			level.completed = true;
+			level.lastAttempt = DateTime.Now;
+			Save();
+		} catch(Exception e) {
+			if(HasLevelBeenPlayed(levelId)) {
+				Logger.LogError("Level couldnt be found in the users played level list. Make sure to add the level before.", e);
+			} else {
+				Logger.LogError(e.Message, e);
+			}
+		}
 	}
+
+	/// <summary>
+	/// Adds a new level to users lists. Can be attempted and/not finished
+	/// </summary>
+	/// <param name="levelId"></param>
+	public static void AddNewPlayedLevel(ulong levelId) {
+		if(HasLevelBeenPlayed(levelId) == false) {
+			SaveInstance.PlayedLevels.Add(new SaveV1.PlayedLevel(levelId) {
+				attempts = 0,
+				completed = false,
+				lastAttempt = DateTime.Now,
+				completionTime = 0
+			});
+			Save();
+		}
+	}
+
+	/// <summary>
+	/// Updates a Level the user has played.
+	/// </summary>
+	/// <param name="levelId"></param>
+	/// <param name="completionTime"></param>
+	/// <param name="addAttempt"></param>
+	public static void UpdateLevel(ulong levelId, float completionTime, bool addAttempt = true) {
+		try {
+			AddNewPlayedLevel(levelId);
+			var level = SaveInstance.GetPlayedLevel(levelId);
+			level.completionTime = completionTime;
+			level.attempts = addAttempt ? level.attempts + 1 : level.attempts;
+			level.lastAttempt = DateTime.Now;
+			Save();
+		} catch (Exception e) {
+			if(HasLevelBeenPlayed(levelId)) {
+				Logger.LogError("Level couldnt be found in the users played level list. Make sure to add the level before.", e);
+			} else {
+				Logger.LogError(e.Message, e);
+			}
+		}
+	}
+
+	public static bool HasLevelBeenPlayed(ulong levelId) => SaveInstance.PlayedLevels.Any(l => l.LevelId == levelId);
+	public static bool HasLevelBeenUnlocked(ulong levelId) => SaveInstance.GetPlayedLevel(levelId).completed;
 
 	#endregion
 
 	#region Internal
-	private static List<SaveV1.World> CheckAddWorlds() {
+	/*private static List<SaveV1.World> CheckAddWorlds() {
 		var worlds = new List<SaveV1.World>();
 		foreach(var en in Game.GetWorlds) {
 			if(GetWorld(en.WorldType) == null) {
-				var levels = new SaveV1.Level[Game.LevelCount(en.WorldType)];
+				var levels = new SaveV1.PlayedLevel[Game.LevelCount(en.WorldType)];
 				var gameLevels = Game.GetLevels(en.WorldType);
 				for(int i = 0; i < gameLevels.Length; i++) {
-					levels[i] = new SaveV1.Level() {
-						IsUnlocked = false,
+					levels[i] = new SaveV1.PlayedLevel() {
+						unlocked = false,
 						LevelId = gameLevels[i].LevelId
 					};
 				}
@@ -146,7 +186,7 @@ public static class GameSaver {
 			}
 		}
 		return worlds;
-	}
+	}*/
 
 	private static void LoadGame() {
 		// Check GameSave Version Number
@@ -183,10 +223,6 @@ public static class GameSaver {
 
 	#region InfoAPI
 	// Version dependent Helper functions
-	public static bool HasGameBeenCompletedOnce => SaveInstance.GameCompletedOnce;
-	public static SaveV1.World GetWorld(WorldTheme world) => SaveInstance.Worlds.Find(w => w.world == world);
-	public static SaveV1.Level GetLevel(WorldTheme world, ulong levelId) => GetWorld(world).levels.Where(l => l.LevelId == levelId).FirstOrDefault();
-	public static int UnlockedLevelCount(WorldTheme world) => GetWorld(world).levels.Count(l => l.IsUnlocked == true);
-	public static bool IsLevelUnlocked(WorldTheme world, ulong levelId) => GetLevel(world, levelId).IsUnlocked;
+	public static bool HasGameBeenCompletedOnce => PlayerStats.Instance.ArcadeCompletedOnce;
 	#endregion
 }

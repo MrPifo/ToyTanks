@@ -334,4 +334,19 @@ public static class GameCommands {
 			Terminal.Log(TerminalLogType.Error, "There is no active Camera Shaker.");
 		}
 	}
+
+	[RegisterCommand(Help = "")]
+	public static void UnlockLevel(CommandArg[] args) {
+		try {
+			if(args.Length == 1) {
+				GameSaver.UnlockLevel((ulong)args[0].Int);
+			} else if(args.Length == 2) {
+				for(int i = args[0].Int; i <= args[1].Int; i++) {
+					GameSaver.UnlockLevel((ulong)i);
+				}
+			}
+		} catch {
+			Terminal.Log(TerminalLogType.Error, "Failed to unlock level.");
+		}
+	}
 }

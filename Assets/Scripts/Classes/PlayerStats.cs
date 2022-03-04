@@ -10,7 +10,7 @@ public class PlayerStats {
 	public int TotalPlaytime { get; set; }
 	public int TotalLevelsCompleted { get; set; }
 	public int TotalDeaths { get; set; }
-	public bool ArcadeCompletedOnce => false;
+	public bool ArcadeCompletedOnce => DifficultyEasyCompleted || DifficultyMediumCompleted || DifficultyHardCompleted || DifficultyOriginalCompleted;
 	public int TotalDistanceTravelled	{ get; set; }
 	public bool DifficultyEasyCompleted { get; set; }
 	public bool DifficultyMediumCompleted { get; set; }

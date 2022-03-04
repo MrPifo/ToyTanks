@@ -64,31 +64,33 @@ public class Logger {
 	public static string FileLogPath => Application.persistentDataPath + "/ToyTanks.log";
 
 	public static void LogError(string message, Exception e, Channel channel = Channel.Default) {
-		message = message + "\n ErrorMessage: \n" + e.Message;
+		//message = message + "\n ErrorMessage: \n" + e.Message;
 
-		string consoleString = string.Empty;
-		string fileString = string.Empty;
-		DateTime date = DateTime.Now;
+		//string consoleString = string.Empty;
+		//string fileString = string.Empty;
+		//DateTime date = DateTime.Now;
 
-		consoleString = $"[<color={channelToColour[channel]}>" + channel.ToString() + "</color>] " + message;
-		fileString = "[" + date.ToShortTimeString() + "]" + $"[" + channel.ToString() + "] " + message;
-		fileString = Encoding.UTF8.GetString(Encoding.Default.GetBytes(fileString));
+		//consoleString = $"[<color={channelToColour[channel]}>" + channel.ToString() + "</color>] " + message;
+		//fileString = "[" + date.ToShortTimeString() + "]" + $"[" + channel.ToString() + "] " + message;
+		//fileString = Encoding.UTF8.GetString(Encoding.Default.GetBytes(fileString));
 
-		WriteToLogfile(fileString);
-		Debug.LogError(consoleString);
+		//WriteToLogfile(fileString);
+		//Debug.LogError(consoleString);
+		Debug.LogError(message);
 	}
 	public static void Log(Channel channel, string message) => Log(message, channel);
 	public static void Log(string message, Channel channel) {
-		string consoleString = string.Empty;
-		string fileString = string.Empty;
-		DateTime date = DateTime.Now;
+		//string consoleString = string.Empty;
+		//string fileString = string.Empty;
+		//DateTime date = DateTime.Now;
 		
-		consoleString = $"[<color={channelToColour[channel]}>" + channel.ToString() + "</color>] " + message;
-		fileString = "[" + date.ToShortTimeString() + "]" + $"[" + channel.ToString() + "] " + message;
-		fileString = Encoding.UTF8.GetString(Encoding.Default.GetBytes(fileString));
+		//consoleString = $"[<color={channelToColour[channel]}>" + channel.ToString() + "</color>] " + message;
+		//fileString = "[" + date.ToShortTimeString() + "]" + $"[" + channel.ToString() + "] " + message;
+		//fileString = Encoding.UTF8.GetString(Encoding.Default.GetBytes(fileString));
 
-		WriteToLogfile(fileString);
-		Debug.Log(consoleString);
+		//WriteToLogfile(fileString);
+		//Debug.Log(consoleString);
+		Debug.Log(message);
 	}
 
 	public static void Initialize() {

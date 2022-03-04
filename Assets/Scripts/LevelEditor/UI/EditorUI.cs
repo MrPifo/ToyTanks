@@ -43,6 +43,7 @@ namespace ToyTanks.LevelEditor.UI {
 
 		private void Awake() {
             uiCanvasGroup.alpha = 0;
+            uiCanvasGroup.gameObject.SetActive(false);
 		}
 
 		public void Save() {
@@ -328,6 +329,7 @@ namespace ToyTanks.LevelEditor.UI {
 
         public void RefreshUI() {
             if(Application.isPlaying) {
+                uiCanvasGroup.gameObject.SetActive(true);
                 uiCanvasGroup.alpha = 1;
                 editor.DeletePreview();
                 editor.buildMode = LevelEditor.BuildMode.View;

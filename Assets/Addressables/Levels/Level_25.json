@@ -6,291 +6,21 @@
   "blocks": [
     {
       "pos": {
-        "x": -20,
-        "y": 0,
-        "z": 6
-      },
-      "index": {
-        "x": -20,
-        "y": 0,
-        "z": 6
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": -18,
-        "y": 0,
-        "z": 6
-      },
-      "index": {
-        "x": -18,
-        "y": 0,
-        "z": 6
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": -10,
-        "y": 0,
-        "z": 10
-      },
-      "index": {
-        "x": -10,
-        "y": 0,
-        "z": 10
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": -10,
-        "y": 0,
-        "z": 12
-      },
-      "index": {
-        "x": -10,
-        "y": 0,
-        "z": 12
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": 16,
-        "y": 0,
-        "z": 10
-      },
-      "index": {
-        "x": 16,
-        "y": 0,
-        "z": 10
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": 16,
-        "y": 0,
-        "z": 8
-      },
-      "index": {
-        "x": 16,
-        "y": 0,
-        "z": 8
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
         "x": 14,
         "y": 0,
-        "z": 8
+        "z": -12
       },
       "index": {
         "x": 14,
         "y": 0,
-        "z": 8
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": 12,
-        "y": 0,
-        "z": 8
-      },
-      "index": {
-        "x": 12,
-        "y": 0,
-        "z": 8
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": 10,
-        "y": 0,
-        "z": 8
-      },
-      "index": {
-        "x": 10,
-        "y": 0,
-        "z": 8
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": 8,
-        "y": 0,
-        "z": -14
-      },
-      "index": {
-        "x": 8,
-        "y": 0,
-        "z": -14
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": 8,
-        "y": 0,
-        "z": -12
-      },
-      "index": {
-        "x": 8,
-        "y": 0,
         "z": -12
       },
       "rotation": {
         "x": 0,
-        "y": 180,
+        "y": 270,
         "z": 0
       },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": 6,
-        "y": 0,
-        "z": -12
-      },
-      "index": {
-        "x": 6,
-        "y": 0,
-        "z": -12
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": 18,
-        "y": 0,
-        "z": -8
-      },
-      "index": {
-        "x": 18,
-        "y": 0,
-        "z": -8
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": 16,
-        "y": 0,
-        "z": -8
-      },
-      "index": {
-        "x": 16,
-        "y": 0,
-        "z": -8
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": 16,
-        "y": 0,
-        "z": -6
-      },
-      "index": {
-        "x": 16,
-        "y": 0,
-        "z": -6
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
-    },
-    {
-      "pos": {
-        "x": -18,
-        "y": 0,
-        "z": -14
-      },
-      "index": {
-        "x": -18,
-        "y": 0,
-        "z": -14
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block"
+      "type": "BlockHalf"
     },
     {
       "pos": {
@@ -305,12 +35,52 @@
       },
       "rotation": {
         "x": 0,
-        "y": 180,
+        "y": 270,
         "z": 0
       },
-      "type": "Block"
+      "type": "BlockHalf"
     },
     {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 14,
+        "y": 0,
+        "z": -10
+      },
+      "index": {
+        "x": 14,
+        "y": 0,
+        "z": -10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 14,
+        "y": 0,
+        "z": -8
+      },
+      "index": {
+        "x": 14,
+        "y": 0,
+        "z": -8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
       "pos": {
         "x": -18,
         "y": 0,
@@ -325,181 +95,341 @@
         "x": 0,
         "y": 180,
         "z": 0
-      },
-      "type": "Block"
+      }
     },
     {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
       "pos": {
-        "x": -24,
+        "x": -18,
         "y": 0,
-        "z": -2
+        "z": -8
       },
       "index": {
-        "x": -24,
+        "x": -18,
         "y": 0,
-        "z": -2
+        "z": -8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": 4
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": 4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": 6
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": 6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": 8
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": 8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": 10
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": -14,
+        "y": 0,
+        "z": 10
+      },
+      "index": {
+        "x": -14,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": -16,
+        "y": 0,
+        "z": 10
+      },
+      "index": {
+        "x": -16,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": -12,
+        "y": 0,
+        "z": 10
+      },
+      "index": {
+        "x": -12,
+        "y": 0,
+        "z": 10
       },
       "rotation": {
         "x": 0,
         "y": 180,
         "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": -10,
+        "y": 0,
+        "z": 10
       },
-      "type": "Block2"
+      "index": {
+        "x": -10,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 6,
+        "y": 0,
+        "z": 10
+      },
+      "index": {
+        "x": 6,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 8,
+        "y": 0,
+        "z": 10
+      },
+      "index": {
+        "x": 8,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 10,
+        "y": 0,
+        "z": 10
+      },
+      "index": {
+        "x": 10,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 12,
+        "y": 0,
+        "z": 10
+      },
+      "index": {
+        "x": 12,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 14,
+        "y": 0,
+        "z": 10
+      },
+      "index": {
+        "x": 14,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 14,
+        "y": 0,
+        "z": 4
+      },
+      "index": {
+        "x": 14,
+        "y": 0,
+        "z": 4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 14,
+        "y": 0,
+        "z": 6
+      },
+      "index": {
+        "x": 14,
+        "y": 0,
+        "z": 6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Sandbag",
+      "pos": {
+        "x": 14,
+        "y": 0,
+        "z": 8
+      },
+      "index": {
+        "x": 14,
+        "y": 0,
+        "z": 8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
     },
     {
       "pos": {
-        "x": -24,
+        "x": 14,
         "y": 0,
         "z": 2
       },
       "index": {
-        "x": -24,
+        "x": 14,
         "y": 0,
         "z": 2
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block2"
-    },
-    {
-      "pos": {
-        "x": -4,
-        "y": 0,
-        "z": 16
-      },
-      "index": {
-        "x": -4,
-        "y": 0,
-        "z": 16
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block2"
-    },
-    {
-      "pos": {
-        "x": 0,
-        "y": 0,
-        "z": 16
-      },
-      "index": {
-        "x": 0,
-        "y": 0,
-        "z": 16
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block2"
-    },
-    {
-      "pos": {
-        "x": 22,
-        "y": 0,
-        "z": 2
-      },
-      "index": {
-        "x": 22,
-        "y": 0,
-        "z": 2
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block2"
-    },
-    {
-      "pos": {
-        "x": 22,
-        "y": 0,
-        "z": -2
-      },
-      "index": {
-        "x": 22,
-        "y": 0,
-        "z": -2
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block2"
-    },
-    {
-      "pos": {
-        "x": -4,
-        "y": 0,
-        "z": -18
-      },
-      "index": {
-        "x": -4,
-        "y": 0,
-        "z": -18
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block2"
-    },
-    {
-      "pos": {
-        "x": 0,
-        "y": 0,
-        "z": -18
-      },
-      "index": {
-        "x": 0,
-        "y": 0,
-        "z": -18
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block2"
-    },
-    {
-      "pos": {
-        "x": -2,
-        "y": 0,
-        "z": 12
-      },
-      "index": {
-        "x": -2,
-        "y": 0,
-        "z": 12
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "BlockHalf"
-    },
-    {
-      "pos": {
-        "x": -2,
-        "y": 0,
-        "z": -14
-      },
-      "index": {
-        "x": -2,
-        "y": 0,
-        "z": -14
       },
       "rotation": {
         "x": 0,
@@ -512,12 +442,84 @@
       "pos": {
         "x": 16,
         "y": 0,
-        "z": 0
+        "z": 2
       },
       "index": {
         "x": 16,
         "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
         "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 18,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": 18,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 20,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": 20,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 22,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": 22,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": -22,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": -22,
+        "y": 0,
+        "z": 2
       },
       "rotation": {
         "x": 0,
@@ -530,12 +532,12 @@
       "pos": {
         "x": -18,
         "y": 0,
-        "z": 0
+        "z": 2
       },
       "index": {
         "x": -18,
         "y": 0,
-        "z": 0
+        "z": 2
       },
       "rotation": {
         "x": 0,
@@ -543,6 +545,153 @@
         "z": 0
       },
       "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": -20,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": -20,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": -24,
+        "y": 0,
+        "z": 2
+      },
+      "index": {
+        "x": -24,
+        "y": 0,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": -2,
+        "y": 2,
+        "z": 14
+      },
+      "index": {
+        "x": -2,
+        "y": 2,
+        "z": 14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": 0,
+        "y": 2,
+        "z": 16
+      },
+      "index": {
+        "x": 0,
+        "y": 2,
+        "z": 16
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "pos": {
+        "x": -4,
+        "y": 2,
+        "z": 16
+      },
+      "index": {
+        "x": -4,
+        "y": 2,
+        "z": 16
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      },
+      "type": "BlockHalf"
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "B_Letter",
+      "pos": {
+        "x": -2,
+        "y": 2,
+        "z": 16
+      },
+      "index": {
+        "x": -2,
+        "y": 2,
+        "z": 16
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "B_Letter",
+      "pos": {
+        "x": 0,
+        "y": 0,
+        "z": 14
+      },
+      "index": {
+        "x": 0,
+        "y": 0,
+        "z": 14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "A_Letter",
+      "pos": {
+        "x": -4,
+        "y": 0,
+        "z": 14
+      },
+      "index": {
+        "x": -4,
+        "y": 0,
+        "z": 14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
     },
     {
       "pos": {
@@ -557,7 +706,25 @@
       },
       "rotation": {
         "x": 0,
-        "y": 180,
+        "y": 90,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 0,
+        "y": 0,
+        "z": -18
+      },
+      "index": {
+        "x": 0,
+        "y": 0,
+        "z": -18
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
         "z": 0
       },
       "type": "Block2"
@@ -575,10 +742,655 @@
       },
       "rotation": {
         "x": 0,
-        "y": 180,
+        "y": 90,
         "z": 0
       },
       "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": -4,
+        "y": 0,
+        "z": -18
+      },
+      "index": {
+        "x": -4,
+        "y": 0,
+        "z": -18
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": -4,
+        "y": 0,
+        "z": -16
+      },
+      "index": {
+        "x": -4,
+        "y": 0,
+        "z": -16
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 0,
+        "y": 0,
+        "z": -16
+      },
+      "index": {
+        "x": 0,
+        "y": 0,
+        "z": -16
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 0,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": 0,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -4,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": -4,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -2,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": -2,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "B_Letter",
+      "pos": {
+        "x": -2,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": -2,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "C_Letter",
+      "pos": {
+        "x": 0,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": 0,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "A_Letter",
+      "pos": {
+        "x": -4,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": -4,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": -8,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": -8,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": 2,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": 2,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": 6,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": 6,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": 8,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": 8,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": 12,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": 12,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": 10,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": 10,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": 4,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": 4,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": -6,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": -6,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": -10,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": -10,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 180,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": -12,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": -12,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": -14,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": -14,
+        "y": 0,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "$type": "LevelData+BlockExtraData, Assembly-CSharp",
+      "type": "Tschechigel",
+      "pos": {
+        "x": -16,
+        "y": 0,
+        "z": -12
+      },
+      "index": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "pos": {
+        "x": 22,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": 22,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 18,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": 18,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 16,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": 16,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": 14,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": 14,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 20,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": 20,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 20,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": 20,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": 22,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": 22,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -18,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": -18,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -24,
+        "y": 0,
+        "z": 0
+      },
+      "index": {
+        "x": -24,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
+    },
+    {
+      "pos": {
+        "x": -22,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": -22,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block"
     },
     {
       "pos": {
@@ -593,7 +1405,25 @@
       },
       "rotation": {
         "x": 0,
-        "y": 180,
+        "y": 0,
+        "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": -20,
+        "y": 0,
+        "z": -2
+      },
+      "index": {
+        "x": -20,
+        "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
         "z": 0
       },
       "type": "Block2"
@@ -611,7 +1441,7 @@
       },
       "rotation": {
         "x": 0,
-        "y": 180,
+        "y": 0,
         "z": 0
       },
       "type": "Block2"
@@ -620,12 +1450,30 @@
       "pos": {
         "x": -24,
         "y": 0,
-        "z": 0
+        "z": -2
       },
       "index": {
         "x": -24,
         "y": 0,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
         "z": 0
+      },
+      "type": "Block2"
+    },
+    {
+      "pos": {
+        "x": -2,
+        "y": 0,
+        "z": 16
+      },
+      "index": {
+        "x": -2,
+        "y": 0,
+        "z": 16
       },
       "rotation": {
         "x": 0,
@@ -654,12 +1502,12 @@
     },
     {
       "pos": {
-        "x": -2,
+        "x": 0,
         "y": 0,
         "z": 16
       },
       "index": {
-        "x": -2,
+        "x": 0,
         "y": 0,
         "z": 16
       },
@@ -672,50 +1520,14 @@
     },
     {
       "pos": {
-        "x": 18,
+        "x": -4,
         "y": 0,
-        "z": 0
+        "z": 16
       },
       "index": {
-        "x": 18,
+        "x": -4,
         "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block2"
-    },
-    {
-      "pos": {
-        "x": 20,
-        "y": 0,
-        "z": 0
-      },
-      "index": {
-        "x": 20,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      },
-      "type": "Block2"
-    },
-    {
-      "pos": {
-        "x": 22,
-        "y": 0,
-        "z": 0
-      },
-      "index": {
-        "x": 22,
-        "y": 0,
-        "z": 0
+        "z": 16
       },
       "rotation": {
         "x": 0,
@@ -727,16 +1539,34 @@
   ],
   "tanks": [
     {
-      "tankType": "Brown",
+      "tankType": "Snowplower",
       "pos": {
-        "x": 1,
+        "x": 19,
         "y": 0,
-        "z": -15
+        "z": 13
       },
       "index": {
-        "x": 0,
+        "x": 20,
         "y": 0,
-        "z": -16
+        "z": 14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Brown",
+      "pos": {
+        "x": 19,
+        "y": 0,
+        "z": 7
+      },
+      "index": {
+        "x": 18,
+        "y": 0,
+        "z": 6
       },
       "rotation": {
         "x": 0,
@@ -745,16 +1575,16 @@
       }
     },
     {
-      "tankType": "Brown",
+      "tankType": "Yellow",
       "pos": {
-        "x": -19,
+        "x": -1,
         "y": 0,
-        "z": -3
+        "z": 1
       },
       "index": {
-        "x": -20,
+        "x": -2,
         "y": 0,
-        "z": -4
+        "z": 0
       },
       "rotation": {
         "x": 0,
@@ -763,20 +1593,110 @@
       }
     },
     {
-      "tankType": "Brown",
+      "tankType": "Green",
       "pos": {
-        "x": 1,
+        "x": 13,
         "y": 0,
-        "z": 13
+        "z": -17
       },
       "index": {
-        "x": 2,
+        "x": 12,
         "y": 0,
-        "z": 12
+        "z": -18
       },
       "rotation": {
         "x": 0,
-        "y": 180,
+        "y": 90,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Green",
+      "pos": {
+        "x": -17,
+        "y": 0,
+        "z": -17
+      },
+      "index": {
+        "x": -16,
+        "y": 0,
+        "z": -16
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Camouflage",
+      "pos": {
+        "x": -23,
+        "y": 0,
+        "z": -9
+      },
+      "index": {
+        "x": -24,
+        "y": 0,
+        "z": -10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Camouflage",
+      "pos": {
+        "x": 19,
+        "y": 0,
+        "z": -9
+      },
+      "index": {
+        "x": 18,
+        "y": 0,
+        "z": -10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Mortar",
+      "pos": {
+        "x": -9,
+        "y": 0,
+        "z": -15
+      },
+      "index": {
+        "x": -8,
+        "y": 0,
+        "z": -14
+      },
+      "rotation": {
+        "x": 0,
+        "y": 270,
+        "z": 0
+      }
+    },
+    {
+      "tankType": "Mortar",
+      "pos": {
+        "x": 5,
+        "y": 0,
+        "z": -14
+      },
+      "index": {
+        "x": 4,
+        "y": 0,
+        "z": -16
+      },
+      "rotation": {
+        "x": 0,
+        "y": 90,
         "z": 0
       }
     },
@@ -797,133 +1717,701 @@
         "y": 180,
         "z": 0
       }
-    },
-    {
-      "tankType": "Snowplower",
-      "pos": {
-        "x": 19,
-        "y": 0,
-        "z": -15
-      },
-      "index": {
-        "x": 20,
-        "y": 0,
-        "z": -14
-      },
-      "rotation": {
-        "x": 0,
-        "y": 270,
-        "z": 0
-      }
-    },
-    {
-      "tankType": "Camouflage",
-      "pos": {
-        "x": -13,
-        "y": 0,
-        "z": -9
-      },
-      "index": {
-        "x": -14,
-        "y": 0,
-        "z": -10
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      }
-    },
-    {
-      "tankType": "Camouflage",
-      "pos": {
-        "x": 13,
-        "y": 0,
-        "z": -3
-      },
-      "index": {
-        "x": 12,
-        "y": 0,
-        "z": -4
-      },
-      "rotation": {
-        "x": 0,
-        "y": 90,
-        "z": 0
-      }
-    },
-    {
-      "tankType": "Yellow",
-      "pos": {
-        "x": 13,
-        "y": 0,
-        "z": 13
-      },
-      "index": {
-        "x": 14,
-        "y": 0,
-        "z": 14
-      },
-      "rotation": {
-        "x": 0,
-        "y": 270,
-        "z": 0
-      }
-    },
-    {
-      "tankType": "Grey",
-      "pos": {
-        "x": 21,
-        "y": 0,
-        "z": 7
-      },
-      "index": {
-        "x": 22,
-        "y": 0,
-        "z": 6
-      },
-      "rotation": {
-        "x": 0,
-        "y": 180,
-        "z": 0
-      }
-    },
-    {
-      "tankType": "Green",
-      "pos": {
-        "x": 13,
-        "y": 0,
-        "z": -15
-      },
-      "index": {
-        "x": 12,
-        "y": 0,
-        "z": -16
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      }
-    },
-    {
-      "tankType": "Green",
-      "pos": {
-        "x": -19,
-        "y": 0,
-        "z": -17
-      },
-      "index": {
-        "x": -20,
-        "y": 0,
-        "z": -18
-      },
-      "rotation": {
-        "x": 0,
-        "y": 90,
-        "z": 0
-      }
     }
   ],
-  "groundTiles": []
+  "groundTiles": [
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": -16,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": -16,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": -16,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -16,
+        "y": 0
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -16,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -16,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -16,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": -16,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -14,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -14,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -14,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -14,
+        "y": 0
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -14,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -14,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -14,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -14,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -12,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -12,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -12,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -12,
+        "y": 0
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -12,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -12,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -12,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -12,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -10,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -10,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": -10,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -10,
+        "y": 0
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -10,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -10,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -10,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -10,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -8,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -8,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -8,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -8,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -8,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -6,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -6,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": -6,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -6,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": -6,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -4,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -4,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -4,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -4,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": -4,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -2,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -2,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -2,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": -2,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": -2,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 0,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 0,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 0,
+        "y": -6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 0,
+        "y": -4
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 0,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 2,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 2,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 2,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 2,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 2,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 4,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 4,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 4,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 4,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 4,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 6,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 6,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 6,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 6,
+        "y": 0
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 6,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 6,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 6,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 8,
+        "y": 0
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 8,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 8,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 8,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 8,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 10,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 10,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 10,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 10,
+        "y": 0
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 10,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 10,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_Empty",
+      "index": {
+        "x": 10,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 10,
+        "y": 8
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 12,
+        "y": -10
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 12,
+        "y": -8
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 12,
+        "y": -2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 12,
+        "y": 2
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 12,
+        "y": 4
+      }
+    },
+    {
+      "groundType": "Gap_TWall",
+      "index": {
+        "x": 12,
+        "y": 6
+      }
+    },
+    {
+      "groundType": "Gap_Corner",
+      "index": {
+        "x": 12,
+        "y": 8
+      }
+    }
+  ]
 }

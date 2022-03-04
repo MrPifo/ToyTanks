@@ -13,6 +13,8 @@ public class SaveSlotUI : UIScaleAnimation {
 	public TMP_Text score;
 	public TMP_Text lives;
 	public TMP_Text difficulty;
+	public RectTransform deleteInfo;
+	public TMP_Text deleteInfoText;
 	public Canvas confirmCanvas;
 	public CanvasGroup confirmGroup;
 	public Button confirmButton;
@@ -25,6 +27,7 @@ public class SaveSlotUI : UIScaleAnimation {
 
 	private void Awake() {
 		bColor = background.color;
+		deleteInfo.localScale = new Vector3(1f, 0f, 1f);
 		CloseConfirmBox();
 	}
 
@@ -55,7 +58,7 @@ public class SaveSlotUI : UIScaleAnimation {
 	}
 
 	public void DisplayEmpty() {
-		difficulty.SetText("New Game");
+		difficulty.SetText("Empty");
 		time.SetText("");
 		score.SetText("");
 		lives.SetText("");
@@ -78,16 +81,14 @@ public class SaveSlotUI : UIScaleAnimation {
 		background.color = Color.Lerp(bColor, Color.red, holdTime.Remap(0f, 2f, 0f, 1f));
 	}
 
-	public override void MouseEnter() {
-		if(deletePlaying == false) {
-			base.MouseEnter();
+	public void HoverEnter() {
+		if(GameSaver.GetCampaign((byte)slotNumber) != null) {
+			deleteInfo.DOScaleY(1f, 0.2f);
 		}
 	}
 
-	public override void MouseExit() {
-		if(deletePlaying == false) {
-			base.MouseExit();
-		}
+	public void HoverExit() {
+		deleteInfo.DOScaleY(0f, 0);
 	}
 
 	public void MouseClick() {
@@ -122,9 +123,9 @@ public class SaveSlotUI : UIScaleAnimation {
 	}
 
 	public void DeleteSaveGame() {
-		OpenConfirmBox();
-		confirmButton.onClick.RemoveAllListeners();
-		confirmButton.onClick.AddListener(() => {
+		SimpleModalWindow.Create(false).SetHeader("Delete campaign?")
+		.SetBody("All progress on this campaign slot will be wiped. \n Global progression will not be affected.")
+		.AddButton("Delete", () => {
 			deletePlaying = true;
 			transform.DOScale(1.3f, 0.2f).OnComplete(() => {
 				transform.DOScale(1f, 0.2f).OnComplete(() => {
@@ -135,6 +136,7 @@ public class SaveSlotUI : UIScaleAnimation {
 			MenuManager.Instance.DeleteCampaign(slotNumber);
 			MenuManager.Instance.RenderSaveSlots();
 			CloseConfirmBox();
-		});
+		}, ModalButtonType.Danger)
+		.AddButton("Cancel", () => { }, ModalButtonType.Normal).Show();
 	}
 }
