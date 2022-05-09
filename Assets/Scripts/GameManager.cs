@@ -82,7 +82,7 @@ public class GameManager : Singleton<MonoBehaviour> {
 		ShowCursor();
 	}
 
-	public static void CopyCamera() {
+	/*public static void CopyCamera() {
 		var mainCam = Camera.main;
 		var thisCam = GameObject.FindGameObjectWithTag("LoadingScreenCamera").GetComponent<Camera>();
 
@@ -91,7 +91,7 @@ public class GameManager : Singleton<MonoBehaviour> {
 		thisCam.orthographicSize = mainCam.orthographicSize;
 		thisCam.nearClipPlane = mainCam.nearClipPlane;
 		thisCam.farClipPlane = mainCam.farClipPlane;
-	}
+	}*/
 
 	public static void StartLevel(ulong levelId) {
 		if(isLoading == false) {
@@ -206,6 +206,7 @@ public class GameManager : Singleton<MonoBehaviour> {
 		await levelManager.LoadAndBuildMap(CurrentLevel, totalLoadingFadeDuration);
 		#endregion
 
+		LevelGround.SetTheme(CurrentLevel.theme);
 		await transitionScreen.FadeOutBanner(bannerFadeDuration);
 		PrefabManager.DefaultSceneSpawn = "Level";
 		isLoading = false;
@@ -216,14 +217,14 @@ public class GameManager : Singleton<MonoBehaviour> {
 
 		switch(CurrentMode) {
 			case GameMode.Campaign:
-				await levelManager.StartGame();
+				levelManager.StartGame();
 				break;
 			case GameMode.LevelOnly:
-				await levelManager.StartGame();
+				levelManager.StartGame();
 				break;
 			case GameMode.Editor:
 				LevelManager.Editor.StartLevelEditor();
-				LevelManager.Editor.LoadUserLevel(CurrentLevel);
+				await LevelManager.Editor.LoadOfficialLevel(CurrentLevel);
 				break;
 		}
 	}

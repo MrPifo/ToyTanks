@@ -18,6 +18,7 @@ public class GameCamera : Singleton<GameCamera> {
 	public float focusZoomSmoothSpeed = 0.5f;
 	public float minOrthographicSize = 9;
 	public float maxOrthographicSize = 19;
+	public GridSizes overviewGrid;
 
 	// Debug
 	bool moveUp;
@@ -29,8 +30,16 @@ public class GameCamera : Singleton<GameCamera> {
 
 	public float MaxOrthoSize => preferredOrthographicSize < maxOrthographicSize ? preferredOrthographicSize : maxOrthographicSize;
 	public CameraShaker Shaker { get; set; }
-	public Camera Camera { get; set; }
-	public PlayerInput Player { get; set; }
+	private Camera _cam;
+	public Camera Camera {
+		get {
+			if(_cam == null) {
+				_cam = GetComponent<Camera>();
+			}
+			return _cam;
+		}
+	}
+	public PlayerTank Player { get; set; }
 	public float OrthoSize { get; set; }
 	public MenuCameraSettings camSettings = new MenuCameraSettings() {
 		pos = new Vector3(-1, 30, -32),
@@ -46,7 +55,6 @@ public class GameCamera : Singleton<GameCamera> {
 
 	protected override void Awake() {
 		base.Awake();
-		Camera = GetComponent<Camera>();
 		Shaker = new GameObject("Camera Holder").AddComponent<CameraShaker>();
 		Shaker.SetCameraTransform(Shaker.transform);
 		transform.SetParent(Shaker.transform);
@@ -126,11 +134,11 @@ public class GameCamera : Singleton<GameCamera> {
 				if(t.HasBeenDestroyed == false) {
 					avg += new Vector3(t.Pos.x, 0, t.Pos.z);
 					zoom -= t.Pos;
-					ortho += Vector3.Distance(t.Pos, FindObjectOfType<PlayerInput>().Pos);
+					ortho += Vector3.Distance(t.Pos, FindObjectOfType<PlayerTank>().Pos);
 					active++;
 				}
 			}
-			Vector3 playerPos = FindObjectOfType<PlayerInput>().Pos;
+			Vector3 playerPos = FindObjectOfType<PlayerTank>().Pos;
 			playerPos.y = 0;
 			avg += playerPos;
 			avg /= active;
@@ -148,7 +156,7 @@ public class GameCamera : Singleton<GameCamera> {
 			}
 			Camera.orthographicSize = Mathf.Lerp(Camera.orthographicSize, ortho, Time.deltaTime * focusZoomSmoothSpeed);
 		} else {
-			Player = FindObjectOfType<PlayerInput>();
+			Player = FindObjectOfType<PlayerTank>();
 		}
 	}
 
@@ -178,23 +186,27 @@ public class GameCamera : Singleton<GameCamera> {
 		initPos = settings.pos;
 	}*/
 
-	public void ChangeState(GameCamState state) {
+	public void ChangeState(GameCamState state, GridSizes size = GridSizes.Size_9x6) {
 		cameraState = state;
 		switch(state) {
 			case GameCamState.Free:
 				break;
 			case GameCamState.Overview:
+				overviewGrid = size;
 				Overview();
 				break;
 			case GameCamState.Focus:
-				preferredOrthographicSize = LevelManager.GetOrthographicSize(LevelManager.GridSize);
 				FollowPlayer();
 				break;
 		}
-		if(GraphicSettings.PerformanceMode) {
-			tiltShitCamera.gameObject.SetActive(false);
-		} else {
-			tiltShitCamera.gameObject.SetActive(true);
+		preferredOrthographicSize = LevelManager.GetOrthographicSize(overviewGrid);
+
+		if(tiltShitCamera != null) {
+			if(GraphicSettings.PerformanceMode) {
+				tiltShitCamera.gameObject.SetActive(false);
+			} else {
+				tiltShitCamera.gameObject.SetActive(true);
+			}
 		}
 	}
 
@@ -217,7 +229,7 @@ public class GameCamera : Singleton<GameCamera> {
 	public void PlayConfetti() {
 		confettiLeft.Play();
 		confettiRight.Play();
-		AudioPlayer.Play("ConfettiGun", AudioType.SoundEffect, 0.9f, 1.1f, 3f);
-		AudioPlayer.Play("Clapping", AudioType.SoundEffect, 0.9f, 1.1f, 3f);
+		AudioPlayer.Play(JSAM.Sounds.ConfettiGun, AudioType.SoundEffect, 0.9f, 1.1f, 3f);
+		AudioPlayer.Play(JSAM.Sounds.Clapping, AudioType.SoundEffect, 0.9f, 1.1f, 3f);
 	}
 }

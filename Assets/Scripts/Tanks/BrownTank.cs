@@ -1,27 +1,27 @@
+using Cysharp.Threading.Tasks;
 using SimpleMan.Extensions;
-using Sperlich.FSM;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public class BrownTank : TankAI {
 
 	public override void InitializeTank() {
 		base.InitializeTank();
-		ProcessState(TankState.Attack);
+
+		// Start tank with reload status
+		disableShooting = true;
+		this.Delay(reloadDuration, () => disableShooting = false);
+		Attack().Forget();
 	}
 
-	protected override IEnumerator IAttack() {
+	async UniTaskVoid Attack() {
 		while(IsPlayReady) {
+			SetAiming(AimingMode.RandomAim);
 			if(HasSightContactToPlayer) {
-				AimAtPlayer();
-				if(CanShoot && IsFacingTarget(Player.transform) && RandomShootChance()) {
+				SetAiming(AimingMode.AimAtPlayerOnSight);
+				if(CanShoot && IsFacingTarget(Target.Pos) && RequestAttack(2f)) {
 					ShootBullet();
-					break;
 				}
 			}
-			yield return IPauseTank();
+			await CheckPause();
 		}
-		GoToNextState(TankState.Attack);
 	}
 }

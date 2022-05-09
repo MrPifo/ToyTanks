@@ -26,7 +26,6 @@ public static class GameCommands {
 							theme = WorldTheme.Woody,
 							groundTiles = new List<LevelData.GroundTileData>()
 						};
-						AssetLoader.LevelAssets = null;
 						editor.loadedLevelId = (ulong)args[0].Int;
 						editor.SaveAsOfficialLevel();
 						AssetDatabase.Refresh();
@@ -36,7 +35,7 @@ public static class GameCommands {
 					}
 				} else if(args.Length == 2) {
 					try {
-						editor.LoadOfficialLevel((ulong)args[1].Int);
+						editor.LoadOfficialLevel(AssetLoader.GetOfficialLevel((ulong)args[1].Int));
 						editor.LevelData = new LevelData() {
 							levelId = (ulong)args[0].Int,
 							levelName = "",
@@ -75,8 +74,7 @@ public static class GameCommands {
 				throw new System.Exception();
 			}
 		} catch (System.Exception e) {
-			Terminal.Log(TerminalLogType.Error, "Failed to load level.");
-			Terminal.Log(TerminalLogType.Error, e.StackTrace);
+			Logger.LogError(e, "Failed to load level.");
 		}
 	}
 
@@ -99,22 +97,93 @@ public static class GameCommands {
 			Terminal.Log(TerminalLogType.Error, "Failed to delete level.");
 		}
 	}
+
+	[RegisterCommand(Help = "Patch Ground Together")]
+	public static void PatchGround(CommandArg[] args) {
+		try {
+			LevelGround.PatchTiles();
+			Terminal.Log("Ground has been patched.");
+		} catch {
+			Terminal.Log(TerminalLogType.Error, "Failed to patch ground.");
+		}
+	}
 #endif
+
+	[RegisterCommand(Help = "Unlock a Body/Head part.", Hint = "UnlockPart [Body/Head] [id]")]
+	public static void UnlockPart(CommandArg[] args) {
+		try {
+			if (args != null && args.Length > 1) {
+				if(args[0].String.ToLower() == "body") {
+					GameSaver.UnlockPart(TankPartAsset.TankPartType.Body, args[1].Int);
+				} else if(args[0].String.ToLower() == "head") {
+					GameSaver.UnlockPart(TankPartAsset.TankPartType.Head, args[1].Int);
+				} else {
+					throw new System.Exception("TankPart " + args[0].String + " not found.");
+				}
+			}
+		} catch {
+			Terminal.Log(TerminalLogType.Error, "Failed to unlock part.");
+		}
+	}
+
+	[RegisterCommand(Help = "Unlock an ability", Hint = "UnlockAbility [1]")]
+	public static void UnlockAbility(CommandArg[] args) {
+		try {
+			if (args != null && args.Length > 0) {
+				if (args[0].Int < System.Enum.GetValues(typeof(CombatAbility)).Length - 1) {
+					GameSaver.UnlockAbility((CombatAbility)args[0].Int);
+				}
+			}
+		} catch {
+			Terminal.Log(TerminalLogType.Error, "Failed to unlock ability.");
+		}
+	}
+
+	[RegisterCommand(Help = "Unlocks all available abilities.")]
+	public static void UnlockAllAbilities(CommandArg[] args) {
+		try {
+			foreach (var ab in System.Enum.GetValues(typeof(CombatAbility))) {
+				GameSaver.UnlockAbility((CombatAbility)ab);
+			}
+		} catch {
+			Terminal.Log(TerminalLogType.Error, "Failed to unlock all abilities.");
+		}
+	}
+
+	[RegisterCommand(Help = "Unlock all available Body/Head parts.")]
+	public static void UnlockAllPart(CommandArg[] args) {
+		try {
+			foreach(var p in AssetLoader.GetParts(TankPartAsset.TankPartType.Body)) {
+				GameSaver.UnlockPart(TankPartAsset.TankPartType.Body, p.id);
+			}
+			foreach (var p in AssetLoader.GetParts(TankPartAsset.TankPartType.Head)) {
+				GameSaver.UnlockPart(TankPartAsset.TankPartType.Head, p.id);
+			}
+		} catch {
+			Terminal.Log(TerminalLogType.Error, "Failed to unlock all Body/Head parts.");
+		}
+	}
+
+	[RegisterCommand(Help = "Switch Game Controls", Hint = "Desktop = 0, DoubleDPad = 1, DpadAndTap = 2, DoubleDPadAimAssistant = 3")]
+	public static void ChangeControls(CommandArg[] args) {
+		try {
+			if(args != null && args.Length > 0) {
+				PlayerInputManager.SetPlayerControlScheme((PlayerControlSchemes)args[0].Int);
+				Terminal.Log("Game controls have been changed to " + Game.PlayerControlScheme);
+			}
+		} catch {
+			Terminal.Log(TerminalLogType.Error, "Failed to change game controls.");
+		}
+	}
 
 	[RegisterCommand(Help = "Show Tank Debug Visual (Pathfinding, Grid, Radius etc.)")]
 	public static void ShowTankDebugs(CommandArg[] args) {
-		foreach(var tank in Object.FindObjectsOfType<TankAI>()) {
-			tank.showDebug = true;
-		}
-		Game.showTankDebugs = true;
+		AIManager.showTankDebugs = true;
 	}
 
 	[RegisterCommand(Help = "")]
 	public static void HideTankDebugs(CommandArg[] args) {
-		foreach(var tank in Object.FindObjectsOfType<TankAI>()) {
-			tank.showDebug = false;
-		}
-		Game.showTankDebugs = false;
+		AIManager.showTankDebugs = false;
 	}
 
 	[RegisterCommand(Help = "Clears the save file. Carefully to use!!!")]
@@ -141,7 +210,7 @@ public static class GameCommands {
 
 	[RegisterCommand(Help = "Turn On/Off invincible mode")]
 	public static void God(CommandArg[] args) {
-		var player = Object.FindObjectOfType<PlayerInput>();
+		var player = Object.FindObjectOfType<PlayerTank>();
 		try {
 			if(player != null) {
 				if(player.makeInvincible) {
@@ -163,7 +232,7 @@ public static class GameCommands {
 
 	[RegisterCommand(Help = "Kill yourself")]
 	public static void Kill(CommandArg[] args) {
-		var player = Object.FindObjectOfType<PlayerInput>();
+		var player = Object.FindObjectOfType<PlayerTank>();
 		try {
 			if(player != null) {
 				player.TakeDamage(null, true);
@@ -177,7 +246,7 @@ public static class GameCommands {
 
 	[RegisterCommand(Help = "Toggle if player can be controlled")]
 	public static void ForceControls(CommandArg[] args) {
-		var player = Object.FindObjectOfType<PlayerInput>();
+		var player = Object.FindObjectOfType<PlayerTank>();
 		try {
 			if(player != null) {
 				if(player.IgnoreDisables) {
@@ -205,7 +274,7 @@ public static class GameCommands {
 					editor.SaveAsOfficialLevel();
 					Terminal.Log("Campaign level has been saved.");
 				} else {
-					editor.SaveCustomLevel();
+					editor.SaveAsOfficialLevel();
 					Terminal.Log("Level has been saved.");
 				}
 			} else {
@@ -217,12 +286,32 @@ public static class GameCommands {
 	}
 #endif
 
+	[RegisterCommand(Help = "Changes the difficulty of tanks")]
+	public static void SwitchDifficulty(CommandArg[] args) {
+		try {
+			if(args.Length > 0) {
+				CampaignV1.Difficulty diff = CampaignV1.Difficulty.Medium;
+				foreach(var e in System.Enum.GetValues(typeof(CampaignV1.Difficulty))) {
+					if(args[0].String.ToLower() == e.ToString().ToLower()) {
+						diff = (CampaignV1.Difficulty)e;
+					}
+				}
+				foreach(var t in Object.FindObjectsOfType<TankBase>()) {
+					t.SetDifficulty(diff);
+				}
+				Terminal.Log("Difficulty has been set to " + diff);
+			}
+		} catch {
+			Terminal.Log(TerminalLogType.Error, "You need to be in a level to skip.");
+		}
+	}
+
 	[RegisterCommand(Help = "Skips or Ends the current level")]
 	public static void Skip(CommandArg[] args) {
 		var level = Object.FindObjectOfType<LevelManager>();
 		try {
 			if(level != null) {
-				Terminal.Instance.StartCoroutine(level.GameOver());
+				LevelManager.Instance?.GameOver();
 			} else {
 				throw new System.Exception();
 			}
@@ -233,11 +322,29 @@ public static class GameCommands {
 
 	[RegisterCommand(Help = "Respawns the player")]
 	public static void Respawn(CommandArg[] args) {
-		var player = Object.FindObjectOfType<PlayerInput>();
+		var player = Object.FindObjectOfType<PlayerTank>();
 		try {
 			if(player != null) {
 				player.ResetState();
-				Object.FindObjectOfType<PlayerInput>().InitializeTank();
+				Object.FindObjectOfType<PlayerTank>().InitializeTank();
+			} else {
+				throw new System.Exception();
+			}
+		} catch {
+			Terminal.Log(TerminalLogType.Error, "No active player found.");
+		}
+	}
+
+	[RegisterCommand(Help = "Respawns all AIS")]
+	public static void ResetAI(CommandArg[] args) {
+		var ais = Object.FindObjectsOfType<TankAI>();
+		try {
+			if (ais.Length > 0) {
+				foreach(var ai in ais) {
+					ai.ResetState();
+					(ai.TempNewTank as TankAI).EnableAI();
+					ai.TempNewTank.InitializeTank();
+				}
 			} else {
 				throw new System.Exception();
 			}
@@ -249,7 +356,7 @@ public static class GameCommands {
 	[RegisterCommand(Help = "Pauses the game")]
 	public static void Pause(CommandArg[] args) {
 		Game.GamePaused = true;
-		var player = Object.FindObjectOfType<PlayerInput>();
+		var player = Object.FindObjectOfType<PlayerTank>();
 		try {
 			if(player != null) {
 				player.DisableControls();
@@ -264,7 +371,7 @@ public static class GameCommands {
 	[RegisterCommand(Help = "Resumes the game")]
 	public static void Resume(CommandArg[] args) {
 		Game.GamePaused = false;
-		var player = Object.FindObjectOfType<PlayerInput>();
+		var player = Object.FindObjectOfType<PlayerTank>();
 		try {
 			if(player != null) {
 				player.EnableControls();

@@ -1,73 +1,61 @@
-using SimpleMan.Extensions;
-using Sperlich.Debug.Draw;
-using Sperlich.FSM;
-using System.Collections;
-using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class YellowTank : TankAI {
 
-	public int burstAmount = 3;
-	public float moveDuration = 2;
-	public float burstCooldown;
-
-	private new void LateUpdate() {
-		base.LateUpdate();
-		DrawDebug();
-	}
+	[Header("Yellow")]
+	public float moveRadius;
+	public FloatGrade burstAmount;
+	public FloatGrade burstCooldown;
+	public float idleTime;
 
 	public override void InitializeTank() {
 		base.InitializeTank();
-		ProcessState(TankState.Move);
+		Patrol().Forget();
 	}
 
-	protected override IEnumerator IAttack() {
+	async UniTaskVoid Attack() {
+		if (IsPlayReady == false) return;
+		stateMachine.Push(TankState.Attack);
+		if(await FindPathToPlayerAsync() == false) {
+			Patrol().Forget();
+			return;
+        }
+		idleTime = 0;
+		SetMovement(MovementType.MovePath);
+		SetAiming(AimingMode.AimAtPlayer);
+		await CheckPause();
+		await UniTask.WaitUntil(() => IsAimingAtPlayer);
 		int shots = 0;
-		if(HasSightContactToPlayer) {
-			while(shots < burstAmount && HasSightContactToPlayer && IsPlayReady) {
-				while(IsAimingAtPlayer == false && IsPlayReady) {
-					AimAtPlayer();
-					yield return null;
-				}
-				ShootBullet();
-				shots++;
-				yield return new WaitForSeconds(reloadDuration + randomReloadDuration);
-				yield return IPauseTank();
-			}
-
+		keepMoving = true;
+		while (shots < burstAmount && HasSightContactToPlayer) {
+			await UniTask.WaitUntil(() => CanShoot);
+			ShootBullet();
+			shots++;
+			await CheckPause();
 		}
-		ProcessState(TankState.Move);
+		Patrol().Forget();
 	}
 
-	protected override IEnumerator IMove() {
-		float time = 0;
-		if(RandomPath(Pos, playerDetectRadius, playerDetectRadius * 0.75f)) {
-			MoveMode.Push(MovementType.MoveSmart);
-			HeadMode.Push(TankHeadMode.AimAtPlayerOnSight);
-			while(IsPlayReady && HasReachedDestination == false) {
-				if(time > burstCooldown) {
-					if(HasSightContactToPlayer) {
-						break;
-					}
-				}
-				yield return IPauseTank();
-				time += GetTime;
+	async UniTaskVoid Patrol() {
+		if (IsPlayReady == false) return;
+		stateMachine.Push(TankState.Patrol);
+		SetMovement(MovementType.MovePath);
+		SetAiming(AimingMode.KeepRotation);
+		if (await RandomPathAsync(Pos, moveRadius, moveRadius / 2f, false, true)) {
+			while (FinalDestInReach == false) {
+				idleTime += Time.fixedDeltaTime;
+				if(HasSightContactToPlayer && idleTime > burstCooldown && RequestAttack(2f)) {
+					Attack().Forget();
+					return;
+                }
+				await CheckPause();
 			}
 		}
-		yield return IPauseTank();
-
-		if(HasSightContactToPlayer) {
-			ProcessState(TankState.Attack);
+		if (HasSightContactToPlayer && idleTime > burstCooldown && RequestAttack(2f)) {
+			Attack().Forget();
 		} else {
-			ProcessState(TankState.Move);
-		}
-	}
-
-	protected override void DrawDebug() {
-		if(showDebug) {
-			base.DrawDebug();
-			Draw.Cube(currentDestination, Color.yellow);
-			Draw.Cube(nextMoveTarget, Color.green);
+			Patrol().Forget();
 		}
 	}
 }

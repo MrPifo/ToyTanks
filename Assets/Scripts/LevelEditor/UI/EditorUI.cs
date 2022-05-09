@@ -52,7 +52,7 @@ namespace ToyTanks.LevelEditor.UI {
                 editor.SaveAsOfficialLevel();
 #endif
             } else {
-                editor.SaveCustomLevel();
+                //editor.SaveCustomLevel();
 			}
             saveButton.interactable = false;
             saveButton.transform.GetChild(0).DOLocalRotate(new Vector3(0, 0, 360), 1f, RotateMode.FastBeyond360).SetEase(Ease.OutBounce).OnComplete(() => {
@@ -73,6 +73,7 @@ namespace ToyTanks.LevelEditor.UI {
                 case LevelEditor.BuildMode.TerraformDown:
                 case LevelEditor.BuildMode.TerraformUp:
                 case LevelEditor.BuildMode.TerraBase:
+                case LevelEditor.BuildMode.PlaceFlora:
                     editor.buildMode = LevelEditor.BuildMode.Destroy;
                     break;
 				case LevelEditor.BuildMode.Destroy:
@@ -251,8 +252,31 @@ namespace ToyTanks.LevelEditor.UI {
                         assetItems[GetExtraBlockEnumOrder(editor.selectedExtraBlock)].Select();
                     }
                     break;
-				case LevelEditor.AssetView.Tanks:
-					foreach(var tank in AssetLoader.TankAssets) {
+                case LevelEditor.AssetView.Flora:
+                    foreach (var block in AssetLoader.GetFloraAssets()) {
+                        var asset = Instantiate(selectItem.gameObject).GetComponent<SelectItem>();
+                        asset.transform.SetParent(assetScrollRect.content.transform);
+                        asset.SetSprite(block.preview);
+                        asset.Deselect();
+                        asset.SetOnClick(() => {
+                            if (asset.isSelected == false) {
+                                editor.buildMode = LevelEditor.BuildMode.PlaceFlora;
+                                editor.selectedFloraBlock = block.block;
+                                RenderAssets();
+                            } else {
+                                editor.buildMode = LevelEditor.BuildMode.View;
+                                asset.Deselect();
+                            }
+                            UpdateActionButton();
+                        });
+                        assetItems.Add(asset);
+                    }
+                    if (editor.buildMode == LevelEditor.BuildMode.PlaceFlora) {
+                        assetItems[GetFloraBlockEnumOrder(editor.selectedFloraBlock)].Select();
+                    }
+                    break;
+                case LevelEditor.AssetView.Tanks:
+					foreach(var tank in AssetLoader.TankAssets.Where(t => t.notSelectable == false)) {
 						var asset = Instantiate(selectItem.gameObject).GetComponent<SelectItem>();
 						asset.transform.SetParent(assetScrollRect.content.transform);
 						asset.SetSprite(tank.preview);
@@ -275,7 +299,7 @@ namespace ToyTanks.LevelEditor.UI {
                     }
 					break;
                 case LevelEditor.AssetView.Terrain:
-                    foreach(var tile in AssetLoader.GroundTileAssets.Where(t => t.notSelectable == false)) {
+                    foreach(var tile in AssetLoader.GroundTiles.Where(t => t.notSelectable == false)) {
                         var asset = Instantiate(selectItem.gameObject).GetComponent<SelectItem>();
                         asset.transform.SetParent(assetScrollRect.content.transform);
                         asset.value = (int)tile.type;   // Not required but makes debugging easier
@@ -346,6 +370,15 @@ namespace ToyTanks.LevelEditor.UI {
             var values = System.Enum.GetValues(typeof(ExtraBlocks));
             for(int i = 0; i < values.Length; i++) {
                 if((ExtraBlocks)values.GetValue(i) == type) {
+                    return i;
+                }
+            }
+            return 0;
+        }
+        public int GetFloraBlockEnumOrder(FloraBlocks type) {
+            var values = System.Enum.GetValues(typeof(FloraBlocks));
+            for (int i = 0; i < values.Length; i++) {
+                if ((FloraBlocks)values.GetValue(i) == type) {
                     return i;
                 }
             }

@@ -11,7 +11,10 @@ public class GroundTileExtra : GameEntity {
 
 
     public virtual void SetTheme(WorldTheme theme) {
-        meshRender.material = extraPrefabThemes.Find(t => t.theme == theme).material;
+        var t = extraPrefabThemes.Find(t => t.theme == theme);
+        if(t != null) {
+            meshRender.material = t.material;
+        }
     }
 
     [System.Serializable]

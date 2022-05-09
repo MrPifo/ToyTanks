@@ -15,7 +15,15 @@ public class LevelSelector : MonoBehaviour {
 	public GameObject previousButton;
 	public GameObject nextButton;
 	public new MenuCamera camera;
-	public Player Player;
+	private Player _player;
+	public Player Player {
+		get {
+			if(_player == null) {
+				_player = ReInput.players.GetPlayer(0);
+			}
+			return _player;
+		}
+	}
 	MenuCameraSettings startMenuCamSettings = new MenuCameraSettings() {
 		pos = new Vector3(0, 30, -63),
 		rot = new Vector3(25, 0, 0),
@@ -24,11 +32,10 @@ public class LevelSelector : MonoBehaviour {
 
 	private void Awake() {
 		menus = FindObjectsOfType<MenuWorldUI>().ToList();
-		Player = ReInput.players.GetPlayer(0);
 	}
 
 	private void Update() {
-		if(Player.GetButton("LeftMouse") && activeWorld != null) {
+		if(Game.ApplicationInitialized && Player.GetButton("LeftMouse") && activeWorld != null) {
 			Vector3 input = new Vector3(-Player.GetAxis("AimX"), 0, 0);
 			Vector3 newPos = Vector3.Lerp(camera.transform.position, camera.transform.position + input, cameraMoveSpeed * Time.deltaTime);
 			if(newPos.x < 80) {
@@ -53,6 +60,10 @@ public class LevelSelector : MonoBehaviour {
 	public void ExitWorldView() {
 		ApplyCameraSettings(startMenuCamSettings, 0.5f);
 		activeWorld = null;
+		this.Delay(0.2f, () => {
+			MenuManager.Instance.difficultyBlurCamera.gameObject.Show();
+			MenuManager.Instance.sidebarBlurCamera.gameObject.Show();
+		});
 	}
 
 	public void NextWorld() {

@@ -1,45 +1,46 @@
 using CommandTerminal;
+using SimpleMan.Extensions;
 using Sperlich.PrefabManager;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DebugPlay : MonoBehaviour {
 
-	public bool showDebug;
-	public LayerMask mask;
+	public CampaignV1.Difficulty difficulty;
 	public GridSizes gridSize;
-	public static bool isDebug;
+	public LayerMask mask;
+	bool ContainsBoss => FindObjectOfType<BossAI>() != null;
 
-	private void Start() {
-		Game.Initialize();
-		PrefabManager.Initialize("Debug");
-		GameManager.CurrentLevel = new LevelData() { gridSize = GridSizes.Size_15x12 };
-		gridSize = GridSizes.Size_15x12;
-		Game.showTankDebugs = showDebug;
-		Game.IsGameRunning = true;
+	async void Start() {
 		Game.IsGameRunningDebug = true;
+		await Game.Initialize();
+		PrefabManager.Initialize("Debug");
+		GameManager.CurrentLevel = new LevelData() { gridSize = gridSize };
+		Game.IsGameRunning = true;
 		Game.IsGamePlaying = true;
+		FindObjectOfType<PlayerTank>().ApplyCustomizations(GameSaver.SaveInstance.tankPreset);
 		Terminal.InitializeCommandConsole();
 
-		isDebug = true;
 		GameManager.HideCursor();
 		PlayerInputManager.ShowControls();
-		FindObjectOfType<GameCamera>().camSettings.orthograpicSize = 19;
-		FindObjectOfType<GameCamera>().ChangeState(GameCamera.GameCamState.Focus);
-		Game.CreateAIGrid(gridSize, mask);
-		//LevelManager.SetLevelBoundaryWalls(LevelManager.GetGridBoundary(Game.ActiveGrid.gridSize));
+		FindObjectOfType<GameCamera>().ChangeState(GameCamera.GameCamState.Overview, gridSize);
+		AIManager.CreateAIGrid(gridSize, mask);
+		AIManager.Initialize();
 
 		foreach(var t in FindObjectsOfType<TankBase>()) {
-
 			if(t is TankAI) {
 				var ai = t as TankAI;
 				ai.EnableAI();
 			}
-			if(t is PlayerInput) {
-				LevelManager.player = t as PlayerInput;
-			}
 			t.InitializeTank();
+			t.SetDifficulty(difficulty);
+		}
+
+		if(ContainsBoss) {
+			BossUI.ResetBossBar();
+			foreach(BossAI boss in FindObjectsOfType<BossAI>()) {
+				BossUI.RegisterBoss(boss);
+			}
+			BossUI.InitAnimateBossBar();
 		}
 	}
 }

@@ -14,5 +14,10 @@ public static class GameMasks {
 	public static int BulletTraverse => 16;
 	public static int IgnoreSeeThrough => 17;
 	public static int Block => 18;
-	public static int CrossHair => 18;
+	public static int CrossHair => 19;
+
+	public static int Hole => 22;
+	public static int Cutter => 23;
+	public static int BulletBlocker => 24;
+	public static int Foliage => 25;
 }

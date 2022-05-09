@@ -1,19 +1,21 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Sperlich.Debug.Draw;
-using System.Collections;
 using UnityEngine;
 
 public class SnowPlower : TankAI, IHittable, IDamageEffector {
 
 	[Header("Charge")]
-	public byte chargeSpeed = 16;
-	public byte minMoveDuration = 3;
+	public float moveRadius = 15;
+	public FloatGrade chargeSpeed;
+	public FloatGrade chargeDuration;
+	public FloatGrade minMoveDuration;
 	public int snowEmissionRate = 500;
 	public float snowChargeSoundSpeed = 0.1f;
 	public ParticleSystem snowParticles;
 	public ParticleSystem snowParticles2;
 	private LayerMask chargePathMask = LayerMaskExtension.Create(GameMasks.Destructable, GameMasks.LevelBoundary, GameMasks.Block, GameMasks.Player, GameMasks.Bot, GameMasks.BulletTraverse);
-	private byte normalMoveSpeed;
+	private LayerMask chargePredictMask = LayerMaskExtension.Create(GameMasks.Destructable, GameMasks.LevelBoundary, GameMasks.Block, GameMasks.BulletTraverse);
+	private float normalMoveSpeed;
 	public HitTrigger plowTrigger;
 
 	public bool fireFromPlayer => false;
@@ -22,35 +24,35 @@ public class SnowPlower : TankAI, IHittable, IDamageEffector {
 
 	protected override void Awake() {
 		base.Awake();
-		AvoidcanceLayers = LayerMaskExtension.Create(GameMasks.Block, GameMasks.Destructable);
+		AntiTankLayer = LayerMaskExtension.Create(GameMasks.Block, GameMasks.Destructable);
 	}
 
 	public override void InitializeTank() {
 		base.InitializeTank();
 		normalMoveSpeed = moveSpeed;
 		plowTrigger.triggerLayer = chargePathMask;
-		ProcessState(TankState.Move);
+		Patrol();
 	}
 
-	protected override IEnumerator ICharge() {
+	async UniTaskVoid Charge() {
+		//if (IsPlayReady == false) return;
 		float isAlignedToPlayer = 0;
 		canMove = false;
-		moveSpeed = chargeSpeed;
+		moveSpeed.Value = chargeSpeed;
 
-		HeadMode.Push(TankHeadMode.RotateWithBody);
+		SetAiming(AimingMode.RotateWithBody);
 		float maxTime = 0;
 		while(isAlignedToPlayer < 0.99f && IsPlayReady && maxTime < 2) {
-			RotateTank((Player.Pos - Pos).normalized);
-			isAlignedToPlayer = Vector3.Dot((Player.Pos - Pos).normalized, transform.forward);
-			yield return IPauseTank();
+			RotateTank((Target.Pos - Pos).normalized);
+			isAlignedToPlayer = Vector3.Dot((Target.Pos - Pos).normalized, transform.forward);
 			maxTime += GetTime;
+			await CheckPause();
 		}
-		AudioPlayer.Play("SnowChargeStart", AudioType.SoundEffect, 0.8f, 1.2f, 0.4f);
-		yield return new WaitForSeconds(0.2f);
+		AudioPlayer.Play(JSAM.Sounds.SnowChargeStart, AudioType.SoundEffect, 0.8f, 1.2f, 0.4f);
+		await UniTask.Delay(200);
 		Vector3 chargeDirection = transform.forward;
 		plowTrigger.GetComponent<Collider>().enabled = true;
 		MuteTrackSound = true;
-		disableAvoidanceSystem = true;
 
 		canMove = true;
 		bool isCharging = true;
@@ -69,46 +71,53 @@ public class SnowPlower : TankAI, IHittable, IDamageEffector {
 		snowEmission2.rateOverTimeMultiplier = 100;
 		snowParticles.Play();
 		snowParticles2.Play();
-		float time = 0;
+		float soundTime = 0;
+		float chargeTime = 0;
+		bool timeInterrupted = false;
 
 		// Movement is managed manually
-		MoveMode.Push(MovementType.Move);
-		disableDirectionLeader = true;
+		SetMovement(MovementType.Move);
 
 		while(isCharging && IsPlayReady) {
-			yield return IPauseTank();
+			await CheckPause();
 			Move(chargeDirection);
-			time += GetTime;
-			if(time > snowChargeSoundSpeed) {
-				AudioPlayer.Play("SnowRowl", AudioType.SoundEffect, 0.8f, 1.2f, 0.5f);
-				time = 0;
+			soundTime += GetTime;
+			chargeTime += GetTime;
+			if(soundTime > snowChargeSoundSpeed) {
+				AudioPlayer.Play(JSAM.Sounds.SnowRowl, AudioType.SoundEffect, 0.8f, 1.2f, 0.5f);
+				soundTime = 0;
 			}
+			if(chargeTime > chargeDuration) {
+				isCharging = false;
+				timeInterrupted = true;
+				break;
+            }
 		}
-		AudioPlayer.Play("ChargeImpact", AudioType.SoundEffect, 0.8f, 1.2f, 0.8f);
 		snowParticles.Stop();
 		snowParticles2.Stop();
 		plowTrigger.GetComponent<Collider>().enabled = false;
 		MuteTrackSound = false;
-		disableAvoidanceSystem = false;
-		disableDirectionLeader = false;
-
-		canMove = false;
-		moveSpeed = normalMoveSpeed;
+		moveSpeed.Value = normalMoveSpeed;
 
 		// Bump animation
-		float initY = Pos.y;
-		transform.DOMoveX(transform.position.x - chargeDirection.x, 0.2f);
-		transform.DOMoveZ(transform.position.z - chargeDirection.z, 0.2f);
-		var seq = DOTween.Sequence();
-		seq.Append(transform.DOMoveY(initY + 0.5f, 0.1f).SetEase(Ease.Linear));
-		seq.Append(transform.DOMoveY(initY, 0.1f).SetEase(Ease.Linear));
-		seq.Play().onComplete += () => {
-			chargeDirection = Vector3.zero;
-		};
-		GoToNextState(TankState.Move, 1f);
+		if (timeInterrupted == false) {
+			AudioPlayer.Play(JSAM.Sounds.ChargeImpact, AudioType.SoundEffect, 0.8f, 1.2f, 0.8f);
+			canMove = false;
+			float initY = Pos.y;
+			transform.DOMoveX(transform.position.x - chargeDirection.x, 0.2f);
+			transform.DOMoveZ(transform.position.z - chargeDirection.z, 0.2f);
+			var seq = DOTween.Sequence();
+			seq.Append(transform.DOMoveY(initY + 0.5f, 0.1f).SetEase(Ease.Linear));
+			seq.Append(transform.DOMoveY(initY, 0.1f).SetEase(Ease.Linear));
+			seq.Play().onComplete += () => {
+				chargeDirection = Vector3.zero;
+			};
+		}
+		Patrol().Forget();
 	}
 
-	protected override IEnumerator IMove() {
+	async UniTask Patrol() {
+		//if (IsPlayReady == false) return;
 		float time = 0;
 		float soundTime = 0;
 		canMove = true;
@@ -119,12 +128,12 @@ public class SnowPlower : TankAI, IHittable, IDamageEffector {
 		snowParticles.Play();
 		snowParticles2.Play();
 
-		HeadMode.Push(TankHeadMode.AimAtPlayerOnSight);
-		MoveMode.Push(MovementType.MoveSmart);
-		if(RandomPath(Pos, playerDetectRadius, playerDetectRadius * 0.75f)) {
-			while(IsPlayReady) {
+		SetAiming(AimingMode.AimAtPlayerOnSight);
+		if(await RandomPathAsync(Pos, moveRadius, moveRadius * 0.75f)) {
+			SetMovement(MovementType.MovePath);
+			while (IsPlayReady && FinalDestInReach == false) {
 				if(soundTime > snowChargeSoundSpeed) {
-					AudioPlayer.Play("SnowRowl", AudioType.SoundEffect, 0.8f, 1.2f, 0.05f);
+					AudioPlayer.Play(JSAM.Sounds.SnowRowl, AudioType.SoundEffect, 0.8f, 1.2f, 0.05f);
 				}
 
 				if(HasSightContactToPlayer) {
@@ -132,38 +141,19 @@ public class SnowPlower : TankAI, IHittable, IDamageEffector {
 						break;
 					}
 				}
-				if(HasReachedDestination) {
-					break;
-				}
-				yield return IPauseTank();
 				time += Time.deltaTime;
 				soundTime += Time.deltaTime;
+				await CheckPause();
 			}
 		}
-		yield return null;
+		await CheckPause();
 		snowParticles.Stop();
 		snowParticles2.Stop();
 
-		if(HasSightContactToPlayer) {
-			ProcessState(TankState.Charge);
+		if(HasSightContact(Target.Pos, chargePredictMask, 0.5f) && RequestAttack(3f)) {
+			Charge().Forget();
 		} else {
-			ProcessState(TankState.Move);
-		}
-	}
-
-	Vector3 CalculateChargeDirection() {
-		Vector3 chargeDirection = (Player.Pos - Pos).normalized;
-		chargeDirection.y = 0;
-		Physics.Raycast(Pos, chargeDirection, out RaycastHit chargeHit, Mathf.Infinity, chargePathMask);
-		chargeDirection = (chargeHit.point - Pos).normalized;
-		return chargeDirection;
-	}
-
-	protected override void DrawDebug() {
-		if(showDebug) {
-			base.DrawDebug();
-			Draw.Cube(currentDestination, Color.yellow);
-			Draw.Cube(nextMoveTarget, Color.green);
+			Patrol().Forget();
 		}
 	}
 }

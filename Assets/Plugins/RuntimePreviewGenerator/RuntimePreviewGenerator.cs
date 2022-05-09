@@ -82,6 +82,7 @@ public static class RuntimePreviewGenerator
 
 	private static readonly List<Renderer> renderersList = new List<Renderer>( 64 );
 	private static readonly List<int> layersList = new List<int>( 64 );
+	public static List<string> IgnoreGameObjectsWithName;
 
 #if DEBUG_BOUNDS
 	private static Material boundsDebugMaterial;
@@ -469,12 +470,16 @@ public static class RuntimePreviewGenerator
 		bool hasBounds = false;
 		for( int i = 0; i < renderersList.Count; i++ )
 		{
-			if( !renderersList[i].enabled )
+			if( !renderersList[i].enabled || !renderersList[i].gameObject.activeSelf)
 				continue;
 
 			if( shouldIgnoreParticleSystems && renderersList[i] is ParticleSystemRenderer )
 				continue;
 
+
+			if(IgnoreGameObjectsWithName.Contains(renderersList[i].name.ToLower())) {
+				continue;
+			}
 			if( !hasBounds )
 			{
 				bounds = renderersList[i].bounds;

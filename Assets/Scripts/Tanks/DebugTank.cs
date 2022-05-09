@@ -1,62 +1,56 @@
-using SimpleMan.Extensions;
-using Sperlich.FSM;
-using System.Collections;
-using UnityEditor;
-using UnityEngine;
+using Cysharp.Threading.Tasks;
+using System.Threading.Tasks;
 
 public class DebugTank : TankAI {
 
-	public Transform moveTarget;
 
 	public override void InitializeTank() {
 		base.InitializeTank();
-		if(moveTarget == null) {
-			moveTarget = new GameObject().transform;
-			moveTarget.name = "DebugTank_MoveTarget";
-			moveTarget.position = Pos;
-		}
-		ProcessState(TankState.Move);
+		Patrol().Forget();
 	}
 
-	protected override IEnumerator IMove() {
-		FindPath(moveTarget.position);
-		Vector3 startTarget = moveTarget.position;
-		while(IsPlayReady) {
-			//ConsumePath();
-			MoveAlongPath();
-			KeepHeadRot();
-			if(startTarget != moveTarget.position) {
-				break;
+	async UniTaskVoid Attack() {
+		stateMachine.Push(TankState.Attack);
+		if(RemainingPathPercent < 25 && await RandomPathAsync(Pos, 30, 16, true) == false) {
+			Patrol().Forget();
+			return;
+        }
+		enableInaccurateAim = false;
+		SetMovement(MovementType.MovePath);
+		SetAiming(AimingMode.AimAtPlayerOnSight);
+		await CheckPause();
+		await UniTask.WaitForSeconds(reloadDuration + randomReloadDuration);
+		await CheckPause();
+
+		if (HasSightContactToPlayer && RequestAttack(3)) {
+			ShootBullet();
+			Attack().Forget();
+			return;
+		} else {
+			SetAiming(AimingMode.RandomAim);
+			enableInaccurateAim = true;
+			while (HasSightContactToPlayer == false && FinalDestInReach == false) {
+				await CheckPause();
 			}
-			yield return null;
-			while(IsPaused) yield return null;   // Pause AI
+			Patrol().Forget();
 		}
-		GoToNextState();
-	}
+    }
 
-	protected override void DrawDebug() {
-		base.DrawDebug();
-		Game.ActiveGrid.PaintCellAt(currentDestination, Color.yellow);
-		Game.ActiveGrid.PaintCellAt(nextMoveTarget, Color.green);
-	}
+	async UniTaskVoid Patrol() {
+		stateMachine.Push(TankState.Patrol);
+		if(await RandomPathAsync(Pos, 40, 20, true)) {
+			SetMovement(MovementType.MovePath);
+			SetAiming(AimingMode.AimAtPlayerOnSight);
+			enableInaccurateAim = true;
+			while (FinalDestInReach == false) {
+				if (HasSightContactToPlayer) {
+					Attack().Forget();
+					return;
+				}
+				await CheckPause();
+			}
+		}
 
-	public void RefreshPathDebug() {
-		StopAllCoroutines();
-		ProcessState(TankState.Move);
+		Patrol().Forget();
 	}
 }
-#if UNITY_EDITOR
-[CustomEditor(typeof(DebugTank))]
-class LevelEditorEditor : Editor {
-
-	public string levelId;
-
-	public override void OnInspectorGUI() {
-		DrawDefaultInspector();
-		var builder = (DebugTank)target;
-		if(GUILayout.Button("Refresh Path")) {
-			builder.RefreshPathDebug();
-		}
-	}
-}
-#endif

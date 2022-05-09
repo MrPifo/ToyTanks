@@ -2,6 +2,7 @@
 using System.Globalization;
 using UnityEngine;
 using System;
+using Newtonsoft.Json;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -9,18 +10,12 @@ using UnityEditor;
 namespace Sperlich.Types {
 
 	[Serializable]
-	public struct Float3 : System.IEquatable<Float3> {
-		public double x;
-		public double y;
-		public double z;
+	public struct Float3 : IEquatable<Float3> {
+		public float x;
+		public float y;
+		public float z;
 
 		public Float3(float _x, float _y, float _z) {
-			x = _x;
-			y = _y;
-			z = _z;
-		}
-
-		public Float3(double _x, double _y, double _z) {
 			x = _x;
 			y = _y;
 			z = _z;
@@ -32,21 +27,31 @@ namespace Sperlich.Types {
 				y = vector3.y;
 				z = vector3.z;
 			} else {
-				x = Math.Round(vector3.x, round);
-				y = Math.Round(vector3.y, round);
-				z = Math.Round(vector3.z, round);
+				x = (float)Math.Round(vector3.x, round);
+				y = (float)Math.Round(vector3.y, round);
+				z = (float)Math.Round(vector3.z, round);
 			}
 		}
 
+		[JsonIgnore]
 		public Float3 XYZ => new Float3(x, y, z);
+		[JsonIgnore]
 		public Float3 YZY => new Float3(x, z, y);
+		[JsonIgnore]
 		public Float3 YXZ => new Float3(y, x, z);
+		[JsonIgnore]
 		public Float3 YZX => new Float3(y, z, x);
+		[JsonIgnore]
 		public Float3 ZXY => new Float3(z, x, y);
+		[JsonIgnore]
 		public Float3 ZYX => new Float3(z, y, z);
+		[JsonIgnore]
 		public Float2 XY => new Float2((float)x, (float)y);
+		[JsonIgnore]
 		public Float2 XZ => new Float2((float)x, (float)z);
+		[JsonIgnore]
 		public Vector3 Vector3 => new Vector3((float)x, (float)y, (float)z);
+		[JsonIgnore]
 		public Vector2 Vector2 => new Vector2((float)x, (float)y);
 
 		public static implicit operator Float3(Vector2 float2) => new Float3(float2.x, float2.y, 0);

@@ -15,6 +15,7 @@ namespace ToyTanks.LevelEditor {
 		public bool isStatic;
 		public bool isBoss;
 		public bool hasFriendlyFireShield;
+		public bool notSelectable;
 		public Vector3 tankSpawnOffset = new Vector3(0, 0.4f, 0);
 		public static Int3 Size => new Int3(4, 4, 4);
 

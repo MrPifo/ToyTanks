@@ -6,8 +6,6 @@ using System.Linq;
 [Serializable]
 public class SaveV1 : SaveBase {
 
-	public new string SaveGameVersion => "1.0";
-
 	public List<PlayedLevel> PlayedLevels { get; set; } = new List<PlayedLevel>();
 
 	public CampaignV1 CurrentCampaign {
@@ -26,9 +24,16 @@ public class SaveV1 : SaveBase {
 	}
 	[NonSerialized]
 	public byte currentSaveSlot = 8;
+	public bool DifficultyEasyCompleted;
+	public bool DifficultyMediumCompleted;
+	public bool DifficultyHardCompleted;
+	public bool DifficultyOriginalCompleted;
 	public CampaignV1 saveSlot1;
 	public CampaignV1 saveSlot2;
 	public CampaignV1 saveSlot3;
+	public TankCustomizer.TankPreset tankPreset;
+	public List<UnlockedPart> unlockedParts;
+	public List<CombatAbility> unlockedAbilities;
 
 	public void WriteSaveSlot(byte slot, CampaignV1 campaign) {
 		switch(slot) {
@@ -108,6 +113,16 @@ public class SaveV1 : SaveBase {
 
 		public PlayedLevel(ulong levelId) {
 			LevelId = levelId;
+		}
+	}
+	[Serializable]
+	public class UnlockedPart {
+		public TankPartAsset.TankPartType type;
+		public int index;
+
+		public UnlockedPart(TankPartAsset.TankPartType type, int index) {
+			this.type = type;
+			this.index = index;
 		}
 	}
 }

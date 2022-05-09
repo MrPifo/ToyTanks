@@ -1,11 +1,11 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using SimpleMan.Extensions;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CamouflageTank : TankAI {
 
+	[Header("Camouflage")]
 	public float nextLocationRadius = 10;
 	public float fleeRadius = 20;
 	public float camouflageSpeed = 1;
@@ -15,40 +15,37 @@ public class CamouflageTank : TankAI {
 	protected override void Awake() {
 		base.Awake();
 	}
-
 	public override void InitializeTank() {
 		base.InitializeTank();
-		ProcessState(TankState.Move);
-		this.Delay(2, () => {
-			TurnOnCamouflage();
-		});
+		TurnOnCamouflage();
+		Attack().Forget();
 	}
-
-	protected override IEnumerator IMove() {
+	
+	async UniTaskVoid Attack() {
+		if (IsPlayReady == false) return;
 		bool isFleeing = false;
-
 		if(HasSightContactToPlayer) {
-			if(FleeFrom(Player.Pos, fleeRadius, fleeRadius * 0.9f) == false) {
-				RandomPath(Pos, nextLocationRadius, nextLocationRadius * 0.5f, true);
+			if(await FleeFromAsync(Target.Pos, fleeRadius, fleeRadius * 0.9f) == false) {
+				await RandomPathAsync(Pos, nextLocationRadius, nextLocationRadius * 0.5f, true);
 			} else {
 				isFleeing = true;
 			}
 		} else {
-			RandomPath(Pos, nextLocationRadius, nextLocationRadius * 0.5f, true);
+			await RandomPathAsync(Pos, nextLocationRadius, nextLocationRadius * 0.5f, true);
 		}
 
-		MoveMode.Push(MovementType.MoveSmart);
-		HeadMode.Push(TankHeadMode.AimAtPlayerOnSight);
-		yield return null;
+		SetMovement(MovementType.MoveSmart);
+		SetAiming(AimingMode.AimAtPlayerOnSight);
+		await UniTask.Delay(100);
 		while(IsPlayReady) {
-			if(HasSightContactToPlayer && isFleeing == false) {
+			if(HasSightContactToPlayer && isFleeing == false || NextPathPointInReach) {
 				break;
 			}
 			
-			if(isFleeing && isPreparingShot == false && HasSightContactToPlayer && CanShoot) {
+			if(isFleeing && isPreparingShot == false && HasSightContactToPlayer && CanShoot && RequestAttack(3f)) {
 				isPreparingShot = true;
 				TurnOffCamouflage();
-				this.Delay(Random(reloadDuration, reloadDuration + randomReloadDuration), () => {
+				this.Delay(2 + Random(0, randomReloadDuration), () => {
 					isPreparingShot = false;
 					if(HasSightContactToPlayer) {
 						ShootBullet();
@@ -56,15 +53,10 @@ public class CamouflageTank : TankAI {
 					TurnOnCamouflage();
 				});
 			}
-			if(HasReachedDestination) {
-				break;
-			}
-			yield return IPauseTank();
+			await CheckPause();
 		}
-
-		ProcessState(TankState.Move);
+		Attack().Forget();
 	}
-
 	private void TurnOnCamouflage() {
 		if(isCamouflageTransitioning == false) {
 			isCamouflageTransitioning = true;
@@ -76,12 +68,16 @@ public class CamouflageTank : TankAI {
 					DOTween.To(() => mat.GetFloat("Camouflage"), x => mat.SetFloat("Camouflage", x), 1, camouflageSpeed);
 					DOTween.To(() => mat.GetFloat("Transparency"), x => mat.SetFloat("Transparency", x), 0.1f, camouflageSpeed);
 					DOTween.To(() => FakeShadow.fadeFactor, x => FakeShadow.fadeFactor = x, 0, camouflageSpeed);
-					this.Delay(camouflageSpeed, () => isCamouflageTransitioning = false);
 				}
 			}
+			this.Delay(camouflageSpeed, () => {
+				isCamouflageTransitioning = false;
+				IsHittable = false;
+				//tankBody.gameObject.layer = GameMasks.Default;
+				//tankHead.gameObject.layer = GameMasks.Default;
+			});
 		}
 	}
-
 	private void TurnOffCamouflage() {
 		if(isCamouflageTransitioning == false) {
 			isCamouflageTransitioning = true;
@@ -93,9 +89,14 @@ public class CamouflageTank : TankAI {
 					DOTween.To(() => mat.GetFloat("Camouflage"), x => mat.SetFloat("Camouflage", x), 0, camouflageSpeed);
 					DOTween.To(() => mat.GetFloat("Transparency"), x => mat.SetFloat("Transparency", x), 1f, camouflageSpeed);
 					DOTween.To(() => FakeShadow.fadeFactor, x => FakeShadow.fadeFactor = x, 1, camouflageSpeed);
-					this.Delay(camouflageSpeed, () => isCamouflageTransitioning = false);
 				}
 			}
+			this.Delay(camouflageSpeed, () => {
+				isCamouflageTransitioning = false;
+				IsHittable = true;
+				//tankBody.gameObject.layer = GameMasks.Bot;
+				//tankHead.gameObject.layer = GameMasks.Bot;
+			});
 		}
 	}
 }

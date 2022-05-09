@@ -30,10 +30,15 @@ public class LevelData {
 		public new ExtraBlocks type;
 	}
 	[System.Serializable]
+	public class FloraBlockData : BlockData {
+		[JsonConverter(typeof(StringEnumConverter))]
+		public new FloraBlocks type;
+	}
+	[System.Serializable]
 	public class TankData {
 		[JsonConverter(typeof(StringEnumConverter))]
 		public TankTypes tankType;
-		public Int3 pos;
+		public Float3 pos;
 		public Int3 index;
 		public Int3 rotation;
 	}

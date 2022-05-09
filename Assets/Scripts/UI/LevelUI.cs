@@ -41,7 +41,7 @@ public class LevelUI : MonoBehaviour {
 
 	private void Update() {
 		if(Game.IsGamePlaying && Game.IsGameRunningDebug == false && GameManager.LevelId == 1) {
-			var player = FindObjectOfType<PlayerInput>();
+			var player = FindObjectOfType<PlayerTank>();
 
 			SetButtonColor("W", Color.white);
 			SetButtonColor("A", Color.white);
@@ -59,7 +59,7 @@ public class LevelUI : MonoBehaviour {
 				} else if(player.moveVector.y < 0) {
 					SetButtonColor("S", promptColor);
 				}
-				if(player.player.GetButton("Shoot")) {
+				if(player.inputController.GetButton("Shoot")) {
 					SetButtonColor("MouseLeft", promptColor);
 				}
 			}

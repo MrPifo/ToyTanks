@@ -1,18 +1,19 @@
 using DG.Tweening;
-using SimpleMan.Extensions;
 using Sperlich.Debug.Draw;
 using Sperlich.FSM;
 using Sperlich.PrefabManager;
-using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
-// HDRP Related: using UnityEngine.Rendering.HighDefinition;
 
 public class BossTank02 : BossAI, IHittable, IDamageEffector {
 
-	public float bigBlastExplodeRadius;
-	public float spreadBlastRadius;
-	public int spreadBlastAmount;
+	[Header("Boss 2")]
+	public float moveRadius = 25;
+	public FloatGrade bigBlastEscapeTime;
+	public FloatGrade bigBlastExplodeRadius;
+	public FloatGrade spreadBlastRadius;
+	public FloatGrade spreadBlastAmount;
 	public AnimationCurve pelletFlyingCurve;
 	[Header("Impact Explosion Parts")]
 	public GameObject pelletPrefab;
@@ -23,55 +24,48 @@ public class BossTank02 : BossAI, IHittable, IDamageEffector {
 	public bool fireFromPlayer => false;
 	public Vector3 damageOrigin => pelletPrefab.transform.position;
 	public enum BossBehaviour { Waiting, BigBlast, SpreadBlast, QuickMove }
-	FSM<BossBehaviour> bossStates = new FSM<BossBehaviour>();
-
-	// Boss Moves:
-	// 
-	// 
-
-	protected override void Awake() {
-		base.Awake();
-	}
+	new FSM<BossBehaviour> TankState = new FSM<BossBehaviour>();
 
 	public override void InitializeTank() {
 		base.InitializeTank();
-		bossStates.Push(BossBehaviour.Waiting);
-		GoToNextState(2);
-		healthBar.gameObject.SetActive(false);
+		TankState.FillWeightedStates(new List<(BossBehaviour, float)>() {
+			(BossBehaviour.QuickMove, 25f),
+			(BossBehaviour.SpreadBlast, 50f),
+			(BossBehaviour.BigBlast, 50f),
+		});
+		CalculateMove().Forget();
 	}
 
 	// State Decision Maker
-	protected override void GoToNextState(float delay = 0) {
-		if(IsAIEnabled) {
-			this.Delay(delay, () => {
-				bossStates.Push(BossBehaviour.Waiting);
-				while(bossStates == BossBehaviour.Waiting || bossStates == BossBehaviour.QuickMove) {
-					bossStates.Push(bossStates.GetRandom());
-				}
-				ProcessState();
-			});
-		}
+	async UniTaskVoid CalculateMove(int delay = 0) {
+		if (IsPlayReady == false) return;
+		await CheckPause();
+		TankState.AddWeight(BossBehaviour.QuickMove, 40f);
+		TankState.AddWeight(BossBehaviour.BigBlast, 20f);
+		TankState.AddWeight(BossBehaviour.SpreadBlast, 30f);
+		TankState.PushRandomWeighted();
+		await UniTask.Delay(delay == 0 ? 100 : delay);
+		ProcessState().Forget();
 	}
 
-	protected void ProcessState() {
-		if(IsPlayReady) {
-			pelletSpawnPos = this.FindChild("pelletspawn").transform.position;
-			switch(bossStates.State) {
-				case BossBehaviour.BigBlast:
-					StartCoroutine(IBigBlast());
-					break;
-				case BossBehaviour.SpreadBlast:
-					StartCoroutine(ISpreadBlast());
-					break;
-				case BossBehaviour.QuickMove:
-					StartCoroutine(IQuickMove());
-					break;
-			}
+	async UniTaskVoid ProcessState() {
+		if (IsPlayReady == false) return;
+		await CheckPause();
+		pelletSpawnPos = this.FindChild("pelletspawn").transform.position;
+		switch (TankState.State) {
+			case BossBehaviour.BigBlast:
+				BigBlast().Forget();
+				break;
+			case BossBehaviour.SpreadBlast:
+				SpreadBlast().Forget();
+				break;
+			case BossBehaviour.QuickMove:
+				QuickMove().Forget();
+				break;
 		}
 	}
 
 	// State Execution
-
 	public override void TakeDamage(IDamageEffector effector, bool instantKill = false) {
 		base.TakeDamage(effector);
 		BossUI.BossTakeDamage(this, 1);
@@ -82,10 +76,11 @@ public class BossTank02 : BossAI, IHittable, IDamageEffector {
 		BossUI.RemoveBoss(this);
 	}
 
-	protected IEnumerator IBigBlast() {
+	async UniTaskVoid BigBlast() {
+		if (IsPlayReady == false) return;
 		// Setup bullet flying path
 		pelletSpawnPos = pelletSpawnPosTransform.position;
-		Vector3 impactPosition = Player.Pos;
+		Vector3 impactPosition = Target.Pos;
 		Vector3 headLookRotation = (impactPosition - Pos).normalized;
 
 		// Fix head rotation and set impact indicator close to ground
@@ -94,31 +89,29 @@ public class BossTank02 : BossAI, IHittable, IDamageEffector {
 
 		bool isHeadAligned = false;
 		transform.DORotate(Quaternion.LookRotation(headLookRotation).eulerAngles, 0.2f).OnComplete(() => isHeadAligned = true);
-		yield return new WaitUntil(() => isHeadAligned && IsPlayReady);
+		await UniTask.WaitUntil(() => isHeadAligned && IsPlayReady);
 		// Animate head
 		tankBody.transform.localScale = Vector3.one * 1.2f;
 		tankBody.transform.DOScale(Vector3.one, 0.35f);
 
 		Pellet pellet = PrefabManager.Spawn<Pellet>(PrefabTypes.MortarPellet);
-		pellet.SetupPellet(2f, bigBlastExplodeRadius, 25);
-		pellet.transform.localScale *= 1.5f;
-		// HDRP Related: pellet.pelletBlobShadow.GetComponent<DecalProjector>().size = new Vector3(1.5f, 1.5f, 20f);
+		pellet.SetupPellet(bigBlastEscapeTime, bigBlastExplodeRadius, 25);
 		pellet.AdjustPellet(pelletFlyingCurve);
-		pellet.BlastOff(pelletSpawnPos, Player.Pos, null);
+		pellet.BlastOff(pelletSpawnPos, Target.Pos, null);
 		blastFireParticles.Play();
-		yield return new WaitForSeconds(1.5f);
-		bossStates.Push(BossBehaviour.QuickMove);
-		ProcessState();
+		await UniTask.Delay(2000);
+		QuickMove().Forget();
 	}
 
-	protected IEnumerator ISpreadBlast() {
-		for(int i = 0; i < Random(spreadBlastAmount, spreadBlastAmount * 2); i++) {
+	async UniTaskVoid SpreadBlast() {
+		if (IsPlayReady == false) return;
+		for (int i = 0; i < spreadBlastAmount; i++) {
 			pelletSpawnPos = pelletSpawnPosTransform.position;
-			Vector3 impactPosition = Player.Pos + new Vector3(Random(-spreadBlastRadius, spreadBlastRadius), 0, Random(-spreadBlastRadius, spreadBlastRadius));
+			Vector3 impactPosition = Target.Pos + new Vector3(Random(-spreadBlastRadius, spreadBlastRadius), 0, Random(-spreadBlastRadius, spreadBlastRadius));
 			Vector3 headLookRotation = (impactPosition - Pos).normalized;
 			bool isHeadAligned = false;
 			transform.DORotate(Quaternion.LookRotation(headLookRotation).eulerAngles, 0.1f).OnComplete(() => isHeadAligned = true);
-			yield return new WaitUntil(() => isHeadAligned && IsPlayReady);
+			await UniTask.WaitUntil(() => isHeadAligned && IsPlayReady);
 			tankBody.transform.localScale = Vector3.one * 1.3f;
 			tankBody.transform.DOScale(Vector3.one, 0.1f);
 
@@ -127,38 +120,35 @@ public class BossTank02 : BossAI, IHittable, IDamageEffector {
 			pellet.AdjustPellet(pelletFlyingCurve);
 			pellet.BlastOff(pelletSpawnPos, impactPosition);
 			blastFireParticles.Play();
-			yield return new WaitForSeconds(reloadDuration);
-			yield return IPauseTank();
+			await UniTask.WaitForSeconds(reloadDuration);
+			await CheckPause();
 		}
-		GoToNextState(2);
+		await UniTask.Delay(2000);
+		QuickMove().Forget();
 	}
 
-	protected IEnumerator IQuickMove() {
+	async UniTaskVoid QuickMove() {
+		if (IsPlayReady == false) return;
 		float time = 0;
-		if(RandomPath(Pos, playerDetectRadius, playerDetectRadius * 0.75f)) {
-			MoveMode.Push(MovementType.MovePath);
-			HeadMode.Push(TankHeadMode.KeepRotation);
+		if(await RandomPathAsync(Pos, moveRadius, moveRadius * 0.75f)) {
+			SetMovement(MovementType.MovePath);
+			SetAiming(AimingMode.KeepRotation);
+
 			while(IsPlayReady) {
-				if(HasReachedDestination || time > 3f) {
+				if(NextPathPointInReach || time > 3f) {
 					break;
 				}
 				time += GetTime;
-				yield return IPauseTank();   // Pause AI
+				await CheckPause();
 			}
 		}
-		MoveMode.Push(MovementType.None);
-		if(Random(0, 1) == 0) {
-			bossStates.Push(BossBehaviour.BigBlast);
-		} else {
-			bossStates.Push(BossBehaviour.SpreadBlast);
-		}
-		ProcessState();
+		SetMovement(MovementType.None);
+		CalculateMove().Forget();
 	}
 
 	protected override void DrawDebug() {
-		if(showDebug) {
-			base.DrawDebug();
-			Draw.Text(Pos + Vector3.up * 2, bossStates.Text, 8, Color.black);
+		if(debugMode) {
+			Draw.Text(Pos + Vector3.up * 2, TankState.Text, 8, Color.black);
 		}
 	}
 }

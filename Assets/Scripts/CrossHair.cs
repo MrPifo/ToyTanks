@@ -58,7 +58,9 @@ public class CrossHair : MonoBehaviour {
 	}
 
 	private void LateUpdate() {
-		UpdateCrosshair();
+		if(crossHair.activeSelf) {
+			UpdateCrosshair();
+		}
 	}
 
 	public void EnableCrossHair() => crossHair.SetActive(true);

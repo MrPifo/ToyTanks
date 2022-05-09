@@ -5,17 +5,12 @@ using BayatGames.SaveGameFree.Serializers;
 
 public class PlayerStats {
 
-	public static PlayerStats Instance { get; set; }
+	public static PlayerStats Instance { get; set; } = new PlayerStats();
 	public int TotalKills { get; set; }
 	public int TotalPlaytime { get; set; }
 	public int TotalLevelsCompleted { get; set; }
 	public int TotalDeaths { get; set; }
-	public bool ArcadeCompletedOnce => DifficultyEasyCompleted || DifficultyMediumCompleted || DifficultyHardCompleted || DifficultyOriginalCompleted;
 	public int TotalDistanceTravelled	{ get; set; }
-	public bool DifficultyEasyCompleted { get; set; }
-	public bool DifficultyMediumCompleted { get; set; }
-	public bool DifficultyHardCompleted { get; set; }
-	public bool DifficultyOriginalCompleted { get; set; }
 	public int TotalBossesKilled { get; set; }
 	public int TotalScore { get; set; }
 	public DateTime LastModified { get; set; }
@@ -72,7 +67,7 @@ public class PlayerStats {
 				Logger.Log(Channel.PlayerStats, "PlayerStats have been saved.");
 			}
 		} catch(Exception e) {
-			Logger.LogError("Something went wrong while saving to the PlayerStats file.", e);
+			Logger.LogError(e, "Something went wrong while saving to the PlayerStats file.");
 		}
 	}
 

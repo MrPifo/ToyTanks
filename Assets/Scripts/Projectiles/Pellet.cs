@@ -14,6 +14,7 @@ public class Pellet : GameEntity, IDamageEffector, IRecycle {
 	public LayerMask hitLayers;
 	public AnimationCurve flyCurve;
 	public GameObject mesh;
+	public Transform indicatorSphere;
 	public GameObject impactExplosionContainer;
 	public GameObject explosionCraterPrefab;
 	public Transform pelletBlobShadow;
@@ -75,13 +76,17 @@ public class Pellet : GameEntity, IDamageEffector, IRecycle {
 
 			// Set explosion and indicator to impact position
 			impactIndicator.Show();
+			indicatorSphere.Show();
 			impactExplosionContainer.transform.position = impactPosition;
 			impactIndicator.transform.position = impactPosition;
-			DOTween.To(x => impactIndicator.Radius = x, 0, explodeRadius + 4, 0.5f);
+			indicatorSphere.transform.position = impactPosition;
+			indicatorSphere.localScale = Vector3.zero;
+			DOTween.To(x => impactIndicator.Radius = x, 0, explodeRadius, 0.5f);
+			indicatorSphere.DOScale(explodeRadius, 0.5f);
 			impactExplodeSphere.Radius = explodeRadius;
 
 			// Animate head
-			AudioPlayer.Play("PelletShot", AudioType.SoundEffect, 1f, 0.5f, 1.5f);
+			AudioPlayer.Play(JSAM.Sounds.PelletShot, AudioType.SoundEffect, 1f, 0.5f, 1.5f);
 
 			// Move pellet along flying path
 			float time = 0;
@@ -96,7 +101,7 @@ public class Pellet : GameEntity, IDamageEffector, IRecycle {
 			}
 
 			// Check if Hit
-			foreach(var hit in Physics.OverlapSphere(impactPosition, explodeRadius, hitLayers)) {
+			foreach(var hit in Physics.OverlapSphere(impactPosition, explodeRadius - 0.5f, hitLayers)) {
 				if(hit.transform.TrySearchComponent(out IHittable hittable)) {
 					hittable.TakeDamage(this, true);
 				}
@@ -104,12 +109,11 @@ public class Pellet : GameEntity, IDamageEffector, IRecycle {
 
 			// Impact
 			GameCamera.ShakeExplosion2D(explodeShakeStrength, 0.2f);
-			AudioPlayer.Play("SmallExplosion", AudioType.SoundEffect, 0.6f, 0.8f, 1f);
+			AudioPlayer.Play(JSAM.Sounds.SmallExplosion, AudioType.SoundEffect, 0.6f, 0.8f, 1f);
 			Color colorLerp = impactExplodeSphere.Color;
 			Color targetColor = colorLerp;
 			targetColor.a = 0;
 			mesh.Hide();
-			impactIndicator.Hide();
 			DOTween.To(() => colorLerp, a => impactExplodeSphere.Color = a, targetColor, explodeDuration);
 			impactExplosionContainer.Show();
 			impactExplodeFire.Play();
@@ -118,6 +122,7 @@ public class Pellet : GameEntity, IDamageEffector, IRecycle {
 			// Cleanup
 			pelletBlobShadow.Hide();
 			impactIndicator.Hide();
+			indicatorSphere.Hide();
 			DOTween.To(() => impactExplodeSphere.Radius = 0, x => impactExplodeSphere.Radius = x, explodeRadius, explodeDuration).SetEase(Ease.OutCubic).OnComplete(() => {
 				impactExplosionContainer.Hide();
 				impactExplodeSphere.Color = colorLerp;

@@ -1,55 +1,69 @@
-using SimpleMan.Extensions;
+using Cysharp.Threading.Tasks;
 using Sperlich.Debug.Draw;
-using Sperlich.FSM;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static Sperlich.Debug.Draw.Draw;
 
 public class GreenTank : TankAI {
 
-	public int predictionIterations = 10;
-	public bool advancedDebug;
-	bool pathFound;
-	List<(Ray, RaycastHit)> validPath = new List<(Ray, RaycastHit)>();
+	[Header("Green")]
+	public int sensorsAmount = 10;
+	public int sensorBounces = 2;
+	public bool extraDebug;
+	float angleOffset;
+
 	Ray lastFoundRay;
+	List<(Vector3 from, Vector3 end)> validPath = new List<(Vector3, Vector3)>();
+	protected static LayerMask BounceLayers = LayerMaskExtension.Create(GameMasks.Player, GameMasks.LevelBoundary, GameMasks.Block);
+
 
 	public override void InitializeTank() {
 		base.InitializeTank();
-		lastFoundRay = new Ray(Pos + Vector3.up / 2f, (Player.Pos - Pos));
+		lastFoundRay = new Ray(Pos + Vector3.up / 2f, (Target.Pos - Pos));
 		lastFoundRay.origin = new Vector3(lastFoundRay.origin.x, 1, lastFoundRay.origin.z);
-		ProcessState(TankState.Attack);
+		Attack().Forget();
 	}
 
-	protected override IEnumerator IAttack() {
+	async UniTaskVoid Attack() {
 		while(IsPlayReady) {
-			if(IsPlayerInDetectRadius) {
-				if(HasSightContact(Player)) {
-					if(IsFacingTarget(Player.transform) && CanShoot && !WouldFriendlyFire) {
-						ShootBullet();
-					}
-					AimAtPlayer();
-				} else if(IsBouncePathValid()) {
-					MoveHead(validPath[1].Item1.origin);
-					if(IsFacingTarget(validPath[0].Item2.point, 0.97f) && CanShoot && !WouldFriendlyFire && RandomShootChance()) {
-						ShootBullet();
-					}
-				} else {
-					FindBouncePath();
+			if(HasSightContactToPlayer) {
+				enableInaccurateAim = true;
+				if(IsFacingTarget(Target.Pos) && CanShoot && !WouldFriendlyFire && RequestAttack(3f)) {
+					ShootBullet();
 				}
+				SetAiming(AimingMode.AimAtPlayerOnSight);
+			} else if (IsBouncePathValid() && CanShoot) {
+				FindBouncePath();
+				enableInaccurateAim = false;
+				SetAiming(AimingMode.AimAtTarget);
+				aimTarget = validPath[1].Item1;
+				if (IsFacingTarget(validPath[0].Item2, 0.999f) && CanShoot && RequestAttack(3f)) {
+					ShootBullet();
+				}
+			} else {
+				if (IsBouncePathValid() == false) {
+					angleOffset = Random(0, 360f);
+					enableInaccurateAim = true;
+				}
+				SetAiming(AimingMode.None);
+				FindBouncePath();
 			}
-			yield return null;
-			while(IsPaused) yield return null;   // Pause AI
+			await CheckPause();
 		}
 	}
 
 	public bool IsBouncePathValid() {
-		if(validPath.Count > 1) {
-			if(Physics.Raycast(validPath[1].Item1, out RaycastHit hit, Mathf.Infinity, HitLayers)) {
-				if(hit.transform.CompareTag("Player")) {
-					if(advancedDebug) {
-						Draw.Line(validPath[1].Item1.origin, hit.point, Color.yellow);
+		if (validPath.Count > 1) {
+			for (int i = 0; i < validPath.Count; i++) {
+				if (Physics.Raycast(validPath[i].from, (validPath[i].end - validPath[i].from).normalized, out RaycastHit hit, Mathf.Infinity, HitLayers)) {
+					if (hit.transform.CompareTag("Player")) {
+						return true;
 					}
-					return true;
+					if (extraDebug) {
+						Line(validPath[i].from, hit.point, Color.yellow);
+					}
 				}
 			}
 		}
@@ -57,64 +71,54 @@ public class GreenTank : TankAI {
 	}
 
 	public bool FindBouncePath() {
-		if(pathFound) {
-			if(advancedDebug) {
-				Draw.Line(validPath[0].Item1.origin, validPath[0].Item2.point, Color.red);
-				Draw.Line(validPath[1].Item1.origin, validPath[1].Item2.point, Color.red);
-			}
+		if(validPath != null && validPath.Count > 1 && false) {
 			if(IsBouncePathValid()) {
 				return true;
 			}
 		}
-		var ray = lastFoundRay;
-		pathFound = false;
 
-		for(int x = -predictionIterations; x < predictionIterations && !pathFound; x++) {
-			for(int y = -predictionIterations; y < predictionIterations && !pathFound; y++) {
-				ray.direction = new Vector3((float)x/predictionIterations, 0, (float)y/predictionIterations);
-				var success1 = Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, HitLayers);
-				var ray2 = new Ray(hit.point, Vector3.Reflect(ray.direction, hit.normal));
-				var sucess2 = Physics.Raycast(ray2, out RaycastHit hit2, Mathf.Infinity, HitLayers);
-				if(success1 && sucess2 && hit2.transform.CompareTag("Player")) {
-					validPath = new List<(Ray, RaycastHit)> {
-					(ray, hit),
-					(ray2, hit2)
-					};
-					lastFoundRay = ray;
-					return true;
-				}
-				if(advancedDebug) {
-					Draw.Line(Pos, hit.point, Color.cyan);
-					Draw.Line(hit.point, hit2.point, Color.blue);
+		(bool, List<(Vector3 from, Vector3 end)>) result = BounceSensors(bulletOutput.position, "Player", sensorBounces, sensorsAmount, angleOffset, extraDebug);
+		if (result.Item1) {
+			validPath = result.Item2;
+			if (extraDebug) {
+				for (int i = 0; i < result.Item2.Count; i++) {
+					Line(result.Item2[i].from, result.Item2[i].end, 5, Color.cyan);
 				}
 			}
 		}
-		return false;
-		/* Random Soltion
-		for(int i = 0; i < predictionIterations && !pathFound; i++) {
-			Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, hitLayers);
-			var ray2 = new Ray(hit.point, Vector3.Reflect(ray.direction, hit.normal));
-			Physics.Raycast(ray2, out RaycastHit hit2, Mathf.Infinity, hitLayers);
-
-			if(hit2.transform.CompareTag("Player")) {
-				validPath = new List<(Ray, RaycastHit)> {
-					(ray, hit),
-					(ray2, hit2)
-				};
-				lastFoundRay = ray;
-				return true;
-			} else {
-				ray.direction = new Vector3(Random(-1f, 1f), 0, Random(-1f, 1f));
-			}
-			if(advancedDebug) {
-				Draw.Line(Pos, hit.point, Color.cyan);
-				Draw.Line(hit.point, hit2.point, Color.blue);
-			}
-		}
-		return false;*/
+		return result.Item1;
 	}
 
-	protected override void DrawDebug() {
-		base.DrawDebug();
+	public static (bool, List<(Vector3 from, Vector3 end)>) BounceSensors(Vector3 origin, string hitTarget, int bounces, int amount, float angleOffset = 0, bool visualize = false) {
+		var ray = new Ray(origin, Vector3.zero);
+		Vector3[] dirs = GetDirs(amount, angleOffset);
+		Dictionary<int, List<(Vector3 from, Vector3 end)>> rays = new Dictionary<int, List<(Vector3 from, Vector3 end)>>();
+
+		for (int i = 0; i < amount; i++) {
+			List<(Vector3 from, Vector3 end)> path = new List<(Vector3 from, Vector3 end)>();
+			if(SendRay(origin, dirs[i], hitTarget, 1, bounces, path)) {
+				return (true, path);
+			}
+			rays.Add(i, path);
+		}
+		if (visualize) {
+			foreach (var r in rays.SelectMany(r => r.Value)) {
+				Line(r.from, r.end, Color.black);
+			}
+		}
+		return (false, new List<(Vector3 from, Vector3 end)>());
+
+		bool SendRay(Vector3 startPos, Vector3 direction, string hitTarget, int iteration, int maxBounces, List<(Vector3 from, Vector3 end)> path) {
+			if (Physics.Raycast(startPos, direction, out RaycastHit hit, Mathf.Infinity, BounceLayers)) {
+				path.Add((startPos, hit.point));
+				if(hit.transform.gameObject.CompareTag(hitTarget)) {
+					return true;
+				}
+				if (iteration < maxBounces && Bullet.IsBulletBlocker(hit.transform) == false) {
+					return SendRay(hit.point, Vector3.Reflect(direction, hit.normal), hitTarget, iteration + 1, maxBounces, path);
+				}
+			}
+			return false;
+		}
 	}
 }

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<StudioProjectMetaData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PresetVersion="1">
+  <StudioAssetMetas>
+    <StudioAssetMeta>
+      <Name>BronzePipeLong</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Quixel\Projects\ExtraBlocks\BronzePipeLong\BronzePipeLong.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2022-02-27T17:31:14.4983895+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Sandbag</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Quixel\Projects\ExtraBlocks\Sandbag\Sandbag.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2022-02-24T00:11:47.6003687+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Tschechigel</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Quixel\Projects\ExtraBlocks\Tschechigel\Tschechigel.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2022-02-23T22:38:06.3640158+01:00</SaveTime>
+    </StudioAssetMeta>
+  </StudioAssetMetas>
+</StudioProjectMetaData>

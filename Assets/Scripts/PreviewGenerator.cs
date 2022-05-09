@@ -11,15 +11,25 @@ public class PreviewGenerator : MonoBehaviour {
 	public Camera camera;
 	public Transform tankModelsContainer;
 	public Transform blockModelsContainer;
+	public Transform tankBodyPartsContainer;
+	public Transform tankHeadPartsContainer;
 	public Texture2D icon;
 
-	[Header("Tank Settings")]
+	[Header("Block Settings")]
 	public Vector3 blocksPreviewDirection;
 	public Vector3 blocksOffset;
 
 	[Header("Tank Settings")]
 	public Vector3 tanksPreviewDirection;
 	public Vector3 tanksOffset;
+
+	[Header("Assemblies Settings")]
+	public Vector3 bodyPartPreviewDirection;
+	public Vector3 bodyPartOffset;
+
+	[Header("Assemblies Settings")]
+	public Vector3 headPartPreviewDirection;
+	public Vector3 headPartOffset;
 
 	private static string BasePath;
 
@@ -57,12 +67,58 @@ public class PreviewGenerator : MonoBehaviour {
 				RuntimePreviewGenerator.OffsetPosition = tanksOffset;
 				RuntimePreviewGenerator.OffsetPosition += new Vector3(0, model.transform.position.y, 0);
 				Texture2D tex = RuntimePreviewGenerator.GenerateModelPreview(model, 512, 512, false, true);
-				if(theme.name == "Extra") {
+				if(theme.name == "Flora") {
+					SaveTexture(tex, model.name + "_icon", "Themes/Flora/Previews/");
+				} else if(theme.name == "Extra") {
 					SaveTexture(tex, model.name + "_icon", "Themes/Extras/Previews/");
 				} else {
 					SaveTexture(tex, model.name + "_icon", "Themes/" + theme.name + "/Previews/");
 				}
 			}
+		}
+		AssetDatabase.Refresh();
+	}
+
+	public void GenerateBodyPartIcons() {
+		BasePath = Application.dataPath + "/Addressables/";
+		RuntimePreviewGenerator.PreviewRenderCamera = camera;
+		RuntimePreviewGenerator.BackgroundColor = new Color(0, 0, 0, 0);
+		RuntimePreviewGenerator.OffsetPosition = bodyPartOffset;
+		RuntimePreviewGenerator.PreviewDirection = bodyPartPreviewDirection;
+		RuntimePreviewGenerator.OrthographicMode = true;
+		RuntimePreviewGenerator.MarkTextureNonReadable = false;
+		RuntimePreviewGenerator.RenderSupersampling = 2;
+		RuntimePreviewGenerator.IgnoreGameObjectsWithName = new List<string>() {
+			"Line",
+		};
+
+		foreach (Transform model in tankBodyPartsContainer) {
+			RuntimePreviewGenerator.OffsetPosition = bodyPartOffset;
+			RuntimePreviewGenerator.OffsetPosition += new Vector3(0, model.transform.position.y, 0);
+			Texture2D tex = RuntimePreviewGenerator.GenerateModelPreview(model, 512, 512, false, true);
+			SaveTexture(tex, model.name + "_icon", "TankParts/BodyParts/Icons/");
+		}
+		AssetDatabase.Refresh();
+	}
+
+	public void GenerateHeadPartIcons() {
+		BasePath = Application.dataPath + "/Addressables/";
+		RuntimePreviewGenerator.PreviewRenderCamera = camera;
+		RuntimePreviewGenerator.BackgroundColor = new Color(0, 0, 0, 0);
+		RuntimePreviewGenerator.OffsetPosition = headPartOffset;
+		RuntimePreviewGenerator.PreviewDirection = headPartPreviewDirection;
+		RuntimePreviewGenerator.OrthographicMode = true;
+		RuntimePreviewGenerator.MarkTextureNonReadable = false;
+		RuntimePreviewGenerator.RenderSupersampling = 2;
+		RuntimePreviewGenerator.IgnoreGameObjectsWithName = new List<string>() {
+			"line","line_right", "line_left", "muzzleoverheat"
+		};
+
+		foreach (Transform model in tankHeadPartsContainer) {
+			RuntimePreviewGenerator.OffsetPosition = headPartOffset;
+			RuntimePreviewGenerator.OffsetPosition += new Vector3(0, model.transform.position.y, 0);
+			Texture2D tex = RuntimePreviewGenerator.GenerateModelPreview(model, 512, 512, false, true);
+			SaveTexture(tex, model.name + "_icon", "TankParts/HeadParts/Icons/");
 		}
 		AssetDatabase.Refresh();
 	}
@@ -105,6 +161,11 @@ public class PreviewGenerator : MonoBehaviour {
 			GUILayout.Space(10);
 			if(GUILayout.Button("Render Block Icons")) {
 				builder.GenerateBlockIcons();
+			}
+			GUILayout.Space(10);
+			if (GUILayout.Button("Render Assembly Icons")) {
+				builder.GenerateBodyPartIcons();
+				builder.GenerateHeadPartIcons();
 			}
 		}
 	}

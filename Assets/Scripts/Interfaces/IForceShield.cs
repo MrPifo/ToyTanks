@@ -2,5 +2,5 @@
 
 public interface IForceShield {
 
-	public void ShieldEffect(Vector3 impactPos);
+	protected void ShieldEffect(Vector3 impactPos);
 }

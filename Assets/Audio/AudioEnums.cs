@@ -1,0 +1,43 @@
+namespace JSAM {
+    public enum Sounds {
+        BossCharge,
+        BoxDestructible,
+        BulletExplode,
+        BulletReflect,
+        BulletRicochet,
+        BulletShot,
+        ButtonClick1,
+        ButtonClick2,
+        ButtonHover1,
+        ButtonHover2,
+        ButtonHover3,
+        ButtonHover4,
+        ChargeImpact,
+        Clapping,
+        ConfettiGun,
+        FallImpact,
+        IceSpikeShatter,
+        IceSpikeSpawn,
+        LevelPrepareDrum,
+        LevelStartDrum,
+        PelletShot,
+        PlayerTankExplode,
+        SmallExplosion,
+        SnowBlow,
+        SnowChargeStart,
+        SnowRowl,
+        StreakComplete,
+        StreakPitch,
+        TankAssemblyClick,
+        TankDrive,
+        TankExplode,
+        ToyMotor,
+        TrackerBulletBurst
+    }
+    public enum Music {
+        AmbientGarden,
+        AmbientWinter,
+        AmbientWoody,
+        WoodyTheme
+    }
+}

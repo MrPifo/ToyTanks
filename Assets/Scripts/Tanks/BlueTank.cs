@@ -2,10 +2,12 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class BlueTank : TankAI {
 
+	[Header("Blue")]
 	public float bulletCurveDelay = 0.5f;
 	public float bulletCurveSpeed = 0.5f;
 	public float bulletCurveVelocityMultiplier = 2f;
@@ -16,11 +18,10 @@ public class BlueTank : TankAI {
 
 	public override void InitializeTank() {
 		base.InitializeTank();
-		ProcessState(TankState.Attack);
 	}
 
-	protected override IEnumerator IAttack() {
-		yield return new WaitUntil(() => CanShoot);
+	/*protected override async void AttackST() {
+		await TaskEx.WaitUntil(() => CanShoot);
 		// Scan for possible direction in a circle
 		List<Vector3> possibleDirs = new List<Vector3>();
 		for(int x = -scanDistanceAmount; x < scanDistanceAmount; x++) {
@@ -54,13 +55,13 @@ public class BlueTank : TankAI {
 			while(isAlignedToPlayer < 0.98f && IsPlayReady) {
 				MoveHead(targetHitPos);
 				isAlignedToPlayer = Vector3.Dot((targetHitPos - bulletOutput.position).normalized, bulletOutput.forward);
-				yield return IPauseTank();
+				await CheckPause();
 			}
 		} else {
 			// Shoot at player if visible
 			while(IsAimingAtPlayer == false) {
 				AimAtPlayer();
-				yield return IPauseTank();
+				await CheckPause();
 			}
 		}
 
@@ -75,10 +76,10 @@ public class BlueTank : TankAI {
 					break;
 				}
 			}
-			yield return IPauseTank();
+			await CheckPause();
 		}
 
-		yield return new WaitForSeconds(bulletCurveDelay);
+		await Task.Delay(Mathf.RoundToInt(bulletCurveDelay * 1000));
 		if(bulletAlive) {
 			// Redirect Bullet to Player
 			float time = 0;
@@ -99,10 +100,9 @@ public class BlueTank : TankAI {
 				float mapValue = bulletCurve.Evaluate(time.Remap(0, bulletCurveSpeed, 0, 1));
 				bullet.velocity = Mathf.Lerp(baseVelocity, targetVelocity, mapValue);
 				bullet.Direction = Vector3.Lerp(baseDir, targetDir, mapValue);
-				yield return IPauseTank();
+				await CheckPause();
 			}
 		}
-		GoToNextState(TankState.Attack);
 	}
 
 	protected override void LateUpdate() {
@@ -113,5 +113,5 @@ public class BlueTank : TankAI {
 				playersLastPos = Player.Pos;
 			}
 		}
-	}
+	}*/
 }

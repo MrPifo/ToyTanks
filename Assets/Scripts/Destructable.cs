@@ -1,17 +1,18 @@
-﻿using EpPathFinding.cs;
-using SimpleMan.Extensions;
+﻿using SimpleMan.Extensions;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Sperlich.Types;
 
 public class Destructable : GameEntity, IHittable, IResettable {
 
 	public float explodeForce;
 	public MeshRenderer simpleMesh;
 	public List<Rigidbody> boxPieces;
-	public List<GridPos> occupiedIndexes { get; set; } = new List<GridPos>();
+	public List<Int2> occupiedIndexes { get; set; } = new List<Int2>();
 	public bool IsInvincible => false;
 	public bool IsFriendlyFireImmune => false;
+	public bool IsHittable { get; set; } = true;
 
 	private void Awake() {
 		boxPieces = new List<Rigidbody>();
@@ -29,7 +30,7 @@ public class Destructable : GameEntity, IHittable, IResettable {
 
 	public void TakeDamage(IDamageEffector effector, bool instantKill = false) {
 		GetComponent<Collider>().enabled = false;
-		AudioPlayer.Play("BoxDestructable", AudioType.SoundEffect, 0.8f, 1f, 0.3f);
+		AudioPlayer.Play(JSAM.Sounds.BoxDestructible, AudioType.SoundEffect, 0.8f, 1f, 0.3f);
 		AdjustGridSpace(false);
 		simpleMesh.enabled = false;
 
@@ -47,6 +48,7 @@ public class Destructable : GameEntity, IHittable, IResettable {
 	}
 
 	public void MakePieceRigid(Rigidbody rig, float vanishTime) {
+		rig.mass = 0.01f;
 		Vector3 flyForce = new Vector3(Random.Range(-explodeForce, explodeForce), explodeForce, Random.Range(-explodeForce, explodeForce));
 		rig.AddForce(flyForce);
 		rig.AddTorque(flyForce);
@@ -68,8 +70,12 @@ public class Destructable : GameEntity, IHittable, IResettable {
 	}
 
 	public void AdjustGridSpace(bool reserved) {
-		foreach(GridPos p in occupiedIndexes) {
-			Game.ActiveGrid.SetReserved(p, reserved, gameObject);
+		foreach(Int2 p in occupiedIndexes) {
+			if (reserved) {
+				AIGrid.Grid.SetAttribute(GridExt.Attributes.Reserved, p.x, p.y, gameObject.GetHashCode());
+			} else {
+				AIGrid.Grid.RemoveAttribute(GridExt.Attributes.Reserved, p.x, p.y, gameObject.GetHashCode());
+			}
 		}
 	}
 }

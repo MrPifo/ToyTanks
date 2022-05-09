@@ -11,5 +11,6 @@
 	Blue,
 	Snowplower,
 	Camouflage,
-	BossTank03
+	BossTank03,
+	Black
 }

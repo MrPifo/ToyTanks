@@ -100,6 +100,15 @@ public class GraphicItem : MonoBehaviour {
 			case "WindowResolutionUI":
 				GraphicSettings.SetWindowResolution(GetResolutionFromString(choseValues[holdingValue]));
 				break;
+			case "ControlSchemeUI":
+				GraphicSettings.SetControlScheme(value);
+				break;
+			case "FidelityFXUI":
+				GraphicSettings.SetFidelityFX(value == 0 ? false : true);
+				break;
+			case "OutlineUI":
+				GraphicSettings.SetOutline(value == 0 ? false : true);
+				break;
 			default:
 				Debug.LogWarning("No Graphic Settings named " + gameObject.tag + " has been found.");
 				break;
@@ -126,7 +135,7 @@ public class GraphicItem : MonoBehaviour {
 			case OptionType.Toggle:
 				toggle.SetIsOnWithoutNotify(value == 0 ? false : true);
 				toggle.transform.Pulse(0.3f, 1.15f);
-				AudioPlayer.Play("ButtonClick1", AudioType.UI);
+				AudioPlayer.Play(JSAM.Sounds.ButtonClick1, AudioType.UI);
 				break;
 		}
 	}

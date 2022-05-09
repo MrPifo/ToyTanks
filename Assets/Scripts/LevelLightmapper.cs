@@ -105,13 +105,13 @@ namespace ToyTanks.LevelEditor {
 
 			onBakeFinished.AddListener(() => {
 				var nextLevel = bakeQueue.Dequeue();
-				FindObjectOfType<LevelEditor>().LoadOfficialLevel(nextLevel.levelId);
+				//FindObjectOfType<LevelEditor>().LoadOfficialLevel(nextLevel.levelId);
 				BakeLighting(nextLevel);
 				Debug.Log("Remaining levels to be baked: " + bakeQueue.Count);
 			});
 			Debug.Log("Baking total Levels: " + bakeQueue.Count);
 			var nextLevel = bakeQueue.Dequeue();
-			FindObjectOfType<LevelEditor>().LoadOfficialLevel(nextLevel.levelId);
+			//FindObjectOfType<LevelEditor>().LoadOfficialLevel(nextLevel.levelId);
 			BakeLighting(nextLevel);
 		}
 #endif

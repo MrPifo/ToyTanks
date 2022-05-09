@@ -4,18 +4,16 @@ using System;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.Net.Http;
-using System.IO.Compression;
 using Newtonsoft.Json.Linq;
+using BayatGames.SaveGameFree;
 
 public class RuntimeAnalytics {
 
-	public static string UserDataFilePath => UnityEngine.Application.persistentDataPath + "/userdata.info";
-	public static UserInfo PlayerInfo { private set; get; }
+	public static string UserDataFilePath => UnityEngine.Application.persistentDataPath + "/userinfo";
 	private static Guid SessionGUID { set; get; }
 	private static HttpClient client;
-	private static Task UpdateSessionTask { set; get; }
 	private static string serverKey = "2bda476c8cbe6972fe678a2c2eff6b6a6fd18bb19faf3f59271187fd0807fbb8";
-	private static string PlayerGUID => PlayerInfo.playerGUID.ToString();
+	private static string PlayerGUID => GameSaver.SaveInstance.PlayerGuid.ToString();
 	private static bool HasBeenInitialized { get; set; }
 
 	public static async Task Initialize() {
@@ -28,71 +26,41 @@ public class RuntimeAnalytics {
 		SessionGUID = Guid.NewGuid();
 		client = new HttpClient();
 
-		if(File.Exists(UserDataFilePath) == false) {
-			CreateUserInfo();
-		} else {
-			try {
-				try {
-					PlayerInfo = GetUserInfo();
-				} catch {
-					CreateUserInfo();
-					PlayerInfo = GetUserInfo();
-				}
-				Logger.Log(Channel.Network, "Creating Session with UserID: " + PlayerInfo.playerGUID);
+		try {
+			Logger.Log(Channel.Network, "Creating Session with UserID: " + PlayerGUID);
 
-				var url = "https://sperlich.at/api/toytanks/sessionstart.php";
-				var parameters = new Dictionary<string, string> {
-					{ "serverKey", serverKey },
-					{ "playerGUID", PlayerInfo.playerGUID.ToString() },
-					{ "sessionStart", DateTime.UtcNow.ToString() },
-					{ "sessionGUID", SessionGUID.ToString() },
-				};
-				var encodedContent = new FormUrlEncodedContent(parameters);
-				var response = await client.PostAsync(url, encodedContent);
-				if(response.IsSuccessStatusCode) {
-					var status = ConvertResponse(await response.Content.ReadAsStringAsync());
+			var url = "https://sperlich.at/api/toytanks/sessionstart.php";
+			var parameters = new Dictionary<string, string> {
+				{ "serverKey", serverKey },
+				{ "playerGUID", PlayerGUID.ToString() },
+				{ "sessionStart", DateTime.UtcNow.ToString() },
+				{ "sessionGUID", SessionGUID.ToString() },
+			};
+			var encodedContent = new FormUrlEncodedContent(parameters);
+			var response = await client.PostAsync(url, encodedContent);
+			if(response.IsSuccessStatusCode) {
+				var status = ConvertResponse(await response.Content.ReadAsStringAsync());
 					
-					if(status.status == "success") {
-						Logger.Log(Channel.Network, status.message);
-					} else {
-						Logger.Log(Channel.Network, "Error: " + status.message);
-					}
+				if(status.status == "success") {
+					Logger.Log(Channel.Network, status.message);
 				} else {
-					Logger.LogError("Failed to create session.", null);
+					Logger.Log(Channel.Network, "Error: " + status.message);
 				}
-			} catch(Exception e) {
-				Logger.LogError("Something went wrong while creating the session.", e);
+			} else {
+				Logger.Log("Failed to create session.");
 			}
+		} catch(Exception e) {
+			Logger.LogError(e, "Something went wrong while creating the session.");
 		}
-
-		UpdateSessionTask = UpdateSession();
+		
+		UpdateSession();
 	}
 
-	private static async Task UpdateSession() {
+	private static async void UpdateSession() {
 		while(true && HasBeenInitialized) {
 			await Task.Delay(3000);
 			await UpdateSessionStatus();
 		}
-	}
-
-	public static void CreateUserInfo() {
-		File.Create(UserDataFilePath).Close();
-
-		PlayerInfo = new UserInfo() {
-			playerGUID = Guid.NewGuid(),
-		};
-
-		using var compressStream = new FileStream(UserDataFilePath, FileMode.Open, FileAccess.Write);
-		using var ds = new DeflateStream(compressStream, CompressionLevel.Optimal);
-		using var sw = new StreamWriter(ds);
-		//sw.Write(JsonConvert.SerializeObject(PlayerInfo));
-	}
-
-	public static UserInfo GetUserInfo() {
-		using var compressStream = new FileStream(UserDataFilePath, FileMode.Open, FileAccess.Read);
-		using var ds = new DeflateStream(compressStream, CompressionMode.Decompress);
-		using var sr = new StreamReader(ds);
-		return JsonConvert.DeserializeObject<UserInfo>(sr.ReadToEnd());
 	}
 
 	public static async Task UpdateSessionStatus() {
@@ -101,7 +69,7 @@ public class RuntimeAnalytics {
 				var url = "https://sperlich.at/api/toytanks/sessionupdate.php";
 				var parameters = new Dictionary<string, string> {
 				{ "serverKey", serverKey },
-				{ "playerGUID", PlayerInfo.playerGUID.ToString() },
+				{ "playerGUID", PlayerGUID.ToString() },
 				{ "sessionUpdate", DateTime.UtcNow.ToString() },
 				{ "sessionGUID", SessionGUID.ToString() },
 			};
@@ -113,10 +81,10 @@ public class RuntimeAnalytics {
 						Logger.Log(Channel.System, "Result: " + text);
 					}
 				} else {
-					Logger.LogError("Failed to update session.", null);
+					Logger.Log("Failed to update session.");
 				}
 			} catch(Exception e) {
-				Logger.LogError("Failed to update session status!", e);
+				Logger.LogError(e, "Failed to update session status.");
 			}
 		}
 	}
@@ -143,10 +111,10 @@ public class RuntimeAnalytics {
 						Logger.Log(Channel.System, "Result: " + text);
 					}
 				} else {
-					Logger.LogError("Failed to create session.", null);
+					Logger.Log("Failed to create session.");
 				}
 			} catch(Exception e) {
-				Logger.LogError("Failed to update session status!", e);
+				Logger.LogError(e, "Failed to update session status.");
 			}
 		}
 	}
@@ -167,10 +135,5 @@ public class RuntimeAnalytics {
 		} catch {
 			return ("error", "Failed to parse response.");
 		}
-	}
-
-	[Serializable]
-	public class UserInfo {
-		public Guid playerGUID;
 	}
 }

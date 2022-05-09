@@ -7,7 +7,7 @@ using UnityEngine;
 public class StreakBubble : MonoBehaviour {
 
 	public float streakExpire;
-	public const int maxPitch = 10;
+	public const int maxPitch = 5;
 	private static int currentStreak;
 	private float time;
 	[SerializeField]
@@ -57,12 +57,12 @@ public class StreakBubble : MonoBehaviour {
 				Instance.bubble.Stretch(1f, 1.5f, 0.15f);
 			});
 			if(currentStreak < maxPitch) {
-				AudioPlayer.Play("StreakPitch", AudioType.UI, Mathf.Min(currentStreak, maxPitch) / 4f, 2f);
+				AudioPlayer.Play(JSAM.Sounds.StreakPitch, AudioType.UI, Mathf.Min(currentStreak, maxPitch) / 4f, 2f);
 			} else {
-				AudioPlayer.Play("StreakComplete", AudioType.UI, 0.8f, 3f);
-				Instance.Delay(0.15f, () => AudioPlayer.Play("StreakComplete", AudioType.UI, 1f, 3f));
-				Instance.Delay(0.3f, () => AudioPlayer.Play("StreakComplete", AudioType.UI, 1.2f, 3f));
-				Instance.Delay(0.5f, () => AudioPlayer.Play("StreakComplete", AudioType.UI, 1.5f, 3f));
+				AudioPlayer.Play(JSAM.Sounds.StreakComplete, AudioType.UI, 0.8f, 3f);
+				Instance.Delay(0.15f, () => AudioPlayer.Play(JSAM.Sounds.StreakComplete, AudioType.UI, 1f, 3f));
+				Instance.Delay(0.3f, () => AudioPlayer.Play(JSAM.Sounds.StreakComplete, AudioType.UI, 1.2f, 3f));
+				Instance.Delay(0.5f, () => AudioPlayer.Play(JSAM.Sounds.StreakComplete, AudioType.UI, 1.5f, 3f));
 			}
 		}
 	}

@@ -113,11 +113,10 @@ namespace Sperlich.Debug.Draw {
 					SetZTest(c.zTest);
 
 					if(IsTransparent(c.color)) {
-						Shapes.Draw.BlendMode = ShapesBlendMode.Transparent;
+						//Shapes.Draw.BlendMode = ShapesBlendMode.Transparent;
 					} else {
-						Shapes.Draw.BlendMode = ShapesBlendMode.Opaque;
+						//Shapes.Draw.BlendMode = ShapesBlendMode.Opaque;
 					}
-
 					Shapes.Draw.Cuboid(c.pos, c.normal, c.size, c.color);
 				}
 				while(Lines.Count > 0) {

@@ -1,12 +1,11 @@
 using DG.Tweening;
 using Shapes;
-using SimpleMan.Extensions;
-using static Sperlich.Debug.Draw.Draw;
 using Sperlich.FSM;
-using System.Collections;
 using UnityEngine;
 using MoreMountains.Feedbacks;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using static Sperlich.Debug.Draw.Draw;
 
 public class BossTank01 : BossAI, IHittable, IDamageEffector {
 
@@ -20,12 +19,11 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 	// Burst: Boss stands still and shoots a great amount of bullets in short time at the player.
 	// The bullets can reflect of walls which makes it more dangerous to dodge them.
 
-	[Header("Charge")]
-	public byte chargeSpeed = 8;
-	public byte waitDuration = 3;
-	public byte burstAmount = 4;
+	[Header("Boss 1")]
+	public FloatGrade chargeSpeed;
+	public FloatGrade burstAmount;
 	public AudioSource chargeSound;
-	private LayerMask chargePathMask = LayerMaskExtension.Create(GameMasks.Ground, GameMasks.Destructable, GameMasks.LevelBoundary, GameMasks.Block, GameMasks.BulletTraverse);
+	private LayerMask chargePathMask = LayerMaskExtension.Create(GameMasks.Destructable, GameMasks.LevelBoundary, GameMasks.Block, GameMasks.BulletTraverse);
 	[Header("References")]
 	[SerializeField] Line chargeLineL;
 	[SerializeField] Line chargeLineR;
@@ -41,17 +39,16 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 	Vector3 chargeDirection;
 	RaycastHit chargeHit;
 	byte rollerRotSpeed = 100;
-	byte normalMoveSpeed;
+	float normalMoveSpeed;
 	public bool fireFromPlayer => false;
 	public Vector3 damageOrigin => Pos;
 
 	protected override void Awake() {
 		base.Awake();
 		chargePath.SetActive(false);
-		trackSpawnDistance = 0.35f;
 		rollerTrigger.PlayerHit.AddListener(() => {
-			if(!Player.IsInvincible) {
-				Player.TakeDamage(this, true);
+			if(!Target.IsInvincible) {
+				Target.TakeDamage(this, true);
 			}
 		});
 
@@ -63,90 +60,93 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 	public override void InitializeTank() {
 		base.InitializeTank();
 		chargeDirection = Vector3.zero;
-		moveSpeed = normalMoveSpeed;
+		moveSpeed.Value = normalMoveSpeed;
 		rollerTrigger.TriggerHit.RemoveAllListeners();
 		TankState.FillWeightedStates(new List<(BossBehaviour, float)>() {
 			(BossBehaviour.Charge, 25f),
 			(BossBehaviour.Burst, 50f),
 		});
 		HideChargeLine();
-		GoToNextState(TankState.GetWeightedRandom(), 1.5f);
-		healthBar.gameObject.SetActive(false);
+		GoToNextState(TankState.GetWeightedRandom(), 1500).Forget();
 	}
 
 	// State Decision Maker
-	protected void GoToNextState(BossBehaviour state, float delay = 0) {
+	async UniTaskVoid GoToNextState(BossBehaviour state, int delay = 0) {
 		TankState.Push(state);
-		this.Delay(delay, () => ProcessState());
+		await UniTask.Delay(delay);
+		ProcessState().Forget();
 	}
 
-	private void CalculateMove(float delay = 0) {
-		if(IsAIEnabled) {
-			if(distToPlayer > 25) {
-				TankState.AddWeight(BossBehaviour.Charge, 30f);
-			} else {
-				TankState.AddWeight(BossBehaviour.Charge, 20f);
-			}
-			TankState.AddWeight(BossBehaviour.Burst, 10f);
-			TankState.PushRandomWeighted();
-			this.Delay(delay == 0 ? Time.deltaTime : delay, () => ProcessState());
+	async UniTask CalculateMove(int delay = 0) {
+		if (IsPlayReady == false) return;
+		await CheckPause();
+		if(distToPlayer > 25) {
+			TankState.AddWeight(BossBehaviour.Charge, 30f);
+		} else {
+			TankState.AddWeight(BossBehaviour.Charge, 20f);
 		}
+		TankState.AddWeight(BossBehaviour.Burst, 10f);
+		TankState.PushRandomWeighted();
+		await UniTask.Delay(delay);
+		if(HasSightContactToPlayer == false) {
+			GoToNextState(BossBehaviour.Burst).Forget();
+			return;
+		}
+		ProcessState().Forget();
 	}
 
-	protected void ProcessState() {
-		if(IsPlayReady) {
-			switch(TankState.State) {
-				case BossBehaviour.Charge:
-					StartCoroutine(ICharge());
-					break;
-				case BossBehaviour.Burst:
-					StartCoroutine(IBurst());
-					break;
-			}
+	async UniTaskVoid ProcessState() {
+		if (IsPlayReady == false) return;
+		await CheckPause();
+		switch (TankState.State) {
+			case BossBehaviour.Charge:
+				Charge().Forget();
+				break;
+			case BossBehaviour.Burst:
+				Burst().Forget();
+				break;
 		}
 	}
 
 	// State Execution
-
-	protected override IEnumerator ICharge() {
+	async UniTaskVoid Charge() {
+		if (IsPlayReady == false) return;
 		CalculateCharge();
 		float isAlignedToPlayer = 0;
 		canMove = false;
-		moveSpeed = chargeSpeed;
+		moveSpeed.Value = chargeSpeed;
 
-		HeadMode.Push(TankHeadMode.KeepRotation);
+		SetAiming(AimingMode.KeepRotation);
 		float maxTime = 0;
 		while(isAlignedToPlayer < 0.98f && IsPlayReady && maxTime < 1f) {
 			RotateTank(chargeDirection);
-			isAlignedToPlayer = Vector3.Dot((Player.Pos - Pos).normalized, transform.forward);
-			yield return IPauseTank();
+			isAlignedToPlayer = Vector3.Dot((Target.Pos - Pos).normalized, transform.forward);
 			maxTime += GetTime;
+			await CheckPause();
 		}
-		yield return new WaitForSeconds(0.25f);
+		await UniTask.Delay(250);
 
 		canMove = true;
 		rollerTrigger.TriggerHit.AddListener(action);
-		AudioPlayer.Play("SnowChargeStart", AudioType.SoundEffect, 0.8f, 1.2f, 0.6f);
+		AudioPlayer.Play(JSAM.Sounds.SnowChargeStart, AudioType.SoundEffect, 0.8f, 1.2f, 0.6f);
 		chargeSound.Play();
 		if(CurrentPhase == BossPhases.Half_Life) {
-			HeadMode.Push(TankHeadMode.AimAtPlayer);
+			SetAiming(AimingMode.AimAtPlayer);
 		} else {
-			HeadMode.Push(TankHeadMode.KeepRotation);
+			SetAiming(AimingMode.KeepRotation);
 		}
-		MoveMode.Push(MovementType.None);
+		SetMovement(MovementType.Move);
 		chargeSound.volume = 0.3f * GraphicSettings.SoundEffectsVolume;
 		chargeSound.pitch = 2f;
 		bool allowPitchDown = false;
 		MuteTrackSound = true;
-		disableDirectionLeader = true;
 		DOTween.To(() => chargeSound.pitch, x => chargeSound.pitch = x, 1f, 0.6f).OnComplete(() => allowPitchDown = true);
 
 		while(TankState == BossBehaviour.Charge && IsPlayReady) {
-			yield return IPauseTank();
+			await CheckPause();
 			DisplayChargeLine();
 			chargeVibration.PlayFeedbacks();
 			chargeSmoke.Play();
-			Move(chargeDirection);
 			if(CurrentPhase == BossPhases.Half_Life && HasSightContactToPlayer && RandomShootChance()) {
 				ShootBullet();
 			}
@@ -158,19 +158,18 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 		
 
 		canMove = false;
-		disableDirectionLeader = false;
-		moveSpeed = normalMoveSpeed;
+		moveSpeed.Value = normalMoveSpeed;
 		rollerTrigger.TriggerHit.RemoveListener(action);
-		AudioPlayer.Play("ChargeImpact", AudioType.SoundEffect, 1f, 1f);
+		AudioPlayer.Play(JSAM.Sounds.ChargeImpact, AudioType.SoundEffect, 1f, 1f);
 		HideChargeLine();
-		CalculateMove(2f);
 		DOTween.To(() => chargeSound.volume, x => chargeSound.volume = x, 0, 0.3f).SetEase(Ease.OutBounce).OnComplete(() => {
 			chargeSound.Stop();
 		});
+		await CalculateMove(2000);
 
 		void action() {
 			HideChargeLine();
-			moveSpeed = normalMoveSpeed;
+			moveSpeed.Value = normalMoveSpeed;
 			TankState.Push(BossBehaviour.Waiting);
 			float initY = Pos.y;
 			transform.DOMoveX(transform.position.x + -chargeDirection.x, 0.35f);
@@ -185,34 +184,30 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 		}
 	}
 
-	IEnumerator IBurst() {
+	async UniTaskVoid Burst() {
+		if (IsPlayReady == false) return;
 		int shot = 0;
-		this.RepeatUntil(() => TankState == BossBehaviour.Burst && IsPlayReady, () => {
-			MoveHead(Player.Pos + Player.MovingDir * 1.5f);
-		}, null);
-		byte originalMoveSpeed = moveSpeed;
-		byte newBurstAmount = burstAmount;
+		float originalMoveSpeed = moveSpeed;
+		float newBurstAmount = burstAmount;
+		SetAiming(AimingMode.AimAtPlayer);
+
 		if(CurrentPhase == BossPhases.Half_Life) {
-			MoveMode.Push(MovementType.MoveSmart);
-			RandomPath(Pos, playerDetectRadius, 6f, false);
-			moveSpeed /= 3;
+			SetMovement(MovementType.MoveSmart);
+			await RandomPathAsync(Pos, 15, 6f, false);
+			moveSpeed.Value /= 3;
 			canMove = true;
-			newBurstAmount = 4;
+			newBurstAmount += 1;
 		} 
 
 		while(shot < newBurstAmount && IsPlayReady) {
 			ShootBullet();
 			shot++;
-			if(CurrentPhase == BossPhases.Half_Life) {
-				yield return new WaitForSeconds(0.5f);
-			} else {
-				yield return new WaitForSeconds(reloadDuration);
-			}
-			yield return IPauseTank();
+			await UniTask.WaitUntil(() => CanShoot);
+			await CheckPause();
 		}
-		moveSpeed = originalMoveSpeed;
+		moveSpeed.Value = originalMoveSpeed;
 		rig.velocity = Vector3.zero;
-		CalculateMove(1f);
+		await CalculateMove(1000);
 	}
 	// Helper
 	void HideChargeLine() {
@@ -226,26 +221,26 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 	void DisplayChargeLine() {
 		chargePath.SetActive(true);
 		chargePath.transform.SetParent(null);
-		Physics.Raycast(Pos, transform.forward, out chargeHit, Mathf.Infinity, chargePathMask);
+		Physics.SphereCast(Pos, 1f, transform.forward, out chargeHit, Mathf.Infinity, chargePathMask);
 		chargeLineL.gameObject.SetActive(true);
 		chargeLineR.gameObject.SetActive(true);
 		chargeLineM.gameObject.SetActive(true);
 		chargeLineL.transform.localPosition = Vector3.zero;
 		chargeLineL.Start = chargeLineL.transform.InverseTransformPoint(Pos);
-		chargeLineL.End = chargeLineL.transform.InverseTransformPoint(chargeHit.point + transform.forward);
+		chargeLineL.End = chargeLineL.transform.InverseTransformPoint(chargeHit.point);
 		chargeLineL.transform.localPosition = new Vector3(-0.8f, 0, 0);
 
 		chargeLineR.transform.localPosition = Vector3.zero;
 		chargeLineR.Start = chargeLineR.transform.InverseTransformPoint(Pos);
-		chargeLineR.End = chargeLineR.transform.InverseTransformPoint(chargeHit.point + transform.forward);
+		chargeLineR.End = chargeLineR.transform.InverseTransformPoint(chargeHit.point);
 		chargeLineR.transform.localPosition = new Vector3(0.8f, 0, 0);
 
 		chargeLineM.Start = chargeLineM.transform.InverseTransformPoint(Pos);
-		chargeLineM.End = chargeLineM.transform.InverseTransformPoint(chargeHit.point + transform.forward);
+		chargeLineM.End = chargeLineM.transform.InverseTransformPoint(chargeHit.point);
 	}
 
 	void CalculateCharge() {
-		chargeDirection = (Player.Pos - Pos).normalized;
+		chargeDirection = (Target.Pos - Pos).normalized;
 		chargeDirection.y = 0;
 		Physics.Raycast(Pos, chargeDirection, out chargeHit, Mathf.Infinity, chargePathMask);
 		chargeDirection = (chargeHit.point - Pos).normalized;
@@ -267,7 +262,7 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 
 	protected override void DrawDebug() {
 		base.DrawDebug();
-		if(showDebug) {
+		if(debugMode) {
 			Text(Pos + Vector3.up, TankState.State.ToString());
 		}
 	}
@@ -275,7 +270,7 @@ public class BossTank01 : BossAI, IHittable, IDamageEffector {
 	protected override void Update() {
 		base.Update();
 		if(IsAIEnabled) {
-			rollerTransform.Rotate(-Vector3.right, rollerRotSpeed * distanceSinceLastFrame);
+			rollerTransform.Rotate(Vector3.right, rollerRotSpeed * distanceSinceLastFrame);
 		}
 	}
 }

@@ -52,7 +52,7 @@ public class GroundTile : IEditor {
 
 	// Looks at it surroundings and objects and decides which tile type to use
 	public void EvaluateTile() {
-		var blocks = Object.FindObjectsOfType<LevelBlock>().Where(b => b.isNotEditable == false && b.Index.y == 0).ToList();
+		var blocks = LevelEditor.GetAllBlocks().Where(b => b.Index.y == 0).ToList();
 		hasBlockAbove = false;
 		orientation = 0;
 		if(collider != null) {
@@ -60,7 +60,7 @@ public class GroundTile : IEditor {
 		}
 
 		if(Physics.Raycast(Index.xyz - Vector3.up, Vector3.up, out RaycastHit hit, 50, LevelGround.detectionMask)) {
-			if(hit.transform.TryGetComponent(out LevelBlock block) && block.isNotEditable == false) {
+			if(hit.transform.TryGetComponent(out LevelBlock block) && block.IsPreset == false) {
 				blockAbove = block.type;
 				hasBlockAbove = true;
 			}
@@ -69,7 +69,7 @@ public class GroundTile : IEditor {
 		// Automaticially Adjust holes to right mesh
 		if(IsAnyGapTile(type)) {
 			// Get adjazent tiles and filter them to only gap tiles
-			var neighs = LevelGround.Instance.FindNeighbours(Index).Where(t => IsAnyGapTile(t.type));
+			var neighs = LevelGround.FindNeighbours(Index).Where(t => IsAnyGapTile(t.type));
 			type = GroundTileType.Gap_Empty;
 			if(collider != null) {
 				collider.size = new Vector3(2, 2, 2);
@@ -84,25 +84,25 @@ public class GroundTile : IEditor {
 				// Tile is dead end down
 				if(neighs.Any(t => t.Index == Index + new Int2(0, -2))) {
 					type = GroundTileType.Gap_End;
-					orientation = 0;
+					orientation = 2;
 				}
 
 				// Tile is dead end Right
 				if(neighs.Any(t => t.Index == Index + new Int2(2, 0))) {
 					type = GroundTileType.Gap_End;
-					orientation = 3;
+					orientation = 1;
 				}
 
 				// Tile is dead end Up
 				if(neighs.Any(t => t.Index == Index + new Int2(0, 2))) {
 					type = GroundTileType.Gap_End;
-					orientation = 2;
+					orientation = 0;
 				}
 
 				// Tile is dead end Left
 				if(neighs.Any(t => t.Index == Index + new Int2(-2, 0))) {
 					type = GroundTileType.Gap_End;
-					orientation = 1;
+					orientation = 3;
 				}
 			}
 			// Horizontal & Vertical Walls
@@ -123,25 +123,25 @@ public class GroundTile : IEditor {
 				// Tile is T-Wall facing down
 				if(neighs.Any(t => t.Index == Index + new Int2(2, 0)) && neighs.Any(t => t.Index == Index + new Int2(-2, 0)) && neighs.Any(t => t.Index == Index + new Int2(0, -2))) {
 					type = GroundTileType.Gap_TWall;
-					orientation = 0;
+					orientation = 2;
 				}
 
 				// Tile is T-Wall facing up
 				if(neighs.Any(t => t.Index == Index + new Int2(2, 0)) && neighs.Any(t => t.Index == Index + new Int2(-2, 0)) && neighs.Any(t => t.Index == Index + new Int2(0, 2))) {
 					type = GroundTileType.Gap_TWall;
-					orientation = 2;
+					orientation = 0;
 				}
 
 				// Tile is T-Wall facing right
 				if(neighs.Any(t => t.Index == Index + new Int2(0, 2)) && neighs.Any(t => t.Index == Index + new Int2(0, -2)) && neighs.Any(t => t.Index == Index + new Int2(2, 0))) {
 					type = GroundTileType.Gap_TWall;
-					orientation = 3;
+					orientation = 1;
 				}
 
 				// Tile is T-Wall facing left
 				if(neighs.Any(t => t.Index == Index + new Int2(0, 2)) && neighs.Any(t => t.Index == Index + new Int2(0, -2)) && neighs.Any(t => t.Index == Index + new Int2(-2, 0))) {
 					type = GroundTileType.Gap_TWall;
-					orientation = 1;
+					orientation = 3;
 				}
 			}
 			// Corners
@@ -149,25 +149,25 @@ public class GroundTile : IEditor {
 				// Tile is Corner Left -> Down
 				if(neighs.Any(t => t.Index == Index + new Int2(-2, 0) && neighs.Any(t => t.Index == Index + new Int2(0, -2)))) {
 					type = GroundTileType.Gap_Corner;
-					orientation = 0;
+					orientation = 2;
 				}
 
 				// Tile is Corner Right -> Down
 				if(neighs.Any(t => t.Index == Index + new Int2(2, 0) && neighs.Any(t => t.Index == Index + new Int2(0, -2)))) {
 					type = GroundTileType.Gap_Corner;
-					orientation = 3;
+					orientation = 1;
 				}
 
 				// Tile is Corner Right -> Up
 				if(neighs.Any(t => t.Index == Index + new Int2(2, 0) && neighs.Any(t => t.Index == Index + new Int2(0, 2)))) {
 					type = GroundTileType.Gap_Corner;
-					orientation = 2;
+					orientation = 0;
 				}
 
 				// Tile is Corner Left -> Up
 				if(neighs.Any(t => t.Index == Index + new Int2(-2, 0) && neighs.Any(t => t.Index == Index + new Int2(0, 2)))) {
 					type = GroundTileType.Gap_Corner;
-					orientation = 1;
+					orientation = 3;
 				}
 			}
 		}
@@ -196,7 +196,7 @@ public class GroundTile : IEditor {
 					ExtraMesh.tag = "GroundTileExtra";
 				}
 			} catch(System.Exception e) {
-				Logger.LogError("Failed to set extra prefab from " + data, e);
+				Logger.LogError(e, "Failed to set extra prefab from " + data);
 			}
 		} else {
 			try {
@@ -208,13 +208,13 @@ public class GroundTile : IEditor {
 					ExtraMesh.tag = "GroundTileExtra";
 				}
 			} catch(System.Exception e) {
-				Logger.LogError("Failed to set extra prefab from " + data, e);
+				Logger.LogError(e, "Failed to set extra prefab from " + data);
 			}
 		}
 	}
 
 	public void Remove() {
-		Object.FindObjectOfType<LevelGround>().Tiles.Remove(this);
+		LevelGround.Tiles.Remove(this);
 		if(GameObject != null) {
 			Object.DestroyImmediate(GameObject);
 		}

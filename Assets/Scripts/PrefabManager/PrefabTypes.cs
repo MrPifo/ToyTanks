@@ -2,7 +2,7 @@ namespace Sperlich.PrefabManager {
 	public enum PrefabTypes {
 		None,
 		Bullet,
-		FastBullet,
+		FastBullet_2Bounce,
 		TrackerBullet,
 		MortarPellet,
 		TankTrack,
@@ -13,6 +13,9 @@ namespace Sperlich.PrefabManager {
 		BossBar,
 		StreakBubble,
 		IceSpike,
-		GameAnalytics
+		GameAnalytics,
+		FastBullet_NoBounce,
+		SuperPierceBounce,
+		TankCustomizer,
 	}
 }

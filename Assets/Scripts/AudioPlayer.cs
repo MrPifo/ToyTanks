@@ -1,15 +1,18 @@
-using CarterGames.Assets.AudioManager;
 using System.Collections;
 using System.Collections.Generic;
+using JSAM;
 using UnityEngine;
 
 public class AudioPlayer {
 
-	public static void Play(string track, AudioType audioType, float pitch, float volume) => Play(track, audioType, pitch, pitch, volume); 
-	public static void Play(string track, AudioType audioType, float randomMinPitch = 1f, float randomMaxPitch = 1f, float sourceVolume = 1f) {
-		if(AudioManager.instance != null && track != "" && AudioManager.instance.HasClip(track)) {
+	public static AudioManager Instance => AudioManager.instance;
+
+	public static void Play(Sounds track, AudioType audioType, float pitch, float volume) => Play(track, audioType, pitch, pitch, volume); 
+	public static void Play(Sounds track, AudioType audioType, float randomMinPitch = 1f, float randomMaxPitch = 1f, float sourceVolume = 1f) {
+		if(Instance != null && AudioManager.GetSound(track).file != null) {
 			float globalVolume = GraphicSettings.MainVolume / 100f * sourceVolume;
-			switch(audioType) {
+			var clip = AudioManager.GetSound(track);
+			switch (audioType) {
 				case AudioType.Default:
 					break;
 				case AudioType.SoundEffect:
@@ -23,7 +26,16 @@ public class AudioPlayer {
 				default:
 					break;
 			}
-			AudioManager.instance.Play(track, 0, globalVolume, Random.Range(randomMinPitch, randomMaxPitch));
+			clip.relativeVolume = globalVolume;
+			if(randomMinPitch != 1f || randomMaxPitch != 1f) {
+				clip.pitchShift = 0f;
+				clip.startingPitch = Random.Range(randomMinPitch, randomMaxPitch);
+			}
+			try {
+				AudioManager.PlaySound(track);
+			} catch {
+
+			}
 		}
 	}
 }

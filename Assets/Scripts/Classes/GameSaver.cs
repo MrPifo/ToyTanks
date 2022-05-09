@@ -4,6 +4,9 @@ using System.Linq;
 using UnityEngine;
 using BayatGames.SaveGameFree;
 using BayatGames.SaveGameFree.Serializers;
+using Cysharp.Threading.Tasks;
+using System.IO;
+using Newtonsoft.Json;
 
 public static class GameSaver {
 
@@ -27,6 +30,20 @@ public static class GameSaver {
 		var save = new SaveV1() {
 			PlayedLevels = new List<SaveV1.PlayedLevel>(),
 			LastModified = DateTime.Now,
+			tankPreset = new TankCustomizer.TankPreset() {
+				ability = CombatAbility.None,
+				bodyIndex = 0,
+				headIndex = 0
+			},
+			unlockedParts = new List<SaveV1.UnlockedPart>() {
+				new SaveV1.UnlockedPart(TankPartAsset.TankPartType.Body, 0),
+				new SaveV1.UnlockedPart(TankPartAsset.TankPartType.Head, 0)
+			},
+			unlockedAbilities = new List<CombatAbility>() {
+				CombatAbility.None,
+			},
+			SaveGameVersion = "1.0",
+			PlayerGuid = Guid.NewGuid(),
 		};
 		return save;
 	}
@@ -76,7 +93,7 @@ public static class GameSaver {
 
 			Logger.Log(Channel.SaveGame, "Game has been saved.");
 		} catch(Exception e) {
-			Logger.LogError("Something went wrong while saving to the SaveGame file.", e);
+			Logger.LogError(e, "Something went wrong while saving to the SaveGame file.");
 		}
 	}
 
@@ -114,9 +131,31 @@ public static class GameSaver {
 			Save();
 		} catch(Exception e) {
 			if(HasLevelBeenPlayed(levelId)) {
-				Logger.LogError("Level couldnt be found in the users played level list. Make sure to add the level before.", e);
+				Logger.LogError(e, "Level couldnt be found in the users played level list. Make sure to add the level before.");
 			} else {
-				Logger.LogError(e.Message, e);
+				Logger.LogError(e);
+			}
+		}
+	}
+
+	public static void UnlockPart(TankPartAsset.TankPartType type, int index) {
+		if(HasPartBeenUnlocked(type, index) == false) {
+			if (AssetLoader.GetParts(type).ToList().Find(t => t.id == index) != null) {
+				SaveInstance.unlockedParts.Add(new SaveV1.UnlockedPart(type, index));
+				Save();
+			} else {
+				Logger.Log(Channel.SaveGame, "Failed to unlock. Part with id " + index + " does not exist.");
+			}
+		}
+	}
+
+	public static void UnlockAbility(CombatAbility ability) {
+		if(HasAbilityBeenUnlocked(ability) == false) {
+			if ((int)ability < Enum.GetValues(typeof(CombatAbility)).Length) {
+				SaveInstance.unlockedAbilities.Add(ability);
+				Save();
+			} else {
+				Logger.Log(Channel.SaveGame, "Failed to unlock. CombatAbility with id " + (int)ability + " does not exist");
 			}
 		}
 	}
@@ -153,15 +192,17 @@ public static class GameSaver {
 			Save();
 		} catch (Exception e) {
 			if(HasLevelBeenPlayed(levelId)) {
-				Logger.LogError("Level couldnt be found in the users played level list. Make sure to add the level before.", e);
+				Logger.LogError(e, "Level couldnt be found in the users played level list. Make sure to add the level before.");
 			} else {
-				Logger.LogError(e.Message, e);
+				Logger.LogError(e);
 			}
 		}
 	}
 
 	public static bool HasLevelBeenPlayed(ulong levelId) => SaveInstance.PlayedLevels.Any(l => l.LevelId == levelId);
 	public static bool HasLevelBeenUnlocked(ulong levelId) => SaveInstance.GetPlayedLevel(levelId).completed;
+	public static bool HasPartBeenUnlocked(TankPartAsset.TankPartType type, int index) => SaveInstance.unlockedParts.Any(t => t.type == type && t.index == index);
+	public static bool HasAbilityBeenUnlocked(CombatAbility ability) => SaveInstance.unlockedAbilities.Any(ab => ab == ability);
 
 	#endregion
 
@@ -190,31 +231,30 @@ public static class GameSaver {
 
 	private static void LoadGame() {
 		// Check GameSave Version Number
-		SaveGame.Encode = false;	// is not encoded
-		if(SaveGame.TryLoad(nameof(VersionNumber), out VersionNumber) && VersionNumber != "") {
-			Logger.Log(Channel.SaveGame, "Detected save game version " + VersionNumber);
-		} else {
-			Logger.Log(Channel.SaveGame, "Failed to identify save game version.");
-			VersionNumber = "1.0";    // Needs to be updated to newest version if updated.
-			// Setting VersionNumber to highest default
-			SaveGame.Save(nameof(VersionNumber), "1.0");
-		}
-		SaveGame.Encode = EncodeSaveGame;
+		SaveGame.Encode = false;    // is not encoded
+		if (File.Exists(GamePaths.SaveGamePath)) {
+			SaveBase baseResult = JsonConvert.DeserializeObject<SaveBase>(File.ReadAllText(GamePaths.SaveGamePath));
 
-		switch(VersionNumber) {
-			case "1.0":
-				if(SaveGame.TryLoad("SaveGame", out SaveV1 _saveInstance)) {
-					SaveInstance = _saveInstance;
-				} else {
-					Logger.Log(Channel.SaveGame, "No compatible SaveGame has been found. Creating new one.");
-					SaveInstance = CreateFreshSaveGame();
-					Save();
-				}
-				break;
-			default:
+			if (baseResult != null) {
+				VersionNumber = baseResult.SaveGameVersion;
+				Logger.Log(Channel.SaveGame, "Detected save game version " + VersionNumber);
+			}
+			SaveGame.Encode = EncodeSaveGame;
+
+			// Try to load and find the newest GameVersion.
+			if (VersionNumber == "1.0" && SaveGame.TryLoad("SaveGame", out SaveV1 _saveInstance)) {
+				SaveInstance = _saveInstance;
+			} else {
+				Logger.Log(Channel.SaveGame, "Failed to find a compatible Save-Game version. Creating a new SaveGame instead.");
+
 				SaveInstance = CreateFreshSaveGame();
 				Save();
-				break;
+			}
+		} else {
+			Logger.Log(Channel.SaveGame, "No Save-Game file found. Creating new one.");
+
+			SaveInstance = CreateFreshSaveGame();
+			Save();
 		}
 	}
 
@@ -223,6 +263,6 @@ public static class GameSaver {
 
 	#region InfoAPI
 	// Version dependent Helper functions
-	public static bool HasGameBeenCompletedOnce => PlayerStats.Instance.ArcadeCompletedOnce;
+	public static bool HasGameBeenCompletedOnce => SaveInstance.DifficultyEasyCompleted || SaveInstance.DifficultyMediumCompleted || SaveInstance.DifficultyHardCompleted || SaveInstance.DifficultyOriginalCompleted;
 	#endregion
 }

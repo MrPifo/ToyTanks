@@ -11,9 +11,7 @@ using UnityEngine.EventSystems;
 using Newtonsoft.Json;
 using Sperlich.PrefabManager;
 using ToyTanks.LevelEditor.UI;
-using System.Threading.Tasks;
-using System.Collections;
-using UnityEngine.AddressableAssets;
+using Cysharp.Threading.Tasks;
 
 namespace ToyTanks.LevelEditor {
 	[ExecuteInEditMode]
@@ -28,21 +26,22 @@ namespace ToyTanks.LevelEditor {
 		/// TerraformUp: Move Ground to normal height
 		/// TerraformDown: Move Ground lower
 		/// </summary>
-		public enum BuildMode { View, Move, Build, BuildExtra, Tanks, Destroy, TerraformUp, TerraformDown, TerraBase }
-		public enum AssetView { Blocks, Tanks, ExtraBlocks, Terrain }
+		public enum BuildMode { View, Move, Build, BuildExtra, PlaceFlora, Tanks, Destroy, TerraformUp, TerraformDown, TerraBase }
+		public enum AssetView { Blocks, Tanks, ExtraBlocks, Flora, Terrain }
 
 		[Header("Configuration")]
-		[Range(1, 4096)]
 		public ulong loadedLevelId;
+		public bool compress;
 		public BuildMode buildMode = BuildMode.View;
 		public AssetView assetView;
 		public GridSizes gridSize;
 		public WorldTheme theme;
 		public BlockType selectedBlockType;
 		public ExtraBlocks selectedExtraBlock;
+		public FloraBlocks selectedFloraBlock;
 		public TankTypes selectedTankType;
 		public GroundTileType selectedTileType;
-		public static LayerMask blockTankLayers = LayerMaskExtension.Create(GameMasks.Ground, GameMasks.Player, GameMasks.Bot, GameMasks.Block, GameMasks.Destructable);
+		public static LayerMask blockTankLayers = LayerMaskExtension.Create(GameMasks.Ground, GameMasks.Player, GameMasks.Bot, GameMasks.Block, GameMasks.Destructable, GameMasks.Foliage);
 		public static LayerMask terrainLayers = LayerMaskExtension.Create(GameMasks.Ground, GameMasks.BulletTraverse);
 		public Color gridColor;
 		public List<Color> layerColors;
@@ -63,8 +62,6 @@ namespace ToyTanks.LevelEditor {
 		bool actionOnCooldown;
 		IEditor hoveringEditorAsset;
 		GameObject hoveringAsset;
-		LevelBlock selectedBlock;
-		TankBase selectedTank;
 		GroundTile selectedGroundTile;
 		RaycastHit mouseHit;
 		public List<Int3> failedIndexes;
@@ -74,15 +71,15 @@ namespace ToyTanks.LevelEditor {
 		/// <summary>
 		/// Returns true if buildmode is in any BuildMode. Terraforming is exluded.
 		/// </summary>
-		public bool IsInAnyBuildMode => buildMode == BuildMode.Build || buildMode == BuildMode.Tanks || buildMode == BuildMode.BuildExtra;
+		public bool IsInAnyBuildMode => buildMode == BuildMode.Build || buildMode == BuildMode.Tanks || buildMode == BuildMode.BuildExtra || buildMode == BuildMode.PlaceFlora;
 		public bool IsAnyTerrainMode => buildMode == BuildMode.TerraformDown || buildMode == BuildMode.TerraformUp || buildMode == BuildMode.TerraBase;
 
 		public Int3 CurrentHoverIndex;
+		public Int3 tankHoverPos;
 		public GridSizes debugDisplaySize;
 		public Int3 GridBoundary => LevelManager.GetGridBoundary(gridSize);
 
 		static GameObject PreviewInstance { get; set; }
-
 
 		public static int LevelLayer => LayerMask.NameToLayer("Level");
 		static LevelGrid Grid;
@@ -91,6 +88,7 @@ namespace ToyTanks.LevelEditor {
 		public static List<SelectItem> SelectItems { get; set; }
 		public static BlockAsset CurrentBlockAsset => AssetLoader.GetBlockAsset(Instance.theme, Instance.selectedBlockType);
 		public static ExtraBlockAsset CurrentExtraBlockAsset => AssetLoader.GetExtraBlockAsset(Instance.selectedExtraBlock);
+		public static FloraAsset CurrentFloraAsset => AssetLoader.GetFloraAsset(Instance.selectedFloraBlock);
 		public static TankAsset CurrentTankAsset => AssetLoader.GetTank(Instance.selectedTankType);
 		public static GroundTileData CurrentTileAsset => AssetLoader.GetGroundTile(Instance.selectedTileType);
 		private static LevelEditor _instance;
@@ -105,14 +103,18 @@ namespace ToyTanks.LevelEditor {
 
 		void Update() {
 			if(levelEditorStarted && !isTestPlaying && hasLevelBeenLoaded) {
-				PaintGridLines(GridBoundary, gridColor, Grid.Size);
+				PaintGridLines(GridBoundary, gridColor, LevelGrid.Size);
 				PaintSelection();
 				if(!EventSystem.current.IsPointerOverGameObject()) {
 					ComputeMouseSelection();
 					ComputeInput();
 				}
 				if(IsInAnyBuildMode && PreviewInstance != null && hoverSpaceIndexes.success) {
-					PreviewInstance.transform.position = GetOccupationAveragePos(hoverSpaceIndexes.indexes);
+					if(buildMode == BuildMode.Tanks) {
+						PreviewInstance.transform.position = tankHoverPos;
+					} else {
+						PreviewInstance.transform.position = GetOccupationAveragePos(hoverSpaceIndexes.indexes);
+					}
 					PreviewInstance.transform.rotation = Quaternion.Euler(GetSelectionRotation);
 				} else {
 					DeletePreview();
@@ -123,8 +125,7 @@ namespace ToyTanks.LevelEditor {
 			}
 		}
 
-		public void StartLevelEditor() {
-			FindObjectsOfType<TankBase>().ToList().ForEach(t => t.enabled = false);
+		public async UniTask StartLevelEditor() {
 			editorCamera = FindObjectOfType<EditorCamera>();
 			gameCamera = FindObjectOfType<GameCamera>();
 			levelManager = FindObjectOfType<LevelManager>();
@@ -136,13 +137,12 @@ namespace ToyTanks.LevelEditor {
 				rot = Camera.main.transform.rotation.eulerAngles
 			};
 
-			SwitchTheme(theme);
-			levelEditorStarted = true;
 			SwitchToEditView(1);
-			editorUI.RefreshUI();
 			GameManager.ShowCursor();
+			await AssetLoader.PreloadAssetsStartup();
+			editorUI.RefreshUI();
+			levelEditorStarted = true;
 			Game.IsGameRunningDebug = true;
-			AssetLoader.PreloadAssets();
 			Logger.Log(Channel.System, "Level Editor has been started.");
 		}
 
@@ -173,6 +173,7 @@ namespace ToyTanks.LevelEditor {
 							SetPreview();
 						}
 					} else if(buildMode == BuildMode.Tanks) {
+						tankHoverPos = new Int3(Mathf.RoundToInt(mouseHit.point.x), Mathf.RoundToInt(mouseHit.point.y), Mathf.RoundToInt(mouseHit.point.z));
 						hoverSpaceIndexes = GetOccupationIndexes(CurrentHoverIndex, TankAsset.Size);
 						DeletePreview();
 
@@ -181,6 +182,13 @@ namespace ToyTanks.LevelEditor {
 						}
 					} else if(buildMode == BuildMode.BuildExtra) {
 						hoverSpaceIndexes = GetOccupationIndexes(CurrentHoverIndex, new Int3(CurrentExtraBlockAsset.Size));
+						DeletePreview();
+
+						if(hoverSpaceIndexes.success) {
+							SetPreview();
+						}
+					} else if(buildMode == BuildMode.PlaceFlora) {
+						hoverSpaceIndexes = GetOccupationIndexes(CurrentHoverIndex, new Int3(CurrentFloraAsset.Size));
 						DeletePreview();
 
 						if(hoverSpaceIndexes.success) {
@@ -225,10 +233,13 @@ namespace ToyTanks.LevelEditor {
 				if(buildMode == BuildMode.Tanks) {
 					PlaceTank(CurrentHoverIndex);
 				}
+				if(buildMode == BuildMode.PlaceFlora) {
+					PlaceBlock(CurrentHoverIndex);
+                }
 
 				if(buildMode == BuildMode.Destroy) {
 					LevelBlock block;
-					if((hoveringAsset.TryGetComponent(out block) || hoveringAsset.TryGetComponent(out block)) && block.isNotEditable == false) {
+					if((hoveringAsset.TryGetComponent(out block) || hoveringAsset.TryGetComponent(out block)) && block.IsPreset == false) {
 						DestroyBlock(block, true);
 						hoveringAsset = null;
 						hoveringEditorAsset = null;
@@ -244,11 +255,11 @@ namespace ToyTanks.LevelEditor {
 					if((IsAnyTerrainMode && Grid.IsIndexAvailable(tileHoverIndex)) || (IsAnyTerrainMode && selectedGroundTile.type != selectedTileType)) {
 						if(selectedTileType != GroundTileType.Base) {
 							Grid.AddIndex(tileHoverIndex, 0);
-						} else if(LevelGround.Instance.GetTileAt(new Int2(tileHoverIndex.x, tileHoverIndex.z), out GroundTile tile) && tile.hasBlockAbove == false) {
+						} else if(LevelGround.GetTileAt(new Int2(tileHoverIndex.x, tileHoverIndex.z), out GroundTile tile) && tile.hasBlockAbove == false) {
 							Grid.RemoveIndex(tileHoverIndex);
 						}
 						selectedGroundTile.ChangeType(selectedTileType);
-						LevelGround.Instance.UpdateGapTiles();
+						LevelGround.UpdateGapTiles();
 					}
 				}
 			}
@@ -265,11 +276,7 @@ namespace ToyTanks.LevelEditor {
 				isTestPlaying = true;
 				SwitchToGameView(1);
 				DeletePreview();
-				foreach(var t in FindObjectsOfType<TankBase>()) {
-					t.enabled = true;
-				}
-
-				levelManager.StartGame();
+				FindObjectsOfType<TankBase>().ToList().ForEach(t => t.enabled = true);
 
 				editorUI.playButtonIcon.transform.DORotate(new Vector3(0, 0, 180), 0.5f);
 				editorUI.playButton.transform.DOPunchRotation(new Vector3(0, 0, 45), 0.5f, 5, 0.5f);
@@ -277,15 +284,18 @@ namespace ToyTanks.LevelEditor {
 				this.Delay(0.25f, () => editorUI.playButtonIcon.sprite = editorUI.pauseSprite);
 				Game.IsGameRunning = true;
 				DOTween.ToAlpha(() => gridColor, x => gridColor = x, 0, 2);
-				GameSaver.SaveInstance = new SaveV1();
-				GameSaver.SaveInstance.currentSaveSlot = 8;
-				GameManager.HideCursor();
+                GameSaver.SaveInstance = new SaveV1 {
+                    currentSaveSlot = 8
+                };
+                GameManager.HideCursor();
+				levelManager.StartGame();
 			}
 		}
 
 		public void StopTestPlay() {
 			isTestPlaying = false;
 			int fadeDurtaion = 2;
+			FindObjectsOfType<TankBase>().ToList().ForEach(t => t.enabled = false);
 			LevelManager.player.DisableControls();
 			SwitchToEditView(fadeDurtaion);
 			DeletePreview();
@@ -295,6 +305,7 @@ namespace ToyTanks.LevelEditor {
 			BossUI.ResetBossBar();
 			DOTween.ToAlpha(() => gridColor, x => gridColor = x, 1, fadeDurtaion);
 			editorUI.playButtonIcon.transform.DORotate(new Vector3(0, 0, 0), 0.1f);
+			MusicManager.StopMusic();
 
 			editorUI.playButtonIcon.sprite = editorUI.playSprite;
 			editorUI.ShowEditorUI();
@@ -303,7 +314,7 @@ namespace ToyTanks.LevelEditor {
 		}
 
 		bool AllowTestPlay() {
-			if(FindObjectOfType<PlayerInput>()) {
+			if(FindObjectOfType<PlayerTank>()) {
 				return true;
 			} else {
 				return false;
@@ -362,13 +373,17 @@ namespace ToyTanks.LevelEditor {
 					o = Instantiate(CurrentExtraBlockAsset.prefab, worldPos, Quaternion.Euler(GetSelectionRotation));
 					block = o.GetComponent<LevelExtraBlock>();
 					(block as LevelExtraBlock).SetData(index, hoverSpaceIndexes.indexes, CurrentExtraBlockAsset.block);
+				} else if(buildMode == BuildMode.PlaceFlora) {
+					o = Instantiate(CurrentFloraAsset.prefab, worldPos, Quaternion.Euler(GetSelectionRotation));
+					block = o.GetComponent<LevelFloraBlock>();
+					(block as LevelFloraBlock).SetData(index, hoverSpaceIndexes.indexes, CurrentFloraAsset.block);
 				}
 				
 				block.SetPosition(worldPos);
-				o.transform.SetParent(LevelManager.BlocksContainer);
+				o.transform.SetParent(LevelManager.Instance.BlocksContainer);
 
 				Grid.AddIndex(hoverSpaceIndexes.indexes, (int)CurrentBlockAsset.Size.y);
-				LevelGround.Instance.PatchTileAt(index.x, index.z);
+				LevelGround.PatchTileAt(index.x, index.z);
 
 				SetActionOnCooldown();
 				DeletePreview();
@@ -377,6 +392,7 @@ namespace ToyTanks.LevelEditor {
 		void PlaceLoadedBlock(LevelData.BlockData block) {
 			BlockAsset asset = AssetLoader.GetBlockAsset(theme, block.type);
 			ExtraBlockAsset extraAsset = null;
+			FloraAsset floraAsset = null;
 			
 			switch(block.rotation.y) {
 				case 0:
@@ -401,21 +417,31 @@ namespace ToyTanks.LevelEditor {
 				extraAsset = AssetLoader.GetExtraBlockAsset((block as LevelData.BlockExtraData).type);
 				indexes = GetOccupationIndexes(block.index, new Int3(extraAsset.Size.x, extraAsset.Size.y, extraAsset.Size.z));
 			}
+			if(block is LevelData.FloraBlockData) {
+				floraAsset = AssetLoader.GetFloraAsset((block as LevelData.FloraBlockData).type);
+				indexes = GetOccupationIndexes(block.index, new Int3(floraAsset.Size.x, floraAsset.Size.y, floraAsset.Size.z));
+			}
 			if(indexes.success) {
 				try {
 					GameObject o;
 					if(block is LevelData.BlockExtraData) {
 						o = Instantiate(extraAsset.prefab, block.pos, Quaternion.Euler(block.rotation));
 						o.isStatic = true;
+					} else if(block is LevelData.FloraBlockData) {
+						o = Instantiate(floraAsset.prefab, block.pos, Quaternion.Euler(block.rotation));
+						o.isStatic = true;
 					} else {
 						o = Instantiate(asset.prefab, block.pos, Quaternion.Euler(block.rotation));
 					}
 
-					o.transform.SetParent(LevelManager.BlocksContainer);
+					o.transform.SetParent(LevelManager.Instance.BlocksContainer);
 					LevelBlock comp;
-					if(block is LevelData.BlockExtraData) {
+					if (block is LevelData.BlockExtraData) {
 						comp = o.GetComponent<LevelExtraBlock>();
 						(comp as LevelExtraBlock).SetData(block.index, indexes.indexes, (block as LevelData.BlockExtraData).type);
+					} else if(block is LevelData.FloraBlockData) {
+						comp = o.GetComponent<LevelFloraBlock>();
+						(comp as LevelFloraBlock).SetData(block.index, indexes.indexes, (block as LevelData.FloraBlockData).type);
 					} else {
 						comp = o.GetComponent<LevelBlock>();
 						comp.SetData(block.index, indexes.indexes, block.type);
@@ -424,12 +450,10 @@ namespace ToyTanks.LevelEditor {
 					comp.SetPosition(block.pos);
 					Grid.AddIndex(indexes.indexes, (int)asset.Size.y);
 				} catch(System.Exception e) {
-					Logger.LogError("Failed to place Block " + asset.block + " at " + block.index, e);
+					Logger.LogError(e, "Failed to place Block " + asset.block + " at " + block.index);
 				}
 			} else {
 				Debug.LogError("Block " + asset.block + " could not be placed due to overlapping.");
-				//indexes = GetOccupationIndexes(block.index, new Int3(asset.Size.x, asset.Size.y, asset.Size.z));
-				//failedIndexes.AddRange(indexes.failed);
 			}
 		}
 		bool DestroyBlock(LevelBlock block, bool ignoreAbove = false) {
@@ -439,8 +463,8 @@ namespace ToyTanks.LevelEditor {
 					foreach(var i in block.allIndexes) {
 						Grid.RemoveIndex(i);
 					}
-					DestroyImmediate(block.gameObject);
-					LevelGround.Instance.PatchTileAt(index.x, index.z);
+					Destroy(block.gameObject);
+					LevelGround.PatchTileAt(index.x, index.z);
 					SetActionOnCooldown();
 					return true;
 				}
@@ -451,10 +475,10 @@ namespace ToyTanks.LevelEditor {
 		void PlaceTank(Int3 index) {
 			if(CurrentTankAsset != null && FollowsPlacementRules() && hoverSpaceIndexes.success && index.y == 0) {
 				var worldPos = GetOccupationAveragePos(hoverSpaceIndexes.indexes);
-				var tank = Instantiate(CurrentTankAsset.prefab, worldPos + CurrentTankAsset.tankSpawnOffset, Quaternion.Euler(GetSelectionRotation));
+				var tank = Instantiate(CurrentTankAsset.prefab, tankHoverPos + CurrentTankAsset.tankSpawnOffset, Quaternion.Euler(GetSelectionRotation));
 
 				Grid.AddIndex(hoverSpaceIndexes.indexes, 4);
-				tank.transform.SetParent(LevelManager.TanksContainer);
+				tank.transform.SetParent(LevelManager.Instance.TanksContainer);
 				tank.GetComponent<TankBase>().PlacedIndex = index;
 				tank.GetComponent<TankBase>().OccupiedIndexes = hoverSpaceIndexes.indexes.ToArray();
 
@@ -480,8 +504,8 @@ namespace ToyTanks.LevelEditor {
 			}
 			var indexes = GetOccupationIndexes(tank.index, TankAsset.Size);
 			if(indexes.success) {
-				var o = Instantiate(tankAsset.prefab, tank.pos + tankAsset.tankSpawnOffset, Quaternion.Euler(tank.rotation));
-				o.transform.SetParent(LevelManager.TanksContainer);
+				var o = Instantiate(tankAsset.prefab, tank.pos.Vector3 + tankAsset.tankSpawnOffset, Quaternion.Euler(tank.rotation));
+				o.transform.SetParent(LevelManager.Instance.TanksContainer);
 				o.GetComponent<TankBase>().PlacedIndex = tank.index;
 				o.GetComponent<TankBase>().OccupiedIndexes = indexes.indexes.ToArray();
 				Grid.AddIndex(indexes.indexes, TankAsset.Size.y);
@@ -499,9 +523,9 @@ namespace ToyTanks.LevelEditor {
 			}
 		}
 
-		private async Task SetActionOnCooldown() {
+		private async UniTaskVoid SetActionOnCooldown() {
 			actionOnCooldown = true;
-			await Task.Delay(100);
+			await UniTask.Delay(100);
 			actionOnCooldown = false;
 		}
 
@@ -540,7 +564,7 @@ namespace ToyTanks.LevelEditor {
 								}
 							}
 
-							Draw.Cube(targetIndex, hoverSpaceIndexes.success ? GetLayerColor(index.y) : Color.red, new Vector3(Grid.Size * 0.95f, 0.05f, Grid.Size * 0.95f), true);
+							Draw.Cube(targetIndex, hoverSpaceIndexes.success ? GetLayerColor(index.y) : Color.red, new Vector3(LevelGrid.Size * 0.95f, 0.05f, LevelGrid.Size * 0.95f), true);
 						}
 					}
 				}
@@ -552,9 +576,9 @@ namespace ToyTanks.LevelEditor {
 			var failed = new List<Int3>();
 			bool isValid = true;
 
-			for(int x = 0; x < size.x; x += Grid.Size) {
-				for(int z = 0; z < size.z; z += Grid.Size) {
-					for(int y = 0; y < size.y; y += Grid.Size) {
+			for(int x = 0; x < size.x; x += LevelGrid.Size) {
+				for(int z = 0; z < size.z; z += LevelGrid.Size) {
+					for(int y = 0; y < size.y; y += LevelGrid.Size) {
 						var index = new Int3();
 						switch(rotateSelection) {
 							case 0:
@@ -615,7 +639,9 @@ namespace ToyTanks.LevelEditor {
 					PreviewInstance = Instantiate(CurrentTankAsset.prefab);
 				} else if(buildMode == BuildMode.BuildExtra) {
 					PreviewInstance = Instantiate(CurrentExtraBlockAsset.prefab);
-				}
+				} else if(buildMode == BuildMode.PlaceFlora) {
+					PreviewInstance = Instantiate(CurrentFloraAsset.prefab);
+                }
 				RemoveColliders(PreviewInstance);
 				PreviewInstance.GetComponent<IEditor>().SetAsPreview();
 			}
@@ -623,98 +649,78 @@ namespace ToyTanks.LevelEditor {
 
 		public void DeletePreview() {
 			if(PreviewInstance != null) {
+				// Immediate required
 				DestroyImmediate(PreviewInstance);
+				PreviewInstance = null;
 			}
 		}
 
 		public void ResetSelection() {
 			SelectItems = null;
-			selectedBlock = null;
 			selectedGroundTile = null;
-			selectedTank = null;
 			hoveringEditorAsset = null;
 			hoveringAsset = null;
 		}
 
 		bool FollowsPlacementRules() {
 			// Checks if level would be playable this way
-			if(CurrentTankAsset != null && CurrentTankAsset.prefab.GetComponent<TankBase>() is PlayerInput && FindObjectsOfType<PlayerInput>().Count() >= 2) {
+			if(selectedTankType == TankTypes.Player && FindObjectsOfType<PlayerTank>().Length > 1) {
 				return false;
 			}
 			return true;
 		}
 
-		// Loading Assets
+		// Edits
+		public async void SwitchTheme(WorldTheme newTheme) {
+			LevelData.theme = newTheme;
 
-		public void LoadExtras() {
-
-		}
-
-		public void SwitchTheme(WorldTheme newTheme) {
-			theme = newTheme;
-			//CurrentTheme = ThemeAssets.Find(t => t.theme == theme);
-
-			foreach(var block in FindObjectsOfType<LevelBlock>().Where(b => b.isNotEditable == false)) {
-				if(block is not LevelExtraBlock) {
-					block.SetTheme(theme);
-				}
-			}
-
-			ReflectionProbe.RenderProbe();
-
-			foreach(Transform t in themePresets) {
-				t.gameObject.SetActive(false);
-			}
-
+			await ClearLevel();
+			await LoadOfficialLevel(LevelData);
 			LevelManager.EnablePreset(gridSize, theme);
-			LevelGround.Instance.SetTheme(theme);
+			LevelGround.SetTheme(theme);
 			editorUI.RefreshUI();
 		}
-
-		public void SwitchGridSize(GridSizes newSize, bool ignorePrompt = true) {
+		public async UniTask SwitchGridSize(GridSizes newSize, bool ignorePrompt = true) {
 			if(newSize != gridSize) {
 				if(ignorePrompt == false) {
-					StartCoroutine(IResize());
-					IEnumerator IResize() {
-						var tempGrid = new LevelGrid(LevelManager.GetGridBoundary(newSize), 2);
-						bool allowDeletion = false;
-						bool modalOpened = false;
+					var tempGrid = new LevelGrid(LevelManager.GetGridBoundary(newSize));
+					bool allowDeletion = false;
+					bool modalOpened = false;
 
-						// Check if any block must be removed for resizing
-						var checkList = FindObjectsOfType<LevelBlock>().Where(b => b.isNotEditable == false).OfType<GameEntity>().ToList();
-						checkList.AddRange(FindObjectsOfType<TankBase>().OfType<GameEntity>());
-						foreach(var e in checkList) {
-							// If any entity ever goes into this block a popup will appear and ask if the outside blocks should really be removed
-							if((e is LevelBlock && tempGrid.AreAllIndexesAvailable((e as LevelBlock).allIndexes) == false) || (e is TankBase && tempGrid.AreAllIndexesAvailable((e as TankBase).OccupiedIndexes.ToList()) == false)) {
-								modalOpened = true;
-								SimpleModalWindow.Create(false).SetHeader("Level will be modified!")
-										.SetBody("Changing the size to a smaller one that before results in loss of placed objects. \n Do you want to coninue?")
-										.AddButton("Confirm", () => { allowDeletion = true; }, ModalButtonType.Normal)
-										.AddButton("Cancel", () => { allowDeletion = false; }, ModalButtonType.Danger).Show();
-								break;
-							}
+					// Check if any block must be removed for resizing
+					var checkList = GetAllBlocks().OfType<GameEntity>().ToList();
+					checkList.AddRange(GetAllTanks().OfType<GameEntity>());
+					foreach (var e in checkList) {
+						// If any entity ever goes into this block a popup will appear and ask if the outside blocks should really be removed
+						if ((e is LevelBlock && tempGrid.AreAllIndexesAvailable((e as LevelBlock).allIndexes) == false) || (e is TankBase && tempGrid.AreAllIndexesAvailable((e as TankBase).OccupiedIndexes.ToList()) == false)) {
+							modalOpened = true;
+							SimpleModalWindow.Create(false).SetHeader("Level will be modified!")
+									.SetBody("Changing the size to a smaller one that before results in loss of placed objects. \n Do you want to coninue?")
+									.AddButton("Confirm", () => { allowDeletion = true; }, ModalButtonType.Normal)
+									.AddButton("Cancel", () => { allowDeletion = false; }, ModalButtonType.Danger).Show();
+							break;
 						}
-
-						// Wait until modal has been confirmed if opened
-						yield return new WaitUntil(() => modalOpened == false || allowDeletion == true);
-						// Interrupt operation if deletion is not wanted
-						if(modalOpened && allowDeletion == false) {
-							editorUI.RefreshUI();
-							yield break;
-						}
-						RescaleLevel(newSize);
 					}
+
+					// Wait until modal has been confirmed if opened
+					await UniTask.WaitUntil(() => modalOpened == false || allowDeletion == true);
+					// Interrupt operation if deletion is not wanted
+					if (modalOpened && allowDeletion == false) {
+						editorUI.RefreshUI();
+						return;
+					}
+					await RescaleLevel(newSize);
 				} else {
-					RescaleLevel(newSize);
+					await RescaleLevel(newSize);
 				}
 			}
+			await UniTask.WaitForEndOfFrame(this);
 		}
-
-		private void RescaleLevel(GridSizes newSize) {
+		private async UniTask RescaleLevel(GridSizes newSize) {
 			gridSize = newSize;
-			var tempGrid = new LevelGrid(GridBoundary, 2);
+			var tempGrid = new LevelGrid(GridBoundary);
 			// Rescaling Grid
-			foreach(var block in FindObjectsOfType<LevelBlock>().Where(b => b.isNotEditable == false)) {
+			foreach(var block in GetAllBlocks()) {
 				if(tempGrid.AreAllIndexesAvailable(block.allIndexes)) {
 					tempGrid.AddIndex(block.allIndexes, (int)block.Size.y);
 				} else {
@@ -735,85 +741,86 @@ namespace ToyTanks.LevelEditor {
 			}
 
 			List<LevelData.GroundTileData> groundTiles = new List<LevelData.GroundTileData>();
-			foreach(var tile in LevelGround.Instance.Tiles) {
-				if(tile.type != GroundTileType.Base) {
-					var data = new LevelData.GroundTileData() {
-						groundType = tile.type,
-						index = tile.Index
-					};
-					groundTiles.Add(data);
+			if (LevelGround.Tiles != null && LevelGround.Tiles.Count > 0) {
+				foreach (var tile in LevelGround.Tiles) {
+					if (tile.type != GroundTileType.Base) {
+						var data = new LevelData.GroundTileData() {
+							groundType = tile.type,
+							index = tile.Index
+						};
+						groundTiles.Add(data);
+					}
 				}
 			}
 
 			hoveringEditorAsset = null;
 			hoveringAsset = null;
-			LevelGround.Instance.Generate(gridSize, true, groundTiles);
+			LevelGround.Generate(gridSize, true, groundTiles);
+			LevelGround.SetTheme(theme);
 			LevelManager.EnablePreset(gridSize, theme);
 			editorUI.RefreshUI();
 		}
 
 		// Options
-		public void SaveCustomLevel() {
-			if(!File.Exists(GamePaths.GetLevelPath(LevelData))) {
-				var stream = File.Create(GamePaths.GetLevelPath(LevelData));
-				stream.Close();
-			}
-
-			DeletePreview();
-			LevelData.blocks = new List<LevelData.BlockData>();
-			LevelData.tanks = new List<LevelData.TankData>();
-
-			foreach(var b in FindObjectsOfType<LevelBlock>().Where(b => b.isNotEditable == false)) {
-				if(b is LevelExtraBlock) {
-					LevelData.blocks.Add(new LevelData.BlockExtraData() {
-						pos = new Int3(b.transform.position),
-						index = b.Index,
-						rotation = GetValidRotation(b.transform.rotation.eulerAngles),
-						type = (b as LevelExtraBlock).extraType
-					});
-				} else {
-					LevelData.blocks.Add(new LevelData.BlockData() {
-						pos = new Int3(b.transform.position),
-						index = b.Index,
-						rotation = GetValidRotation(b.transform.rotation.eulerAngles),
-						type = b.type
-					});
-				}
-			}
-			foreach(var t in FindObjectsOfType<TankBase>()) {
-				var data = new LevelData.TankData() {
-					pos = new Int3(t.transform.position),
-					index = t.PlacedIndex,
-					rotation = GetValidRotation(t.transform.rotation.eulerAngles),
-					tankType = t.TankType
-				};
-				LevelData.tanks.Add(data);
-			}
-			//string json = JsonConvert.SerializeObject(LevelData, Formatting.Indented);
-			//File.WriteAllText(GamePaths.GetLevelPath(LevelData), json);
-			GameManager.CurrentLevel = LevelData;
-		}
 		public void ExitLevelEditor() {
 			GameManager.ReturnToMenu("Exiting Editor");
 		}
 
 		// Level IO
-		public void ClearLevel() {
+		public async UniTask ClearLevel() {
 			hasLevelBeenLoaded = false;
-			foreach(var b in FindObjectsOfType<LevelBlock>().Where(b => b.isNotEditable == false)) {
-				DestroyImmediate(b.gameObject);
-			}
-			foreach(var t in FindObjectsOfType<TankBase>()) {
-				DestroyImmediate(t.gameObject);
+			foreach(var b in GetGameEntities()) {
+				Destroy(b.gameObject);
 			}
 
 			hoverSpaceIndexes = (false, new List<Int3>(), new List<Int3>());
 			CurrentHoverIndex = new Int3(0, -2, 0);
 			DeletePreview();
 			ResetSelection();
+			LevelGround.Clear();
 			LevelManager.Instance.presets.ForEach(preset => preset.gameobject.Hide());
 			PrefabManager.ResetPrefabManager();
 			PrefabManager.Initialize("Level");
+			await UniTask.WaitForEndOfFrame(this);
+		}
+		public void RepairLevel() {
+			Grid = new LevelGrid(LevelManager.GetGridBoundary(gridSize));
+			foreach (var b in GetAllBlocks()) {
+				foreach(var i in b.allIndexes) {
+					Grid.AddIndex(i, Grid.WorldPosToIndex(b.Pos).y);
+                }
+			}
+		}
+		public void LoadOfficialLevel(ulong levelId) => _ = LoadOfficialLevel(AssetLoader.GetOfficialLevel(levelId));
+		public async UniTask LoadOfficialLevel(LevelData level) {
+			LevelData = level;
+			GameManager.CurrentLevel = LevelData;
+			Logger.Log(Channel.Loading, "Loading official level: " + level.levelId);
+			await ClearLevel();
+
+			Grid = new LevelGrid(GridBoundary);
+			loadedLevelId = LevelData.levelId;
+			failedIndexes = new List<Int3>();
+			theme = level.theme;
+			await SwitchGridSize(LevelData.gridSize);
+			DeletePreview();
+			ResetSelection();
+
+			foreach (var block in LevelData.blocks) {
+				PlaceLoadedBlock(block);
+			}
+			if (Application.isPlaying) {
+				foreach (var tank in LevelData.tanks) {
+					PlaceLoadedTank(tank);
+				}
+			}
+
+			editorUI.RefreshUI();
+			await UniTask.WaitForEndOfFrame(this);
+			LevelGround.Generate(gridSize, true, LevelData.groundTiles);
+			LevelGround.SetTheme(theme);
+			LevelManager.EnablePreset(gridSize, theme);
+			hasLevelBeenLoaded = true;
 		}
 
 #if UNITY_EDITOR
@@ -837,7 +844,7 @@ namespace ToyTanks.LevelEditor {
 				if(e is TankBase) {
 					TankBase t = e as TankBase;
 					var data = new LevelData.TankData() {
-						pos = new Int3(t.transform.position.x, 0, t.transform.position.z),
+						pos = new Float3(t.transform.position.x, 0, t.transform.position.z),
 						index = t.PlacedIndex,
 						rotation = GetValidRotation(t.transform.rotation.eulerAngles),
 						tankType = t.TankType
@@ -853,6 +860,15 @@ namespace ToyTanks.LevelEditor {
 						type = b.extraType
 					};
 					LevelData.blocks.Add(data);
+				} else if(e is LevelFloraBlock) {
+					LevelFloraBlock b = e as LevelFloraBlock;
+					var data = new LevelData.FloraBlockData() {
+						pos = new Int3(b.transform.position - b.offset),
+						index = b.Index,
+						rotation = GetValidRotation(b.transform.rotation.eulerAngles),
+						type = b.vegetationType
+					};
+					LevelData.blocks.Add(data);
 				} else if(e is LevelBlock) {
 					LevelBlock b = e as LevelBlock;
 					var data = new LevelData.BlockData() {
@@ -864,7 +880,7 @@ namespace ToyTanks.LevelEditor {
 					LevelData.blocks.Add(data);
 				}
 			}
-			foreach(var tile in LevelGround.Instance.Tiles) {
+			foreach(var tile in LevelGround.Tiles) {
 				if(tile.type != GroundTileType.Base) {
 					var data = new LevelData.GroundTileData() {
 						groundType = tile.type,
@@ -875,67 +891,41 @@ namespace ToyTanks.LevelEditor {
 			}
 
 			string json = JsonConvert.SerializeObject(LevelData, new JsonSerializerSettings() {
-				Formatting = Formatting.Indented,
+				Formatting = Formatting.None,
 				TypeNameHandling = TypeNameHandling.Auto,
 			});
+			if(compress) {
+				json = Game.CompressString(json);
+			}
 			File.WriteAllText(GamePaths.GetOfficialLevelPath(LevelData), json);
 			GameManager.CurrentLevel = LevelData;
 			AssetDatabase.Refresh();
 			Logger.Log(Channel.SaveGame, "Official level saved to: " + GamePaths.GetOfficialLevelPath(LevelData));
 		}
+		public static void CompressAllLevels() {
+			for (int i = 1; i < Game.Levels.Length; i++) {
+				try {
+					string path = GamePaths.Official_Levels_Folder + "/Level_" + i + ".json";
+					string text = Game.ReadFromFile(path, false);
+					text = text.Replace("BlockHalf", "Step").Replace("TriangleRoof", "Roof");
+					Game.WriteToFile(text, path, true);
+				} catch {
 
-		public void LoadOfficialLevel(ulong levelId) {
-			Logger.Log(Channel.Loading, "Loading official level: " + levelId);
-			ClearLevel();
-			LoadExtras();
-
-			LevelData = AssetLoader.GetOfficialLevel(levelId);
-			GameManager.CurrentLevel = LevelData;
-			Grid = new LevelGrid(GridBoundary, 2);
-			loadedLevelId = LevelData.levelId;
-			failedIndexes = new List<Int3>();
-			SwitchGridSize(LevelData.gridSize);
-			DeletePreview();
-			ResetSelection();
-
-			foreach(var block in LevelData.blocks) {
-				PlaceLoadedBlock(block);
-			}
-			if(Application.isPlaying) {
-				foreach(var tank in LevelData.tanks) {
-					PlaceLoadedTank(tank);
 				}
 			}
+		}
+		public static void DecompressAllLevels() {
+			for (int i = 1; i < Game.Levels.Length; i++) {
+				try {
+					string path = GamePaths.Official_Levels_Folder + "/Level_" + i + ".json";
+					string text = Game.ReadFromFile(path, true);
+					Game.WriteToFile(text, path, false);
+				} catch {
 
-			SwitchTheme(LevelData.theme);
-			LevelManager.EnablePreset(gridSize, theme);
-			//LevelLightmapper.SwitchLightmaps(LevelData.levelId);
-			LevelGround.Instance.Generate(gridSize, true, LevelData.groundTiles);
-			LevelGround.Instance.SetTheme(theme);
-			hasLevelBeenLoaded = true;
-			editorUI.RefreshUI();
+				}
+			}
 		}
 #endif
-
-		public void LoadUserLevel(LevelData data) {
-			ClearLevel();
-			LevelData = data;
-
-			gridSize = LevelData.gridSize;
-			theme = LevelData.theme;
-			hasLevelBeenLoaded = true;
-			SwitchGridSize(gridSize);
-			SwitchTheme(theme);
-			Grid = new LevelGrid(GridBoundary, 2);
-
-			foreach(var block in LevelData.blocks) {
-				PlaceLoadedBlock(block);
-			}
-			foreach(var tank in LevelData.tanks) {
-				PlaceLoadedTank(tank);
-			}
-		}
-
 		public static void SetMaterialsAsPreview(Material[] mats) {
 			foreach(var mat in mats) {
 				mat.SetFloat("_EditorPreview", 1f);
@@ -975,6 +965,9 @@ namespace ToyTanks.LevelEditor {
 			rotation.z = 0;
 			return new Int3(rotation.x, rotation.y, rotation.z);
 		}
+		public static GameEntity[] GetGameEntities() => FindObjectsOfType<GameEntity>().Where(g => g.CompareTag("LevelPreset") == false).ToArray();
+		public static LevelBlock[] GetAllBlocks() => FindObjectsOfType<LevelBlock>().Where(g => g.CompareTag("LevelPreset") == false).ToArray();
+		public static TankBase[] GetAllTanks() => FindObjectsOfType<TankBase>().ToArray();
 
 		private void OnDrawGizmos() {
 			if(Application.isPlaying == false) {
@@ -994,7 +987,7 @@ namespace ToyTanks.LevelEditor {
 			GUILayout.Space(25);
 			GUILayout.Label("Official Level Operations");
 			if(GUILayout.Button("Load Level")) {
-				builder.LoadOfficialLevel(builder.loadedLevelId);
+				builder.LoadOfficialLevel(AssetLoader.GetOfficialLevel(builder.loadedLevelId));
 			}
 			GUILayout.Space(5);
 			if(GUILayout.Button("Save Level")) {
@@ -1003,6 +996,14 @@ namespace ToyTanks.LevelEditor {
 			GUILayout.Space(5);
 			if(GUILayout.Button("Clear")) {
 				builder.ClearLevel();
+			}
+			GUILayout.Space(5);
+			if (GUILayout.Button("Decompress Levels")) {
+				LevelEditor.DecompressAllLevels();
+			}
+			GUILayout.Space(5);
+			if (GUILayout.Button("Compress Levels")) {
+				LevelEditor.CompressAllLevels();
 			}
 		}
 	}

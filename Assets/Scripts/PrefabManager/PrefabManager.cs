@@ -105,9 +105,9 @@ namespace Sperlich.PrefabManager {
 				return o;
 			} catch (Exception e) {
 				if(HasBeenInitialized == false) {
-					Logger.LogError("PrefabManager has not been initialized!", e);
+					Logger.LogError(e, "PrefabManager has not been initialized!");
 				} else {
-					Logger.LogError("PrefabManager failed to instantiate " + type.ToString(), e);
+					Logger.LogError(e, "PrefabManager failed to instantiate " + type);
 				}
 				throw e;
             }
@@ -166,9 +166,9 @@ namespace Sperlich.PrefabManager {
 				return poolObject.storedObject;
 			} catch(Exception e) {
 				if(HasBeenInitialized == false) {
-					Logger.LogError("PrefabManager has not been initialized!", e);
+					Logger.LogError(e, "PrefabManager has not been initialized.");
 				} else {
-					Logger.LogError("PrefabManager failed to spawn " + type.ToString(), e);
+					Logger.LogError(e, "PrefabManager failed to spawn.");
 				}
 				throw e;
 			}
@@ -220,7 +220,7 @@ namespace Sperlich.PrefabManager {
 					});
 				}
 			} catch(Exception e) {
-				Logger.LogError("PrefabManager failed to free the GameObject " + gameobject.PoolObject.type.ToString(), e);
+				Logger.LogError(e, "PrefabManager failed to free the GameObject " + gameobject.PoolObject.type);
 				throw e;
 			}
 		}

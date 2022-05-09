@@ -8,13 +8,12 @@ namespace ToyTanks.LevelEditor {
 
 		public Dictionary<Int3, bool> Grid { get; set; }
 		Dictionary<Int2, List<int>> indexHeights;
-		public int Size { get; set; }
+		public const int Size = 2;
 		public Int3 Boundaries { get; set; }
 
-		public LevelGrid(Int3 boundaries, int size) {
+		public LevelGrid(Int3 boundaries) {
 			Grid = new Dictionary<Int3, bool>();
 			indexHeights = new Dictionary<Int2, List<int>>();
-			Size = size;
 			Boundaries = boundaries;
 
 			for(int x = -boundaries.x; x < boundaries.x; x++) {

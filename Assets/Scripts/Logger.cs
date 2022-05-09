@@ -63,33 +63,32 @@ public class Logger {
 
 	public static string FileLogPath => Application.persistentDataPath + "/ToyTanks.log";
 
-	public static void LogError(string message, Exception e, Channel channel = Channel.Default) {
-		//message = message + "\n ErrorMessage: \n" + e.Message;
+	public static void LogError(Exception e, string message = "") {
+		message = message + "\n ErrorMessage: \n" + e.Message;
 
-		//string consoleString = string.Empty;
-		//string fileString = string.Empty;
-		//DateTime date = DateTime.Now;
+		string errorMessage = "Error: " + e.Message;
 
-		//consoleString = $"[<color={channelToColour[channel]}>" + channel.ToString() + "</color>] " + message;
-		//fileString = "[" + date.ToShortTimeString() + "]" + $"[" + channel.ToString() + "] " + message;
-		//fileString = Encoding.UTF8.GetString(Encoding.Default.GetBytes(fileString));
-
-		//WriteToLogfile(fileString);
-		//Debug.LogError(consoleString);
-		Debug.LogError(message);
+		if(message.Length > 0) {
+			WriteToLogfile(message);
+			Debug.Log(message);
+		}
+		WriteToLogfile(errorMessage);
+		WriteToLogfile(e.StackTrace);
+		Debug.LogError(errorMessage);
+		Debug.LogError(e.StackTrace);
 	}
 	public static void Log(Channel channel, string message) => Log(message, channel);
-	public static void Log(string message, Channel channel) {
-		//string consoleString = string.Empty;
-		//string fileString = string.Empty;
-		//DateTime date = DateTime.Now;
+	public static void Log(string message, Channel channel = Channel.Default) {
+		string consoleString = string.Empty;
+		string fileString = string.Empty;
+		DateTime date = DateTime.Now;
 		
-		//consoleString = $"[<color={channelToColour[channel]}>" + channel.ToString() + "</color>] " + message;
-		//fileString = "[" + date.ToShortTimeString() + "]" + $"[" + channel.ToString() + "] " + message;
-		//fileString = Encoding.UTF8.GetString(Encoding.Default.GetBytes(fileString));
+		consoleString = $"[<color={channelToColour[channel]}>" + channel.ToString() + "</color>] " + message;
+		fileString = "[" + date.ToShortTimeString() + "]" + message;
+		fileString = Encoding.UTF8.GetString(Encoding.Default.GetBytes(fileString));
 
-		//WriteToLogfile(fileString);
-		//Debug.Log(consoleString);
+		WriteToLogfile(fileString);
+		Debug.Log(consoleString);
 		Debug.Log(message);
 	}
 

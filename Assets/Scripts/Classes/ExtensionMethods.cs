@@ -1,5 +1,4 @@
-﻿using EpPathFinding.cs;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
@@ -7,6 +6,9 @@ using System.Collections;
 using System.Threading.Tasks;
 using System;
 using UnityEngine.SceneManagement;
+using System.Reflection;
+using Cysharp.Threading.Tasks;
+using SimpleMan.Extensions;
 
 public static class ExtensionMethods {
 
@@ -45,59 +47,10 @@ public static class ExtensionMethods {
         }
         return layerNumber - 1;
     }
-    public static Vector3 GetWorldPos(this BaseGrid grid, GridPos pos) => GetWorldPos(grid, pos.x, pos.y);
-    public static Vector3 GetWorldPos(this BaseGrid grid, int indexX, int indexY) {
-        float x = grid.WorldPos.x + indexX * grid.CellSize;
-        float y = grid.WorldPos.z + indexY * grid.CellSize;
-        return new Vector3(x, 0, y);
-    }
-    public static GridPos GetGridPos(this StaticGrid grid, Vector3 pos) {
-        // Use this instead for precise rounding and consistent grid positions
-        int x = (int)System.Math.Round((pos.x - grid.WorldPos.x) / grid.CellSize, 0, System.MidpointRounding.AwayFromZero);
-        int z = (int)System.Math.Round((pos.z - grid.WorldPos.z) / grid.CellSize, 0, System.MidpointRounding.AwayFromZero);
-
-        return new GridPos(x, z);
-    }
+    
     public static int Layer(this RaycastHit hit) => hit.transform.gameObject.layer;
-    public static GridPos GetGridPosSmart(this StaticGrid grid, Vector3 pos, bool mirrorSearch = false) {
-        // Use this instead for precise rounding and consistent grid positions
-        int x = (int)System.Math.Round((pos.x - grid.WorldPos.x) / grid.CellSize);
-        int z = (int)System.Math.Round((pos.z - grid.WorldPos.z) / grid.CellSize);
-
-        if(grid.HasIndex(x, z) == false || grid.IsWalkableAt(x, z) == false) {
-            return GetNearestValid(grid, new GridPos(x, z), mirrorSearch);
-        } else {
-            return new GridPos(x, z);
-        }
-    }
-    public static GridPos GetNearestValid(this StaticGrid grid, GridPos index, bool mirrorSearch = false) {
-        int x = 0;
-        int y = 0;
-        // Looking for nearest valid tile with a spiral pattern
-        for(int i = 0; i < grid.width * grid.height; ++i) {
-            if(System.Math.Abs(x) <= System.Math.Abs(y) && (x != y || x >= 0)) {
-                if(mirrorSearch) {
-                    x += ((y >= 0) ? -1 : 1);
-                } else {
-                    x += ((y >= 0) ? 1 : -1);
-                }
-            } else {
-                if(mirrorSearch) {
-                    y += ((x >= 0) ? 1 : -1);
-                } else {
-                    y += ((x >= 0) ? -1 : 1);
-                }
-            }
-
-            GridPos tPos = new GridPos(index.x + x, index.y + y);
-            //Game.ActiveGrid.PaintCellAt(Game.ActiveGrid.Grid.GetWorldPos(tPos), Color.magenta, 0.5f);
-            if(grid.HasIndex(tPos) && grid.IsWalkableAt(tPos)) {
-                return tPos;
-            }
-        }
-
-        return null;
-    }
+    
+    
     /// <summary>
     /// Searches for a component on the given Transform. Search order goes by: Transform itself -> Transforms Children -> Transforms Parent
     /// </summary>
@@ -136,6 +89,11 @@ public static class ExtensionMethods {
 		}
 		return result;
 	}
+    public static void DestroyAllChildren(this Transform transform) {
+        foreach (Transform child in transform) {
+            UnityEngine.Object.Destroy(child.gameObject);
+        }
+    }
 	public static T RandomItem<T>(this List<T> list) {
         return list[Randomizer.Range(0, list.Count - 1)];
     }
@@ -201,6 +159,54 @@ public static class ExtensionMethods {
             }
 		}
 	}
+    public static object CloneObject(this object objSource) {
+        //Get the type of source object and create a new instance of that type
+        Type typeSource = objSource.GetType();
+        object objTarget = Activator.CreateInstance(typeSource);
+        //Get all the properties of source object type
+        PropertyInfo[] propertyInfo = typeSource.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        //Assign all source property to taget object 's properties
+        foreach (PropertyInfo property in propertyInfo) {
+            //Check whether property can be written to
+            if (property.CanWrite) {
+                //check whether property type is value type, enum or string type
+                if (property.PropertyType.IsValueType || property.PropertyType.IsEnum || property.PropertyType.Equals(typeof(System.String))) {
+                    property.SetValue(objTarget, property.GetValue(objSource, null), null);
+                }
+                //else property type is object/complex types, so need to recursively call this method until the end of the tree is reached
+                else {
+                    object objPropertyValue = property.GetValue(objSource, null);
+                    if (objPropertyValue == null) {
+                        property.SetValue(objTarget, null, null);
+                    } else {
+                        property.SetValue(objTarget, objPropertyValue.CloneObject(), null);
+                    }
+                }
+            }
+        }
+        return objTarget;
+    }
+    public static Vector2 Vector2XZ(this Vector3 vec) => new Vector2(vec.x, vec.z);
+    public static async UniTaskVoid AnimateText(this TMP_Text tmp, string text, float duration) {
+        float delta = duration / text.Length;
+        tmp.SetText("");
+        List<UniTask> tasks = new List<UniTask>();
+
+        for (int i = 0; i < text.Length; i++) {
+            string t = text[i].ToString();
+            int c = i;
+            tasks.Add(UniTask.RunOnThreadPool(async () => {
+                await UniTask.SwitchToMainThread();
+                await UniTask.Delay(c + Mathf.RoundToInt(c * delta * 1000f));
+                tmp.text += t;
+            }));
+        }
+        var task = UniTask.RunOnThreadPool(async () => {
+
+        });
+        await UniTask.WhenAll(tasks);
+        tmp.SetText(text);
+    }
 
     // Helper for Coroutines
     public sealed class ExtensionMethodHelper : MonoBehaviour {}

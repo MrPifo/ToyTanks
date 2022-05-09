@@ -3,12 +3,11 @@ using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
 using CommandTerminal;
-using Sperlich.PrefabManager;
-using UnityEngine.SceneManagement;
 using System.IO;
 using System.Text;
 using System.IO.Compression;
-using System.Threading.Tasks;
+using UnityEngine.AddressableAssets;
+using Cysharp.Threading.Tasks;
 
 // This class holds all the Games information
 // - Existing Worlds
@@ -50,24 +49,6 @@ public static class Game {
 			pos = new Vector3(80, -75, -14),
 			rot = new Vector3(60, 0, 0),
 		}),
-
-		/*new World(global::Worlds.Basement, new Level[10] {
-			new Level(0, 31),
-			new Level(0, 32),
-			new Level(0, 33),
-			new Level(0, 34),
-			new Level(0, 35),
-			new Level(0, 36),
-			new Level(0, 37),
-			new Level(0, 38),
-			new Level(0, 39),
-			new Level(0, 40),
-		}, new MenuCameraSettings() {
-			orthograpicSize = 24,
-			pos = new Vector3(80, -275, -14),
-			rot = new Vector3(60, 0, 0),
-		}),*/
-
 		new World(global::WorldTheme.Snowy, new Level[10] {
 			new Level(0, 21),
 			new Level(1, 22),
@@ -84,15 +65,29 @@ public static class Game {
 			pos = new Vector3(80, -175, -14),
 			rot = new Vector3(60, 0, 0),
 		}),
+		new World(global::WorldTheme.Garden, new Level[10] {
+			new Level(0, 31),
+			new Level(0, 32),
+			new Level(0, 33),
+			new Level(0, 34),
+			new Level(0, 35),
+			new Level(0, 36),
+			new Level(0, 37),
+			new Level(0, 38),
+			new Level(0, 39),
+			new Level(0, 40),
+		}, new MenuCameraSettings() {
+			orthograpicSize = 24,
+			pos = new Vector3(80, -275, -14),
+			rot = new Vector3(60, 0, 0),
+		}),
 	};
-	public static Dictionary<string, Texture2D> Cursors { get; set; } = new Dictionary<string, Texture2D>();
+	//public static Dictionary<string, Texture2D> Cursors { get; set; } = new Dictionary<string, Texture2D>();
 	public static string LevelScreenshotPath => "Levels/Screenshots/Level_";
 	public static Level[] Levels => Worlds.SelectMany(l => l.Levels).ToArray();
 	public static ulong TotalLevels => (ulong)Levels.Length;
-	public static AIGrid ActiveGrid { get; set; }
+	
 	public static bool IsTerminal => Terminal.Instance == null ? false : !Terminal.Instance.IsClosed;
-	public static bool showGrid;
-	public static bool showTankDebugs;
 	public static bool isPlayerGodMode;
 	/// <summary>
 	/// Fixed Timesteps that have been passed since playing.
@@ -126,7 +121,7 @@ public static class Game {
 	public static PlayerStats PlayerStats { get; set; }
 
 	public static GamePlatform Platform { get; set; }
-	public static PlayerControlSchemes PlayerControlScheme { get; set; } = Platform == GamePlatform.Desktop ? PlayerControlSchemes.Desktop : PlayerControlSchemes.DoubleDPad;
+	public static PlayerControlSchemes PlayerControlScheme { get; private set; }
 	private static GameMono _instance;
 	public static GameMono Instance {
 		get {
@@ -172,74 +167,63 @@ public static class Game {
 	/// <summary>
 	/// Must be called whenever the game is started. Returns an error string if something went wrong.
 	/// </summary>
-	public static async Task Initialize(bool isDuringStartup = false) {
+	public static async UniTask Initialize() {
 		if(ApplicationInitialized == false) {
-			Logger.Initialize();
-			Logger.Log(Channel.Default, "### Begin of the logfile, continue starting the game. ###");
-
+			Logger.ClearLogFile();
+			Unity.MLAgents.Academy.Instance.AutomaticSteppingEnabled = false;
+			await GameStartup.SetLoadingText("Initializing Assets");
+			await Addressables.InitializeAsync();
 			CheckPlatform();
-
-			// Input Manager
-			try {
-				PlayerInputManager.Initialize();
-				if(isDuringStartup) {
-					GameStartup.LoadingText.SetText("Input System initialized");
-					await Task.Delay(250);
-				}
-			} catch(Exception e) {
-				Logger.LogError("Failed to initalize the player input system.", e);
-			}
 
 			// Graphic Settings
 			try {
+				await GameStartup.SetLoadingText("Loading Graphic-Settings");
 				GraphicSettings.Initialize();
-				if(isDuringStartup) {
-					GameStartup.LoadingText.SetText("Graphic Settings initialized");
-					await Task.Delay(250);
-				}
 			} catch(Exception e) {
-				Logger.LogError("Failed to initialize GraphicSettings.", e);
+				Logger.LogError(e, "Failed to initialize GraphicSettings.");
+			}
+
+			// Input Manager
+			try {
+				await GameStartup.SetLoadingText("Initializing Input-System");
+				PlayerInputManager.SetPlayerControlScheme(PlayerControlScheme);
+			} catch(Exception e) {
+				Logger.LogError(e, "Failed to initialize InputManager.");
+			}
+
+
+			// SaveGame
+			try {
+				await GameStartup.SetLoadingText("Loading Progression");
+				GameSaver.GameStartUp();
+			} catch(Exception e) {
+				Logger.LogError(e, "Critical error occurred while loading the games SaveGame file. Progress will be reset.");
 			}
 
 			// Runtime Analytics, only run this when build
 			try {
+				await GameStartup.SetLoadingText("Connecting to Game-Analytics");
 				await RuntimeAnalytics.Initialize();
-				if(isDuringStartup) {
-					GameStartup.LoadingText.SetText("Session created");
-					await Task.Delay(250);
-				}
-			} catch(Exception e) {
-				Logger.LogError("Failed to initialize GameAnalytics", e);
+			} catch (Exception e) {
+				Logger.LogError(e, "Failed to initialize GameAnalytics.");
 			}
 
-			// SaveGame
-			try {
-				GameSaver.GameStartUp();
-				if(isDuringStartup) {
-					GameStartup.LoadingText.SetText("Save Game loaded");
-					await Task.Delay(250);
-				}
-			} catch(Exception e) {
-				Logger.LogError("Critical error occurred while loading the games SaveGame file. Progress will be reset.", e);
-			}
-
+			await UniTask.Delay(50);
 			// Player Stats
 			try {
-				PlayerStats.GameStartup();
-				if(isDuringStartup) {
-					GameStartup.LoadingText.SetText("Player Stats loaded");
-					await Task.Delay(250);
-				}
+				//await GameStartup.SetLoadingText("Loading Achievements");
+				//PlayerStats.GameStartup();
 			} catch(Exception e) {
-				Logger.LogError("Critical error occured while loading the Player Stats. Progress will be reset.", e);
+				Logger.LogError(e, "Critical error occured while loading the Player Stats. Progress will be reset.");
 			}
 
 			PlayerInputManager.HideControls();
-
 			// Refresh the games save files timestamps
 			GameSaver.Save();
-			PlayerStats.SavePlayerStats();
 
+			await GameStartup.SetLoadingText("Loading Game Assets");
+			await AssetLoader.PreloadAssetsStartup();
+			await GameStartup.SetLoadingText("");
 			// End of loading
 			ApplicationInitialized = true;
         }
@@ -262,21 +246,10 @@ public static class Game {
 		if(Platform == GamePlatform.Mobile) {
 			PlayerControlScheme = controlScheme;
 			Logger.Log(Channel.Gameplay, "Player control scheme has been switched to " + controlScheme.ToString());
+		} else {
+			PlayerControlScheme = PlayerControlSchemes.Desktop;
 		}
     }
-
-	// Generation Methods
-	public static void CreateAIGrid(GridSizes size, LayerMask mask) {
-		Logger.Log(Channel.System, $"Generating AI Pathfinding Grid ({size.ToString()})");
-		var existingGrid = UnityEngine.Object.FindObjectOfType<AIGrid>();
-		if(existingGrid != null) {
-			UnityEngine.Object.Destroy(existingGrid.gameObject);
-		}
-		ActiveGrid = new GameObject().AddComponent<AIGrid>();
-		SceneManager.MoveGameObjectToScene(ActiveGrid.gameObject, SceneManager.GetSceneByName(PrefabManager.DefaultSceneSpawn));
-		ActiveGrid.GenerateGrid(size, mask);
-		ActiveGrid.name = "AIGrid";
-	}
 
 	// Getter Methods
 	public static World[] GetWorlds => Worlds.ToArray();
@@ -288,7 +261,7 @@ public static class Game {
 	public static bool LevelExists(ulong levelId) => Levels.Any(l => l.LevelId == levelId);
 	public static int LevelCount(WorldTheme worldType) => GetWorld(worldType).Levels.Length;
 	public static void SetCursor(string cursor = "") {
-		if(Cursors.ContainsKey(cursor.ToLower())) {
+		/*if(Cursors.ContainsKey(cursor.ToLower())) {
 			try {
 				Cursor.SetCursor(Cursors[cursor.ToLower()], Vector2.zero, CursorMode.Auto);
 			} catch {
@@ -300,12 +273,12 @@ public static class Game {
 			} catch {
 				Logger.Log(Channel.Rendering, "Failed setting Cursor Texture to null");
 			}
-		}
+		}*/
 	}
 	public static void AddCursor(string name, Texture2D texture) {
-		if(!Cursors.ContainsKey(name)) {
+		/*if(!Cursors.ContainsKey(name)) {
 			Cursors.Add(name, texture);
-		}
+		}*/
 	}
 
 	// File Helper Methods
@@ -333,16 +306,21 @@ public static class Game {
 	/// <param name="compressedString"></param>
 	/// <returns></returns>
 	public static string DecompressString(string compressedString) {
-		byte[] bytes = Convert.FromBase64String(compressedString);
-		using(var msi = new MemoryStream(bytes))
-		using(var mso = new MemoryStream()) {
-			using(var gs = new GZipStream(msi, CompressionMode.Decompress)) {
-				//gs.CopyTo(mso);
-				CopyTo(gs, mso);
-			}
+		try {
+			byte[] bytes = Convert.FromBase64String(compressedString);
+			using (var msi = new MemoryStream(bytes))
+			using (var mso = new MemoryStream()) {
+				using (var gs = new GZipStream(msi, CompressionMode.Decompress)) {
+					//gs.CopyTo(mso);
+					CopyTo(gs, mso);
+				}
 
-			return Encoding.UTF8.GetString(mso.ToArray());
-		}
+				return Encoding.UTF8.GetString(mso.ToArray());
+			}
+		} catch {
+			Debug.LogWarning("Failed to decompress string");
+			return compressedString;
+        }
 	}
 	private static void CopyTo(Stream src, Stream dest) {
 		byte[] bytes = new byte[4096];
@@ -362,6 +340,7 @@ public static class Game {
 		try {
 			using var stream = new FileStream(path, FileMode.Open, FileAccess.Write);
 			using var sw = new StreamWriter(stream);
+			sw.BaseStream.SetLength(0);
 
 			if(compress) {
 				content = CompressString(content);
@@ -370,10 +349,10 @@ public static class Game {
 			sw.Write(content);
 			sw.Close();
 		} catch(FileNotFoundException e) {
-			Logger.LogError("Failed to write content to " + path, e);
+			Logger.LogError(e, "Failed to write content to " + path);
 			throw e;
 		} catch(IOException e) {
-			Logger.LogError("Something else went wrong writing content to file " + path, e);
+			Logger.LogError(e, "Something else went wrong writing content to file " + path);
 			throw e;
 		}
 	}
@@ -390,10 +369,10 @@ public static class Game {
 
 			return content;
 		} catch(FileNotFoundException e) {
-			Logger.LogError("Failed to read content from " + path, e);
+			Logger.LogError(e, "Failed to read content from " + path);
 			throw e;
 		} catch(IOException e) {
-			Logger.LogError("Something else went wrong reading content from file " + path, e);
+			Logger.LogError(e, "Something else went wrong reading content from file " + path);
 			throw e;
 		}
 	}
@@ -403,7 +382,7 @@ public static class Game {
 			fs.Close();
 			return true;
 		} else {
-			Logger.LogError("File already exists on " + path, null);
+			Logger.Log(Channel.SaveGame, "File already exists on " + path);
 			return false;
 		}
 	}
@@ -413,7 +392,7 @@ public static class Game {
 				File.Delete(path);
 				return true;
 			} catch(Exception e) {
-				Logger.LogError("Failed to delete file " + path, e);
+				Logger.LogError(e, "Failed to delete file " + path);
 				return false;
 			}
 		}

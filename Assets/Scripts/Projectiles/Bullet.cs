@@ -1,8 +1,5 @@
-﻿using CarterGames.Assets.AudioManager;
-using SimpleMan.Extensions;
-using Sperlich.Debug.Draw;
+﻿using SimpleMan.Extensions;
 using Sperlich.PrefabManager;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -28,8 +25,10 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 	public bool isFromPlayer;
 	public bool IsInvincible => false;
 	public bool IsFriendlyFireImmune => false;
-	GameObject lastHitObject;
+	protected GameObject lastHitObject;
+	public GameObject Owner { get; protected set; }
 	public UnityEvent OnBulletDestroyed { get; private set; }
+	public float Pitch { get; set; } = 1f;
 
 	public bool fireFromPlayer => isFromPlayer;
 	public Vector3 damageOrigin => transform.position;
@@ -37,14 +36,16 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 	public static Vector3 bulletSize = new Vector3(0.25f, 0.25f, 0.25f);
 	List<(Vector3 pos, Vector3 normal)> predictedPath;
 	Rigidbody rig;
-	float lastHitTime;
+	protected float lastHitTime;
 	public Vector3 Direction { get; set; }
+	public Vector3 CurrentDirection { get; set; }
 	public PoolData.PoolObject PoolObject { get; set; }
+	public bool IsHittable { get; set; } = true;
 
-	float baseVelocity;
-	float time;
-	int bounces = 0;
-	bool hitTarget;
+	protected float baseVelocity;
+	protected float time;
+	protected int bounces = 0;
+	protected bool hitTarget;
 
 	void Awake() {
 		rig = GetComponent<Rigidbody>();
@@ -61,6 +62,8 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 		if(Game.IsGameCurrentlyPlaying) {
 
 			Vector3 dir = (transform.position - (transform.position - Direction)).normalized;
+			CurrentDirection = (transform.position - (transform.position - Direction)).normalized;
+			fakeShadow.transform.rotation = Quaternion.Euler(90, 0, 0);
 			if(dir != Vector3.zero) {
 				Quaternion look = Quaternion.LookRotation(dir, transform.up);
 
@@ -86,71 +89,80 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 	}
 
 	public void TakeDamage(IDamageEffector effector, bool instantKill = false) {
-		hitTarget = true;
-		explodeSmoke.Play();
-		explodeSmokeFire.Play();
-		explodePieces.Play();
-		impactSparks.Play();
-		smokeTrail.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-		smokeFireTrail.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-		fakeShadow.Hide();
-		hitBox.enabled = false;
-		rejectHitBox.enabled = false;
-		renderer.enabled = false;
-		
+		if (IsHittable || instantKill) {
+			hitTarget = true;
+			explodeSmoke.Play();
+			explodeSmokeFire.Play();
+			explodePieces.Play();
+			impactSparks.Play();
+			smokeTrail.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+			smokeFireTrail.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+			fakeShadow.Hide();
+			hitBox.enabled = false;
+			rejectHitBox.enabled = false;
+			renderer.enabled = false;
 
-		//new GameObject().AddComponent<DestructionTimer>().Destruct(5, new GameObject[] { explodeSmoke.gameObject, explodeSmokeFire.gameObject, explodePieces.gameObject, smokeTrail.gameObject, smokeFireTrail.gameObject });
-		OnBulletDestroyed.Invoke();
-		OnBulletDestroyed.RemoveAllListeners();
 
-		this.Delay(2, () => Recycle());
+			//new GameObject().AddComponent<DestructionTimer>().Destruct(5, new GameObject[] { explodeSmoke.gameObject, explodeSmokeFire.gameObject, explodePieces.gameObject, smokeTrail.gameObject, smokeFireTrail.gameObject });
+			OnBulletDestroyed.Invoke();
+			OnBulletDestroyed.RemoveAllListeners();
+
+			this.Delay(2, () => Recycle());
+		}
 	}
 
-	public Bullet SetupBullet(Vector3 dir, Vector3 startPos, bool firedFromPlayer) {
+	public virtual Bullet SetupBullet(GameObject owner, Vector3 dir, Vector3 startPos, bool firedFromPlayer, float customPitch = 1f) {
+		IsHittable = true;
+		Owner = owner;
 		transform.position = startPos;
 		Direction = dir;
 		isFromPlayer = firedFromPlayer;
-		AudioPlayer.Play("BulletShot", AudioType.SoundEffect, 0.8f, 1.2f, 1.2f);
+		float pitch = customPitch == 1f ? 1.2f : customPitch;
+		AudioPlayer.Play(JSAM.Sounds.BulletShot, AudioType.SoundEffect, 0.8f * pitch, 1.2f * pitch, 1f);
 		return this;
 	}
 
-	void OnCollisionEnter(Collision coll) {
+	protected virtual void OnCollisionEnter(Collision coll) {
 		if(hitTarget == false && time != lastHitTime) {
 			if(Physics.SphereCast(transform.position, 0.15f, Direction, out RaycastHit hit, Mathf.Infinity, reflectLayers)) {
 				if(hit.transform.gameObject != lastHitObject) {
 					bounces++;
-					if(coll.transform.TrySearchComponent(out IHittable hittable)) {
+					if(coll.transform.TrySearchComponent(out IHittable hittable) && hittable.IsHittable == false) {
+						Physics.IgnoreCollision(hitBox, coll.collider, true);
+						return;
+					}
+					if(hittable != null && IsBulletBlocker(coll.collider.transform) == false && IsBulletReflector(coll.collider.transform) == false) {
 						hittable.TakeDamage(this);
 						TakeDamage(this);
 					} else if(bounces > maxBounces) {
 						TakeDamage(this);
-					} else if(IsReflective(coll.transform) == false) {
+					} else if(IsBulletBlocker(coll.collider.transform) && IsBulletReflector(coll.collider.transform) == false) {
+						AudioPlayer.Play(JSAM.Sounds.BulletRicochet, AudioType.SoundEffect, 0.8f * Pitch, 1.2f * Pitch, 1.5f);
 						TakeDamage(this);
 					} else {
 						Reflect(hit.normal);
 						lastHitTime = time;
 						lastHitObject = hit.transform.gameObject;
-						Debug.DrawRay(rig.position, Direction, Color.cyan, 20);
 					}
 				}
 			}
 		}
 	}
 
-	void Reflect(Vector3 inNormal) {
+	protected void Reflect(Vector3 inNormal) {
 		Direction = Vector3.Reflect(Direction, inNormal);
 		impactSparks.Play();
-		AudioPlayer.Play("BulletReflect", AudioType.SoundEffect, 0.8f, 1.2f, 0.5f);
+		AudioPlayer.Play(JSAM.Sounds.BulletReflect, AudioType.SoundEffect, 0.8f, 1.2f, 0.5f);
 	}
 
 	public void ResetState() => TakeDamage(this);
-
 	public void Recycle() {
 		hitTarget = false;
 		lastHitObject = null;
 		time = 0;
 		lastHitTime = 0;
 		bounces = 0;
+		Pitch = 1f;
 		Direction = Vector3.zero;
 		isFromPlayer = false;
 		velocity = baseVelocity;
@@ -161,11 +173,16 @@ public class Bullet : GameEntity, IHittable, IDamageEffector, IResettable, IRecy
 		fakeShadow.Show();
 		PrefabManager.FreeGameObject(this);
 	}
-
-	public static bool IsReflective(Transform t) {
-		if(t.transform.CompareTag(ExtraBlocks.Sandbag.ToString()) || t.transform.CompareTag(ExtraBlocks.Tschechigel.ToString())) {
-			return false;
+	public static bool IsBulletBlocker(Transform t) {
+		if(t.CompareTag("BulletBlocker")) {
+			return true;
+        }
+		return false;
+    }
+	public static bool IsBulletReflector(Transform t) {
+		if (t.CompareTag("BulletReflector")) {
+			return true;
 		}
-		return true;
+		return false;
 	}
 }

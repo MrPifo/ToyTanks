@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<StudioProjectMetaData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PresetVersion="1">
+  <StudioAssetMetas>
+    <StudioAssetMeta>
+      <Name>BossTank01</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Quixel\Projects\Tank\BossTank01\BossTank01.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-11-18T14:52:15.0000298+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>BossTank02</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Quixel\Projects\Tank\BossTank02\BossTank02.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-11-18T15:37:37.133491+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>BossTank03</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Quixel\Projects\Tank\BossTank03\BossTank03.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2022-01-12T11:56:46.8396332+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Camouflage</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Quixel\Projects\Tank\Camouflage\Camouflage.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-12-27T15:48:46.4505551+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Snowplower</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Quixel\Projects\Tank\Snowplower\Snowplower.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2021-12-23T00:06:06.2343697+01:00</SaveTime>
+    </StudioAssetMeta>
+    <StudioAssetMeta>
+      <Name>Standard_Model</Name>
+      <MixerXMLPath>C:\Users\Julian\Desktop\ToyTanks\Quixel\Projects\Tank\Standard_Model\Standard_Model.xml</MixerXMLPath>
+      <MixerVersion>2021.1.2</MixerVersion>
+      <MixPresetVersion>15</MixPresetVersion>
+      <SaveTime>2022-03-20T02:03:33.3079786+01:00</SaveTime>
+    </StudioAssetMeta>
+  </StudioAssetMetas>
+</StudioProjectMetaData>

@@ -4,7 +4,7 @@ public static class GamePaths {
 
 	// Game Paths
 	public static string GameFolder = Application.persistentDataPath;
-	public static string SaveGamePath = GameFolder + "/SaveGame.dat";
+	public static string SaveGamePath = GameFolder + "/SaveGame";
 	public static string UserLevelsFolder => GameFolder + "/CustomLevels";
 	public static string UserGraphicSettings => GameFolder + "/graphics.ini";
 	public static string ThemesPath => "Themes";

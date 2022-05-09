@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using ToyTanks.UI;
+using Rewired;
 
 public class SaveSlotUI : UIScaleAnimation {
 
@@ -21,13 +22,18 @@ public class SaveSlotUI : UIScaleAnimation {
 	public Image background;
 	public MenuItem saveSlotMenu;
 	float holdTime;
+	float pressTime;
 	bool deleted;
 	bool deletePlaying;
+	bool pressed;
+	UINavElement navElement;
 	Color bColor;
 
 	private void Awake() {
 		bColor = background.color;
 		deleteInfo.localScale = new Vector3(1f, 0f, 1f);
+		navElement = GetComponent<UINavElement>();
+		navElement.deactivateEnter = true;
 		CloseConfirmBox();
 	}
 
@@ -77,6 +83,31 @@ public class SaveSlotUI : UIScaleAnimation {
 			}
 		} else {
 			holdTime = 0;
+		}
+		if (navElement.isSelected) {
+			if (ReInput.players.Players[0].GetButton("Confirm")) {
+				isMouseDown = true;
+			} else {
+				isMouseDown = false;
+			}
+			if (ReInput.players.Players[0].GetButtonUp("Confirm") && pressTime < 0.5f && pressed) {
+				pressed = false;
+				pressTime = 0;
+				UINavigator.Instance.currentSelected.Select();
+				UINavigator.Instance.Select(UINavigator.Instance.currentSelected.enter);
+				MouseClick();
+			}
+			if (ReInput.players.Players[0].GetButtonDown("Confirm")) {
+				pressed = true;
+				
+			} else if(ReInput.players.Players[0].GetButtonUp("Confirm")) {
+				pressTime = 0;
+				pressed = false;
+			}
+			if(pressed) {
+				pressTime += Time.deltaTime;
+			}
+			
 		}
 		background.color = Color.Lerp(bColor, Color.red, holdTime.Remap(0f, 2f, 0f, 1f));
 	}

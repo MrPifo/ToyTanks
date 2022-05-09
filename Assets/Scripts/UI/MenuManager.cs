@@ -9,6 +9,7 @@ using CommandTerminal;
 using LeTai.Asset.TranslucentImage;
 using ToyTanks.UI;
 using SimpleMan.Extensions;
+using CameraShake;
 
 public class MenuManager : MonoBehaviour {
 
@@ -19,6 +20,7 @@ public class MenuManager : MonoBehaviour {
 	[Header("Others")]
 	public ScrollRect customLevelsScrollRect;
 	public CanvasGroup flashScreen;
+	public CanvasGroup startupTransition;
 	[SerializeField] TranslucentImageSource blurImageSource;
 	public GameObject fullBlurObject;
 	public GameObject hardCoreDifficulty;
@@ -32,6 +34,15 @@ public class MenuManager : MonoBehaviour {
 	public MenuItem saveSlotMenu;
 	public MenuItem worldOverviewMenu;
 	public SaveSlotUI[] saveSlots;
+	[Header("Menu Background Animation")]
+	public Material groundMaterial;
+	public Transform showcaseTank;
+	public Transform showcaseTankHead;
+	public float headAimAngle;
+	public float groundScrollSpeed = 1f;
+	public float tankShakeStrength = 0.1f;
+	public float camShakeStrength;
+
 	public ScalableBlurConfig fullBlur => ((ScalableBlurConfig)blurImageSource.BlurConfig);
 	private static MenuManager _instance;
 	public static MenuManager Instance {
@@ -49,7 +60,14 @@ public class MenuManager : MonoBehaviour {
 	public const float fadeDuration = 0.35f;
 	LevelData currentLevelData;
 
-	public void Initialize() {
+    private void Update() {
+		groundMaterial.SetVector("_Offset", groundMaterial.GetVector("_Offset") + new Vector4(Time.deltaTime * groundScrollSpeed, Time.deltaTime * groundScrollSpeed, 0, 0));
+		CameraShaker.Presets.Explosion2D(camShakeStrength, 0, Time.deltaTime);
+		showcaseTankHead.localRotation = Quaternion.Euler(0, Mathf.Sin(Time.time) * headAimAngle, 0);
+		showcaseTank.position = new Vector3(showcaseTank.transform.position.x, 0.5f + Mathf.Sin(Time.time * tankShakeStrength) * 0.01f, showcaseTank.transform.position.z);
+	}
+
+    public void Initialize() {
 		foreach(var menu in GameObject.FindGameObjectsWithTag("MenuItem")) {
 			menu.gameObject.SetActive(true);
 			menu.GetComponent<MenuItem>().Initialize();
@@ -188,15 +206,6 @@ public class MenuManager : MonoBehaviour {
 		this.Delay(0.2f, () => {
 			difficultyBlurCamera.gameObject.Hide();
 			sidebarBlurCamera.gameObject.Hide();
-		});
-	}
-
-	public void ExitWorldOverview() {
-		menuCamera.WiggleActive = true;
-		levelSelector.ExitWorldView();
-		this.Delay(0.2f, () => {
-			difficultyBlurCamera.gameObject.Show();
-			sidebarBlurCamera.gameObject.Show();
 		});
 	}
 

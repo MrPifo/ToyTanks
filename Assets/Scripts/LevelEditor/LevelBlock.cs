@@ -9,13 +9,15 @@ namespace ToyTanks.LevelEditor {
 		[SerializeField]
 		private MeshFilter _meshFilter;
 		public MeshFilter MeshFilter {
-			get => isNotEditable || _meshFilter == null ? GetComponent<MeshFilter>() : _meshFilter;
+			get => transform.CompareTag("LevelPreset") || _meshFilter == null ? GetComponent<MeshFilter>() : _meshFilter;
 			set => _meshFilter = value;
 		}
 		[SerializeField]
 		private MeshRenderer _meshRenderer;
+		[SerializeField]
+		private List<MeshRenderer> extraRenders = new List<MeshRenderer>();
 		public MeshRenderer MeshRender {
-			get => isNotEditable || _meshRenderer == null ? gameObject.transform.SearchComponent<MeshRenderer>() : _meshRenderer;
+			get => transform.CompareTag("LevelPreset") || _meshRenderer == null ? gameObject.transform.SearchComponent<MeshRenderer>() : _meshRenderer;
 			set => _meshRenderer = value;
 		}
 		public BlockType type;
@@ -38,11 +40,11 @@ namespace ToyTanks.LevelEditor {
 		}
 		private Int3 _index;
 		public Int3 Index {
-			get => isNotEditable ? new Int3(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y), Mathf.RoundToInt(transform.position.z)) : _index;
+			get => transform.CompareTag("LevelPreset") ? new Int3(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y), Mathf.RoundToInt(transform.position.z)) : _index;
 			set => _index = value;
 		}
 		public List<Int3> allIndexes;
-		public bool isNotEditable;
+		public bool IsPreset => transform.CompareTag("LevelPreset");
 		Mesh defaultMesh;
 
 		private void Awake() {
@@ -71,16 +73,31 @@ namespace ToyTanks.LevelEditor {
 			transform.position = pos + offset;
 		}
 
-		public void RestoreMaterials() {
+		public virtual void RestoreMaterials() {
 			LevelEditor.RestoreMaterials(MeshRender.materials);
+			if(extraRenders.Count > 0) {
+				foreach(var r in extraRenders) {
+					LevelEditor.RestoreMaterials(r.materials);
+				}
+            }
 		}
 
-		public void SetAsPreview() {
+		public virtual void SetAsPreview() {
 			LevelEditor.SetMaterialsAsPreview(MeshRender.materials);
+			if (extraRenders.Count > 0) {
+				foreach (var r in extraRenders) {
+					LevelEditor.SetMaterialsAsPreview(r.materials);
+				}
+			}
 		}
 
-		public void SetAsDestroyPreview() {
+		public virtual void SetAsDestroyPreview() {
 			LevelEditor.SetMaterialsAsDestroyPreview(MeshRender.materials);
+			if (extraRenders.Count > 0) {
+				foreach (var r in extraRenders) {
+					LevelEditor.SetMaterialsAsDestroyPreview(r.materials);
+				}
+			}
 		}
 	}
 }

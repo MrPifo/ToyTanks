@@ -1,9 +1,10 @@
 ﻿using System;
 
 [Serializable]
-public abstract class SaveBase {
+public class SaveBase {
 
-	public string SaveGameVersion { get; }
+	public string SaveGameVersion { get; set; }
 	public DateTime LastModified { get; set; }
+	public Guid PlayerGuid { get; set; }
 
 }

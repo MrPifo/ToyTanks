@@ -12,6 +12,7 @@ public abstract class BossAI : TankAI {
 	/// <para>Low_Life = Boss has approxiametly under 20-0% health points</para>
 	/// </summary>
 	public enum BossPhases { Full_Life, Half_Life, Low_Life }
+	[Header("BossAI")]
 	public BossPhases CurrentPhase;
 	public ParticleSystem fallImpactParticle;
 
@@ -30,7 +31,7 @@ public abstract class BossAI : TankAI {
 			transform.DOMove(originalPos, 0.8f).SetEase(Ease.InCubic).OnComplete(() => {
 				GameCamera.ShakeExplosion2D(20, 0.3f);
 				fallImpactParticle.Play();
-				AudioPlayer.Play("FallImpact", AudioType.SoundEffect, 0.8f, 2);
+				AudioPlayer.Play(JSAM.Sounds.FallImpact, AudioType.SoundEffect, 0.8f, 2);
 			});
 		});
 	}

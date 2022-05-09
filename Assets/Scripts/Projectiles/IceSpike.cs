@@ -19,6 +19,7 @@ public class IceSpike : GameEntity, IDamageEffector, IRecycle, IHittable {
 	public DecalProjector iceGroundDecal;
 	public Vector3 damageOrigin => transform.position;
 	public PoolData.PoolObject PoolObject { get; set; }
+	public bool IsHittable { get; set; } = true;
 
 	public bool IsInvincible => false;
 	public bool IsFriendlyFireImmune => false;
@@ -54,7 +55,7 @@ public class IceSpike : GameEntity, IDamageEffector, IRecycle, IHittable {
 				GameCamera.ShakeExplosion2D(1, 0.15f);
 				filter.sharedMesh = variants.RandomItem();
 				iceParticles.Play();
-				AudioPlayer.Play("IceSpikeSpawn", AudioType.SoundEffect, 0.7f, 2f, 0.5f);
+				AudioPlayer.Play(JSAM.Sounds.IceSpikeSpawn, AudioType.SoundEffect, 0.7f, 2f, 0.5f);
 				yield return new WaitForSeconds(0.1f);
 				// Check if Hit
 				foreach(var hit in Physics.OverlapSphere(transform.position, 1f, hitLayers)) {
@@ -98,7 +99,7 @@ public class IceSpike : GameEntity, IDamageEffector, IRecycle, IHittable {
 	}
 
 	public void TakeDamage(IDamageEffector effector, bool instantKill = false) {
-		AudioPlayer.Play("IceSpikeShatter", AudioType.SoundEffect, 0.8f, 1.2f, 1f);
+		AudioPlayer.Play(JSAM.Sounds.IceSpikeShatter, AudioType.SoundEffect, 0.8f, 1.2f, 1f);
 		render.enabled = false;
 		destroyParticles.Play();
 		collider.enabled = false;
